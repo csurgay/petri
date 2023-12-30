@@ -1,0 +1,11 @@
+body {
+    margin: 0;
+    background: rgb(240, 219, 175);
+    text-align: center;
+    overflow: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#petrinetCanvas {
+    background-color: rgb(250, 230, 190);
+}
