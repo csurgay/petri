@@ -5,13 +5,13 @@ function mousedown(evt) {
     if (evt.button==0) { // Left button
         if (o==null) {
             // New Object, Pan
-            if (state==IDLE && !evt.ctrlKey && !evt.shiftKey) {
+            if (state==IDLE && !evt.ctrlKey && !evt.shiftKey && !evt.altKey) {
                 stateChange(LEFTDOWN);
             }
         }
         else if (o) {
             // Object click, Drag
-            if (!evt.ctrlKey && !evt.shiftKey) {
+            if (!evt.ctrlKey && !evt.shiftKey && !evt.altKey) {
                 stateChange(LEFTDOWN);
                 pn.dragged=o;
             }
@@ -21,9 +21,14 @@ function mousedown(evt) {
                 pn.draggedAll.length=0;
                 pn.getDraggedAll(o);
             }
-            // New Flow
+            // New potential Flow
             else if (evt.ctrlKey) {
                 stateChange(DRAWARROW);
+            }
+            // Multisegment Flow
+            else if (evt.altKey && o.type==FLOW) {
+                stateChange(MULTISEGMENT);
+                pn.dragged=o;
             }
         }
     }
@@ -140,6 +145,15 @@ function mousemove(evt) {
             pn.vpy+=cursor.y-pn.mouseDownCoord.y;
         }
     }
+    // Multisegment Flow
+    else if (state==MULTISEGMENT) {
+        // Init multisegment
+        if (state==MULTISEGMENT) {
+            pn.highlighted=pn.dragged.addSegment(pn.mouseDownCoord);
+            pn.dragged=pn.highlighted;
+            stateChange(DRAG);
+        }
+    }
     // Highlight mouseovered object
     else {
         o = pn.getCursoredObject(cursor);
@@ -155,13 +169,14 @@ function mousewheel(evt) {
     const cursor=getCoord(evt);
     o = pn.getCursoredObject(cursor);
     // Zoom
-    if (state==MIDDLE) {
+    if (state==MIDDLE || state==ZOOM) {
+        stateChange(ZOOM);
         pn.zoom+=delta/10;
         pn.zoom=Math.round(10*pn.zoom)/10;
         if (pn.zoom<0.3) pn.zoom=0.3;
         if (pn.zoom>3) pn.zoom=3;
     }
-    else if (o && evt.button!=1) {
+    else if (o && evt.button!=1 && !evt.ctrlKey) {
         // Tokens add/remove
         if (o.type==PLACE) {
             o.changeTokens(delta);

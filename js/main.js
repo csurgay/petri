@@ -9,8 +9,8 @@ addEventListener('contextmenu',evt=>{evt.preventDefault();});
 var pn=new Petrinet();
 
 const states=[
-     "IDLE","SELECT","DRAG","DRAWARROW","LEFTDOWN","DELETE","MIDDLE","PAN","RUN","DRAGALL"];
-const IDLE=0,SELECT=1,DRAG=2,DRAWARROW=3,LEFTDOWN=4,DELETE=5,MIDDLE=6,PAN=7,RUN=8,DRAGALL=9;
+     "IDLE","SELECT","DRAG","DRAWARROW","LEFTDOWN","DELETE","MIDDLE","PAN","RUN","DRAGALL","ZOOM", "MULTISEGMENT", "MULTISEGMENTED"];
+const IDLE=0,SELECT=1,DRAG=2,DRAWARROW=3,LEFTDOWN=4,DELETE=5,MIDDLE=6,PAN=7,RUN=8,DRAGALL=9,ZOOM=10,MULTISEGMENT=11,MULTISEGMENTED=12;
 var state=IDLE;
 
 animate();
@@ -20,6 +20,7 @@ function animate() {
     // Rotating PacMan
     ctx.beginPath();
     ctx.strokeStyle="black";
+    ctx.lineWidth=1;
     const ms=(Date.now()%(628*2))/200;
     const z=pn.zoom==1?7:6;
     ctx.arc(20,20,10,ms,ms+z*Math.PI/4)

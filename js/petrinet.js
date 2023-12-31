@@ -82,6 +82,10 @@ class Petrinet {
         this.p.forEach(item => { if (item.cursored(cursor)) ret=item; });
         this.t.forEach(item => { if (item.cursored(cursor)) ret=item; });
         this.l.forEach(item => { if (item.cursored(cursor)) ret=item; });
+        this.f.forEach(item => {
+            const aux=item.cursoredMidPoint(cursor);
+            if (aux) ret=aux; 
+        });
         return ret;
     }
 
@@ -105,6 +109,8 @@ class Petrinet {
         pn.f.forEach(f=>{
             if (f.o1==o) this.getDraggedAll(f.o2);
             if (f.o2==o) this.getDraggedAll(f.o1);
+            for (var i=1; i<f.path.length-1; i++)
+                this.getDraggedAll(f.path[i]);
         });
     }
 
@@ -203,6 +209,9 @@ function processLoad(request) {
         newFlow.delta=new Coord(f.delta.x,f.delta.y);
         newFlow.newo2=new Coord(f.newo2.x,f.newo2.y);
         newFlow.weight=f.weight;
+        if (f.path) for (var i=f.path.length-2; i>0; i--) {
+            newFlow.addSegment(new MidPoint(f.path[i].x,f.path[i].y));
+        }
         pn.addFlow(newFlow);
     });
 }

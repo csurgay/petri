@@ -59,6 +59,7 @@ function drawArrow(fromx,fromy,tox,toy,lineWidth=1,highlight=false,subtype="ENAB
     ctx.stroke();
     ctx.beginPath();
     if (subtype=="ENABLER") {
+        ctx.lineWidth=1;
         ctx.moveTo(tox,toy);
         ctx.lineTo(tox-headlen*Math.cos(angle-alpha*Math.PI/180),toy-headlen*Math.sin(angle-alpha*Math.PI/180));
         ctx.lineTo(tox-headlen*Math.cos(angle+alpha*Math.PI/180),toy-headlen*Math.sin(angle+alpha*Math.PI/180));

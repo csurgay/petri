@@ -2,6 +2,7 @@ Done:
 - save-restore elimination
 
 Todo:
+- Accurate Flow connection to Transitions
 - Undo edit
 - Help screen
 - Status info lines
