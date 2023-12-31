@@ -21,6 +21,7 @@ class Place extends Object {
     }
 
     draw() {
+        // Circle
         ctx.beginPath();
         ctx.lineWidth=2;
         ctx.strokeStyle="black";
@@ -29,6 +30,7 @@ class Place extends Object {
         ctx.arc(this.x,this.y,this.r,0,2*Math.PI);
         ctx.fill();
         ctx.stroke();
+        // Tokens dice
         ctx.beginPath();
         ctx.fillStyle="rgb(0, 0, 0)";
         if (this.tokens<=6) {
@@ -38,6 +40,7 @@ class Place extends Object {
             }) 
             ctx.fill();
         }
+        // Tokens number
         else {
             ctx.font ="20px arial";
             ctx.textAlign = "center";

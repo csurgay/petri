@@ -18,6 +18,7 @@ class Flow {
         l=this.o2.type==PLACE?(l-this.o2.r)/l:(l-this.o2.w/2)/l;
         drawArrow(this.o1.x,this.o1.y,this.o1.x+l*x,this.o1.y+l*y,2,
             pn.highlighted==this,this.subtype);
+        // Flow weight circle
         if (this.weight!=1) {
             ctx.beginPath();
             ctx.strokeStyle="black";
@@ -26,7 +27,7 @@ class Flow {
             ctx.fill();
             ctx.stroke();
             ctx.font ="11px arial";
-            ctx.fillStyle="balck";
+            ctx.fillStyle="black";
             ctx.textAlign = "center";
             ctx.textBaseline = 'middle';
             ctx.fillText(this.weight,midx,midy+1);
@@ -34,7 +35,7 @@ class Flow {
     }
 
     cursored(cursor) {
-        if (distancePointAndSection(cursor,this.o1,this.newo2) < 3)
+        if (distancePointAndSection(cursor,this.o1,this.newo2) <= 3)
             return true;
         else 
             return false;

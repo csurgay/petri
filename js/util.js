@@ -29,6 +29,10 @@ class Object extends Coord {
     delete() {};
 }
 
+function stateChange(newState) {
+    state=newState;
+}
+
 function getCoord(evt) {
     const rect = canvas.getBoundingClientRect();
     return new Coord(

@@ -17,6 +17,7 @@ animate();
 
 function animate() {
     clearCanvas(canvas);
+    // Rotating PacMan
     ctx.beginPath();
     ctx.strokeStyle="black";
     const ms=(Date.now()%(628*2))/200;
@@ -25,23 +26,22 @@ function animate() {
     ctx.lineTo(20,20)
     ctx.closePath();
     ctx.stroke();
+    // Title line
     ctx.font ="16px arial";
     ctx.fillStyle="black";
     ctx.textAlign = "left";
     ctx.textBaseline = 'top';
     ctx.fillText("Petrinet Simulator - 2023 csurgay@gmail.com",40,15);
+    // Draw PetriNet
     ctx.save();
     ctx.translate(pn.cy,pn.cx);
     ctx.scale(pn.zoom,pn.zoom);
     ctx.translate(pn.vpx,pn.vpy);
     pn.draw();
     ctx.restore();
+    // Running mode
     if (state==RUN) {
         pn.fireOne();
     }
     requestAnimationFrame(animate);
-}
-
-function stateChange(newState) {
-    state=newState;
 }

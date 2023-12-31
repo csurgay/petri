@@ -2,7 +2,7 @@ class Label extends Object {
     constructor(label,x,y) {
         super(x,y);
         this.label=label;
-        pn.l.push(this);
+        pn.addLabel(this);
     }
 
     draw() {
@@ -16,7 +16,7 @@ class Label extends Object {
     }
 
     cursored(cursor) {
-        if (Math.abs(this.x-cursor.x)<20 && Math.abs(this.y-cursor.y)<10)
+        if (Math.abs(this.x-cursor.x)<20 && Math.abs(this.y-cursor.y)<5)
             return true;
         else 
             return false;

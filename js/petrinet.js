@@ -41,6 +41,10 @@ class Petrinet {
         this.staticChanged();
     }
 
+    addLabel(label) {
+        this.l.push(label);
+    }
+
     addFlow(flow) {
         this.f.push(flow);
         this.staticChanged();
