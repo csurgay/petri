@@ -14,6 +14,10 @@ class Coord {
         this.x=x;
         this.y=y;
     }
+    moveTo(x,y) {
+        this.x=x;
+        this.y=y;
+    }
 }
 
 class Object extends Coord {

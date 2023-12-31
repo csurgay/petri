@@ -5,21 +5,26 @@ class Flow {
         this.o1=o1;
         this.o2=o2;
         this.weight=1;
-        this.delta=new Coord(0,0);
-        this.newo2=new Coord(o2.x,o2.y);
-        this.path=[o1,this.newo2];
+        this.path=[o1,o2];
     }
 
     draw() {
-        this.newo2.x=this.o2.x+this.delta.x;
-        this.newo2.y=this.o2.y+this.delta.y;
         const lastPoint=this.path[this.path.length-2];
-        const midx=(5*lastPoint.x+4*this.newo2.x)/9, 
-              midy=(5*lastPoint.y+4*this.newo2.y)/9;
-        const x=this.newo2.x-lastPoint.x,
-              y=this.newo2.y-lastPoint.y;
+        var conn, distance, minDistance=1000000;
+        this.o2.connectors.forEach(c=>{
+            distance=Math.hypot(c.x-lastPoint.x,c.y-lastPoint.y);
+            if (distance<minDistance) {
+                minDistance=distance;
+                conn=c;
+            }
+        });
+        // Adjusted new end position
+        const midx=(lastPoint.x+conn.x)/2, 
+              midy=(lastPoint.y+conn.y)/2;
+        const x=conn.x-lastPoint.x,
+              y=conn.y-lastPoint.y;
         var l = Math.hypot(x,y);
-        l=this.o2.type==PLACE?(l-this.o2.r)/l:(l-this.o2.w/2)/l;
+        l=this.subtype=="INHIBITOR"?(l-8)/l:1;
         // Draw multisegment path
         ctx.beginPath();
         ctx.strokeStyle=pn.highlighted==this?"blue":"black"; 
@@ -35,6 +40,7 @@ class Flow {
         if (this.weight!=1) {
             ctx.beginPath();
             ctx.strokeStyle="black";
+            ctx.lineWidth=1;
             ctx.fillStyle="rgb(250, 230, 190)";
             ctx.arc(midx,midy,7,0,2*Math.PI);
             ctx.fill();
@@ -78,8 +84,8 @@ class Flow {
     }
 
     dragTo(x,y) {
-        this.delta.x+=x;
-        this.delta.y+=y;
+//        this.delta.x+=x;
+//        this.delta.y+=y;
     }
 
     addSegment(point) {

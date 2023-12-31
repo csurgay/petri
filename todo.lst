@@ -1,10 +1,11 @@
 Done:
 - save-restore elimination
+- Multisegment flows with MidPoints
+- Accurate Flow connection to Transitions
 
 Todo:
-- Accurate Flow connection to Transitions
 - Undo edit
 - Help screen
 - Status info lines
-- Curved or multisegment flows
 - Buttons (File: New Save Load Clear M0...?)
+- Mouse location as center of zooming

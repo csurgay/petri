@@ -11,6 +11,15 @@ class Transition extends Object {
         this.p1=new Coord(0,0);
         this.p2=new Coord(0,0);
         this.label=new Label(this.id,this.x,this.y-20);
+        this.connectors=[];
+        for (var i=0; i<12; i++) this.connectors.push(new Coord(0,0));
+        this.adjust_p1p2();
+    }
+
+    rotate(cx,cy,x,y,alpha) {
+        var tx=x-cx,ty=y-cy;
+        return [tx*Math.cos(alpha)-ty*Math.sin(alpha)+cx,
+                tx*Math.sin(alpha)+ty*Math.cos(alpha)+cy];
     }
 
     adjust_p1p2() {
@@ -18,6 +27,48 @@ class Transition extends Object {
         this.p1.y=this.y+Math.cos(this.alpha)*this.h/2;
         this.p2.x=this.x+Math.sin(this.alpha)*this.h/2;
         this.p2.y=this.y-Math.cos(this.alpha)*this.h/2;
+        this.connectors[0].moveTo(this.p1.x,this.p1.y);
+        this.connectors[1].moveTo(this.p2.x,this.p2.y);
+        this.connectors[2].moveTo(
+            this.x+Math.cos(this.alpha)*this.w/2,
+            this.y+Math.sin(this.alpha)*this.w/2
+        );
+        this.connectors[3].moveTo(
+            this.x-Math.cos(this.alpha)*this.w/2,
+            this.y-Math.sin(this.alpha)*this.w/2
+        );
+        this.connectors[4].moveTo(
+            this.x+this.rotate(0,0,this.w/2,this.h/3,this.alpha)[0],
+            this.y+this.rotate(0,0,this.w/2,this.h/3,this.alpha)[1]
+        );
+        this.connectors[5].moveTo(
+            this.x+this.rotate(0,0,-this.w/2,this.h/3,this.alpha)[0],
+            this.y+this.rotate(0,0,-this.w/2,this.h/3,this.alpha)[1]
+        );
+        this.connectors[6].moveTo(
+            this.x+this.rotate(0,0,this.w/2,-this.h/3,this.alpha)[0],
+            this.y+this.rotate(0,0,this.w/2,-this.h/3,this.alpha)[1]
+        );
+        this.connectors[7].moveTo(
+            this.x+this.rotate(0,0,-this.w/2,-this.h/3,this.alpha)[0],
+            this.y+this.rotate(0,0,-this.w/2,-this.h/3,this.alpha)[1]
+        );
+        this.connectors[8].moveTo(
+            this.x+this.rotate(0,0,this.w/2,this.h/6,this.alpha)[0],
+            this.y+this.rotate(0,0,this.w/2,this.h/6,this.alpha)[1]
+        );
+        this.connectors[9].moveTo(
+            this.x+this.rotate(0,0,-this.w/2,this.h/6,this.alpha)[0],
+            this.y+this.rotate(0,0,-this.w/2,this.h/6,this.alpha)[1]
+        );
+        this.connectors[10].moveTo(
+            this.x+this.rotate(0,0,this.w/2,-this.h/6,this.alpha)[0],
+            this.y+this.rotate(0,0,this.w/2,-this.h/6,this.alpha)[1]
+        );
+        this.connectors[11].moveTo(
+            this.x+this.rotate(0,0,-this.w/2,-this.h/6,this.alpha)[0],
+            this.y+this.rotate(0,0,-this.w/2,-this.h/6,this.alpha)[1]
+        );
     }
     
     draw() {
@@ -39,6 +90,15 @@ class Transition extends Object {
             ctx.beginPath();
             ctx.moveTo(this.p1.x,this.p1.y);
             ctx.lineTo(this.p2.x,this.p2.y);
+            ctx.stroke();
+        }
+        if (false) {
+            ctx.beginPath();
+            ctx.strokeStyle="red";
+            this.connectors.forEach(c=>{
+                ctx.moveTo(c.x,c.y);
+                ctx.arc(c.x,c.y,3,0,2*Math.PI);
+            });
             ctx.stroke();
         }
     }

@@ -1,25 +1,26 @@
 class Petrinet {
     constructor() {
-        this.p=[];
-        this.t=[];
-        this.f=[];
-        this.l=[];
+        this.p=[]; // Places
+        this.t=[]; // Transitions
+        this.f=[]; // Flows
+        this.l=[]; // Labels
         this.highlighted = null;
         this.dragged=null;
-        this.paleArrow=null;
+        this.paleArrow=null; // Potential new Flow
         this.mouseDownCoord=null;
         this.zoom=1;
-        this.cx=200;
+        this.cx=200; // Center of zooming (Should be mouse location)
         this.cy=200;
-        this.vpx=0;
+        this.vpx=0; // Viewport
         this.vpy=0;
-        this.draggedAll=[];
-        this.markings=[];
+        this.draggedAll=[]; // When whole subnet is dragged
+        this.markings=[]; // Markings sequence
         this.mptr=-1; // marking pointer
-        this.transeq=[];
+        this.transeq=[]; // Transition sequence
     }
 
     draw() {
+        // Draw potential new Flow
         if (this.paleArrow && state==DRAWARROW) {
             const o=this.paleArrow[0];
             const c=this.paleArrow[1];

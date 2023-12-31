@@ -18,9 +18,22 @@ class Place extends Object {
         this.r=20;
         this.tokens=0;
         this.label=new Label(this.id,this.x,this.y-30);
+        this.connectors=[];
+        this.adjustConnectors();
+    }
+
+    adjustConnectors() {
+        this.connectors.length=0;
+        for (var i=0; i<16; i++) {
+            this.connectors.push( new Coord(
+                this.x+this.r*Math.sin(i*Math.PI/8),
+                this.y+this.r*Math.cos(i*Math.PI/8)
+            ));
+        }
     }
 
     draw() {
+        this.adjustConnectors();
         // Circle
         ctx.beginPath();
         ctx.lineWidth=2;
