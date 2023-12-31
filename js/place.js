@@ -1,5 +1,5 @@
 const PLACE=0, TRANSITION=1, FLOW=2;
-const d=7;
+const d=7.5;
 const tokenpos=[
     [],
     [ [0,0] ],
@@ -38,18 +38,18 @@ class Place extends Object {
         ctx.beginPath();
         ctx.lineWidth=2;
         ctx.strokeStyle="black";
-        ctx.fillStyle="rgb(250, 230, 190)";
+        ctx.fillStyle=COLOR_CANVAS;
         if (pn.highlighted==this) ctx.strokeStyle="blue";
         ctx.arc(this.x,this.y,this.r,0,2*Math.PI);
         ctx.fill();
         ctx.stroke();
         // Tokens dice
         ctx.beginPath();
-        ctx.fillStyle="rgb(0, 0, 0)";
+        ctx.fillStyle="black";
         if (this.tokens<=6) {
             tokenpos[this.tokens].forEach(t => {
                 ctx.moveTo(this.x+t[0],this.y+t[1]);
-                ctx.arc(this.x+t[0],this.y+t[1],3,0,2*Math.PI);
+                ctx.arc(this.x+t[0],this.y+t[1],3.5,0,2*Math.PI);
             }) 
             ctx.fill();
         }

@@ -41,7 +41,7 @@ class Flow {
             ctx.beginPath();
             ctx.strokeStyle="black";
             ctx.lineWidth=1;
-            ctx.fillStyle="rgb(250, 230, 190)";
+            ctx.fillStyle=COLOR_CANVAS;
             ctx.arc(midx,midy,7,0,2*Math.PI);
             ctx.fill();
             ctx.stroke();

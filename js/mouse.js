@@ -11,7 +11,7 @@ function mousedown(evt) {
         }
         else if (o) {
             // Object click, Drag
-            if (!evt.ctrlKey && !evt.shiftKey && !evt.altKey) {
+            if (!evt.ctrlKey && !evt.shiftKey && o.type!=FLOW) {
                 stateChange(LEFTDOWN);
                 pn.dragged=o;
             }
@@ -26,7 +26,7 @@ function mousedown(evt) {
                 stateChange(DRAWARROW);
             }
             // Multisegment Flow
-            else if (evt.altKey && o.type==FLOW) {
+            else if (o.type==FLOW) {
                 stateChange(MULTISEGMENT);
                 pn.dragged=o;
             }
@@ -147,12 +147,9 @@ function mousemove(evt) {
     }
     // Multisegment Flow
     else if (state==MULTISEGMENT) {
-        // Init multisegment
-        if (state==MULTISEGMENT) {
-            pn.highlighted=pn.dragged.addSegment(pn.mouseDownCoord);
-            pn.dragged=pn.highlighted;
-            stateChange(DRAG);
-        }
+        pn.highlighted=pn.dragged.addSegment(pn.mouseDownCoord);
+        pn.dragged=pn.highlighted;
+        stateChange(DRAG);
     }
     // Highlight mouseovered object
     else {

@@ -76,8 +76,8 @@ class Transition extends Object {
         ctx.beginPath();
         ctx.lineWidth=2;
         ctx.strokeStyle="black";
-        ctx.fillStyle="rgb(250, 230, 190)";
-        if (this.enabled()) ctx.fillStyle="red";
+        ctx.fillStyle=COLOR_CANVAS;
+        if (this.enabled()) ctx.fillStyle=COLOR_ENABLED;
         if (pn.highlighted==this) ctx.strokeStyle="blue";
         ctx.save();
         ctx.translate(this.x,this.y);
@@ -94,7 +94,7 @@ class Transition extends Object {
         }
         if (false) {
             ctx.beginPath();
-            ctx.strokeStyle="red";
+            ctx.strokeStyle=COLOR_ENABLED;
             this.connectors.forEach(c=>{
                 ctx.moveTo(c.x,c.y);
                 ctx.arc(c.x,c.y,3,0,2*Math.PI);

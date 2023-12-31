@@ -1,6 +1,11 @@
+const COLOR_CANVAS="rgb(240, 234, 220)";
+const COLOR_ENABLED="rgb(255, 140, 100)";
+
 function clearCanvas(canvas) {
     canvas.width=window.innerWidth;
     canvas.height=window.innerHeight;
+    ctx.fillStyle = COLOR_CANVAS;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
 var idPlace=0, idTrans=0;
@@ -71,7 +76,7 @@ function drawArrow(fromx,fromy,tox,toy,lineWidth=1,highlight=false,subtype="ENAB
         ctx.fill();
     } 
     else if (subtype=="INHIBITOR") {
-        ctx.fillStyle="rgb(250, 230, 190)";
+        ctx.fillStyle=COLOR_CANVAS;
         ctx.arc(tox,toy,7,0,2*Math.PI);
         ctx.fill();
         ctx.stroke();
