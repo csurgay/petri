@@ -2,6 +2,7 @@ Done:
 - save-restore elimination
 - Multisegment flows with MidPoints
 - Accurate Flow connection to Transitions
+- Coloring Objects and subnet
 
 Todo:
 - Undo edit
@@ -10,7 +11,8 @@ Todo:
 - Buttons (File: New Save Load Clear M0...?)
 - Mouse location as center of zooming
 - Reachability
-- Object colors (Black, Red, Green, Orange)
 - Snap to grid and free drag too
 - Alpha in degree 0-360 not radian
-- Select subnet (e.g. for coloring)
+- Select (and copy, rotate...?) subnet
+- Labels input and placement
+- Firing animation with "flames"

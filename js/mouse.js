@@ -18,14 +18,14 @@ function mousedown(evt) {
             // Subnet drag
             else if (evt.shiftKey) {
                 stateChange(DRAGALL);
-                pn.draggedAll.length=0;
-                pn.getDraggedAll(o);
+                pn.connected.length=0;
+                pn.getConnectedAll(o);
             }
             // New potential Flow
             else if (evt.ctrlKey) {
                 stateChange(DRAWARROW);
             }
-            // Multisegment Flow
+            // Multisegment Flow or Flow Toggle
             else if (o.type==FLOW) {
                 stateChange(MULTISEGMENT);
                 pn.dragged=o;
@@ -58,7 +58,7 @@ function mouseup(evt) {
         pn.highlighted=o;
     }
     else if (state==LEFTDOWN && o && o==pn.highlighted && closeEnough(pn.mouseDownCoord,cursor)) {
-        // Toggle
+        // Toggles
         if (pn.noFlowFromHere(o)) {
             // Toggle Place to Transition
             if (o.type==PLACE) {
@@ -76,16 +76,16 @@ function mouseup(evt) {
                 pn.highlighted=newPlace;
                 delete o;
             }
-            // Toggle Flow Enabler/Inhiboitor
-            else if(o.type==FLOW && o.o1.type==PLACE) {
-                if (o.subtype=="ENABLER") o.subtype="INHIBITOR";
-                else if (o.subtype=="INHIBITOR") o.subtype="ENABLER";
-            }
         }
         // Fire a Transition
         else if(o.type==TRANSITION) {
             if (o.enabled()) pn.fireOne(o);
         }
+    }
+    // Toggle Flow Enabler/Inhiboitor
+    else if(o && o.type==FLOW && o.o1.type==PLACE && state==MULTISEGMENT) {
+        if (o.subtype=="ENABLER") o.subtype="INHIBITOR";
+        else if (o.subtype=="INHIBITOR") o.subtype="ENABLER";
     }
     // New Place
     else if (state==LEFTDOWN && closeEnough(pn.mouseDownCoord,cursor)) {
@@ -126,7 +126,7 @@ function mousemove(evt) {
     }
     // Do DragAll (SubNet)
     else if (state==DRAGALL) {
-        pn.draggedAll.forEach(da => { 
+        pn.connected.forEach(da => { 
             da.dragTo(cursor.x-pn.mouseDownCoord.x,cursor.y-pn.mouseDownCoord.y); 
         });
         pn.mouseDownCoord.x=cursor.x;
@@ -173,7 +173,7 @@ function mousewheel(evt) {
         if (pn.zoom<0.3) pn.zoom=0.3;
         if (pn.zoom>3) pn.zoom=3;
     }
-    else if (o && evt.button!=1 && !evt.ctrlKey) {
+    else if (o && evt.button!=1 && !evt.ctrlKey && !evt.altKey) {
         // Tokens add/remove
         if (o.type==PLACE) {
             o.changeTokens(delta);
@@ -196,8 +196,20 @@ function mousewheel(evt) {
             if (o.weight<1) o.weight=1;
         }
     }
-    // Rewind and Forward
+    else if (o && evt.button!=1 && !evt.ctrlKey && evt.altKey) {
+        // Color change on Object
+        if (!evt.shiftKey) {
+            o.nextColor(delta);
+        }
+        // Color change Shubnet
+        else if (evt.shiftKey) {
+            pn.connected.length=0;
+            pn.getConnected(o);
+            pn.connected.forEach(o=>o.nextColor(delta));
+        }
+    }
     else {
+        // Rewind and Forward
         stateChange(IDLE);
         if (delta<0) {
             if (pn.mptr>0) {

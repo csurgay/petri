@@ -790,7 +790,7 @@
     "cy": 200,
     "vpx": 0,
     "vpy": 0,
-    "draggedAll": [],
+    "connectedAll": [],
     "markings": [
         [
             0,

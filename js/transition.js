@@ -74,11 +74,11 @@ class Transition extends Object {
     draw() {
         this.adjust_p1p2();
         ctx.beginPath();
-        ctx.lineWidth=2;
-        ctx.strokeStyle="black";
+        ctx.lineWidth=LINEWIDTH;
+        ctx.strokeStyle=this.color;
         ctx.fillStyle=COLOR_CANVAS;
         if (this.enabled()) ctx.fillStyle=COLOR_ENABLED;
-        if (pn.highlighted==this) ctx.strokeStyle="blue";
+        if (pn.highlighted==this) ctx.strokeStyle=COLOR_HIGHLIGHT;
         ctx.save();
         ctx.translate(this.x,this.y);
         ctx.rotate(this.alpha);

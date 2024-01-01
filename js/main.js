@@ -19,7 +19,7 @@ function animate() {
     clearCanvas(canvas);
     // Rotating PacMan
     ctx.beginPath();
-    ctx.strokeStyle="black";
+    ctx.strokeStyle=COLOR_INK;
     ctx.lineWidth=1;
     const ms=(Date.now()%(628*2))/200;
     const z=pn.zoom==1?7:6;
@@ -29,7 +29,7 @@ function animate() {
     ctx.stroke();
     // Title line
     ctx.font ="16px arial";
-    ctx.fillStyle="black";
+    ctx.fillStyle=COLOR_INK;
     ctx.textAlign = "left";
     ctx.textBaseline = 'top';
     ctx.fillText("Petrinet Simulator - 2023 csurgay@gmail.com",40,15);

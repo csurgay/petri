@@ -13,7 +13,7 @@ class Petrinet {
         this.cy=200;
         this.vpx=0; // Viewport
         this.vpy=0;
-        this.draggedAll=[]; // When whole subnet is dragged
+        this.connected=[]; // Subnet connected to an object
         this.markings=[]; // Markings sequence
         this.mptr=-1; // marking pointer
         this.transeq=[]; // Transition sequence
@@ -104,14 +104,23 @@ class Petrinet {
         return ret;
     }
 
-    getDraggedAll(o) {
-        if (this.draggedAll.includes(o)) return;
-        this.draggedAll.push(o);
+    // Connected Flows to an Object
+    getConnected(o) {
+        this.connected.push(o);
         pn.f.forEach(f=>{
-            if (f.o1==o) this.getDraggedAll(f.o2);
-            if (f.o2==o) this.getDraggedAll(f.o1);
-            for (var i=1; i<f.path.length-1; i++)
-                this.getDraggedAll(f.path[i]);
+            if (f.o1==o || f.o2==o) this.connected.push(f);
+        });
+    }
+
+    // Whole Subnet connected to an Object
+    getConnectedAll(o) {
+        if (this.connected.includes(o)) return;
+        this.connected.push(o);
+        pn.f.forEach(f=>{
+            if (f.o1==o) this.getConnectedAll(f.o2);
+            if (f.o2==o) this.getConnectedAll(f.o1);
+            if (f.o1==o || f.o2==o) for (var i=1; i<f.path.length-1; i++)
+                this.getConnectedAll(f.path[i]);
         });
     }
 
@@ -188,6 +197,7 @@ function processLoad(request) {
         newPlace.label.label=p.label.label;
         newPlace.label.x=p.label.x;
         newPlace.label.y=p.label.y;
+        newPlace.color=p.color;
         pn.addPlace(newPlace);
     });
     jsonObject.t.forEach(t=>{
@@ -197,6 +207,7 @@ function processLoad(request) {
         newTrans.label.label=t.label.label;
         newTrans.label.x=t.label.x;
         newTrans.label.y=t.label.y;
+        newTrans.color=t.color;
         pn.addTransition(newTrans);
     });
     jsonObject.f.forEach(f=>{
@@ -210,6 +221,7 @@ function processLoad(request) {
         newFlow.delta=new Coord(f.delta.x,f.delta.y);
         newFlow.newo2=new Coord(f.newo2.x,f.newo2.y);
         newFlow.weight=f.weight;
+        newFlow.color=f.color;
         if (f.path) for (var i=f.path.length-2; i>0; i--) {
             newFlow.addSegment(new MidPoint(f.path[i].x,f.path[i].y));
         }

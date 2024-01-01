@@ -36,16 +36,15 @@ class Place extends Object {
         this.adjustConnectors();
         // Circle
         ctx.beginPath();
-        ctx.lineWidth=2;
-        ctx.strokeStyle="black";
+        ctx.lineWidth=LINEWIDTH;
+        ctx.strokeStyle=pn.highlighted==this?COLOR_HIGHLIGHT:this.color;
         ctx.fillStyle=COLOR_CANVAS;
-        if (pn.highlighted==this) ctx.strokeStyle="blue";
         ctx.arc(this.x,this.y,this.r,0,2*Math.PI);
         ctx.fill();
         ctx.stroke();
         // Tokens dice
         ctx.beginPath();
-        ctx.fillStyle="black";
+        ctx.fillStyle=COLOR_INK;
         if (this.tokens<=6) {
             tokenpos[this.tokens].forEach(t => {
                 ctx.moveTo(this.x+t[0],this.y+t[1]);

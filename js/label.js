@@ -7,11 +7,11 @@ class Label extends Object {
 
     draw() {
         ctx.beginPath();
-        ctx.fillStyle="black";
+        ctx.fillStyle=COLOR_INK;
         ctx.font ="14px arial";
         ctx.textAlign = "center";
         ctx.textBaseline = 'middle';
-        if (pn.highlighted==this) ctx.fillStyle="blue";
+        if (pn.highlighted==this) ctx.fillStyle=COLOR_HIGHLIGHT;
         ctx.fillText(this.label,this.x,this.y);
     }
 

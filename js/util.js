@@ -1,5 +1,11 @@
-const COLOR_CANVAS="rgb(240, 234, 220)";
+const LINEWIDTH=2;
+
+const COLOR_CANVAS="rgb(250, 240, 230)";
 const COLOR_ENABLED="rgb(255, 140, 100)";
+const COLOR_INK="black";
+const COLOR_HIGHLIGHT="blue";
+
+const COLORS=["black","red","green","purple"];
 
 function clearCanvas(canvas) {
     canvas.width=window.innerWidth;
@@ -28,8 +34,18 @@ class Coord {
 class Object extends Coord {
     constructor(x,y) {
         super(x,y);
+        this.color=COLOR_INK;
     }
     draw() {}
+    nextColor(delta) {
+        if (delta>0) {
+            this.color=COLORS[(COLORS.indexOf(this.color)+1)%COLORS.length];
+        }
+        else {
+            this.color=COLORS[(COLORS.indexOf(this.color)-1+COLORS.length)%COLORS.length];
+        }
+        pn.highlighted=null;
+    }
     cursored() {}
     dragTo(dx,dy) {
         this.x+=dx;
@@ -49,20 +65,16 @@ function getCoord(evt) {
         evt.clientY/pn.zoom-rect.top-pn.cy/pn.zoom-pn.vpy);
 }
 
-function drawArrow(fromx,fromy,tox,toy,lineWidth=1,highlight=false,subtype="ENABLER") {
+function drawArrow(fromx,fromy,tox,toy,lineWidth=1,color,subtype="ENABLER") {
     const headlen=20;
     const alpha=17;
     var dx=tox-fromx;
     var dy=toy-fromy;
     var angle=Math.atan2(dy,dx);
     ctx.beginPath();
-    ctx.strokeStyle="black";
-    ctx.fillStyle="black";
+    ctx.strokeStyle=color;
+    ctx.fillStyle=color;
     ctx.lineWidth=lineWidth;
-    if (highlight) {
-        ctx.strokeStyle="blue";
-        ctx.fillStyle="blue";
-    }
     ctx.moveTo(fromx,fromy);
     ctx.lineTo(tox,toy);
     ctx.stroke();
