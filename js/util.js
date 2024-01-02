@@ -1,4 +1,12 @@
+const PLACE=0, TRANSITION=1, FLOW=2, MIDPOINT=3, LABEL=4;
+
+const states=[
+    "IDLE","SELECT","DRAG","DRAWARROW","LEFTDOWN","DELETE","MIDDLE","PAN","RUN","DRAGALL","ZOOM", "MULTISEGMENT"];
+const IDLE=0,SELECT=1,DRAG=2,DRAWARROW=3,LEFTDOWN=4,DELETE=5,MIDDLE=6,PAN=7,RUN=8,DRAGALL=9,ZOOM=10,MULTISEGMENT=11;
+var state=IDLE;
+
 const LINEWIDTH=2;
+const PLACE_R=20;
 
 const COLOR_CANVAS="rgb(250, 240, 230)";
 const COLOR_ENABLED="rgb(255, 140, 100)";
@@ -18,6 +26,12 @@ var idPlace=0, idTrans=0;
 function nextId(type) {
     if (type==PLACE) return ++idPlace;
     else if (type==TRANSITION) return ++idTrans;
+}
+
+function rotate(cx,cy,x,y,alpha) {
+    var tx=x-cx,ty=y-cy;
+    return [tx*Math.cos(alpha)-ty*Math.sin(alpha)+cx,
+            tx*Math.sin(alpha)+ty*Math.cos(alpha)+cy];
 }
 
 class Coord {

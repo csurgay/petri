@@ -1,3 +1,6 @@
+const h=50,w=15;
+const transConnectors=[[0,-h/2],[0,h/2],[-w/2,0],[w/2,0],[-w/2,h/3],[w/2,h/3],[-w/2,-h/3],[w/2,-h/3],[-w/2,h/6],[w/2,h/6],[-w/2,-h/6],[w/2,-h/6]];
+
 class Transition extends Object {
     constructor(x,y,alpha=Math.PI/2) {
         super(x,y);
@@ -6,71 +9,19 @@ class Transition extends Object {
         this.x=x;
         this.y=y;
         this.alpha=alpha;
-        this.h=50;
-        this.w=15;
         this.p1=new Coord(0,0);
         this.p2=new Coord(0,0);
         this.label=new Label(this.id,this.x,this.y-20);
-        this.connectors=[];
-        for (var i=0; i<12; i++) this.connectors.push(new Coord(0,0));
         this.adjust_p1p2();
     }
 
-    rotate(cx,cy,x,y,alpha) {
-        var tx=x-cx,ty=y-cy;
-        return [tx*Math.cos(alpha)-ty*Math.sin(alpha)+cx,
-                tx*Math.sin(alpha)+ty*Math.cos(alpha)+cy];
+    adjust_p1p2() {
+        this.p1.x=this.x-Math.sin(this.alpha)*h/2;
+        this.p1.y=this.y+Math.cos(this.alpha)*h/2;
+        this.p2.x=this.x+Math.sin(this.alpha)*h/2;
+        this.p2.y=this.y-Math.cos(this.alpha)*h/2;
     }
 
-    adjust_p1p2() {
-        this.p1.x=this.x-Math.sin(this.alpha)*this.h/2;
-        this.p1.y=this.y+Math.cos(this.alpha)*this.h/2;
-        this.p2.x=this.x+Math.sin(this.alpha)*this.h/2;
-        this.p2.y=this.y-Math.cos(this.alpha)*this.h/2;
-        this.connectors[0].moveTo(this.p1.x,this.p1.y);
-        this.connectors[1].moveTo(this.p2.x,this.p2.y);
-        this.connectors[2].moveTo(
-            this.x+Math.cos(this.alpha)*this.w/2,
-            this.y+Math.sin(this.alpha)*this.w/2
-        );
-        this.connectors[3].moveTo(
-            this.x-Math.cos(this.alpha)*this.w/2,
-            this.y-Math.sin(this.alpha)*this.w/2
-        );
-        this.connectors[4].moveTo(
-            this.x+this.rotate(0,0,this.w/2,this.h/3,this.alpha)[0],
-            this.y+this.rotate(0,0,this.w/2,this.h/3,this.alpha)[1]
-        );
-        this.connectors[5].moveTo(
-            this.x+this.rotate(0,0,-this.w/2,this.h/3,this.alpha)[0],
-            this.y+this.rotate(0,0,-this.w/2,this.h/3,this.alpha)[1]
-        );
-        this.connectors[6].moveTo(
-            this.x+this.rotate(0,0,this.w/2,-this.h/3,this.alpha)[0],
-            this.y+this.rotate(0,0,this.w/2,-this.h/3,this.alpha)[1]
-        );
-        this.connectors[7].moveTo(
-            this.x+this.rotate(0,0,-this.w/2,-this.h/3,this.alpha)[0],
-            this.y+this.rotate(0,0,-this.w/2,-this.h/3,this.alpha)[1]
-        );
-        this.connectors[8].moveTo(
-            this.x+this.rotate(0,0,this.w/2,this.h/6,this.alpha)[0],
-            this.y+this.rotate(0,0,this.w/2,this.h/6,this.alpha)[1]
-        );
-        this.connectors[9].moveTo(
-            this.x+this.rotate(0,0,-this.w/2,this.h/6,this.alpha)[0],
-            this.y+this.rotate(0,0,-this.w/2,this.h/6,this.alpha)[1]
-        );
-        this.connectors[10].moveTo(
-            this.x+this.rotate(0,0,this.w/2,-this.h/6,this.alpha)[0],
-            this.y+this.rotate(0,0,this.w/2,-this.h/6,this.alpha)[1]
-        );
-        this.connectors[11].moveTo(
-            this.x+this.rotate(0,0,-this.w/2,-this.h/6,this.alpha)[0],
-            this.y+this.rotate(0,0,-this.w/2,-this.h/6,this.alpha)[1]
-        );
-    }
-    
     draw() {
         this.adjust_p1p2();
         ctx.beginPath();
@@ -82,7 +33,7 @@ class Transition extends Object {
         ctx.save();
         ctx.translate(this.x,this.y);
         ctx.rotate(this.alpha);
-        ctx.rect(-this.w/2,-this.h/2,this.w,this.h);
+        ctx.rect(-w/2,-h/2,w,h);
         ctx.fill();
         ctx.stroke();
         ctx.restore();
@@ -94,10 +45,11 @@ class Transition extends Object {
         }
         if (false) {
             ctx.beginPath();
-            ctx.strokeStyle=COLOR_ENABLED;
-            this.connectors.forEach(c=>{
-                ctx.moveTo(c.x,c.y);
-                ctx.arc(c.x,c.y,3,0,2*Math.PI);
+            ctx.strokeStyle=COLOR_HIGHLIGHT;
+            transConnectors.forEach(c=>{
+                var rot=rotate(0,0,c[0],c[1],this.alpha);
+                ctx.moveTo(this.x+rot[0],this.y+rot[1]);
+                ctx.arc(this.x+rot[0],this.y+rot[1],2,0,2*Math.PI);
             });
             ctx.stroke();
         }
@@ -109,7 +61,7 @@ class Transition extends Object {
     }
 
     cursored(cursor) {
-        if (distancePointAndSection(cursor,this.p1,this.p2) <= this.w/2+1)
+        if (distancePointAndSection(cursor,this.p1,this.p2) <= w/2+1)
             return true;
         else 
             return false;

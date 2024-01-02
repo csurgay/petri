@@ -197,7 +197,7 @@ function processLoad(request) {
         newPlace.label.label=p.label.label;
         newPlace.label.x=p.label.x;
         newPlace.label.y=p.label.y;
-        newPlace.color=p.color;
+        if (p.color) newPlace.color=p.color;
         pn.addPlace(newPlace);
     });
     jsonObject.t.forEach(t=>{
@@ -207,7 +207,7 @@ function processLoad(request) {
         newTrans.label.label=t.label.label;
         newTrans.label.x=t.label.x;
         newTrans.label.y=t.label.y;
-        newTrans.color=t.color;
+        if (t.color) newTrans.color=t.color;
         pn.addTransition(newTrans);
     });
     jsonObject.f.forEach(f=>{
@@ -221,7 +221,7 @@ function processLoad(request) {
         newFlow.delta=new Coord(f.delta.x,f.delta.y);
         newFlow.newo2=new Coord(f.newo2.x,f.newo2.y);
         newFlow.weight=f.weight;
-        newFlow.color=f.color;
+        if (f.color) newFlow.color=f.color;
         if (f.path) for (var i=f.path.length-2; i>0; i--) {
             newFlow.addSegment(new MidPoint(f.path[i].x,f.path[i].y));
         }

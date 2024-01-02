@@ -7,23 +7,43 @@ class Flow extends Object {
         this.o2=o2;
         this.weight=1;
         this.path=[o1,o2];
+        this.conn=new Coord(0,0);
     }
 
     draw() {
         const lastPoint=this.path[this.path.length-2];
-        var conn, distance, minDistance=1000000;
-        this.o2.connectors.forEach(c=>{
-            distance=Math.hypot(c.x-lastPoint.x,c.y-lastPoint.y);
-            if (distance<minDistance) {
-                minDistance=distance;
-                conn=c;
-            }
-        });
+        // Calc end connector for this Flow
+        var distance, minDistance=1000000;
+        if (this.o2.type==PLACE) {
+            placeConnectors.forEach(c=>{
+                distance=Math.hypot(
+                    this.o2.x+c.x-lastPoint.x,
+                    this.o2.y+c.y-lastPoint.y);
+                if (distance<minDistance) {
+                    minDistance=distance;
+                    this.conn.x=this.o2.x+c.x; 
+                    this.conn.y=this.o2.y+c.y;
+                }
+            });
+        }
+        else if (this.o2.type==TRANSITION) {
+            transConnectors.forEach(c=>{
+                const rot=rotate(0,0,c[0],c[1],this.o2.alpha);
+                distance=Math.hypot(
+                    this.o2.x+rot[0]-lastPoint.x,
+                    this.o2.y+rot[1]-lastPoint.y);
+                if (distance<minDistance) {
+                    minDistance=distance;
+                    this.conn.x=this.o2.x+rot[0]; 
+                    this.conn.y=this.o2.y+rot[1];
+                }
+            });
+        }
         // Adjusted new end position
-        const midx=(lastPoint.x+conn.x)/2, 
-              midy=(lastPoint.y+conn.y)/2;
-        const x=conn.x-lastPoint.x,
-              y=conn.y-lastPoint.y;
+        const midx=(lastPoint.x+this.conn.x)/2, 
+              midy=(lastPoint.y+this.conn.y)/2;
+        const x=this.conn.x-lastPoint.x,
+              y=this.conn.y-lastPoint.y;
         var l = Math.hypot(x,y);
         l=this.subtype=="INHIBITOR"?(l-8)/l:1;
         // Draw multisegment path
@@ -59,10 +79,12 @@ class Flow extends Object {
     }
 
     cursored(cursor) {
-        for (var i=0; i<this.path.length-1; i++) {
+        for (var i=0; i<this.path.length-2; i++) {
             if (distancePointAndSection(cursor,this.path[i],this.path[i+1]) <= 3)
                 return true;
         }
+        if (distancePointAndSection(cursor,this.path[this.path.length-2],this.conn) <= 3)
+            return true;
         return false;
     }
 
