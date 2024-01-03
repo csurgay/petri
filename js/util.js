@@ -1,5 +1,7 @@
 const PLACE=0, TRANSITION=1, FLOW=2, MIDPOINT=3, LABEL=4;
 
+const DEBUG=1;
+
 const states=[
     "IDLE","SELECT","DRAG","DRAWARROW","LEFTDOWN","DELETE","MIDDLE","PAN","RUN","DRAGALL","ZOOM", "MULTISEGMENT"];
 const IDLE=0,SELECT=1,DRAG=2,DRAWARROW=3,LEFTDOWN=4,DELETE=5,MIDDLE=6,PAN=7,RUN=8,DRAGALL=9,ZOOM=10,MULTISEGMENT=11;
@@ -22,10 +24,15 @@ function clearCanvas(canvas) {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
-var idPlace=0, idTrans=0;
+function log(str) {
+    console.log(str);
+}
+
+var idPlace=0, idTrans=0, idFlow=0;
 function nextId(type) {
     if (type==PLACE) return ++idPlace;
     else if (type==TRANSITION) return ++idTrans;
+    else if (type==FLOW) return ++idFlow;
 }
 
 function rotate(cx,cy,x,y,alpha) {
@@ -137,4 +144,15 @@ function drawArrow(fromx,fromy,tox,toy,lineWidth=1,color,subtype="ENABLER") {
       yy = p1.y + param * D;
     }
     return Math.hypot(p.x-xx,p.y-yy);
+  }
+
+  function getFormattedDate() {
+    const d=new Date();
+    return d.getFullYear()+"-"+zeroPad(d.getMonth()+1)+"-"+zeroPad(d.getDate())+" "+
+        zeroPad(d.getHours())+":"+zeroPad(d.getMinutes())+":"+zeroPad(d.getSeconds());
+  }
+
+  function zeroPad(v) {
+    if (v<10) return "0"+v;
+    else return ""+v;
   }

@@ -1,0 +1,30 @@
+2024-01-03 20:50:28
+Places:
+P1 -68.0 -30.0 green 0 Autumn -100.0 -59.0 black
+P2 108.0 -32.0 green 1 Winter 88.0 -61.0 black
+P3 114.0 135.0 green 0 Spring 84.0 107.0 black
+P4 -69.0 139.0 green 0 Summer -101.0 109.0 black
+P5 212.0 205.0 red 0 Aux 217.0 175.0 black
+P6 260.0 54.0 purple 0 Years 260.0 24.0 black
+P7 383.0 54.0 red 0 LeapYears 383.0 24.0 black
+Transitions:
+T1 20.0 -31.0 green -0.011  19.0 -69.0 black
+T2 111.0 51.5 green 1.535 NewYear 146.0 32.5 black
+T3 22.5 137.0 green -0.022  21.5 98.0 black
+T4 -68.5 54.5 green -1.565  -87.5 35.5 black
+T5 297.5 129.5 red -0.723 Divider 337.5 128.5 black
+Flows:
+F83 green ENABLER 1 P1 T1 0
+F84 green ENABLER 1 T1 P2 0
+F85 green ENABLER 1 P2 T2 0
+F86 green ENABLER 1 T2 P3 0
+F87 green ENABLER 1 P3 T3 0
+F88 green ENABLER 1 T3 P4 0
+F89 green ENABLER 1 P4 T4 0
+F90 green ENABLER 1 T4 P1 0
+F91 red ENABLER 1 T2 P5 0
+F92 red INHIBITOR 4 P5 T3 0
+F93 purple ENABLER 1 T2 P6 0
+F94 red ENABLER 4 P5 T5 0
+F95 red ENABLER 1 T5 P7 0
+End

@@ -1,5 +1,6 @@
 const h=50,w=15;
 const transConnectors=[[0,-h/2],[0,h/2],[-w/2,0],[w/2,0],[-w/2,h/3],[w/2,h/3],[-w/2,-h/3],[w/2,-h/3],[-w/2,h/6],[w/2,h/6],[-w/2,-h/6],[w/2,-h/6]];
+const p1=new Coord(0,0), p2=new Coord(0,0);
 
 class Transition extends Object {
     constructor(x,y,alpha=Math.PI/2) {
@@ -9,21 +10,18 @@ class Transition extends Object {
         this.x=x;
         this.y=y;
         this.alpha=alpha;
-        this.p1=new Coord(0,0);
-        this.p2=new Coord(0,0);
         this.label=new Label(this.id,this.x,this.y-20);
         this.adjust_p1p2();
     }
 
     adjust_p1p2() {
-        this.p1.x=this.x-Math.sin(this.alpha)*h/2;
-        this.p1.y=this.y+Math.cos(this.alpha)*h/2;
-        this.p2.x=this.x+Math.sin(this.alpha)*h/2;
-        this.p2.y=this.y-Math.cos(this.alpha)*h/2;
+        p1.x=this.x+rotate(0,0,transConnectors[0][0],transConnectors[0][1],this.alpha)[0];
+        p1.y=this.y+rotate(0,0,transConnectors[0][0],transConnectors[0][1],this.alpha)[1];
+        p2.x=this.x+rotate(0,0,transConnectors[1][0],transConnectors[1][1],this.alpha)[0];
+        p2.y=this.y+rotate(0,0,transConnectors[1][0],transConnectors[1][1],this.alpha)[1];
     }
 
     draw() {
-        this.adjust_p1p2();
         ctx.beginPath();
         ctx.lineWidth=LINEWIDTH;
         ctx.strokeStyle=this.color;
@@ -37,11 +35,12 @@ class Transition extends Object {
         ctx.fill();
         ctx.stroke();
         ctx.restore();
+        this.adjust_p1p2();
         if (pn.transeq[pn.mptr]==this || pn.transeq[pn.mptr-1]==this) {
             ctx.beginPath();
-            ctx.moveTo(this.p1.x,this.p1.y);
-            ctx.lineTo(this.p2.x,this.p2.y);
-            ctx.stroke();
+            ctx.moveTo(p1.x,p1.y);
+            ctx.lineTo(p2.x,p2.y);
+        ctx.stroke();
         }
         if (false) {
             ctx.beginPath();
@@ -61,7 +60,8 @@ class Transition extends Object {
     }
 
     cursored(cursor) {
-        if (distancePointAndSection(cursor,this.p1,this.p2) <= w/2+1)
+        this.adjust_p1p2();
+        if (distancePointAndSection(cursor,p1,p2) <= w/2+1)
             return true;
         else 
             return false;
@@ -76,6 +76,7 @@ class Transition extends Object {
             });
         pn.l.splice(pn.l.indexOf(this.label),1);
         pn.t.splice(pn.t.indexOf(this),1);
+        this.clearMarkings();
     }
 
     enabled() {

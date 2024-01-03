@@ -3,6 +3,7 @@ Done:
 - Multisegment flows with MidPoints
 - Accurate Flow connection to Transitions
 - Coloring Objects and subnet
+- Compressed rawSave/rawLoad
 
 Todo:
 - Undo edit
@@ -17,4 +18,3 @@ Todo:
 - Labels input and placement
 - Firing animation with "flames"
 - Play-Stop-Speed control
-

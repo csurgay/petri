@@ -80,11 +80,12 @@ class Place extends Object {
         }
         pn.l.splice(pn.l.indexOf(this.label),1);
         pn.p.splice(pn.p.indexOf(this),1);
+        this.clearMarkings();
     }
 
     changeTokens(delta) {
         this.tokens+=delta;
         if (this.tokens<0) this.tokens=0;
-        else pn.staticChanged();
+        this.clearMarkings();
     }
 }

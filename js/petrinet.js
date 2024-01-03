@@ -1,3 +1,6 @@
+const undo=[]; // complete nets
+var undoPtr=-1;
+
 class Petrinet {
     constructor() {
         this.p=[]; // Places
@@ -32,14 +35,32 @@ class Petrinet {
         this.l.forEach(item => { item.draw(); })
     }
 
+    clear() {
+        this.p.length=0;
+        this.t.length=0;
+        this.f.length=0;
+        this.l.length=0;
+        idPlace=0;
+        idTrans=0;
+        idFlow=0;
+        this.highlighted=null;
+        this.dragged=null;
+        this.paleArrow=null;
+        this.connected.length=0;
+        this.mptr=-1;
+        this.transeq.length=0;
+        undo.length=0;
+        undoPtr=-1;
+    }
+
     addPlace(place) {
         this.p.push(place);
-        this.staticChanged();
+        this.clearMarkings();
     }
 
     addTransition(trans) {
         this.t.push(trans);
-        this.staticChanged();
+        this.clearMarkings();
     }
 
     addLabel(label) {
@@ -48,7 +69,7 @@ class Petrinet {
 
     addFlow(flow) {
         this.f.push(flow);
-        this.staticChanged();
+        this.clearMarkings();
     }
 
     addFlows(o1,o2) {
@@ -75,6 +96,19 @@ class Petrinet {
         else {
             this.addFlow(new Flow(o1,o2));
         }
+    }
+
+    locate(id) {
+        var ret=null;
+        pn.p.forEach(o=>{
+            if (o.id==id) 
+                ret=o;
+        });
+        if (ret==null) pn.t.forEach(o=>{
+            if (o.id==id) 
+                ret=o;
+        });
+        return ret;
     }
 
     getCursoredObject(cursor) {
@@ -145,13 +179,17 @@ class Petrinet {
         }
     }
 
-    staticChanged() {
+    clearMarkings() {
         this.mptr=0;
         this.markings.length=0;
         this.markings.push(this.getMarking());
         this.transeq.length=0;
     }
 
+    newUndo() {
+        undo.push(rawSave());
+    }
+    
     getMarking() {
         const m=[];
         pn.p.forEach(p => {
@@ -168,26 +206,34 @@ class Petrinet {
     }
 
     save(filename) {
-        var data = new FormData();
-        data.append("data", JSON.stringify(pn));
+        var raw = new FormData();
+        raw.append("data", rawSave());
         var xhr = (window.XMLHttpRequest) ? new XMLHttpRequest() : new activeXObject("Microsoft.XMLHTTP");
         xhr.open( 'POST', 'savefile.php?filename='+filename, true );
-        xhr.send(data);
+        xhr.send(raw);
     }
 
     load(filename) {
         var request = new XMLHttpRequest();
-        request.onload = function() { processLoad(request); }
+        request.onload = function() { rawLoad(request.responseText); }
         request.open("GET", filename);
         request.overrideMimeType("application/json");
         request.send();
-        this.staticChanged();
+        this.clearMarkings();
+    }
+
+    oldLoad(filename) {
+        var request = new XMLHttpRequest();
+        request.onload = function() { processLoad(request.responseText); }
+        request.open("GET", filename);
+        request.send();
+        this.clearMarkings();
     }
 }
 
-function processLoad(request) {
-    const jsonObject = JSON.parse(request.responseText);
-    pn.p=[]; pn.t=[]; pn.f=[]; pn.l=[]; idPlace=0; idTrans=0;
+function processLoad(str) {
+    pn.clear();
+    const jsonObject = JSON.parse(str);
     pn.zoom=jsonObject.zoom;
     pn.vpx=jsonObject.vpx; pn.vpy=jsonObject.vpy;
     jsonObject.p.forEach(p=>{

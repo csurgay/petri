@@ -2,6 +2,7 @@ class Flow extends Object {
     constructor(o1,o2) {
         super(0,0);
         this.type=FLOW;
+        this.id="F"+nextId(this.type);
         this.subtype="ENABLER"; // "INHIBITOR"
         this.o1=o1;
         this.o2=o2;
@@ -127,6 +128,7 @@ class Flow extends Object {
 
     delete() {
         pn.f.splice(pn.f.indexOf(this),1);
+        this.clearMarkings();
     }
 }
 

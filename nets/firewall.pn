@@ -1,0 +1,119 @@
+2024-01-03 20:50:13
+Places:
+P1 -84.0 -75.0 black 1 UserRequest -84.0 -105.0 black
+P3 35.0 73.0 black 1 Init/Result 46.3 41.8 black
+P5 183.0 218.0 black 0 FwResult 165.5 244.3 black
+P6 173.0 81.0 black 0  173.0 51.0 black
+P7 173.0 -37.0 black 0  173.0 -67.0 black
+P8 168.0 -145.0 black 0  168.0 -175.0 black
+P9 19.0 -157.0 black 0  19.0 -187.0 black
+P11 328.7 -149.8 black 0 ValidReq 316.2 -184.8 black
+P12 319.8 14.7 black 1 BgCheckDb 319.8 -15.3 black
+P13 323.1 83.6 black 0  323.1 53.6 black
+P15 312.0 272.4 black 0  312.0 242.4 black
+P17 520.9 186.9 black 0 Permission 520.9 156.9 black
+P18 669.8 183.6 black 0 UserSpace 697.3 214.8 black
+P19 588.7 76.9 black 0 AccessReq 533.7 59.4 black
+P21 343.1 -245.3 black 1  343.1 -275.3 black
+P22 514.2 -83.1 black 1 RoleDB 481.7 -108.1 black
+P24 655.9 -55.9 black 0  655.9 -85.9 black
+P25 737.7 -74.6 black 0 UserRole 737.7 -104.6 black
+P26 660.9 52.0 black 0  660.9 22.0 black
+P27 739.8 52.6 black 0  772.3 63.8 black
+P30 553.1 -218.7 black 0  553.1 -248.7 black
+P32 846.4 -116.4 black 0 StateInfo 886.4 -92.7 black
+P33 837.6 -240.9 black 0  837.6 -270.9 black
+P34 934.2 -174.2 black 1 StateDB 923.0 -205.5 black
+P36 353.3 170.2 black 0 Failed 353.3 140.2 black
+P37 454.4 268.8 black 0  454.4 238.8 black
+P28 859.5 -11.0 black 1 PolicyDB 859.5 -41.0 black
+Transitions:
+T1 -37.0 14.0 black 0.000 CompLogic -55.8 49.0 black
+T2 35.0 172.0 black 1.571 AcceptResult 21.3 192.0 black
+T3 163.0 -232.0 black 1.571 Check 163.0 -252.0 black
+T4 170.5 -91.0 black 1.525 NewUser 134.3 -107.3 black
+T5 173.0 22.0 black 1.571 BgCheck 134.3 2.0 black
+T6 178.0 149.5 black 1.498 Failed 146.8 129.5 black
+T7 251.7 -150.2 black 0.000 OldUser 247.9 -183.9 black
+T8 248.1 82.3 black 0.017 Passed 246.8 48.5 black
+T9 274.2 194.1 black -0.256 Denied 271.7 157.9 black
+T11 247.5 245.2 black 0.399 AcceptWsResp 232.5 282.7 black
+T13 595.3 185.2 black -0.022 CheckPerm 591.6 220.2 black
+T14 424.2 51.3 black 6.283 UpdateDBs 434.2 87.6 black
+T15 614.2 -92.0 black 1.571 AssignRole 646.7 -112.0 black
+T16 660.9 -2.6 black 1.571 CreateSession 608.4 -18.8 black
+T17 741.9 -2.3 black 1.525 FetchPolicy 796.9 15.2 black
+T18 700.9 100.2 black 1.571 CreateUserSpace 762.1 122.7 black
+T19 460.9 -272.0 black 1.571  460.9 -292.0 black
+T20 842.0 -178.7 black 1.499 FetchState 790.7 -193.7 black
+T21 524.5 264.0 black 1.571 Pass 525.8 282.7 black
+T22 383.2 270.6 black -0.026 WsLogic 378.2 234.4 black
+T23 434.6 176.1 black 0.099 Fail 437.1 137.3 black
+Flows:
+F17 black ENABLER 1 P3 T1 0
+F18 black ENABLER 1 P1 T1 0
+F19 black ENABLER 1 T1 P1 0
+F20 black ENABLER 1 T2 P3 0
+F21 black ENABLER 1 P5 T2 0
+F22 black ENABLER 1 T1 P9 0
+F23 black ENABLER 1 P9 T3 0
+F24 black ENABLER 1 T3 P8 0
+F25 black ENABLER 1 P8 T4 0
+F26 black ENABLER 1 T4 P7 0
+F27 black ENABLER 1 P7 T5 0
+F28 black ENABLER 1 T5 P6 0
+F29 black ENABLER 1 P6 T6 0
+F30 black ENABLER 1 T6 P5 0
+F31 black ENABLER 1 P8 T7 0
+F32 black ENABLER 1 T7 P11 0
+F33 black ENABLER 1 P12 T5 0
+F34 black ENABLER 1 T5 P12 0
+F35 black ENABLER 1 P6 T8 0
+F36 black ENABLER 1 T8 P13 0
+F37 black ENABLER 1 T9 P5 0
+F38 black ENABLER 1 P15 T11 0
+F39 black ENABLER 1 T11 P5 0
+F40 black ENABLER 1 P18 T13 0
+F41 black ENABLER 1 T13 P17 0
+F42 black ENABLER 1 P19 T13 0
+F43 black ENABLER 1 P13 T14 0
+F44 black ENABLER 1 T14 P11 0
+F45 black ENABLER 1 P22 T14 0
+F46 black ENABLER 1 T14 P22 0
+F47 black ENABLER 1 P22 T15 0
+F48 black ENABLER 1 T15 P22 0
+F49 black ENABLER 1 P24 T16 0
+F50 black ENABLER 1 T16 P26 0
+F51 black ENABLER 1 P25 T17 0
+F52 black ENABLER 1 T17 P27 0
+F53 black ENABLER 1 T15 P24 0
+F54 black ENABLER 1 T15 P25 0
+F55 black ENABLER 1 P26 T18 0
+F56 black ENABLER 1 P27 T18 0
+F57 black ENABLER 1 T18 P18 0
+F58 black ENABLER 1 P30 T15 0
+F59 black ENABLER 1 T19 P30 0
+F60 black ENABLER 1 P11 T19 0
+F61 black ENABLER 1 T19 P19 0
+F62 black ENABLER 1 P32 T17 0
+F63 black ENABLER 1 P33 T20 0
+F64 black ENABLER 1 T20 P32 0
+F65 black ENABLER 1 T19 P33 0
+F66 black ENABLER 1 P34 T20 0
+F67 black ENABLER 1 T20 P34 0
+F68 black ENABLER 1 P21 T3 0
+F69 black ENABLER 1 T3 P21 0
+F70 black ENABLER 1 P21 T15 0
+F71 black ENABLER 1 T15 P21 0
+F72 black ENABLER 1 P21 T14 0
+F73 black ENABLER 1 T14 P21 0
+F74 black ENABLER 1 P17 T21 0
+F75 black ENABLER 1 P36 T9 0
+F76 black ENABLER 1 T21 P37 0
+F77 black ENABLER 1 P37 T22 0
+F78 black ENABLER 1 T22 P15 0
+F79 black ENABLER 1 P17 T23 0
+F80 black ENABLER 1 T23 P36 0
+F81 black ENABLER 1 P28 T17 0
+F82 black ENABLER 1 T17 P28 0
+End
