@@ -4,11 +4,11 @@ Done:
 - Accurate Flow connection to Transitions
 - Coloring Objects and subnet
 - Compressed rawSave/rawLoad
+- Status info lines
 
 Todo:
 - Undo edit
 - Help screen
-- Status info lines
 - Buttons (File: New Save Load Clear M0...?)
 - Mouse location as center of zooming
 - Reachability

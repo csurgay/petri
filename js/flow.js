@@ -98,20 +98,16 @@ class Flow extends Object {
         return false;
     }
 
-    drag(point) {
+/*     drag(point) {
         for (var i=1; i<this.path.length-2; i++) {
             if (Math.hypot(this.path[i].x,this.path[i].y,point.x,point.y)<3) {
                 this.path[i].x=point.x;
                 this.path[i].y=point.y;
             }
         }
+        newUndo();
     }
-
-    dragTo(x,y) {
-//        this.delta.x+=x;
-//        this.delta.y+=y;
-    }
-
+ */
     addSegment(point) {
         var index, distance, minDistance=1000000;
         for (var i=0; i<this.path.length-1; i++) {

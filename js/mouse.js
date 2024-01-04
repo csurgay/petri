@@ -1,6 +1,8 @@
+var cursor=new Coord(0,0);
+
 function mousedown(evt) {
-    const cursor=getCoord(evt);
-    pn.mouseDownCoord=cursor;
+    getCoord(evt);
+    pn.mouseDownCoord.x=cursor.x; pn.mouseDownCoord.y=cursor.y;
     o = pn.getCursoredObject(cursor);
     if (evt.button==0) { // Left button
         if (o==null) {
@@ -50,12 +52,13 @@ function mousedown(evt) {
 }
 
 function mouseup(evt) {
-    const cursor=getCoord(evt);
+    getCoord(evt);
     o = pn.getCursoredObject(cursor);
     // New Flow
     if (state==DRAWARROW && o && o!=pn.highlighted) {
         pn.addFlows(pn.highlighted,o);
         pn.highlighted=o;
+        pn.newUndo();
     }
     else if (state==LEFTDOWN && o && o==pn.highlighted && closeEnough(pn.mouseDownCoord,cursor)) {
         // Toggles
@@ -113,7 +116,7 @@ function mouseup(evt) {
 }
 
 function mousemove(evt) {
-    const cursor=getCoord(evt);
+    getCoord(evt);
     // Init Drag
     if (state==LEFTDOWN && !closeEnough(pn.mouseDownCoord,cursor)) {
         stateChange(DRAG);
@@ -163,7 +166,7 @@ function mousemove(evt) {
 
 function mousewheel(evt) {
     const delta=-Math.sign(evt.deltaY);
-    const cursor=getCoord(evt);
+    getCoord(evt);
     o = pn.getCursoredObject(cursor);
     // Zoom
     if (state==MIDDLE || state==ZOOM) {

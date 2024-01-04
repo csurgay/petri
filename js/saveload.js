@@ -60,3 +60,47 @@ function rawLoad(str) {
         ptr++;
     }
 }
+
+function processLoad(str) {
+    pn.clear();
+    const jsonObject = JSON.parse(str);
+    pn.zoom=jsonObject.zoom;
+    pn.vpx=jsonObject.vpx; pn.vpy=jsonObject.vpy;
+    jsonObject.p.forEach(p=>{
+        const newPlace=new Place(p.x,p.y);
+        newPlace.id=p.id;
+        newPlace.tokens=p.tokens;
+        newPlace.label.label=p.label.label;
+        newPlace.label.x=p.label.x;
+        newPlace.label.y=p.label.y;
+        if (p.color) newPlace.color=p.color;
+        pn.addPlace(newPlace);
+    });
+    jsonObject.t.forEach(t=>{
+        const newTrans = new Transition(t.x,t.y);
+        newTrans.id=t.id;
+        newTrans.alpha=t.alpha;
+        newTrans.label.label=t.label.label;
+        newTrans.label.x=t.label.x;
+        newTrans.label.y=t.label.y;
+        if (t.color) newTrans.color=t.color;
+        pn.addTransition(newTrans);
+    });
+    jsonObject.f.forEach(f=>{
+        var o1,o2;
+        pn.p.forEach(p=>{if(p.x==f.o1.x && p.y==f.o1.y) o1=p;});
+        pn.p.forEach(p=>{if(p.x==f.o2.x && p.y==f.o2.y) o2=p;});
+        pn.t.forEach(t=>{if(t.x==f.o1.x && t.y==f.o1.y) o1=t;});
+        pn.t.forEach(t=>{if(t.x==f.o2.x && t.y==f.o2.y) o2=t;});
+        const newFlow = new Flow(o1,o2);
+        newFlow.subtype=f.subtype;
+        newFlow.delta=new Coord(f.delta.x,f.delta.y);
+        newFlow.newo2=new Coord(f.newo2.x,f.newo2.y);
+        newFlow.weight=f.weight;
+        if (f.color) newFlow.color=f.color;
+        if (f.path) for (var i=f.path.length-2; i>0; i--) {
+            newFlow.addSegment(new MidPoint(f.path[i].x,f.path[i].y));
+        }
+        pn.addFlow(newFlow);
+    });
+}

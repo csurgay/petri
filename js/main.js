@@ -5,8 +5,12 @@ addEventListener('mouseup',mouseup);
 addEventListener('mousemove',mousemove);
 addEventListener('mousewheel',mousewheel);
 addEventListener('contextmenu',evt=>{evt.preventDefault();});
+addEventListener('keyup', (evt) => {
+    if (evt.key=='d') DEBUG=1-DEBUG;
+});
 
 var pn=new Petrinet();
+setupStatus();
 
 animate();
 

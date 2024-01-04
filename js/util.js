@@ -1,6 +1,6 @@
-const PLACE=0, TRANSITION=1, FLOW=2, MIDPOINT=3, LABEL=4;
+var DEBUG=1;
 
-const DEBUG=1;
+const PLACE=0, TRANSITION=1, FLOW=2, MIDPOINT=3, LABEL=4;
 
 const states=[
     "IDLE","SELECT","DRAG","DRAWARROW","LEFTDOWN","DELETE","MIDDLE","PAN","RUN","DRAGALL","ZOOM", "MULTISEGMENT"];
@@ -81,9 +81,13 @@ function stateChange(newState) {
 
 function getCoord(evt) {
     const rect = canvas.getBoundingClientRect();
-    return new Coord(
+/*     return new Coord(
         evt.clientX/pn.zoom-rect.left-pn.cx/pn.zoom-pn.vpx,
-        evt.clientY/pn.zoom-rect.top-pn.cy/pn.zoom-pn.vpy);
+        evt.clientY/pn.zoom-rect.top-pn.cy/pn.zoom-pn.vpy
+    );
+ */
+    cursor.x = evt.clientX/pn.zoom-rect.left-pn.cx/pn.zoom-pn.vpx;
+    cursor.y = evt.clientY/pn.zoom-rect.top-pn.cy/pn.zoom-pn.vpy;
 }
 
 function drawArrow(fromx,fromy,tox,toy,lineWidth=1,color,subtype="ENABLER") {
