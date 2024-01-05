@@ -38,6 +38,7 @@ class Petrinet {
     }
 
     clear() {
+        stateChange(IDLE);
         this.p.length=0;
         this.t.length=0;
         this.f.length=0;
@@ -229,6 +230,13 @@ class Petrinet {
         // One random fire
         else {
             this.fireOne();
+        }
+    }
+
+    rewind() {
+        if (this.mptr>0) {
+            this.mptr=0;
+            this.restoreMarking(this.markings[this.mptr]);
         }
     }
 

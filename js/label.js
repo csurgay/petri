@@ -6,12 +6,12 @@ class Label extends Object {
         pn.addLabel(this);
     }
 
-    draw() {
+    draw(size=14) {
         ctx.beginPath();
         ctx.fillStyle=this.color;
         if (pn.highlighted==this && COLOR_HIGHLIGHT!="black")
             ctx.fillStyle=COLOR_HIGHLIGHT;
-        ctx.font=pn.highlighted==this?"bold 14px arial":"14px arial"; 
+        ctx.font=pn.highlighted==this?"bold "+size+"px arial":""+size+"px arial"; 
         ctx.textAlign = "center";
         ctx.textBaseline = 'middle';
         ctx.fillText(this.label,this.x,this.y);

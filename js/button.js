@@ -7,6 +7,14 @@ class Button extends Object {
         this.button=button;
         this.width=width;
         pn.addButton(this);
+        if (button=="PLAY") this.label=new Label("PLAY",x,y+bh);
+        else if (button=="STOP") this.label=new Label("STOP",x,y+bh);
+        else if (button=="FAST_FWD") this.label=new Label("RUN",x,y+bh);
+        else if (button=="STEP_BWD") this.label=new Label("STEP-",x,y+bh);
+        else if (button=="STEP_FWD") this.label=new Label("STEP+",x,y+bh);
+        else if (button=="REWIND") this.label=new Label("m0",x,y+bh);
+        else if (button=="HELP") this.label=new Label("HELP",x,y+bh);
+        pn.l.pop();
     }
 
     draw() {
@@ -22,29 +30,43 @@ class Button extends Object {
             triangle(this.x,this.y,bdw,bdh,bdo);
             ctx.fill();
         }
-        if (this.button=="STOP") {
+        else if (this.button=="STOP") {
             ctx.beginPath();
             ctx.rect(this.x-bdh/2,this.y-bdh/2,bdh,bdh);
             ctx.fill();
         }
-        if (this.button=="STEP_FWD") {
+        else if (this.button=="STEP_FWD") {
             ctx.beginPath();
             triangle(this.x,this.y,2*bdw/3,bdh,-1);
             ctx.rect(this.x+bdw/3-1,this.y-bdh/2,4,bdh);
             ctx.fill();
         }
-        if (this.button=="FAST_FWD") {
+        else if (this.button=="FAST_FWD") {
             ctx.beginPath();
             triangle(this.x,this.y,2*bdw/3,bdh,-1);
             triangle(this.x+2*bdw/3-2,this.y,2*bdw/3,bdh,-1);
             ctx.fill();
         }
-        if (this.button=="STEP_BWD") {
+        else if (this.button=="STEP_BWD") {
             ctx.beginPath();
             triangle(this.x,this.y,2*bdw/3,bdh,+1,-1);
             ctx.rect(this.x-bdw/3-3,this.y-bdh/2,4,bdh);
             ctx.fill();
         }
+        else if (this.button=="REWIND") {
+            ctx.beginPath();
+            triangle(this.x,this.y,2*bdw/3,bdh,-3,-1);
+            triangle(this.x+2*bdw/3-2,this.y,2*bdw/3,bdh,-3,-1);
+            ctx.rect(this.x-bdw/3-5,this.y-bdh/2,4,bdh);
+            ctx.fill();
+        }
+        else if (this.button=="HELP") {
+            ctx.beginPath();
+            ctx.font="bold 14px Arial";
+            ctx.fillText("?",this.x,this.y);
+            ctx.fillText("?",this.x+1,this.y);
+        }
+        if (this.label) this.label.draw(12);
     }
 
     dragTo() {}
@@ -69,10 +91,44 @@ class Button extends Object {
             stateChange(IDLE);
         }
         if (this.button=="STEP_BWD") {
+            stateChange(IDLE);
             pn.stepBackward();
         }
         if (this.button=="STEP_FWD") {
+            stateChange(IDLE);
             pn.stepForward();
+        }
+        if (this.button=="REWIND") {
+            stateChange(IDLE);
+            pn.rewind();
+        }
+        if (this.button=="HELP") {
+            var msg="";
+            msg+="CREATE PETRINET\n";
+            msg+="Create PLACE: Left button\n";
+            msg+="Create TRANSITION: Click PLACE again\n";
+            msg+="Create FLOW: Drag from PLACE/TRANS to PLACE/TRANS\n";
+            msg+="Create INHIBITOR: Click FLOW again\n";
+            msg+="Create TOKENS: Mousewheel over PLACE\n";
+            msg+="\n";
+            msg+="EDIT PETRINET\n";
+            msg+="Move objects: Drag\n";
+            msg+="Delete objects: Right click\n";
+            msg+="Clear tokens from PLACE: Middle click on PLACE\n";
+            msg+="Clear all tokens: Middle click on canvas\n";
+            msg+="Rotate TRANSITION: Mousewheel over TRANSITION\n";
+            msg+="Adjust FLOW weight: Mousewheel over TRANSITION\n";
+            msg+="Multisegment FLOW: Drag FLOW\n";
+            msg+="Sticky FLOW arrowheads: 's' over TRANSITION'\n";
+            msg+="Pan: Drag canvas\n";
+            msg+="Zoom: Mousewheel click and rotate\n";
+            msg+="\n";
+            msg+="SIMULATE PETRINET\n";
+            msg+="Fire TRANSITOIN: click TRANSITION\n";
+            msg+="Step+- / random fire: Mousewheel over canvas\n";
+            msg+="Random simulation: Right click on canvas\n";
+            msg+="Debug mode: 'd'\n";
+            alert(msg)
         }
     }
 }
@@ -95,10 +151,13 @@ function triangle(x,y,w,h,o,r=1) { // r for reverse
 }
 
 function setupButton() {
-    var x=420,y=25,dw=55,dx=0;
+    var x=220,y=25,dw=55,dx=0;
+    new Button("REWIND",x+dx++*dw,y);
     new Button("STEP_BWD",x+dx++*dw,y);
-    new Button("STOP",x+dx++*dw,y);
-    new Button("PLAY",x+dx++*dw,y);
-    new Button("FAST_FWD",x+dx++*dw,y);
     new Button("STEP_FWD",x+dx++*dw,y);
+    new Button("PLAY",x+dx++*dw,y);
+    new Button("STOP",x+dx++*dw,y);
+    new Button("FAST_FWD",x+dx++*dw,y);
+
+    new Button("HELP",600,y,30);
 }

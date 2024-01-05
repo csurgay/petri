@@ -46,7 +46,7 @@ function animate() {
     ctx.fillStyle=COLOR_INK;
     ctx.textAlign = "left";
     ctx.textBaseline = 'top';
-    ctx.fillText("Petrinet Simulator - 2023 csurgay@gmail.com",40,15);
+//    ctx.fillText("Petrinet Simulator - 2023 csurgay@gmail.com",40,15);
     ctx.textAlign = "right";
     ctx.fillText(getFormattedDate(),canvas.width-20,15);
     // Static Status and Buttons
