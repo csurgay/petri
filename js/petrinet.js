@@ -7,6 +7,8 @@ class Petrinet {
         this.t=[]; // Transitions
         this.f=[]; // Flows
         this.l=[]; // Labels
+        this.s=[]; // Status
+        this.b=[]; // Buttons
         this.highlighted = null;
         this.dragged=null;
         this.paleArrow=null; // Potential new Flow
@@ -49,25 +51,32 @@ class Petrinet {
         this.connected.length=0;
         this.mptr=-1;
         this.transeq.length=0;
-        setupStatus();
     }
 
-    addPlace(place) {
-        this.p.push(place);
+    addPlace(item) {
+        this.p.push(item);
         this.clearMarkings();
     }
 
-    addTransition(trans) {
-        this.t.push(trans);
+    addTransition(item) {
+        this.t.push(item);
         this.clearMarkings();
     }
 
-    addLabel(label) {
-        this.l.push(label);
+    addLabel(item) {
+        this.l.push(item);
     }
 
-    addFlow(flow) {
-        this.f.push(flow);
+    addStatus(item) {
+        this.s.push(item);
+    }
+
+    addButton(item) {
+        this.b.push(item);
+    }
+
+    addFlow(item) {
+        this.f.push(item);
         this.clearMarkings();
     }
 
@@ -97,6 +106,22 @@ class Petrinet {
         }
     }
 
+    togglePlaceTransition(o) {
+        if (o.type==PLACE) {
+            o.delete();
+            const newTrans=new Transition(o.x,o.y);
+            this.addTransition(newTrans);
+            this.highlighted=newTrans;
+        }
+        // Toggle Transition to Place
+        else if (o.type==TRANSITION) {
+            o.delete();
+            const newPlace=new Place(o.x,o.y);
+            this.addPlace(newPlace);
+            this.highlighted=newPlace;
+        }
+    }
+
     locate(id) {
         var ret=null;
         pn.p.forEach(o=>{
@@ -110,16 +135,29 @@ class Petrinet {
         return ret;
     }
 
-    getCursoredObject(cursor) {
+    getCursoredObject(cursor,scope) {
         var ret = null;
-        this.f.forEach(item => { if (item.cursored(cursor)) ret=item; });
-        this.p.forEach(item => { if (item.cursored(cursor)) ret=item; });
-        this.t.forEach(item => { if (item.cursored(cursor)) ret=item; });
-        this.l.forEach(item => { if (item.cursored(cursor)) ret=item; });
-        this.f.forEach(item => {
-            const aux=item.cursoredMidPoint(cursor);
-            if (aux) ret=aux; 
-        });
+        if (scope=="VIEWPORT") {
+            if (ret==null)
+                this.p.forEach(item => { if (item.cursored(cursor)) ret=item; });
+            if (ret==null)
+                this.t.forEach(item => { if (item.cursored(cursor)) ret=item; });
+            if (ret==null)
+                this.l.forEach(item => { if (item.cursored(cursor)) ret=item; });
+            if (ret==null)
+                this.f.forEach(item => {
+                    const aux=item.cursoredMidPoint(cursor);
+                    if (aux) ret=aux; 
+                });
+            if (ret==null)
+                this.f.forEach(item => { if (item.cursored(cursor)) ret=item; });
+        }
+        else if (scope=="CANVAS") {
+            if (ret==null)
+                this.b.forEach(item => { if (item.cursored(cursor)) ret=item; });
+            if (ret==null)
+                this.s.forEach(item => { if (item.cursored(cursor)) ret=item; });
+        }
         return ret;
     }
 
@@ -175,6 +213,22 @@ class Petrinet {
             this.transeq.splice(this.mptr);
             this.transeq.push(trans);
             this.mptr=this.markings.length-1;
+        }
+    }
+
+    stepBackward() {
+        if (this.mptr>0) {
+            this.restoreMarking(this.markings[--this.mptr]);
+        }
+    }
+
+    stepForward() {
+        if (this.mptr<this.markings.length-1) {
+            this.restoreMarking(this.markings[++this.mptr]);
+        }
+        // One random fire
+        else {
+            this.fireOne();
         }
     }
 

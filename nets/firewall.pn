@@ -116,4 +116,8 @@ F79 black ENABLER 1 P17 T23 0
 F80 black ENABLER 1 T23 P36 0
 F81 black ENABLER 1 P28 T17 0
 F82 black ENABLER 1 T17 P28 0
+Config:
+zoom: 0.7
+vpx: 0
+vpy: 90
 End

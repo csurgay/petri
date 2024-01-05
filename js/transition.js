@@ -1,5 +1,12 @@
 const h=50,w=15;
-const transConnectors=[[0,-h/2],[0,h/2],[-w/2,0],[w/2,0],[-w/2,h/3],[w/2,h/3],[-w/2,-h/3],[w/2,-h/3],[-w/2,h/6],[w/2,h/6],[-w/2,-h/6],[w/2,-h/6]];
+const transConnectors=[[0,-h/2],[0,h/2],[-w/2,0],[w/2,0]];
+for (var i=1; i<=3; i++) {
+    transConnectors.push(
+        [-w/2, i*h/9],
+        [ w/2, i*h/9],
+        [-w/2,-i*h/9],
+        [ w/2,-i*h/9]
+);}
 const p1=new Coord(0,0), p2=new Coord(0,0);
 
 class Transition extends Object {
@@ -24,10 +31,9 @@ class Transition extends Object {
     draw() {
         ctx.beginPath();
         ctx.lineWidth=LINEWIDTH;
-        ctx.strokeStyle=this.color;
         ctx.fillStyle=COLOR_CANVAS;
         if (this.enabled()) ctx.fillStyle=COLOR_ENABLED;
-        if (pn.highlighted==this) ctx.strokeStyle=COLOR_HIGHLIGHT;
+        this.setColor();
         ctx.save();
         ctx.translate(this.x,this.y);
         ctx.rotate(this.alpha);
@@ -45,6 +51,7 @@ class Transition extends Object {
         if (false) {
             ctx.beginPath();
             ctx.strokeStyle=COLOR_HIGHLIGHT;
+            solid();
             transConnectors.forEach(c=>{
                 var rot=rotate(0,0,c[0],c[1],this.alpha);
                 ctx.moveTo(this.x+rot[0],this.y+rot[1]);
@@ -67,6 +74,18 @@ class Transition extends Object {
             return false;
     }
 
+    rotate(delta) {
+        this.alpha+=delta*Math.PI/64;
+        if (this.alpha>2*Math.PI) this.alpha-=2*Math.PI;
+        if (this.alpha<0) this.alpha+=2*Math.PI;
+        if (Math.abs(this.alpha-1*Math.PI/4)<Math.PI/80) this.alpha=1*Math.PI/4;
+        if (Math.abs(this.alpha-2*Math.PI/4)<Math.PI/80) this.alpha=2*Math.PI/4;
+        if (Math.abs(this.alpha-3*Math.PI/4)<Math.PI/80) this.alpha=3*Math.PI/4;
+        if (Math.abs(this.alpha)<Math.PI/80) this.alpha=0;
+        this.adjust_p1p2();
+        if (!this.cursored(cursor)) pn.highlighted=null;
+    }
+
     delete() {
         for (var i=0; i<pn.f.length; i++)
             pn.f.forEach(flow => {
@@ -76,7 +95,7 @@ class Transition extends Object {
             });
         pn.l.splice(pn.l.indexOf(this.label),1);
         pn.t.splice(pn.t.indexOf(this),1);
-        this.clearMarkings();
+        pn.clearMarkings();
     }
 
     enabled() {

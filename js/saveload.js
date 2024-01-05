@@ -48,7 +48,7 @@ function rawLoad(str) {
         ptr++;
     }
     ptr++;
-    while(str[ptr]!="End") {
+    while(str[ptr]!="End" && str[ptr]!="Config:") {
         if (DEBUG) log(str[ptr]);
         l=str[ptr].split(" ");
         const o=new Flow(pn.locate(l[4]),pn.locate(l[5])); o.id=l[0]; o.color=l[1];
@@ -58,6 +58,16 @@ function rawLoad(str) {
         }
         pn.addFlow(o);
         ptr++;
+    }
+    if (str[ptr]=="Config:") {
+        ptr++;
+        while(str[ptr]!="End") {
+            l=str[ptr].split(" ");
+            if (l[0]=="zoom:") pn.zoom=+l[1];
+            if (l[0]=="vpx:") pn.vpx=+l[1];
+            if (l[0]=="vpy:") pn.vpy=+l[1];
+            ptr++;
+        }
     }
 }
 

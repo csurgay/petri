@@ -34,7 +34,7 @@ class Place extends Object {
         // Circle
         ctx.beginPath();
         ctx.lineWidth=LINEWIDTH;
-        ctx.strokeStyle=pn.highlighted==this?COLOR_HIGHLIGHT:this.color;
+        this.setColor();
         ctx.fillStyle=COLOR_CANVAS;
         ctx.arc(this.x,this.y,PLACE_R,0,2*Math.PI);
         ctx.fill();
@@ -64,10 +64,7 @@ class Place extends Object {
     }
 
     cursored(cursor) {
-        if (Math.hypot(this.x-cursor.x,this.y-cursor.y) < PLACE_R)
-            return true;
-        else 
-            return false;
+        return (Math.hypot(this.x-cursor.x,this.y-cursor.y) < PLACE_R);
     }
 
     delete() {

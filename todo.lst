@@ -5,6 +5,8 @@ Done:
 - Coloring Objects and subnet
 - Compressed rawSave/rawLoad
 - Status info lines
+- Sticy Flow heads for transConnectors
+- Play-Stop-Speed control
 
 Todo:
 - Undo edit
@@ -13,8 +15,6 @@ Todo:
 - Mouse location as center of zooming
 - Reachability
 - Snap to grid and free drag too
-- Alpha in degree 0-360 not radian
 - Select (and copy, rotate...?) subnet
 - Labels input and placement
 - Firing animation with "flames"
-- Play-Stop-Speed control

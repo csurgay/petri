@@ -9,6 +9,8 @@ class Flow extends Object {
         this.weight=1;
         this.path=[o1,o2];
         this.conn=new Coord(0,0);
+        this.stickyHead=false;
+        this.stickyTransConnector=-1;
     }
 
     draw() {
@@ -28,17 +30,23 @@ class Flow extends Object {
             });
         }
         else if (this.o2.type==TRANSITION) {
-            transConnectors.forEach(c=>{
-                const rot=rotate(0,0,c[0],c[1],this.o2.alpha);
-                distance=Math.hypot(
-                    this.o2.x+rot[0]-lastPoint.x,
-                    this.o2.y+rot[1]-lastPoint.y);
-                if (distance<minDistance) {
-                    minDistance=distance;
-                    this.conn.x=this.o2.x+rot[0]; 
-                    this.conn.y=this.o2.y+rot[1];
+            if (!this.stickyHead) {
+                for (var i=0; i<transConnectors.length; i++) {
+                    const c=transConnectors[i];
+                    const rot=rotate(0,0,c[0],c[1],this.o2.alpha);
+                    distance=Math.hypot(
+                        this.o2.x+rot[0]-lastPoint.x,
+                        this.o2.y+rot[1]-lastPoint.y);
+                    if (distance<minDistance) {
+                        minDistance=distance;
+                        this.stickyTransConnector=i;
+                    }
                 }
-            });
+            }
+            const c=transConnectors[this.stickyTransConnector];
+            const rot=rotate(0,0,c[0],c[1],this.o2.alpha);
+            this.conn.x=this.o2.x+rot[0]; 
+            this.conn.y=this.o2.y+rot[1];
         }
         // Adjusted new end position
         const midx=(lastPoint.x+this.conn.x)/2, 
@@ -49,7 +57,7 @@ class Flow extends Object {
         l=this.subtype=="INHIBITOR"?(l-8)/l:1;
         // Draw multisegment path
         ctx.beginPath();
-        ctx.strokeStyle=pn.highlighted==this?COLOR_HIGHLIGHT:this.color; 
+        this.setColor();
         ctx.lineWidth=LINEWIDTH;
         ctx.moveTo(this.path[0].x,this.path[0].y);
         for(var i=1; i<this.path.length-1; i++) {
@@ -98,16 +106,6 @@ class Flow extends Object {
         return false;
     }
 
-/*     drag(point) {
-        for (var i=1; i<this.path.length-2; i++) {
-            if (Math.hypot(this.path[i].x,this.path[i].y,point.x,point.y)<3) {
-                this.path[i].x=point.x;
-                this.path[i].y=point.y;
-            }
-        }
-        newUndo();
-    }
- */
     addSegment(point) {
         var index, distance, minDistance=1000000;
         for (var i=0; i<this.path.length-1; i++) {
@@ -131,12 +129,14 @@ class Flow extends Object {
 class MidPoint extends Object {
     constructor(x,y) {
         super(x,y);
+        this.type=MIDPOINT;
     }
     
     draw(color) {
         if (color=="black" || pn.highlighted==this) {
             ctx.beginPath();
             ctx.strokeStyle=color=="black"?COLOR_INK:COLOR_HIGHLIGHT;
+            color=="black"?solid():dashed();
             ctx.lineWidth=LINEWIDTH;
             ctx.arc(this.x,this.y,6,0,2*Math.PI);
             ctx.stroke();

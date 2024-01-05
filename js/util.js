@@ -1,21 +1,24 @@
 var DEBUG=1;
 
-const PLACE=0, TRANSITION=1, FLOW=2, MIDPOINT=3, LABEL=4;
+const           PLACE=0,TRANSITION=1,FLOW=2,MIDPOINT=3,LABEL=4,BUTTON=5;
+const objects=["PLACE","TRANSITION","FLOW","MIDPOINT","LABEL","BUTTON"];
 
 const states=[
-    "IDLE","SELECT","DRAG","DRAWARROW","LEFTDOWN","DELETE","MIDDLE","PAN","RUN","DRAGALL","ZOOM", "MULTISEGMENT"];
-const IDLE=0,SELECT=1,DRAG=2,DRAWARROW=3,LEFTDOWN=4,DELETE=5,MIDDLE=6,PAN=7,RUN=8,DRAGALL=9,ZOOM=10,MULTISEGMENT=11;
+    "IDLE","SELECT","DRAG","DRAWARROW","LEFTDOWN","DELETE","MIDDLE","PAN","RUN","DRAGALL", "ZOOM", "MULTISEGMENT", "SLOWRUN"];
+const IDLE=0,SELECT=1,DRAG=2,DRAWARROW=3,LEFTDOWN=4,DELETE=5,MIDDLE=6,PAN=7,RUN=8,DRAGALL=9,ZOOM=10,MULTISEGMENT=11,SLOWRUN=12;
 var state=IDLE;
 
 const LINEWIDTH=2;
+const DASHED=[5,3];
 const PLACE_R=20;
 
 const COLOR_CANVAS="rgb(250, 240, 230)";
-const COLOR_ENABLED="rgb(255, 140, 100)";
+//const COLOR_ENABLED="rgb(255, 140, 100)";
+const COLOR_ENABLED="gray";
 const COLOR_INK="black";
-const COLOR_HIGHLIGHT="blue";
+const COLOR_HIGHLIGHT="black";
 
-const COLORS=["black","red","green","purple"];
+const COLORS=["black","red","green","blue"];
 
 function clearCanvas(canvas) {
     canvas.width=window.innerWidth;
@@ -35,6 +38,14 @@ function nextId(type) {
     else if (type==FLOW) return ++idFlow;
 }
 
+function dashed() {
+    ctx.setLineDash(DASHED);
+}
+
+function solid() {
+    ctx.setLineDash([]);
+}
+
 function rotate(cx,cy,x,y,alpha) {
     var tx=x-cx,ty=y-cy;
     return [tx*Math.cos(alpha)-ty*Math.sin(alpha)+cx,
@@ -46,9 +57,9 @@ class Coord {
         this.x=x;
         this.y=y;
     }
-    moveTo(x,y) {
-        this.x=x;
-        this.y=y;
+    moveTo(coord) {
+        this.x=coord.x;
+        this.y=coord.y;
     }
 }
 
@@ -57,7 +68,19 @@ class Object extends Coord {
         super(x,y);
         this.color=COLOR_INK;
     }
+
     draw() {}
+
+    setColor() {
+        if (COLOR_HIGHLIGHT=="black") {
+            ctx.strokeStyle=this.color;
+            pn.highlighted==this?dashed():solid();
+        }
+        else {
+            ctx.strokeStyle=pn.highlighted==this?COLOR_HIGHLIGHT:this.color;
+        }
+    }
+
     nextColor(delta) {
         if (delta>0) {
             this.color=COLORS[(COLORS.indexOf(this.color)+1)%COLORS.length];
@@ -65,13 +88,18 @@ class Object extends Coord {
         else {
             this.color=COLORS[(COLORS.indexOf(this.color)-1+COLORS.length)%COLORS.length];
         }
-        pn.highlighted=null;
+        if (COLOR_HIGHLIGHT!="black") pn.highlighted=null;
     }
+
     cursored() {}
+
+    clicked() {}
+
     dragTo(dx,dy) {
         this.x+=dx;
         this.y+=dy;
     }
+
     delete() {};
 }
 
@@ -79,15 +107,19 @@ function stateChange(newState) {
     state=newState;
 }
 
-function getCoord(evt) {
+var zoom,cx,cy,vpx,vpy;
+function getCoord(evt,scope) {
     const rect = canvas.getBoundingClientRect();
-/*     return new Coord(
-        evt.clientX/pn.zoom-rect.left-pn.cx/pn.zoom-pn.vpx,
-        evt.clientY/pn.zoom-rect.top-pn.cy/pn.zoom-pn.vpy
-    );
- */
-    cursor.x = evt.clientX/pn.zoom-rect.left-pn.cx/pn.zoom-pn.vpx;
-    cursor.y = evt.clientY/pn.zoom-rect.top-pn.cy/pn.zoom-pn.vpy;
+    if (scope=="VIEWPORT") {
+        zoom=pn.zoom;
+        cx=pn.cx; cy=pn.cy;
+        vpx=pn.vpx; vpy=pn.vpy;
+    }
+    else if (scope=="CANVAS") {
+        zoom=1; cx=0; cy=0; vpx=0; vpy=0;
+    }
+    cursor.x = evt.clientX/zoom-rect.left-cx/zoom-vpx;
+    cursor.y = evt.clientY/zoom-rect.top-cy/zoom-vpy;
 }
 
 function drawArrow(fromx,fromy,tox,toy,lineWidth=1,color,subtype="ENABLER") {
