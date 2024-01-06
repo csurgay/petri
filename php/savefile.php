@@ -6,7 +6,7 @@ if (!empty($_POST['data'])) {
     if (!empty($_GET['filename']) && $_GET['filename']!='undefined') {
         $fname = $_GET['filename'];
     }
-    $file = fopen("upload/" .$fname, 'w');
+    $file = fopen("../upload/" .$fname, 'w');
     fwrite($file, $data);
     fclose($file);
 }

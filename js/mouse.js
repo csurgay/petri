@@ -10,6 +10,7 @@ function shiftKeys(evt,key) {
     else if (key=="SHIFT") return !evt.ctrlKey && evt.shiftKey && !evt.altKey;
     else if (key=="ALT") return !evt.ctrlKey && !evt.shiftKey && evt.altKey;
     else if (key=="ALTSHIFT") return !evt.ctrlKey && evt.shiftKey && evt.altKey;
+    else if (key=="CTRLSHIFT") return evt.ctrlKey && evt.shiftKey && !evt.altKey;
 }
 
 function mousedown(evt) {
@@ -70,7 +71,7 @@ function mousedown(evt) {
     }
 }
 
-var files=[], selectedFile=-1;
+var files=[], directory="", selectedFile=-1;
 function mouseup(evt) {
     getCoord(evt);
     o=pn.getCursoredObject(ccursor,"CANVAS");
@@ -80,14 +81,16 @@ function mouseup(evt) {
                 console.log(selectedFile);
                 console.log(files[selectedFile]);
             }
-            pn.load("nets/"+files[selectedFile]);
+            if (files[selectedFile]!="CANCEL") {
+                pn.load(directory+"/"+files[selectedFile]);
+            }
             pn.animate=true;
             stateChange(IDLE);
             animate();
         }
     }
     else if (o) {
-        o.clicked();
+        o.clicked(evt);
     }
     else {
         o=pn.getCursoredObject(cursor,"VIEWPORT");
@@ -161,7 +164,7 @@ function mousemove(evt) {
             ctx.font="16px arial";
             ctx.fillStyle=COLOR_INK;
             var width=ctx.measureText(files[i]).width;
-            if (cursor.x>50 && cursor.x<50+width && cursor.y>50+20*i && cursor.y<69+20*i) {
+            if (ccursor.x>50 && ccursor.x<50+width && ccursor.y>50+20*i && ccursor.y<69+20*i) {
                 ctx.font="bold 16px arial";
                 selectedFile=i;
             }
@@ -226,7 +229,7 @@ function mousemove(evt) {
 function mousewheel(evt) {
     const delta=-Math.sign(evt.deltaY);
     getCoord(evt);
-    o=pn.getCursoredObject(ccursor,"VIEWPORT");
+    o=pn.getCursoredObject(cursor,"VIEWPORT");
     // Zoom
     if (state==MIDDLE || state==ZOOM) {
         if (state==MIDDLE) {

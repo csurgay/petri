@@ -19,6 +19,7 @@ class Button extends Object {
         else if (button=="REDO") this.label=new Label("REDO",x,y+bh);
         else if (button=="CLEAR") this.label=new Label("NEW",x,y+bh);
         else if (button=="OPEN") this.label=new Label("OPEN",x,y+bh);
+        else if (button=="SAVE") this.label=new Label("SAVE",x,y+bh);
         pn.l.pop();
     }
 
@@ -110,6 +111,31 @@ class Button extends Object {
             ctx.lineTo(this.x-7,this.y+6);
             ctx.stroke();
         }
+        else if (this.button=="SAVE") {
+            ctx.beginPath();
+            ctx.lineWidth=1;
+            ctx.moveTo(this.x-8,this.y+8);
+            ctx.lineTo(this.x+8,this.y+8);
+            ctx.lineTo(this.x+8,this.y-4);
+            ctx.lineTo(this.x+4,this.y-8);
+            ctx.lineTo(this.x-8,this.y-8);
+            ctx.lineTo(this.x-8,this.y+8);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.lineWidth=2;
+            ctx.strokeStyle="white";
+            ctx.moveTo(this.x+2,this.y-7);
+            ctx.lineTo(this.x+2,this.y-3);
+            ctx.lineTo(this.x-4,this.y-3);
+            ctx.lineTo(this.x-4,this.y-7);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(this.x-5,this.y+6);
+            ctx.lineTo(this.x+5,this.y+6);
+            ctx.moveTo(this.x-5,this.y+3);
+            ctx.lineTo(this.x+5,this.y+3);
+            ctx.stroke();
+        }
         if (this.label) this.label.draw(12);
     }
 
@@ -122,7 +148,7 @@ class Button extends Object {
         );
     }
 
-    clicked() {
+    clicked(evt) {
         if (this.button=="PLAY") {
             if (state!=SLOWRUN) stateChange(SLOWRUN);
             else stateChange(IDLE);
@@ -167,7 +193,13 @@ class Button extends Object {
         }
         else if (this.button=="OPEN") {
             pn.animate=false;
-            pn.getFileNames();
+            directory="nets";
+            if (shiftKeys(evt,"CTRLSHIFT")) directory="upload";
+            pn.getFileNames(directory);
+        }
+        else if (this.button=="SAVE") {
+            pn.save(""+ms+".pn");
+            alert("PetriNet uploaded for review.");
         }
     }
 }
@@ -229,11 +261,12 @@ function setupButton() {
     x=80,w=35,dx=0,dw=40;
     new Button("CLEAR",x+dx++*dw,y,w);
     new Button("OPEN",x+dx++*dw,y,w);
+    new Button("SAVE",x+dx++*dw,y,w);
     new Button("UNDO_ALL",x+dx++*dw,y,w);
     new Button("UNDO",x+dx++*dw,y,w);
     new Button("REDO",x+dx++*dw,y,w);
 
-    x=315,w=50,dx=0,dw=55;
+    x=360,w=50,dx=0,dw=55;
     new Button("REWIND",x+dx++*dw,y,w);
     new Button("STEP_BWD",x+dx++*dw,y,w);
     new Button("STEP_FWD",x+dx++*dw,y,w);
@@ -241,5 +274,5 @@ function setupButton() {
     new Button("STOP",x+dx++*dw,y,w);
     new Button("FAST_FWD",x+dx++*dw,y,w);
 
-    new Button("HELP",665,y,35);
+    new Button("HELP",710,y,35);
 }
