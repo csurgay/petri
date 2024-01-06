@@ -33,4 +33,5 @@ function setupStatus() {
     new Status("cur",sx,sy+i++*dy,function(){return cursor.x.toFixed()+" "+cursor.y.toFixed();});
     new Status("s",sx,sy+i++*dy,function(){return states[state];});
     new Status("o",sx,sy+i++*dy,function(){return o?objects[o.type]:"";});
+    new Status("",sx,sy+i++*dy,function(){return ms;});
 }

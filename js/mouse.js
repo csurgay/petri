@@ -90,6 +90,7 @@ function mouseup(evt) {
             if (pn.noFlowFromHere(o)) {
                 // Toggle Place to Transition
                 pn.togglePlaceTransition(o);
+                pn.newUndo();
             }
             // Fire a Transition
             else if(o.type==TRANSITION) {
@@ -100,26 +101,35 @@ function mouseup(evt) {
         else if(o && o.type==FLOW && o.o1.type==PLACE && state==MULTISEGMENT) {
             if (o.subtype=="ENABLER") o.subtype="INHIBITOR";
             else if (o.subtype=="INHIBITOR") o.subtype="ENABLER";
+            pn.newUndo();
         }
         // New Place
         else if (state==LEFTDOWN && closeEnough(pn.mouseDownCoord,cursor)) {
             const newPlace = new Place(cursor.x,cursor.y);
             pn.addPlace(newPlace);
             pn.highlighted=newPlace;
+            pn.newUndo();
         }
         // Delete Object
         else if (state==DELETE && closeEnough(pn.mouseDownCoord,cursor) && o) {
             o.delete();
             delete o;
             pn.highlighted=null;
+            pn.newUndo();
         }
         // Clear Place Tokens
         else if (state==MIDDLE && o && o.type==PLACE) {
             o.changeTokens(-o.tokens);
+            pn.newUndo();
         }
         // Clear all net Tokens
         else if (state==MIDDLE && !o) {
             pn.p.forEach(p => p.changeTokens(-p.tokens));
+            pn.newUndo();
+        }
+        else if (pn.needUndo) {
+            pn.needUndo=false;
+            pn.newUndo();
         }
         if (state!=RUN) stateChange(IDLE);
         pn.dragged=null;
@@ -144,6 +154,7 @@ function mousemove(evt) {
         if (state==DRAG && pn.dragged) {
             pn.dragged.dragTo(cursor.x-pn.mouseDownCoord.x,cursor.y-pn.mouseDownCoord.y);
             pn.mouseDownCoord.moveTo(cursor);
+            pn.needUndo=true;
         }
         // Do DragAll (SubNet)
         else if (state==DRAGALL) {
@@ -151,6 +162,7 @@ function mousemove(evt) {
                 da.dragTo(cursor.x-pn.mouseDownCoord.x,cursor.y-pn.mouseDownCoord.y); 
             });
             pn.mouseDownCoord.moveTo(cursor);
+            pn.needUndo=true;
         }
         // Draw potetntial new Flow
         else if (state==DRAWARROW) {
@@ -170,11 +182,16 @@ function mousemove(evt) {
             pn.highlighted=pn.dragged.addSegment(pn.mouseDownCoord);
             pn.dragged=pn.highlighted;
             stateChange(DRAG);
+            pn.newUndo();
         }
         // Highlight mouseovered object
         else {
             if (o) pn.highlighted = o;
             else pn.highlighted = null;
+            if (pn.needTimedUndo) {
+                pn.newUndo();
+                pn.needTimedUndo=false;
+            }
         }
     }
 }
@@ -195,21 +212,25 @@ function mousewheel(evt) {
         // Tokens add/remove
         if (o.type==PLACE) {
             o.changeTokens(delta);
+            pn.needTimedUndo=true;
         }
         // Rotate Transition
         else if (o.type==TRANSITION) {
             o.rotate(delta);
+            pn.needTimedUndo=true;
         }
         // Adjust Flow weight
         else if (o.type==FLOW) {
             o.weight+=delta;
             if (o.weight<1) o.weight=1;
+            pn.needTimedUndo=true;
         }
     }
     // Color change on Object
     else if (o && shiftKeys(evt,"ALT")) {
         if (!evt.shiftKey) {
             o.nextColor(delta);
+            pn.needTimedUndo=true;
         }
     }
     // Color change Shubnet
@@ -217,7 +238,8 @@ function mousewheel(evt) {
         pn.connected.length=0;
         pn.getConnected(o);
         pn.connected.forEach(o=>o.nextColor(delta));
-    }
+        pn.needTimedUndo=true;
+}
     else {
         // Rewind and Forward
         stateChange(IDLE);

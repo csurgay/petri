@@ -22,6 +22,8 @@ class Petrinet {
         this.markings=[]; // Markings sequence
         this.mptr=-1; // marking pointer
         this.transeq=[]; // Transition sequence
+        this.needUndo=false; // need newUndo after move but not during
+        this.needTimedUndo=false; // need timed newUndo after wheel
     }
 
     draw() {
@@ -52,6 +54,9 @@ class Petrinet {
         this.connected.length=0;
         this.mptr=-1;
         this.transeq.length=0;
+        this.zoom=1;
+        this.vpx=0;
+        this.vpy=0;
     }
 
     addPlace(item) {
@@ -248,6 +253,7 @@ class Petrinet {
     }
 
     newUndo() {
+        undo.splice(undoPtr+1);
         undo.push(rawSave());
         undoPtr=undo.length-1;
     }

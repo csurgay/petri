@@ -1,8 +1,9 @@
 class Label extends Object {
     constructor(label,x,y) {
         super(x,y);
-        this.label=LABEL;
+        this.type=LABEL;
         this.label=label;
+        this.width=ctx.measureText(this.label);
         pn.addLabel(this);
     }
 
@@ -14,11 +15,16 @@ class Label extends Object {
         ctx.font=pn.highlighted==this?"bold "+size+"px arial":""+size+"px arial"; 
         ctx.textAlign = "center";
         ctx.textBaseline = 'middle';
+        this.width=ctx.measureText(this.label);
         ctx.fillText(this.label,this.x,this.y);
+        if (pn.highlighted==this) {
+            ctx.fillText(this.label,this.x-1,this.y);
+            ctx.fillText(this.label,this.x+1,this.y);
+        }
     }
 
     cursored(cursor) {
-        if (Math.abs(this.x-cursor.x)<20 && Math.abs(this.y-cursor.y)<5)
+        if (Math.abs(this.x-cursor.x)<this.width.width/2 && Math.abs(this.y-cursor.y)<5)
             return true;
         else 
             return false;

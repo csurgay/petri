@@ -16,9 +16,11 @@ function rawSave() {
     pn.f.forEach(o=>{
         str+="\n"+o.id+" "+o.color+" "+
         o.subtype+" "+o.weight+" "+
-        o.o1.id+" "+o.o2.id+" "+(o.path.length-2);
+        o.o1.id+" "+o.o2.id+" "+o.stickyHead+" "+o.stickyTransConnector;
+        str+=" "+(o.path.length-2);
         for (var i=1; i<o.path.length-1; i++) str+=" "+o.path[i].x.toFixed(1)+" "+o.path[i].y.toFixed(1);
     });
+    str+="\nConfig:\nzoom: "+pn.zoom.toFixed(1)+"\nvpx: "+pn.vpx.toFixed(1)+"\nvpy: "+pn.vpy.toFixed(1);
     str+="\nEnd";
     return str;
 }
@@ -53,7 +55,12 @@ function rawLoad(str) {
         l=str[ptr].split(" ");
         const o=new Flow(pn.locate(l[4]),pn.locate(l[5])); o.id=l[0]; o.color=l[1];
         o.subtype=l[2]; o.weight=+l[3];
-        for (var i=7; i<7+2*parseInt(l[6]); i+=2) {
+        var j=6; 
+        if (l[6]=="true" || l[6]=="false") {
+            j=8;
+            o.stickyHead=l[6]; o.stickyTransConnector=+l[7];
+        }
+        for (var i=j+1; i<j+1+2*parseInt(l[j]); i+=2) {
             o.path.splice(o.path.length-1,0,new MidPoint(+l[i],+l[i+1]));
         }
         pn.addFlow(o);

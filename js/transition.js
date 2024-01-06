@@ -1,11 +1,11 @@
-const h=50,w=15;
-const transConnectors=[[0,-h/2],[0,h/2],[-w/2,0],[w/2,0]];
+const th=50,tw=15;
+const transConnectors=[[0,-th/2],[0,th/2],[-tw/2,0],[tw/2,0]];
 for (var i=1; i<=3; i++) {
     transConnectors.push(
-        [-w/2, i*h/9],
-        [ w/2, i*h/9],
-        [-w/2,-i*h/9],
-        [ w/2,-i*h/9]
+        [-tw/2, i*th/9],
+        [ tw/2, i*th/9],
+        [-tw/2,-i*th/9],
+        [ tw/2,-i*th/9]
 );}
 const p1=new Coord(0,0), p2=new Coord(0,0);
 
@@ -37,7 +37,7 @@ class Transition extends Object {
         ctx.save();
         ctx.translate(this.x,this.y);
         ctx.rotate(this.alpha);
-        ctx.rect(-w/2,-h/2,w,h);
+        ctx.rect(-tw/2,-th/2,tw,th);
         ctx.fill();
         ctx.stroke();
         ctx.restore();
@@ -68,7 +68,7 @@ class Transition extends Object {
 
     cursored(cursor) {
         this.adjust_p1p2();
-        if (distancePointAndSection(cursor,p1,p2) <= w/2+1)
+        if (distancePointAndSection(cursor,p1,p2) <= tw/2+1)
             return true;
         else 
             return false;
