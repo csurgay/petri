@@ -9,7 +9,7 @@ class Button extends Object {
         pn.addButton(this);
         if (button=="PLAY") this.label=new Label("PLAY",x,y+bh);
         else if (button=="STOP") this.label=new Label("STOP",x,y+bh);
-        else if (button=="FAST_FWD") this.label=new Label("RUN",x,y+bh);
+        else if (button=="RUN") this.label=new Label("RUN",x,y+bh);
         else if (button=="STEP_BWD") this.label=new Label("STEP-",x,y+bh);
         else if (button=="STEP_FWD") this.label=new Label("STEP+",x,y+bh);
         else if (button=="REWIND") this.label=new Label("m0",x,y+bh);
@@ -20,6 +20,7 @@ class Button extends Object {
         else if (button=="CLEAR") this.label=new Label("NEW",x,y+bh);
         else if (button=="OPEN") this.label=new Label("OPEN",x,y+bh);
         else if (button=="SAVE") this.label=new Label("SAVE",x,y+bh);
+        else if (button=="FLY") this.label=new Label("FLY",x,y+bh);
         pn.l.pop();
     }
 
@@ -51,9 +52,14 @@ class Button extends Object {
             ctx.rect(this.x+bdw/3-1,this.y-bdh/2,4,bdh);
             ctx.fill();
         }
-        else if (this.button=="FAST_FWD") {
+        else if (this.button=="RUN") {
             triangle(false,this.x,this.y,2*bdw/3,bdh,-1);
             triangle(false,this.x+2*bdw/3-2,this.y,2*bdw/3,bdh,-1);
+        }
+        else if (this.button=="FLY") {
+            triangle(false,this.x,this.y,2*bdw/3,bdh,-6);
+            triangle(false,this.x+2*bdw/3-3,this.y,2*bdw/3,bdh,-6);
+            triangle(false,this.x+4*bdw/3-6,this.y,2*bdw/3,bdh,-7);
         }
         else if (this.button=="STEP_BWD") {
             triangle(pn.mptr<1,this.x,this.y,2*bdw/3,bdh,+1,-1);
@@ -153,8 +159,12 @@ class Button extends Object {
             if (state!=SLOWRUN) stateChange(SLOWRUN);
             else stateChange(IDLE);
         }
-        else if (this.button=="FAST_FWD") {
+        else if (this.button=="RUN") {
             if (state!=RUN) stateChange(RUN);
+            else stateChange(IDLE);
+        }
+        else if (this.button=="FLY") {
+            if (state!=FLY) stateChange(FLY);
             else stateChange(IDLE);
         }
         else if (this.button=="STOP") {
@@ -258,7 +268,7 @@ function curvedArrow(grayed,x,y,r=1) { // r for reverse
 
 var x,y=20,w,dw,dx;
 function setupButton() {
-    x=80,w=35,dx=0,dw=40;
+    x=50,w=35,dx=0,dw=40;
     new Button("CLEAR",x+dx++*dw,y,w);
     new Button("OPEN",x+dx++*dw,y,w);
     new Button("SAVE",x+dx++*dw,y,w);
@@ -266,13 +276,14 @@ function setupButton() {
     new Button("UNDO",x+dx++*dw,y,w);
     new Button("REDO",x+dx++*dw,y,w);
 
-    x=360,w=50,dx=0,dw=55;
+    x=330,w=50,dx=0,dw=55;
     new Button("REWIND",x+dx++*dw,y,w);
     new Button("STEP_BWD",x+dx++*dw,y,w);
     new Button("STEP_FWD",x+dx++*dw,y,w);
     new Button("PLAY",x+dx++*dw,y,w);
     new Button("STOP",x+dx++*dw,y,w);
-    new Button("FAST_FWD",x+dx++*dw,y,w);
+    new Button("RUN",x+dx++*dw,y,w);
+    new Button("FLY",x+dx++*dw,y,w);
 
-    new Button("HELP",710,y,35);
+    new Button("HELP",740,y,35);
 }

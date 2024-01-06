@@ -29,18 +29,19 @@ animate();
 
 var ms,msSlowrun=0;
 function animate() {
+    ms=Date.now();
     clearCanvas(canvas);
-    // Rotating PacMan
+/*     // Rotating PacMan
     ctx.beginPath();
     ctx.strokeStyle=COLOR_INK;
     ctx.lineWidth=1;
-    ms=Date.now();
     const alpha=(ms%(628*1000/628))/(100*1000/628)-Math.PI/2;
     const z=pn.zoom==1?7:6;
     ctx.arc(20,20,10,alpha,alpha+z*Math.PI/4)
     ctx.lineTo(20,20)
     ctx.closePath();
     ctx.stroke();
+ */    
     // Title line
     ctx.beginPath();
     ctx.font ="16px arial";
@@ -61,7 +62,13 @@ function animate() {
     pn.draw();
     ctx.restore();
     // Running mode
-    if (state==RUN) { pn.fireOne(); }
+    if (state==FLY) { pn.fireOne(); }
+    if (state==RUN) { 
+        if (ms-msSlowrun>100) {
+            pn.fireOne();
+            msSlowrun=ms;
+        } 
+    }
     if (state==SLOWRUN) { 
         if (ms-msSlowrun>1000) {
             pn.fireOne();
