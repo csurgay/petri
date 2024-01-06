@@ -107,19 +107,12 @@ function stateChange(newState) {
     state=newState;
 }
 
-var zoom,cx,cy,vpx,vpy;
-function getCoord(evt,scope) {
+function getCoord(evt) {
     const rect = canvas.getBoundingClientRect();
-    if (scope=="VIEWPORT") {
-        zoom=pn.zoom;
-        cx=pn.cx; cy=pn.cy;
-        vpx=pn.vpx; vpy=pn.vpy;
-    }
-    else if (scope=="CANVAS") {
-        zoom=1; cx=0; cy=0; vpx=0; vpy=0;
-    }
-    cursor.x = evt.clientX/zoom-rect.left-cx/zoom-vpx;
-    cursor.y = evt.clientY/zoom-rect.top-cy/zoom-vpy;
+    cursor.x = evt.clientX/pn.zoom-rect.left-pn.cx/pn.zoom-pn.vpx;
+    cursor.y = evt.clientY/pn.zoom-rect.top-pn.cy/pn.zoom-pn.vpy;
+    ccursor.x = evt.clientX-rect.left;
+    ccursor.y = evt.clientY-rect.top;
 }
 
 function drawArrow(fromx,fromy,tox,toy,lineWidth=1,color,subtype="ENABLER") {

@@ -147,31 +147,7 @@ class Button extends Object {
             pn.rewind();
         }
         else if (this.button=="HELP") {
-            var msg="";
-            msg+="CREATE PETRINET\n";
-            msg+="Create PLACE: Left button\n";
-            msg+="Create TRANSITION: Click PLACE again\n";
-            msg+="Create FLOW: Drag from PLACE/TRANS to PLACE/TRANS\n";
-            msg+="Create INHIBITOR: Click FLOW again\n";
-            msg+="Create TOKENS: Mousewheel over PLACE\n";
-            msg+="\n";
-            msg+="EDIT PETRINET\n";
-            msg+="Move objects: Drag\n";
-            msg+="Delete objects: Right click\n";
-            msg+="Clear tokens from PLACE: Middle click on PLACE\n";
-            msg+="Clear all tokens: Middle click on canvas\n";
-            msg+="Rotate TRANSITION: Mousewheel over TRANSITION\n";
-            msg+="Adjust FLOW weight: Mousewheel over TRANSITION\n";
-            msg+="Multisegment FLOW: Drag FLOW\n";
-            msg+="Sticky FLOW arrowheads: 's' over TRANSITION\n";
-            msg+="Pan: Drag canvas\n";
-            msg+="Zoom: Mousewheel click and rotate\n";
-            msg+="\n";
-            msg+="SIMULATE PETRINET\n";
-            msg+="Fire TRANSITOIN: click TRANSITION\n";
-            msg+="Step+- / random fire: Mousewheel over canvas\n";
-            msg+="Random simulation: Right click on canvas\n";
-            alert(msg)
+            window.open("help.html", "_blank");
         }
         else if (this.button=="UNDO") {
             if (undoPtr>0) rawLoad(undo[--undoPtr]);

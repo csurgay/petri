@@ -9,13 +9,14 @@ Done:
 - Play-Stop-Speed control
 - Undo edit
 - Help screen
+- Buttons (File: New Save Load Clear M0...?)
+- How to indicate if STEP+ goes history or fires?
+- Rotate subnets
+- Mouse location as center of zooming
 
 Todo:
-- Buttons (File: New Save Load Clear M0...?)
-- Mouse location as center of zooming
 - Reachability
 - Snap to grid and free drag too
 - Select (and copy, rotate...?) subnet
 - Labels input and placement
 - Firing animation with "flames"
-- How to indicate if STEP+ goes history or fires?

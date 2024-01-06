@@ -1,6 +1,7 @@
 const LEFTBUTTON=0, MIDDLEBUTTON=1, RIGHTBUTTON=2;
 
-var cursor=new Coord(0,0);
+var cursor=new Coord(0,0); // Viewport cursor
+var ccursor=new Coord(0,0); // Canvas cursor
 var o;
 
 function shiftKeys(evt,key) {
@@ -12,13 +13,12 @@ function shiftKeys(evt,key) {
 }
 
 function mousedown(evt) {
-    getCoord(evt,"CANVAS");
-    o=pn.getCursoredObject(cursor,"CANVAS");
+    getCoord(evt);
+    o=pn.getCursoredObject(ccursor,"CANVAS");
     if (o) {
 
     }
     else {
-        getCoord(evt,"VIEWPORT");
         pn.mouseDownCoord.x=cursor.x; 
         pn.mouseDownCoord.y=cursor.y;
         o=pn.getCursoredObject(cursor,"VIEWPORT");
@@ -72,8 +72,8 @@ function mousedown(evt) {
 
 var files=[], selectedFile=-1;
 function mouseup(evt) {
-    getCoord(evt,"CANVAS");
-    o=pn.getCursoredObject(cursor,"CANVAS");
+    getCoord(evt);
+    o=pn.getCursoredObject(ccursor,"CANVAS");
     if (state==FILES) {
         if (selectedFile!=-1) {
             if (DEBUG) { 
@@ -90,7 +90,6 @@ function mouseup(evt) {
         o.clicked();
     }
     else {
-        getCoord(evt,"VIEWPORT");
         o=pn.getCursoredObject(cursor,"VIEWPORT");
             // New Flow
         if (state==DRAWARROW && o && o!=pn.highlighted) {
@@ -151,8 +150,8 @@ function mouseup(evt) {
 }
 
 function mousemove(evt) {
-    getCoord(evt,"CANVAS");
-    o=pn.getCursoredObject(cursor,"CANVAS");
+    getCoord(evt);
+    o=pn.getCursoredObject(ccursor,"CANVAS");
     if (state==FILES) {
         clearCanvas(canvas);
         selectedFile=-1;
@@ -173,7 +172,6 @@ function mousemove(evt) {
 
     }
     else {
-        getCoord(evt,"VIEWPORT");
         o=pn.getCursoredObject(cursor,"VIEWPORT");
         // Init Drag
         if (state==LEFTDOWN && !closeEnough(pn.mouseDownCoord,cursor)) {
@@ -227,10 +225,16 @@ function mousemove(evt) {
 
 function mousewheel(evt) {
     const delta=-Math.sign(evt.deltaY);
-    getCoord(evt,"VIEWPORT");
-    o=pn.getCursoredObject(cursor,"VIEWPORT");
+    getCoord(evt);
+    o=pn.getCursoredObject(ccursor,"VIEWPORT");
     // Zoom
     if (state==MIDDLE || state==ZOOM) {
+        if (state==MIDDLE) {
+            var deltaX=ccursor.x-pn.cx;
+            var deltaY=ccursor.y-pn.cy;
+            pn.cx=ccursor.x; pn.cy=ccursor.y;
+            pn.vpx-=deltaX/pn.zoom; pn.vpy-=deltaY/pn.zoom;
+        }
         stateChange(ZOOM);
         pn.zoom+=delta/10;
         pn.zoom=Math.round(10*pn.zoom)/10;
@@ -268,11 +272,27 @@ function mousewheel(evt) {
         pn.getConnected(o);
         pn.connected.forEach(o=>o.nextColor(delta));
         pn.needTimedUndo=true;
-}
-    else {
-        // Rewind and Forward
+    }
+    // Rewind and Forward
+    else if (shiftKeys(evt,"NONE")) {
         stateChange(IDLE);
         if (delta<0) pn.stepBackward();
         if (delta>0) pn.stepForward();
+    }
+    // 
+    else if (o && shiftKeys(evt,"SHIFT")) {
+        pn.connected.length=0;
+        pn.getConnectedAll(o);
+        pn.connected.forEach(r=>{
+            rot=rotate(o.x,o.y,r.x,r.y,delta*Math.PI/32);
+            r.x=rot[0]; r.y=rot[1];
+            if (r.type==TRANSITION) {
+                r.alpha+=delta*Math.PI/32;
+            }
+            if (r.label) {
+                rot=rotate(o.x,o.y,r.label.x,r.label.y,delta*Math.PI/32);
+                r.label.x=rot[0]; r.label.y=rot[1];
+            }
+        });
     }
 }

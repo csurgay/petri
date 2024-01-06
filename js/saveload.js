@@ -20,7 +20,9 @@ function rawSave() {
         str+=" "+(o.path.length-2);
         for (var i=1; i<o.path.length-1; i++) str+=" "+o.path[i].x.toFixed(1)+" "+o.path[i].y.toFixed(1);
     });
-    str+="\nConfig:\nzoom: "+pn.zoom.toFixed(1)+"\nvpx: "+pn.vpx.toFixed(1)+"\nvpy: "+pn.vpy.toFixed(1);
+    str+="\nConfig:\nzoom: "+pn.zoom.toFixed(1)
+    +"\nvpx: "+pn.cx.toFixed(1)+"\nvpy: "+pn.cy.toFixed(1)
+    +"\nvpx: "+pn.vpx.toFixed(1)+"\nvpy: "+pn.vpy.toFixed(1);
     str+="\nEnd";
     return str;
 }
@@ -71,53 +73,11 @@ function rawLoad(str) {
         while(str[ptr]!="End") {
             l=str[ptr].split(" ");
             if (l[0]=="zoom:") pn.zoom=+l[1];
-            if (l[0]=="vpx:") pn.vpx=+l[1];
-            if (l[0]=="vpy:") pn.vpy=+l[1];
+            else if (l[0]=="cx:") pn.cx=+l[1];
+            else if (l[0]=="cy:") pn.cy=+l[1];
+            else if (l[0]=="vpx:") pn.vpx=+l[1];
+            else if (l[0]=="vpy:") pn.vpy=+l[1];
             ptr++;
         }
     }
-}
-
-function processLoad(str) {
-    pn.clear();
-    const jsonObject = JSON.parse(str);
-    pn.zoom=jsonObject.zoom;
-    pn.vpx=jsonObject.vpx; pn.vpy=jsonObject.vpy;
-    jsonObject.p.forEach(p=>{
-        const newPlace=new Place(p.x,p.y);
-        newPlace.id=p.id;
-        newPlace.tokens=p.tokens;
-        newPlace.label.label=p.label.label;
-        newPlace.label.x=p.label.x;
-        newPlace.label.y=p.label.y;
-        if (p.color) newPlace.color=p.color;
-        pn.addPlace(newPlace);
-    });
-    jsonObject.t.forEach(t=>{
-        const newTrans = new Transition(t.x,t.y);
-        newTrans.id=t.id;
-        newTrans.alpha=t.alpha;
-        newTrans.label.label=t.label.label;
-        newTrans.label.x=t.label.x;
-        newTrans.label.y=t.label.y;
-        if (t.color) newTrans.color=t.color;
-        pn.addTransition(newTrans);
-    });
-    jsonObject.f.forEach(f=>{
-        var o1,o2;
-        pn.p.forEach(p=>{if(p.x==f.o1.x && p.y==f.o1.y) o1=p;});
-        pn.p.forEach(p=>{if(p.x==f.o2.x && p.y==f.o2.y) o2=p;});
-        pn.t.forEach(t=>{if(t.x==f.o1.x && t.y==f.o1.y) o1=t;});
-        pn.t.forEach(t=>{if(t.x==f.o2.x && t.y==f.o2.y) o2=t;});
-        const newFlow = new Flow(o1,o2);
-        newFlow.subtype=f.subtype;
-        newFlow.delta=new Coord(f.delta.x,f.delta.y);
-        newFlow.newo2=new Coord(f.newo2.x,f.newo2.y);
-        newFlow.weight=f.weight;
-        if (f.color) newFlow.color=f.color;
-        if (f.path) for (var i=f.path.length-2; i>0; i--) {
-            newFlow.addSegment(new MidPoint(f.path[i].x,f.path[i].y));
-        }
-        pn.addFlow(newFlow);
-    });
 }

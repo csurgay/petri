@@ -55,7 +55,7 @@ function animate() {
     pn.b.forEach(item => item.draw());
     // Draw PetriNet
     ctx.save();
-    ctx.translate(pn.cy,pn.cx);
+    ctx.translate(pn.cx,pn.cy);
     ctx.scale(pn.zoom,pn.zoom);
     ctx.translate(pn.vpx,pn.vpy);
     pn.draw();
