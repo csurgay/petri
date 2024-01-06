@@ -70,10 +70,23 @@ function mousedown(evt) {
     }
 }
 
+var files=[], selectedFile=-1;
 function mouseup(evt) {
     getCoord(evt,"CANVAS");
     o=pn.getCursoredObject(cursor,"CANVAS");
-    if (o) {
+    if (state==FILES) {
+        if (selectedFile!=-1) {
+            if (DEBUG) { 
+                console.log(selectedFile);
+                console.log(files[selectedFile]);
+            }
+            pn.load("nets/"+files[selectedFile]);
+            pn.animate=true;
+            stateChange(IDLE);
+            animate();
+        }
+    }
+    else if (o) {
         o.clicked();
     }
     else {
@@ -140,7 +153,23 @@ function mouseup(evt) {
 function mousemove(evt) {
     getCoord(evt,"CANVAS");
     o=pn.getCursoredObject(cursor,"CANVAS");
-    if (o) {
+    if (state==FILES) {
+        clearCanvas(canvas);
+        selectedFile=-1;
+        for (var i=0; i<files.length; i++) {
+            ctx.textAlign = "left";
+            ctx.textBaseline = 'top';
+            ctx.font="16px arial";
+            ctx.fillStyle=COLOR_INK;
+            var width=ctx.measureText(files[i]).width;
+            if (cursor.x>50 && cursor.x<50+width && cursor.y>50+20*i && cursor.y<69+20*i) {
+                ctx.font="bold 16px arial";
+                selectedFile=i;
+            }
+            ctx.fillText(files[i],50,50+20*i);
+        }
+    }
+    else if (o) {
 
     }
     else {

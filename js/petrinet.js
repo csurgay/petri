@@ -3,6 +3,7 @@ var undoPtr=-1;
 
 class Petrinet {
     constructor() {
+        this.animate=false; // should animatie continuously
         this.p=[]; // Places
         this.t=[]; // Transitions
         this.f=[]; // Flows
@@ -52,6 +53,7 @@ class Petrinet {
         this.dragged=null;
         this.paleArrow=null;
         this.connected.length=0;
+        this.markings.length=0;
         this.mptr=-1;
         this.transeq.length=0;
         this.zoom=1;
@@ -282,6 +284,7 @@ class Petrinet {
     }
 
     load(filename) {
+        undoPtr=-1; undo.length=0;
         var request = new XMLHttpRequest();
         request.onload = function() { 
             rawLoad(request.responseText); 
@@ -299,5 +302,21 @@ class Petrinet {
         request.open("GET", filename);
         request.send();
         this.clearMarkings();
+    }
+
+    getFileNames() {
+        var request=new XMLHttpRequest();
+        request.open('POST','scandir.php',true);
+        request.onreadystatechange=function() {
+            if (request.readyState==4 && request.status==200) {
+                if (DEBUG) console.log(request.responseText);
+                files.length=0;
+                files.push(...request.responseText.split('\n'));
+                files.pop();
+                selectFile();
+            }
+        }
+        request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+        request.send();
     }
 }

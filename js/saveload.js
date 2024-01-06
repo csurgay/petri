@@ -58,7 +58,7 @@ function rawLoad(str) {
         var j=6; 
         if (l[6]=="true" || l[6]=="false") {
             j=8;
-            o.stickyHead=l[6]; o.stickyTransConnector=+l[7];
+            o.stickyHead=l[6]==="true"; o.stickyTransConnector=+l[7];
         }
         for (var i=j+1; i<j+1+2*parseInt(l[j]); i+=2) {
             o.path.splice(o.path.length-1,0,new MidPoint(+l[i],+l[i+1]));

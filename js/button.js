@@ -18,6 +18,7 @@ class Button extends Object {
         else if (button=="UNDO") this.label=new Label("UNDO",x,y+bh);
         else if (button=="REDO") this.label=new Label("REDO",x,y+bh);
         else if (button=="CLEAR") this.label=new Label("NEW",x,y+bh);
+        else if (button=="OPEN") this.label=new Label("OPEN",x,y+bh);
         pn.l.pop();
     }
 
@@ -29,15 +30,22 @@ class Button extends Object {
         ovalPatch(this.x,this.y,this.width,bh,br);
         ctx.stroke();
         if (this.button=="PLAY") {
-            triangle(false,this.x,this.y,bdw,bdh,bdo);
+            triangle(false.length==0,this.x,this.y,bdw,bdh,bdo);
         }
         else if (this.button=="STOP") {
             ctx.beginPath();
+            ctx.fillStyle=(state==RUN||state==SLOWRUN)?COLOR_INK:"gray";
             ctx.rect(this.x-bdh/2,this.y-bdh/2,bdh,bdh);
             ctx.fill();
         }
         else if (this.button=="STEP_FWD") {
-            triangle(false,this.x,this.y,2*bdw/3,bdh,-1);
+            if (pn.mptr==pn.markings.length-1&&pn.getEnabled().length>0) {
+                this.label.label="FIRE";
+            }
+            else {
+                this.label.label="STEP+";
+            }
+            triangle(pn.mptr==pn.markings.length-1&&pn.getEnabled().length==0,this.x,this.y,2*bdw/3,bdh,-1);
             ctx.beginPath();
             ctx.rect(this.x+bdw/3-1,this.y-bdh/2,4,bdh);
             ctx.fill();
@@ -47,14 +55,14 @@ class Button extends Object {
             triangle(false,this.x+2*bdw/3-2,this.y,2*bdw/3,bdh,-1);
         }
         else if (this.button=="STEP_BWD") {
-            triangle(false,this.x,this.y,2*bdw/3,bdh,+1,-1);
+            triangle(pn.mptr<1,this.x,this.y,2*bdw/3,bdh,+1,-1);
             ctx.beginPath();
             ctx.rect(this.x-bdw/3-3,this.y-bdh/2,4,bdh);
             ctx.fill();
         }
         else if (this.button=="REWIND") {
-            triangle(false,this.x,this.y,2*bdw/3,bdh,-3,-1);
-            triangle(false,this.x+2*bdw/3-2,this.y,2*bdw/3,bdh,-3,-1);
+            triangle(pn.mptr<1,this.x,this.y,2*bdw/3,bdh,-3,-1);
+            triangle(pn.mptr<1,this.x+2*bdw/3-2,this.y,2*bdw/3,bdh,-3,-1);
             ctx.beginPath();
             ctx.rect(this.x-bdw/3-5,this.y-bdh/2,4,bdh);
             ctx.fill();
@@ -78,8 +86,28 @@ class Button extends Object {
         }
         else if (this.button=="CLEAR") {
             ctx.beginPath();
-            ctx.lineWidth=3;
+            ctx.lineWidth=2;
             ctx.rect(this.x-bdh/2,this.y-bdh/2,bdh,bdh);
+            ctx.stroke();
+        }
+        else if (this.button=="OPEN") {
+            ctx.beginPath();
+            ctx.moveTo(this.x-8,this.y+7);
+            ctx.lineTo(this.x+8,this.y+7);
+            ctx.lineTo(this.x+13,this.y-3);
+            ctx.lineTo(this.x-3,this.y-3);
+            ctx.lineTo(this.x-8,this.y+7);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.lineWidth=2;
+            ctx.moveTo(this.x+8,this.y-3);
+            ctx.lineTo(this.x+8,this.y-5);
+            ctx.lineTo(this.x+2,this.y-5);
+            ctx.lineTo(this.x-1,this.y-7);
+            ctx.lineTo(this.x-7,this.y-7);
+            ctx.lineTo(this.x-8,this.y-6);
+            ctx.lineTo(this.x-8,this.y+6);
+            ctx.lineTo(this.x-7,this.y+6);
             ctx.stroke();
         }
         if (this.label) this.label.draw(12);
@@ -161,7 +189,24 @@ class Button extends Object {
                 undoPtr=-1;
             }
         }
+        else if (this.button=="OPEN") {
+            pn.animate=false;
+            pn.getFileNames();
+        }
     }
+}
+
+function selectFile() {
+    clearCanvas(canvas);
+    ctx.beginPath();
+    ctx.fillStyle=COLOR_INK;
+    ctx.textAlign = "left";
+    ctx.textBaseline = 'top';
+    ctx.font="16px arial";
+    for (var i=0; i<files.length; i++) {
+        ctx.fillText(files[i],50,50+i*20);
+    }
+    stateChange(FILES);
 }
 
 function ovalPatch(x,y,w,h,r) {
@@ -205,13 +250,14 @@ function curvedArrow(grayed,x,y,r=1) { // r for reverse
 
 var x,y=20,w,dw,dx;
 function setupButton() {
-    x=75,w=35,dx=0,dw=40;
+    x=80,w=35,dx=0,dw=40;
     new Button("CLEAR",x+dx++*dw,y,w);
+    new Button("OPEN",x+dx++*dw,y,w);
     new Button("UNDO_ALL",x+dx++*dw,y,w);
     new Button("UNDO",x+dx++*dw,y,w);
     new Button("REDO",x+dx++*dw,y,w);
 
-    x=260,w=50,dx=0,dw=55;
+    x=315,w=50,dx=0,dw=55;
     new Button("REWIND",x+dx++*dw,y,w);
     new Button("STEP_BWD",x+dx++*dw,y,w);
     new Button("STEP_FWD",x+dx++*dw,y,w);
@@ -219,5 +265,5 @@ function setupButton() {
     new Button("STOP",x+dx++*dw,y,w);
     new Button("FAST_FWD",x+dx++*dw,y,w);
 
-    new Button("HELP",600,y,35);
+    new Button("HELP",665,y,35);
 }

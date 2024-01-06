@@ -21,6 +21,7 @@ addEventListener('keyup', (evt) => {
 });
 
 var pn=new Petrinet();
+pn.animate=true;
 setupStatus();
 setupButton();
 
@@ -67,5 +68,5 @@ function animate() {
             msSlowrun=ms;
         } 
     }
-    requestAnimationFrame(animate);
+    if (pn.animate) requestAnimationFrame(animate);
 }
