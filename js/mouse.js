@@ -155,6 +155,7 @@ function mouseup(evt) {
 function mousemove(evt) {
     getCoord(evt);
     o=pn.getCursoredObject(ccursor,"CANVAS");
+    if (o) pn.highlighted=o;
     if (state==FILES) {
         clearCanvas(canvas);
         selectedFile=-1;

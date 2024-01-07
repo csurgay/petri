@@ -35,5 +35,6 @@ function setupStatus() {
     new Status("ccur",sx,sy+i++*dy,function(){return ccursor.x.toFixed()+" "+ccursor.y.toFixed();});
     new Status("s",sx,sy+i++*dy,function(){return states[state];});
     new Status("o",sx,sy+i++*dy,function(){return o?objects[o.type]:"";});
+    new Status("hl",sx,sy+i++*dy,function(){return pn.highlighted?objects[pn.highlighted.type]:"";});
     new Status("",sx,sy+i++*dy,function(){return ms;});
 }

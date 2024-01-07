@@ -27,10 +27,14 @@ class Button extends Object {
     draw() {
         ctx.beginPath();
         solid();
+        ctx.lineWidth=1;
         ctx.strokeStyle="black";
-        ctx.fillStyle="black";
+        ctx.fillStyle=pn.highlighted==this?"lightgray":COLOR_CANVAS;
         ovalPatch(this.x,this.y,this.width,bh,br);
+        ctx.fill();
         ctx.stroke();
+        ctx.beginPath();
+        ctx.fillStyle=COLOR_INK;
         if (this.button=="PLAY") {
             triangle(false.length==0,this.x,this.y,bdw,bdh,bdo);
         }
@@ -228,12 +232,11 @@ function selectFile() {
 }
 
 function ovalPatch(x,y,w,h,r) {
-    ctx.lineWidth=1;
     ctx.moveTo(x-w/2+r,y-h/2);
     ctx.lineTo(x+w/2-r,y-h/2);
-    ctx.moveTo(x+w/2-r,y-h/2);
+//    ctx.moveTo(x+w/2-r,y-h/2);
     ctx.arc(x+w/2-r,y,r,3*Math.PI/2,Math.PI/2);
-    ctx.moveTo(x+w/2-r,y+h/2);
+//    ctx.moveTo(x+w/2-r,y+h/2);
     ctx.lineTo(x-w/2+r,y+h/2);
     ctx.arc(x-w/2+r,y,r,Math.PI/2,3*Math.PI/2);
 }

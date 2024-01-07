@@ -31,6 +31,7 @@ var ms,msSlowrun=0;
 function animate() {
     ms=Date.now();
     clearCanvas(canvas);
+    ctx.translate(0.5, 0.5);
 /*     // Rotating PacMan
     ctx.beginPath();
     ctx.strokeStyle=COLOR_INK;
