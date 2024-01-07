@@ -14,7 +14,7 @@ const PLACE_R=20;
 
 const COLOR_CANVAS="rgb(250, 240, 230)";
 //const COLOR_ENABLED="rgb(255, 140, 100)";
-const COLOR_ENABLED="gray";
+const COLOR_ENABLED="yellow";
 const COLOR_INK="black";
 const COLOR_HIGHLIGHT="black";
 

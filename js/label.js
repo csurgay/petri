@@ -16,10 +16,12 @@ class Label extends Object {
         ctx.textAlign = "center";
         ctx.textBaseline = 'middle';
         this.width=ctx.measureText(this.label);
-        ctx.fillText(this.label,this.x,this.y);
         if (pn.highlighted==this) {
-            ctx.fillText(this.label,this.x-1,this.y);
+            ctx.fillText(this.label,this.x-2,this.y);
             ctx.fillText(this.label,this.x+1,this.y);
+        }
+        else {
+            ctx.fillText(this.label,this.x,this.y);
         }
     }
 
