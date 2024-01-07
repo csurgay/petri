@@ -16,7 +16,7 @@ class Place extends Object {
         this.type=PLACE;
         this.id="P"+nextId(this.type);
         this.tokens=0;
-        this.label=new Label(this.id,this.x,this.y-30);
+        this.label=new Label(this.id,this.x-30,this.y-30);
         this.adjustConnectors();
     }
 
@@ -32,29 +32,29 @@ class Place extends Object {
 
     draw() {
         // Circle
-        ctx.beginPath();
+        g.beginPath();
         ctx.lineWidth=LINEWIDTH;
         this.setColor();
         ctx.fillStyle=COLOR_CANVAS;
-        ctx.arc(this.x,this.y,PLACE_R,0,2*Math.PI);
-        ctx.fill();
-        ctx.stroke();
+        g.arc(this.x,this.y,PLACE_R,0,2*Math.PI);
+        g.fill();
+        g.stroke();
         // Tokens dice
-        ctx.beginPath();
+        g.beginPath();
         ctx.fillStyle=COLOR_INK;
         if (this.tokens<=6) {
             tokenpos[this.tokens].forEach(t => {
-                ctx.moveTo(this.x+t[0],this.y+t[1]);
-                ctx.arc(this.x+t[0],this.y+t[1],3.5,0,2*Math.PI);
+                g.moveTo(this.x+t[0],this.y+t[1]);
+                g.arc(this.x+t[0],this.y+t[1],3.5,0,2*Math.PI);
             }) 
-            ctx.fill();
+            g.fill();
         }
         // Tokens number
         else {
             ctx.font ="20px arial";
             ctx.textAlign = "center";
             ctx.textBaseline = 'middle';
-            ctx.fillText(this.tokens,this.x,this.y+2);
+            g.fillText(this.tokens,this.x,this.y+2);
         }
     }
 

@@ -1,11 +1,13 @@
 const canvas=document.getElementById("petrinetCanvas");
 const ctx=canvas.getContext("2d");
+const g=new graphics(ctx);
 addEventListener('mousedown',mousedown);
 addEventListener('mouseup',mouseup);
 addEventListener('mousemove',mousemove);
 addEventListener('mousewheel',mousewheel);
 addEventListener('contextmenu',evt=>{evt.preventDefault();});
 addEventListener('keyup', (evt) => {
+    storedEvt=evt;
     if (evt.key=='d') DEBUG=1-DEBUG;
     if (evt.key=='s') {
         // Toggle sticky Flow heads of this Transition
@@ -33,25 +35,25 @@ function animate() {
     clearCanvas(canvas);
     ctx.translate(0.5, 0.5);
 /*     // Rotating PacMan
-    ctx.beginPath();
+    g.beginPath();
     ctx.strokeStyle=COLOR_INK;
     ctx.lineWidth=1;
     const alpha=(ms%(628*1000/628))/(100*1000/628)-Math.PI/2;
     const z=pn.zoom==1?7:6;
-    ctx.arc(20,20,10,alpha,alpha+z*Math.PI/4)
-    ctx.lineTo(20,20)
+    g.arc(20,20,10,alpha,alpha+z*Math.PI/4)
+    g.lineTo(20,20)
     ctx.closePath();
-    ctx.stroke();
+    g.stroke();
  */    
     // Title line
-    ctx.beginPath();
+    g.beginPath();
     ctx.font ="16px arial";
     ctx.fillStyle=COLOR_INK;
     ctx.textAlign = "left";
     ctx.textBaseline = 'top';
-//    ctx.fillText("Petrinet Simulator - 2023 csurgay@gmail.com",40,15);
+//    g.fillText("Petrinet Simulator - 2023 csurgay@gmail.com",40,15);
     ctx.textAlign = "right";
-    ctx.fillText(getFormattedDate(),canvas.width-20,15);
+    g.fillText(getFormattedDate(),canvas.width-20,15);
     // Static Status and Buttons
     pn.s.forEach(item => item.draw());
     pn.b.forEach(item => item.draw());

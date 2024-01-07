@@ -80,4 +80,13 @@ function rawLoad(str) {
             ptr++;
         }
     }
+    // Adjust max ID-s to avoid ID conflict of additional objects
+    idPlace=maxID(pn.p);
+    idTrans=maxID(pn.t);
+    idFlow=maxID(pn.f);
+}
+function maxID(a) {
+    var max=0,v;
+    a.forEach(i=>{v=parseInt(i.id.substring(1));if(v>max)max=v;})
+    return max;
 }

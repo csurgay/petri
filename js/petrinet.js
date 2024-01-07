@@ -40,6 +40,13 @@ class Petrinet {
         this.l.forEach(item => { item.draw(); })
     }
 
+    snap() {
+        this.f.forEach(item => { item.x=snap(item.x); item.y=snap(item.y); })
+        this.f.forEach(item => { item.path.forEach(mp=> {mp.x=snap(mp.x); mp.y=snap(mp.y); })})
+        this.t.forEach(item => { item.x=snap(item.x); item.y=snap(item.y); })
+        this.p.forEach(item => { item.x=snap(item.x); item.y=snap(item.y); })
+    }
+
     clear() {
         stateChange(IDLE);
         this.p.length=0;
@@ -91,8 +98,8 @@ class Petrinet {
     addFlows(o1,o2) {
         if (o1.type==PLACE && o2.type==PLACE) {
             const newTrans=new Transition(
-                (o1.x+o2.x)/2,
-                (o1.y+o2.y)/2,
+                snap((o1.x+o2.x)/2),
+                snap((o1.y+o2.y)/2),
                 Math.asin(Math.sign(o2.x-o1.x)*(o2.y-o1.y)/Math.hypot(o2.x-o1.x,o2.y-o1.y))
             );
             if (o1.x==o2.x) newTrans.alpha=Math.PI/2;
@@ -102,8 +109,8 @@ class Petrinet {
         }
         else if (o1.type==TRANSITION && o2.type==TRANSITION) {
             const newPlace=new Place(
-                (o1.x+o2.x)/2,
-                (o1.y+o2.y)/2
+                snap((o1.x+o2.x)/2),
+                snap((o1.y+o2.y)/2)
             );
             this.addPlace(newPlace);
             this.addFlow(new Flow(o1,newPlace));
@@ -147,11 +154,11 @@ class Petrinet {
         var ret = null;
         if (scope=="VIEWPORT") {
             if (ret==null)
+                this.l.forEach(item => { if (item.cursored(cursor)) ret=item; });
+            if (ret==null)
                 this.p.forEach(item => { if (item.cursored(cursor)) ret=item; });
             if (ret==null)
                 this.t.forEach(item => { if (item.cursored(cursor)) ret=item; });
-            if (ret==null)
-                this.l.forEach(item => { if (item.cursored(cursor)) ret=item; });
             if (ret==null)
                 this.f.forEach(item => {
                     const aux=item.cursoredMidPoint(cursor);

@@ -14,11 +14,11 @@ Done:
 - Rotate subnets
 - Mouse location as center of zooming
 - Also load file from upload
+- Snap to grid and free drag too
 
 Todo:
-- Settings
+- Settings (grid size (0=off), enabled color, debug mode)
 - Reachability
-- Snap to grid and free drag too
 - Select (and copy, rotate...?) subnet
 - Labels input and placement
 - Firing animation with "flames"

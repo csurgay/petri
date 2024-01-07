@@ -13,7 +13,6 @@ const DASHED=[5,3];
 const PLACE_R=20;
 
 const COLOR_CANVAS="rgb(250, 240, 230)";
-//const COLOR_ENABLED="rgb(255, 140, 100)";
 const COLOR_ENABLED="yellow";
 const COLOR_INK="black";
 const COLOR_HIGHLIGHT="black";
@@ -96,8 +95,8 @@ class Object extends Coord {
     clicked() {}
 
     dragTo(dx,dy) {
-        this.x+=dx;
-        this.y+=dy;
+        this.x=snap(this.x+dx);
+        this.y=snap(this.y+dy);
     }
 
     delete() {};
@@ -109,8 +108,8 @@ function stateChange(newState) {
 
 function getCoord(evt) {
     const rect = canvas.getBoundingClientRect();
-    cursor.x = evt.clientX/pn.zoom-rect.left-pn.cx/pn.zoom-pn.vpx;
-    cursor.y = evt.clientY/pn.zoom-rect.top-pn.cy/pn.zoom-pn.vpy;
+    cursor.x = snap(evt.clientX/pn.zoom-rect.left-pn.cx/pn.zoom-pn.vpx);
+    cursor.y = snap(evt.clientY/pn.zoom-rect.top-pn.cy/pn.zoom-pn.vpy);
     ccursor.x = evt.clientX-rect.left;
     ccursor.y = evt.clientY-rect.top;
 }
@@ -121,27 +120,27 @@ function drawArrow(fromx,fromy,tox,toy,lineWidth=1,color,subtype="ENABLER") {
     var dx=tox-fromx;
     var dy=toy-fromy;
     var angle=Math.atan2(dy,dx);
-    ctx.beginPath();
+    g.beginPath();
     ctx.strokeStyle=color;
     ctx.fillStyle=color;
     ctx.lineWidth=lineWidth;
-    ctx.moveTo(fromx,fromy);
-    ctx.lineTo(tox,toy);
-    ctx.stroke();
-    ctx.beginPath();
+    g.moveTo(fromx,fromy);
+    g.lineTo(tox,toy);
+    g.stroke();
+    g.beginPath();
     if (subtype=="ENABLER") {
         ctx.lineWidth=1;
-        ctx.moveTo(tox,toy);
-        ctx.lineTo(tox-headlen*Math.cos(angle-alpha*Math.PI/180),toy-headlen*Math.sin(angle-alpha*Math.PI/180));
-        ctx.lineTo(tox-headlen*Math.cos(angle+alpha*Math.PI/180),toy-headlen*Math.sin(angle+alpha*Math.PI/180));
+        g.moveTo(tox,toy);
+        g.lineTo(tox-headlen*Math.cos(angle-alpha*Math.PI/180),toy-headlen*Math.sin(angle-alpha*Math.PI/180));
+        g.lineTo(tox-headlen*Math.cos(angle+alpha*Math.PI/180),toy-headlen*Math.sin(angle+alpha*Math.PI/180));
         ctx.closePath();
-        ctx.fill();
+        g.fill();
     } 
     else if (subtype=="INHIBITOR") {
         ctx.fillStyle=COLOR_CANVAS;
-        ctx.arc(tox,toy,7,0,2*Math.PI);
-        ctx.fill();
-        ctx.stroke();
+        g.arc(tox,toy,7,0,2*Math.PI);
+        g.fill();
+        g.stroke();
     }
   }
 

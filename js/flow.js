@@ -58,30 +58,30 @@ class Flow extends Object {
         var l = Math.hypot(x,y);
         l=this.subtype=="INHIBITOR"?(l-8)/l:1;
         // Draw multisegment path
-        ctx.beginPath();
+        g.beginPath();
         this.setColor();
         ctx.lineWidth=LINEWIDTH;
-        ctx.moveTo(this.path[0].x,this.path[0].y);
+        g.moveTo(this.path[0].x,this.path[0].y);
         for(var i=1; i<this.path.length-1; i++) {
-            ctx.lineTo(this.path[i].x,this.path[i].y);
+            g.lineTo(this.path[i].x,this.path[i].y);
         }
-        ctx.stroke();
+        g.stroke();
         drawArrow(lastPoint.x,lastPoint.y,lastPoint.x+l*x,lastPoint.y+l*y,2,
             ctx.strokeStyle,this.subtype);
         // Flow weight circle
         if (this.weight!=1) {
-            ctx.beginPath();
+            g.beginPath();
             ctx.strokeStyle=this.color;
             ctx.lineWidth=1;
             ctx.fillStyle=COLOR_CANVAS;
-            ctx.arc(midx,midy,7,0,2*Math.PI);
-            ctx.fill();
-            ctx.stroke();
+            g.arc(midx,midy,7,0,2*Math.PI);
+            g.fill();
+            g.stroke();
             ctx.font ="11px arial";
             ctx.fillStyle=COLOR_INK;
             ctx.textAlign = "center";
             ctx.textBaseline = 'middle';
-            ctx.fillText(this.weight,midx,midy+1);
+            g.fillText(this.weight,midx,midy+1);
         }
         for (var i=1; i<this.path.length-1; i++) {
             if (pn.highlighted==this) this.path[i].draw("black");
@@ -136,12 +136,12 @@ class MidPoint extends Object {
     
     draw(color) {
         if (color=="black" || pn.highlighted==this) {
-            ctx.beginPath();
+            g.beginPath();
             ctx.strokeStyle=color=="black"?COLOR_INK:COLOR_HIGHLIGHT;
             color=="black"?solid():dashed();
             ctx.lineWidth=LINEWIDTH;
-            ctx.arc(this.x,this.y,6,0,2*Math.PI);
-            ctx.stroke();
+            g.arc(this.x,this.y,6,0,2*Math.PI);
+            g.stroke();
         }
     }
 

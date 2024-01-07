@@ -8,7 +8,7 @@ class Status extends Label {
     draw() {
         if (DEBUG) {
             super.draw();
-            ctx.fillText(this.callback(),this.x+50,this.y);
+            g.fillText(this.callback(),this.x+50,this.y);
         }
     }
     

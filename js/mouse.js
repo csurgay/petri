@@ -3,6 +3,7 @@ const LEFTBUTTON=0, MIDDLEBUTTON=1, RIGHTBUTTON=2;
 var cursor=new Coord(0,0); // Viewport cursor
 var ccursor=new Coord(0,0); // Canvas cursor
 var o;
+var storedEvt;
 
 function shiftKeys(evt,key) {
     if (key=="NONE") return !evt.ctrlKey && !evt.shiftKey && !evt.altKey;
@@ -11,9 +12,11 @@ function shiftKeys(evt,key) {
     else if (key=="ALT") return !evt.ctrlKey && !evt.shiftKey && evt.altKey;
     else if (key=="ALTSHIFT") return !evt.ctrlKey && evt.shiftKey && evt.altKey;
     else if (key=="CTRLSHIFT") return evt.ctrlKey && evt.shiftKey && !evt.altKey;
+    else if (key=="ALTNONE") return !evt.ctrlKey && !evt.shiftKey;
 }
 
 function mousedown(evt) {
+    storedEvt=evt;
     getCoord(evt);
     o=pn.getCursoredObject(ccursor,"CANVAS");
     if (o) {
@@ -26,18 +29,18 @@ function mousedown(evt) {
         if (evt.button==LEFTBUTTON) {
             if (o==null) {
                 // New Object, Pan
-                if (state==IDLE && shiftKeys(evt,"NONE")) {
+                if (state==IDLE && shiftKeys(evt,"ALTNONE")) {
                     stateChange(LEFTDOWN);
                 }
             }
             else if (o) {
                 // Object click, Drag
-                if (o.type!=FLOW && shiftKeys(evt,"NONE")) {
+                if (o.type!=FLOW && shiftKeys(evt,"ALTNONE")) {
                     stateChange(LEFTDOWN);
                     pn.dragged=o;
                 }
                 // Subnet drag
-                else if (shiftKeys(evt,"SHIFT")) {
+                else if (shiftKeys(evt,"SHIFT")||shiftKeys(evt,"ALTSHIFT")) {
                     stateChange(DRAGALL);
                     pn.connected.length=0;
                     pn.getConnectedAll(o);
@@ -73,6 +76,7 @@ function mousedown(evt) {
 
 var files=[], directory="", selectedFile=-1;
 function mouseup(evt) {
+    storedEvt=evt;
     getCoord(evt);
     o=pn.getCursoredObject(ccursor,"CANVAS");
     if (state==FILES) {
@@ -153,6 +157,7 @@ function mouseup(evt) {
 }
 
 function mousemove(evt) {
+    storedEvt=evt;
     getCoord(evt);
     o=pn.getCursoredObject(ccursor,"CANVAS");
     if (o) pn.highlighted=o;
@@ -169,7 +174,7 @@ function mousemove(evt) {
                 ctx.font="bold 16px arial";
                 selectedFile=i;
             }
-            ctx.fillText(files[i],50,50+20*i);
+            g.fillText(files[i],50,50+20*i);
         }
     }
     else if (o) {
@@ -228,6 +233,7 @@ function mousemove(evt) {
 }
 
 function mousewheel(evt) {
+    storedEvt=evt;
     const delta=-Math.sign(evt.deltaY);
     getCoord(evt);
     o=pn.getCursoredObject(cursor,"VIEWPORT");

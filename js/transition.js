@@ -17,7 +17,7 @@ class Transition extends Object {
         this.x=x;
         this.y=y;
         this.alpha=alpha;
-        this.label=new Label(this.id,this.x,this.y-20);
+        this.label=new Label(this.id,this.x-30,this.y-30);
         this.adjust_p1p2();
     }
 
@@ -29,7 +29,7 @@ class Transition extends Object {
     }
 
     draw() {
-        ctx.beginPath();
+        g.beginPath();
         ctx.lineWidth=LINEWIDTH;
         ctx.fillStyle=COLOR_CANVAS;
         if (this.enabled()) ctx.fillStyle=COLOR_ENABLED;
@@ -37,27 +37,28 @@ class Transition extends Object {
         ctx.save();
         ctx.translate(this.x,this.y);
         ctx.rotate(this.alpha);
-        ctx.rect(-tw/2,-th/2,tw,th);
-        ctx.fill();
-        ctx.stroke();
+        g.rect(-tw/2,-th/2,tw,th);
+        g.fill();
+        g.stroke();
         ctx.restore();
         this.adjust_p1p2();
-        if (pn.transeq[pn.mptr]==this || pn.transeq[pn.mptr-1]==this) {
-            ctx.beginPath();
-            ctx.moveTo(p1.x,p1.y);
-            ctx.lineTo(p2.x,p2.y);
-        ctx.stroke();
+//        if (pn.transeq[pn.mptr]==this || pn.transeq[pn.mptr-1]==this) {
+        if (pn.transeq[pn.mptr]==this) {
+            g.beginPath();
+            g.moveTo(p1.x,p1.y);
+            g.lineTo(p2.x,p2.y);
+        g.stroke();
         }
         if (false) {
-            ctx.beginPath();
+            g.beginPath();
             ctx.strokeStyle=COLOR_HIGHLIGHT;
             solid();
             transConnectors.forEach(c=>{
                 var rot=rotate(0,0,c[0],c[1],this.alpha);
-                ctx.moveTo(this.x+rot[0],this.y+rot[1]);
-                ctx.arc(this.x+rot[0],this.y+rot[1],2,0,2*Math.PI);
+                g.moveTo(this.x+rot[0],this.y+rot[1]);
+                g.arc(this.x+rot[0],this.y+rot[1],2,0,2*Math.PI);
             });
-            ctx.stroke();
+            g.stroke();
         }
     }
 
@@ -87,12 +88,11 @@ class Transition extends Object {
     }
 
     delete() {
-        for (var i=0; i<pn.f.length; i++)
-            pn.f.forEach(flow => {
-                if (flow.o1==this || flow.o2==this) {
-                    pn.f.splice(pn.f.indexOf(flow),1);
-                }
-            });
+        for (var i=pn.f.length-1; i>=0; i--) {
+            if (pn.f[i].o1==this || pn.f[i].o2==this) {
+                pn.f.splice(i,1);
+            }
+        }
         pn.l.splice(pn.l.indexOf(this.label),1);
         pn.t.splice(pn.t.indexOf(this),1);
         pn.clearMarkings();

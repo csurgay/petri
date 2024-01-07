@@ -8,7 +8,7 @@ class Label extends Object {
     }
 
     draw(size=14) {
-        ctx.beginPath();
+        g.beginPath();
         ctx.fillStyle=this.color;
         if (pn.highlighted==this && COLOR_HIGHLIGHT!="black")
             ctx.fillStyle=COLOR_HIGHLIGHT;
@@ -17,11 +17,11 @@ class Label extends Object {
         ctx.textBaseline = 'middle';
         this.width=ctx.measureText(this.label);
         if (pn.highlighted==this) {
-            ctx.fillText(this.label,this.x-2,this.y);
-            ctx.fillText(this.label,this.x+1,this.y);
+            g.fillText(this.label,this.x-2,this.y);
+            g.fillText(this.label,this.x+1,this.y);
         }
         else {
-            ctx.fillText(this.label,this.x,this.y);
+            g.fillText(this.label,this.x,this.y);
         }
     }
 
