@@ -17,7 +17,8 @@ Done:
 - Snap to grid and free drag too
 
 Todo:
-- Settings (grid size (0=off), enabled color, debug mode)
+- Settings (grid size (0=off), enabled color, debug mode, fired indicated)
+- Create logistics sample petrinet
 - Reachability
 - Select (and copy, rotate...?) subnet
 - Labels input and placement
