@@ -68,12 +68,10 @@ class Place extends Object {
     }
 
     delete() {
-        for (var i=0; i<pn.f.length; i++) {
-            pn.f.forEach(flow => {
-                if (flow.o1==this || flow.o2==this) {
-                    pn.f.splice(pn.f.indexOf(flow),1);
-                }
-            });
+        for (var i=pn.f.length-1; i>=0; i--) {
+            if (pn.f[i].o1==this || pn.f[i].o2==this) {
+                pn.f.splice(pn.f.indexOf(pn.f[i]),1);
+            }
         }
         pn.l.splice(pn.l.indexOf(this.label),1);
         pn.p.splice(pn.p.indexOf(this),1);

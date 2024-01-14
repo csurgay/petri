@@ -56,6 +56,7 @@ class Petrinet {
         idPlace=0;
         idTrans=0;
         idFlow=0;
+        idLabel=0;
         this.highlighted=null;
         this.dragged=null;
         this.paleArrow=null;

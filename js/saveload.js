@@ -20,6 +20,13 @@ function rawSave() {
         str+=" "+(o.path.length-2);
         for (var i=1; i<o.path.length-1; i++) str+=" "+o.path[i].x.toFixed(1)+" "+o.path[i].y.toFixed(1);
     });
+    str+="\nLabels:";
+    pn.l.forEach(o=>{
+        if (!o.objectsLabel()) {
+            str+="\n"+o.id+" "+o.color+" "+o.size+" "+
+            o.label+" "+o.x.toFixed(1)+" "+o.y.toFixed(1)+" ";
+        }
+    });
     str+="\nConfig:\nzoom: "+pn.zoom.toFixed(1)
     +"\nvpx: "+pn.cx.toFixed(1)+"\nvpy: "+pn.cy.toFixed(1)
     +"\nvpx: "+pn.vpx.toFixed(1)+"\nvpy: "+pn.vpy.toFixed(1);
@@ -32,6 +39,7 @@ function rawLoad(str) {
     pn.clear();
     str=str.replaceAll('\r','').split('\n'); ptr=0;
     while(str[ptr]!="Places:") ptr++; ptr++;
+    // Places
     while(str[ptr]!="Transitions:") {
         if (DEBUG) log(str[ptr]);
         l=str[ptr].split(" ");
@@ -42,6 +50,7 @@ function rawLoad(str) {
         ptr++;
     }
     ptr++;
+    // Transitions
     while(str[ptr]!="Flows:") {
         if (DEBUG) log(str[ptr]);
         l=str[ptr].split(" ");
@@ -52,7 +61,8 @@ function rawLoad(str) {
         ptr++;
     }
     ptr++;
-    while(str[ptr]!="End" && str[ptr]!="Config:") {
+    // Flows
+    while(str[ptr]!="End" && str[ptr]!="Config:" && str[ptr]!="Labels:") {
         if (DEBUG) log(str[ptr]);
         l=str[ptr].split(" ");
         const o=new Flow(pn.locate(l[4]),pn.locate(l[5])); o.id=l[0]; o.color=l[1];
@@ -68,6 +78,15 @@ function rawLoad(str) {
         pn.addFlow(o);
         ptr++;
     }
+    // Labels
+    while(str[ptr]!="End" && str[ptr]!="Config:") {
+        if (DEBUG) log(str[ptr]);
+        l=str[ptr].split(" ");
+        const o=new Label(l[3],+l[4],+l[5]); 
+        o.id=l[0]; o.color=l[1]; o.size=+l[2];
+        ptr++;
+    }
+    // Config
     if (str[ptr]=="Config:") {
         ptr++;
         while(str[ptr]!="End") {
@@ -84,6 +103,7 @@ function rawLoad(str) {
     idPlace=maxID(pn.p);
     idTrans=maxID(pn.t);
     idFlow=maxID(pn.f);
+    idLabel=maxID(pn.l);
 }
 function maxID(a) {
     var max=0,v;

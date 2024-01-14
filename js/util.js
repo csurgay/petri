@@ -4,8 +4,8 @@ const           PLACE=0,TRANSITION=1,FLOW=2,MIDPOINT=3,LABEL=4,BUTTON=5;
 const objects=["PLACE","TRANSITION","FLOW","MIDPOINT","LABEL","BUTTON"];
 
 const states=[
-     "IDLE","SELECT","DRAG","DRAWARROW","LEFTDOWN","DELETE","MIDDLE","PAN","RUN","DRAGALL","ZOOM", "MULTISEGMENT", "SLOWRUN", "FILES", "FLY"];
-const IDLE=0,SELECT=1,DRAG=2,DRAWARROW=3,LEFTDOWN=4,DELETE=5,MIDDLE=6,PAN=7,RUN=8,DRAGALL=9,ZOOM=10,MULTISEGMENT=11,SLOWRUN=12,FILES=13,FLY=14;
+     "IDLE","SELECT","DRAG","DRAWARROW","LEFTDOWN","DELETE","MIDDLE","PAN","RUN","DRAGALL","ZOOM", "MULTISEGMENT", "SLOWRUN", "FILES", "FLY", "TEXTBOX"];
+const IDLE=0,SELECT=1,DRAG=2,DRAWARROW=3,LEFTDOWN=4,DELETE=5,MIDDLE=6,PAN=7,RUN=8,DRAGALL=9,ZOOM=10,MULTISEGMENT=11,SLOWRUN=12,FILES=13,FLY=14,TEXTBOX=15;
 var state=IDLE;
 
 const LINEWIDTH=2;
@@ -30,11 +30,12 @@ function log(str) {
     console.log(str);
 }
 
-var idPlace=0, idTrans=0, idFlow=0;
+var idPlace=0, idTrans=0, idFlow=0, idLabel=0;
 function nextId(type) {
     if (type==PLACE) return ++idPlace;
     else if (type==TRANSITION) return ++idTrans;
     else if (type==FLOW) return ++idFlow;
+    else if (type==LABEL) return ++idLabel;
 }
 
 function dashed() {
@@ -65,6 +66,7 @@ class Coord {
 class Object extends Coord {
     constructor(x,y) {
         super(x,y);
+        this.id;
         this.color=COLOR_INK;
     }
 
@@ -103,6 +105,7 @@ class Object extends Coord {
 }
 
 function stateChange(newState) {
+    if (DEBUG) console.log(states[state]+" -> "+states[newState]);
     state=newState;
 }
 

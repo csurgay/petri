@@ -8,16 +8,21 @@ addEventListener('mousewheel',mousewheel);
 addEventListener('contextmenu',evt=>{evt.preventDefault();});
 addEventListener('keyup', (evt) => {
     storedEvt=evt;
-    if (evt.key=='d') DEBUG=1-DEBUG;
-    if (evt.key=='s') {
-        // Toggle sticky Flow heads of this Transition
-        var o=pn.getCursoredObject(cursor,"VIEWPORT");
-        if (o && o.type==TRANSITION) {
-            pn.f.forEach(f=>{
-                if (f.o2==o) {
-                    f.stickyHead=!f.stickyHead;
-                }
-            })
+    if (state==TEXTBOX) {
+        textbox.keypressed(evt);
+    }
+    else {
+        if (evt.key=='d') DEBUG=1-DEBUG;
+        if (evt.key=='s') {
+            // Toggle sticky Flow heads of this Transition
+            var o=pn.getCursoredObject(cursor,"VIEWPORT");
+            if (o && o.type==TRANSITION) {
+                pn.f.forEach(f=>{
+                    if (f.o2==o) {
+                        f.stickyHead=!f.stickyHead;
+                    }
+                })
+            }
         }
     }
 });
@@ -27,6 +32,8 @@ pn.animate=true;
 setupStatus();
 setupButton();
 
+const textbox=new Textbox("title",100,0,100,20,'frame',false,"default text");
+
 animate();
 
 var ms,msSlowrun=0;
@@ -34,17 +41,7 @@ function animate() {
     ms=Date.now();
     clearCanvas(canvas);
     ctx.translate(0.5, 0.5);
-/*     // Rotating PacMan
-    g.beginPath();
-    ctx.strokeStyle=COLOR_INK;
-    ctx.lineWidth=1;
-    const alpha=(ms%(628*1000/628))/(100*1000/628)-Math.PI/2;
-    const z=pn.zoom==1?7:6;
-    g.arc(20,20,10,alpha,alpha+z*Math.PI/4)
-    g.lineTo(20,20)
-    ctx.closePath();
-    g.stroke();
- */    
+    if (DEBUG) drawRotatingPacman();    
     // Title line
     g.beginPath();
     ctx.font ="16px arial";
@@ -63,6 +60,7 @@ function animate() {
     ctx.scale(pn.zoom,pn.zoom);
     ctx.translate(pn.vpx,pn.vpy);
     pn.draw();
+    textbox.render();
     ctx.restore();
     // Running mode
     if (state==FLY) { pn.fireOne(); }

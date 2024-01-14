@@ -19,7 +19,6 @@ const sx=40,sy=60,dy=15;
 var i=0;
 
 function setupStatus() {
-    new Status("debug",sx,sy+i++*dy,function(){return DEBUG;});
     new Status("marking",sx,sy+i++*dy,function(){return pn.markings.length;});
     new Status("mptr",sx,sy+i++*dy,function(){return pn.mptr;});
     new Status("undo",sx,sy+i++*dy,function(){return undo.length;});
@@ -36,5 +35,6 @@ function setupStatus() {
     new Status("s",sx,sy+i++*dy,function(){return states[state];});
     new Status("o",sx,sy+i++*dy,function(){return o?objects[o.type]:"";});
     new Status("hl",sx,sy+i++*dy,function(){return pn.highlighted?objects[pn.highlighted.type]:"";});
+    new Status("size",sx,sy+i++*dy,function(){return o?(o.type==LABEL?o.size:""):"";});
     new Status("",sx,sy+i++*dy,function(){return ms;});
 }

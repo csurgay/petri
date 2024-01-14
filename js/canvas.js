@@ -32,3 +32,15 @@ function snap(v) {
     if (grid==0||shiftKeys(storedEvt,"ALT")||shiftKeys(storedEvt,"ALTSHIFT")||state==PAN) return v
     else return Math.round(v/grid)*grid;
 }
+
+function drawRotatingPacman() {
+    g.beginPath();
+    ctx.strokeStyle=COLOR_INK;
+    ctx.lineWidth=1;
+    const alpha=(ms%(628*1000/628))/(100*1000/628)-Math.PI/2;
+    const z=pn.zoom==1?7:6;
+    g.arc(12,20,10,alpha,alpha+z*Math.PI/4)
+    g.lineTo(12,20)
+    ctx.closePath();
+    g.stroke();
+}
