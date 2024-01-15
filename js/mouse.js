@@ -42,12 +42,12 @@ function mousedown(evt) {
                 }
                 // Subnet drag
                 else if (shiftKeys(evt,"SHIFT")||shiftKeys(evt,"ALTSHIFT")) {
-                    stateChange(DRAGALL);
+                    stateChange(SHIFTCLICK);
                     pn.connected.length=0;
                     pn.getConnectedAll(o);
                 }
                 // New potential Flow
-                else if (shiftKeys(evt,"CTRL")) {
+                else if (o && (o.type==PLACE || o.type==TRANSITION) && shiftKeys(evt,"CTRL")) {
                     stateChange(DRAWARROW);
                 }
                 // Multisegment Flow or Flow Toggle
@@ -165,6 +165,50 @@ function mouseup(evt) {
             pn.highlighted=null;
             pn.newUndo();
         }
+        // Copy subnet
+        else if (state==SHIFTCLICK && o && shiftKeys(evt,"SHIFT") && closeEnough(pn.mouseDownCoord,cursor)) {
+            pn.connected.forEach(o=>{
+                if (o.type==PLACE) {
+                    const newObject=new Place(o.x+20,o.y+20);
+                    newObject.label.label=o.label.label;
+                    newObject.label.x=o.label.x+20;
+                    newObject.label.y=o.label.y+20;
+                    newObject.color=o.color;
+                    newObject.tokens=o.tokens;
+                    pn.addPlace(newObject);
+                }
+                else if (o.type==TRANSITION) {
+                    const newObject=new Transition(o.x+20,o.y+20,o.alpha);
+                    newObject.label.label=o.label.label;
+                    newObject.label.x=o.label.x+20;
+                    newObject.label.y=o.label.y+20;
+                    newObject.color=o.color;
+                    pn.addTransition(newObject);
+                }
+            })
+            pn.f.forEach(o=>{
+                var o1=null,o2=null;
+                pn.p.forEach(p=>{
+                    if (p.x==o.o1.x+20 && p.y==o.o1.y+20) o1=p;
+                    if (p.x==o.o2.x+20 && p.y==o.o2.y+20) o2=p;
+                });
+                pn.t.forEach(t=>{
+                    if (t.x==o.o1.x+20 && t.y==o.o1.y+20) o1=t;
+                    if (t.x==o.o2.x+20 && t.y==o.o2.y+20) o2=t;
+                });
+                if (o1!=null && o2!=null) {
+                    const newObject=new Flow(o1,o2);
+                    newObject.color=o.color;
+                    newObject.subtype=o.subtype;
+                    newObject.weight=o.weight;
+                    for (var i=1; i<o.path.length-1; i++) {
+                        newObject.path.splice(i,0,new MidPoint(o.path[i].x+20,o.path[i].y+20));
+                    }
+                    pn.addFlow(newObject);
+                }
+            })
+            pn.newUndo();
+        }
         // Clear Place Tokens
         else if (state==MIDDLE && o && o.type==PLACE) {
             o.changeTokens(-o.tokens);
@@ -222,7 +266,8 @@ function mousemove(evt) {
             pn.needUndo=true;
         }
         // Do DragAll (SubNet)
-        else if (state==DRAGALL) {
+        else if (state==SHIFTCLICK || state==DRAGALL) {
+            stateChange(DRAGALL);
             pn.connected.forEach(da => { 
                 da.dragTo(cursor.x-pn.mouseDownCoord.x,cursor.y-pn.mouseDownCoord.y); 
             });

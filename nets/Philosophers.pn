@@ -1,0 +1,92 @@
+2024-01-15 23:51:32
+Places:
+P1 240.0 160.0 black 1 "Hungry" 240.0 190.0 black
+P2 240.0 40.0 black 0 "Waiting" 280.0 20.0 black
+P3 240.0 -80.0 black 0 "Eating" 260.0 -110.0 black
+P4 120.0 250.0 green 1 "Fork" 90.0 220.0 green
+P6 690.0 370.0 black 0 "Eating" 690.0 340.0 black
+P7 570.0 370.0 black 0 "Waiting" 550.0 340.0 black
+P8 450.0 370.0 black 1 "Hungry" 400.0 370.0 black
+P9 360.0 250.0 green 1 "Fork" 390.0 220.0 green
+P11 -210.0 370.0 black 0 "Eating" -230.0 400.0 black
+P12 -90.0 370.0 black 0 "Waiting" -90.0 340.0 black
+P13 30.0 370.0 black 1 "Hungry" 80.0 370.0 black
+P14 120.0 490.0 green 1 "Fork" 90.0 520.0 green
+P17 240.0 580.0 black 1 "Hungry" 240.0 550.0 black
+P18 240.0 820.0 black 0 "Eating" 210.0 850.0 black
+P19 240.0 700.0 black 0 "Waiting" 200.0 720.0 black
+P20 360.0 490.0 green 1 "Fork" 390.0 520.0 green
+P21 240.0 370.0 red 3 "Semaphor" 300.0 340.0 red
+Transitions:
+T2 240.0 100.0 black 1.571 "Takes right" 290.0 80.0 black
+T3 240.0 -20.0 black 1.571 "Takes left" 190.0 -40.0 black
+T4 340.0 40.0 black 1.571 "Finished" 380.0 20.0 black
+T5 630.0 370.0 black 3.142 "Takes left" 620.0 410.0 black
+T6 510.0 370.0 black 3.142 "Takes right" 520.0 410.0 black
+T7 570.0 470.0 black 3.142 "Finished" 590.0 510.0 black
+T8 -150.0 370.0 black 0.000 "Takes left" -160.0 410.0 black
+T9 -30.0 370.0 black 0.000 "Takes right" -30.0 330.0 black
+T10 -90.0 270.0 black 0.000 "Finished" -90.0 230.0 black
+T11 240.0 640.0 black 4.713 "Takes right" 190.0 660.0 black
+T12 140.0 700.0 black 4.713 "Finished" 100.0 720.0 black
+T13 240.0 760.0 black 4.713 "Takes left" 290.0 780.0 black
+Flows:
+F1 black ENABLER 1 P1 T2 false 3 0
+F2 black ENABLER 1 T2 P2 false -1 0
+F3 black ENABLER 1 P2 T3 false 3 0
+F4 black ENABLER 1 T3 P3 false -1 0
+F5 black ENABLER 1 P3 T4 false 8 1 330.0 -80.0
+F6 black ENABLER 1 T4 P1 false -1 1 340.0 160.0
+F8 green ENABLER 1 P4 T3 false 13 0
+F9 green ENABLER 1 T4 P4 false -1 2 340.0 -130.0 120.0 -130.0
+F11 black ENABLER 1 P8 T6 false 3 0
+F12 black ENABLER 1 T6 P7 false -1 0
+F13 black ENABLER 1 P7 T5 false 3 0
+F14 black ENABLER 1 T5 P6 false -1 0
+F15 black ENABLER 1 P6 T7 false 8 1 690.0 460.0
+F16 black ENABLER 1 T7 P8 false -1 1 450.0 470.0
+F18 green ENABLER 1 P9 T5 false 13 0
+F19 green ENABLER 1 T7 P9 false -1 2 740.0 470.0 740.0 250.0
+F21 black ENABLER 1 P13 T9 false 3 0
+F22 black ENABLER 1 T9 P12 false -1 0
+F23 black ENABLER 1 P12 T8 false 3 0
+F24 black ENABLER 1 T8 P11 false -1 0
+F25 black ENABLER 1 P11 T10 false 8 1 -210.0 280.0
+F26 black ENABLER 1 T10 P13 false -1 1 30.0 270.0
+F28 green ENABLER 1 P14 T8 false 13 0
+F29 green ENABLER 1 T10 P14 false -1 2 -260.0 270.0 -260.0 490.0
+F31 black ENABLER 1 P17 T11 false 3 0
+F32 black ENABLER 1 T11 P19 false -1 0
+F33 black ENABLER 1 P19 T13 false 3 0
+F34 black ENABLER 1 T13 P18 false -1 0
+F35 black ENABLER 1 P18 T12 false 8 1 150.0 820.0
+F36 black ENABLER 1 T12 P17 false -1 1 140.0 580.0
+F38 green ENABLER 1 P20 T13 false 13 0
+F39 green ENABLER 1 T12 P20 false -1 2 140.0 870.0 360.0 870.0
+F41 green ENABLER 1 P4 T9 false 15 0
+F42 green ENABLER 1 T10 P4 false -1 1 -50.0 250.0
+F43 green ENABLER 1 P9 T2 false 15 0
+F44 green ENABLER 1 T4 P9 false -1 1 360.0 80.0
+F45 green ENABLER 1 P20 T6 false 15 0
+F46 green ENABLER 1 T7 P20 false -1 1 530.0 490.0
+F47 green ENABLER 1 P14 T11 false 15 0
+F48 green ENABLER 1 T12 P14 false -1 1 120.0 660.0
+F49 red ENABLER 1 P21 T2 false 13 1 200.0 160.0
+F50 red ENABLER 1 P21 T6 false 13 1 450.0 330.0
+F51 red ENABLER 1 P21 T11 false 13 1 280.0 580.0
+F52 red ENABLER 1 P21 T9 false 13 1 30.0 410.0
+F53 red ENABLER 1 T4 P21 false -1 1 310.0 250.0
+F54 red ENABLER 1 T7 P21 false -1 1 360.0 440.0
+F55 red ENABLER 1 T12 P21 false -1 1 170.0 490.0
+F56 red ENABLER 1 T10 P21 false -1 1 120.0 300.0
+Labels:
+L34 black 32 "Dining Philosophers" 590.0 -30.0 
+L35 black 24 "Semaphore prevents Deadlock" 590.0 0.0 
+L36 black 24 "csurgay@gmail.com" 590.0 27.5 
+Config:
+zoom: 0.8
+vpx: 200.0
+vpy: 200.0
+vpx: 73.8
+vpy: -43.8
+End
