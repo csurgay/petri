@@ -1,54 +1,54 @@
-2024-01-06 01:33:43
+2024-01-15 19:19:47
 Places:
-P1 -84.0 -75.0 black 1 UserRequest -84.0 -105.0 black
-P3 35.0 73.0 black 1 Init/Result 46.3 41.8 black
-P5 183.0 218.0 black 0 FwResult 165.5 244.3 black
-P6 173.0 81.0 black 0  173.0 51.0 black
-P7 173.0 -37.0 black 0  173.0 -67.0 black
-P8 168.0 -145.0 black 0  168.0 -175.0 black
-P9 19.0 -157.0 black 0  19.0 -187.0 black
-P11 328.7 -149.8 black 0 ValidReq 316.2 -184.8 black
-P12 319.8 14.7 black 1 BgCheckDb 319.8 -15.3 black
-P13 323.1 83.6 black 0  323.1 53.6 black
-P15 312.0 272.4 black 0  312.0 242.4 black
-P17 520.9 186.9 black 0 Permission 520.9 156.9 black
-P18 669.8 183.6 black 0 UserSpace 697.3 214.8 black
-P19 588.7 76.9 black 0 AccessReq 533.7 59.4 black
-P21 343.1 -245.3 black 1  343.1 -275.3 black
-P22 514.2 -83.1 black 1 RoleDB 481.7 -108.1 black
-P24 655.9 -55.9 black 0  655.9 -85.9 black
-P25 737.7 -74.6 black 0 UserRole 737.7 -104.6 black
-P26 660.9 52.0 black 0  660.9 22.0 black
-P27 739.8 52.6 black 0  772.3 63.8 black
-P30 553.1 -218.7 black 0  553.1 -248.7 black
-P32 846.4 -116.4 black 0 StateInfo 886.4 -92.7 black
-P33 837.6 -240.9 black 0  837.6 -270.9 black
-P34 944.2 -185.6 black 1 StateDB 933.0 -216.9 black
-P36 353.3 170.2 black 0 Failed 353.3 140.2 black
-P37 454.4 268.8 black 0  454.4 238.8 black
-P28 859.5 -11.0 black 1 PolicyDB 859.5 -41.0 black
+P1 -84.0 -75.0 black 1 "UserRequest" -84.0 -105.0 black
+P3 35.0 73.0 black 1 "Init/Result" 46.3 41.8 black
+P5 183.0 218.0 black 0 "FwResult" 165.5 244.3 black
+P6 173.0 81.0 black 0 "" 173.0 51.0 black
+P7 173.0 -37.0 black 0 "" 173.0 -67.0 black
+P8 168.0 -145.0 black 0 "" 168.0 -175.0 black
+P9 19.0 -157.0 black 0 "" 19.0 -187.0 black
+P11 328.7 -149.8 black 0 "ValidReq" 316.2 -184.8 black
+P12 319.8 14.7 black 1 "BgCheckDb" 319.8 -15.3 black
+P13 323.1 83.6 black 0 "" 323.1 53.6 black
+P15 312.0 272.4 black 0 "" 312.0 242.4 black
+P17 520.9 186.9 black 0 "Permission" 520.9 156.9 black
+P18 669.8 183.6 black 0 "UserSpace" 697.3 214.8 black
+P19 588.7 76.9 black 0 "AccessReq" 533.7 59.4 black
+P21 343.1 -245.3 black 1 "" 343.1 -275.3 black
+P22 514.2 -83.1 black 1 "RoleDB" 481.7 -108.1 black
+P24 655.9 -55.9 black 0 "" 655.9 -85.9 black
+P25 737.7 -74.6 black 0 "UserRole" 737.7 -104.6 black
+P26 660.9 52.0 black 0 "" 660.9 22.0 black
+P27 739.8 52.6 black 0 "" 772.3 63.8 black
+P30 553.1 -218.7 black 0 "" 553.1 -248.7 black
+P32 846.4 -116.4 black 0 "StateInfo" 886.4 -92.7 black
+P33 837.6 -240.9 black 0 "" 837.6 -270.9 black
+P34 944.2 -185.6 black 1 "StateDB" 933.0 -216.9 black
+P36 353.3 170.2 black 0 "Failed" 353.3 140.2 black
+P37 454.4 268.8 black 0 "" 454.4 238.8 black
+P28 859.5 -11.0 black 1 "PolicyDB" 859.5 -41.0 black
 Transitions:
-T1 -37.0 14.0 black 0.000 CompLogic -55.8 49.0 black
-T2 35.0 172.0 black 1.571 AcceptResult 21.3 192.0 black
-T3 163.0 -232.0 black 1.571 Check 163.0 -252.0 black
-T4 170.5 -91.0 black 1.525 NewUser 134.3 -107.3 black
-T5 173.0 22.0 black 1.571 BgCheck 134.3 2.0 black
-T6 178.0 149.5 black 1.498 Failed 146.8 129.5 black
-T7 251.7 -150.2 black 0.000 OldUser 247.9 -183.9 black
-T8 248.1 82.3 black 0.017 Passed 246.8 48.5 black
-T9 274.2 194.1 black -0.256 Denied 271.7 157.9 black
-T11 247.5 245.2 black 0.399 AcceptWsResp 232.5 282.7 black
-T13 595.3 185.2 black -0.022 CheckPerm 591.6 220.2 black
-T14 424.2 51.3 black 6.283 UpdateDBs 434.2 87.6 black
-T15 614.2 -92.0 black 1.080 AssignRole 646.7 -112.0 black
-T16 660.9 -2.6 black 1.571 CreateSession 608.4 -18.8 black
-T17 741.9 -2.3 black 1.525 FetchPolicy 796.9 15.2 black
-T18 700.9 100.2 black 1.571 CreateUserSpace 762.1 122.7 black
-T19 460.9 -272.0 black 1.571  460.9 -292.0 black
-T20 842.0 -178.7 black 1.499 FetchState 790.7 -193.7 black
-T21 524.5 264.0 black 1.571 Pass 525.8 282.7 black
-T22 383.2 270.6 black -0.026 WsLogic 378.2 234.4 black
-T23 434.6 176.1 black 0.099 Fail 437.1 137.3 black
+T1 -37.0 14.0 black 0.000 "CompLogic" -55.8 49.0 black
+T2 35.0 172.0 black 1.571 "AcceptResult" 21.3 192.0 black
+T3 163.0 -232.0 black 1.571 "Check" 163.0 -252.0 black
+T4 170.5 -91.0 black 1.525 "NewUser" 134.3 -107.3 black
+T5 173.0 22.0 black 1.571 "BgCheck" 134.3 2.0 black
+T6 178.0 149.5 black 1.498 "Failed" 146.8 129.5 black
+T7 251.7 -150.2 black 0.000 "OldUser" 247.9 -183.9 black
+T8 248.1 82.3 black 0.017 "Passed" 246.8 48.5 black
+T9 274.2 194.1 black -0.256 "Denied" 271.7 157.9 black
+T11 247.5 245.2 black 0.399 "AcceptWsResp" 232.5 282.7 black
+T13 595.3 185.2 black -0.022 "CheckPerm" 591.6 220.2 black
+T14 424.2 51.3 black 6.283 "UpdateDBs" 434.2 87.6 black
+T15 614.2 -92.0 black 1.080 "AssignRole" 646.7 -112.0 black
+T16 660.9 -2.6 black 1.571 "CreateSession" 608.4 -18.8 black
+T17 741.9 -2.3 black 1.525 "FetchPolicy" 796.9 15.2 black
+T18 700.9 100.2 black 1.571 "CreateUserSpace" 762.1 122.7 black
+T19 460.9 -272.0 black 1.571 "" 460.9 -292.0 black
+T20 842.0 -178.7 black 1.499 "FetchState" 790.7 -193.7 black
+T21 524.5 264.0 black 1.571 "Pass" 525.8 282.7 black
+T22 383.2 270.6 black -0.026 "WsLogic" 378.2 234.4 black
+T23 434.6 176.1 black 0.099 "Fail" 437.1 137.3 black
 Flows:
 F17 black ENABLER 1 P3 T1 false 13 0
 F18 black ENABLER 1 P1 T1 false 0 0
@@ -116,8 +116,11 @@ F79 black ENABLER 1 P17 T23 false 3 0
 F80 black ENABLER 1 T23 P36 false -1 0
 F81 black ENABLER 1 P28 T17 false 0 0
 F82 black ENABLER 1 T17 P28 false -1 0
+Labels:
 Config:
 zoom: 0.7
+vpx: 200.0
+vpy: 200.0
 vpx: 0.0
 vpy: 90.0
 End

@@ -1,0 +1,38 @@
+2024-01-15 19:01:33
+Places:
+P1 40.0 -69.0 green 0 "Autumn" 8.0 -98.0 black
+P2 216.0 -71.0 green 1 "Winter" 196.0 -100.0 black
+P3 222.0 96.0 green 0 "Spring" 192.0 68.0 black
+P4 39.0 100.0 green 0 "Summer" 7.0 70.0 black
+P5 320.0 166.0 red 0 "Aux" 325.0 136.0 black
+P6 368.0 15.0 purple 0 "Years" 368.0 -15.0 black
+P7 491.0 15.0 red 0 "LeapYears" 491.0 -15.0 black
+Transitions:
+T1 128.0 -70.0 green -0.011 "" 127.0 -108.0 black
+T2 219.0 12.5 green 1.535 "NewYear" 254.0 -6.5 black
+T3 130.5 98.0 green -0.022 "" 129.5 59.0 black
+T4 39.5 15.5 green -1.565 "" 20.5 -3.5 black
+T5 405.5 90.5 red -0.723 "Divider" 445.5 89.5 black
+Flows:
+F83 green ENABLER 1 P1 T1 false 2 0
+F84 green ENABLER 1 T1 P2 false -1 0
+F85 green ENABLER 1 P2 T2 false 2 0
+F86 green ENABLER 1 T2 P3 false -1 0
+F87 green ENABLER 1 P3 T3 false 3 0
+F88 green ENABLER 1 T3 P4 false -1 0
+F89 green ENABLER 1 P4 T4 false 2 0
+F90 green ENABLER 1 T4 P1 false -1 0
+F91 red ENABLER 1 T2 P5 false -1 0
+F92 red INHIBITOR 4 P5 T3 false 13 0
+F93 purple ENABLER 1 T2 P6 false -1 0
+F94 red ENABLER 4 P5 T5 false 2 0
+F95 red ENABLER 1 T5 P7 false -1 0
+Labels:
+L17 black 23 "Four Seasons and Leap Years" 70.0 180.0 
+Config:
+zoom: 1.0
+vpx: 200.0
+vpy: 200.0
+vpx: 62.0
+vpy: -22.0
+End

@@ -68,6 +68,7 @@ class Object extends Coord {
         super(x,y);
         this.id;
         this.color=COLOR_INK;
+        this.visible=true;
     }
 
     draw() {}

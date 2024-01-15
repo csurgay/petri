@@ -7,12 +7,12 @@ const COLOR = {
 var blinkms=0; // blink millisec counter
     
 class Textbox {
-	constructor(name, x,y,w,h, frame, enabled, defaultText) {
+	constructor(name, x,y,w,h, frame, visible, defaultText) {
 		this.x = x;
 		this.y = y;
 		this.w = w;
 		this.h = h;
-		this.enabled = enabled;
+		this.visible = visible;
 		this.frame = frame;
 		this.name = name;
 		this.defaultText = defaultText;
@@ -42,8 +42,7 @@ class Textbox {
 		this.ptrCursor = 0;
 	}
 	render() {
-        if (this.enabled) {
-            this.w = this.size * this.text.length;
+        if (this.visible) {
             this.h = this.size + 5;
             ctx.beginPath();
             solid();
@@ -125,14 +124,16 @@ class Textbox {
         if (this.text=="") this.text="-";
         if (DEBUG) console.log(this.text);
         this.callbackObject.label=this.text;
+        this.callbackObject.visible=true;
         stateChange(IDLE);
-        this.enabled=false;
+        this.visible=false;
         pn.newUndo();
     }
     cancel() {
         if (DEBUG) console.log(this.text);
         stateChange(IDLE);
-        this.enabled=false;
+        this.callbackObject.visible=true;
+        this.visible=false;
     }
     keypressed(evt) {
         if (DEBUG) console.log(evt.keyCode + ' ' + evt.key);

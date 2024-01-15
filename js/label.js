@@ -10,20 +10,22 @@ class Label extends Object {
     }
 
     draw() {
-        g.beginPath();
-        ctx.fillStyle=this.color;
-        if (pn.highlighted==this && COLOR_HIGHLIGHT!="black")
-            ctx.fillStyle=COLOR_HIGHLIGHT;
-        ctx.font=""+this.size+"px arial"; 
-        ctx.textAlign = "center";
-        ctx.textBaseline = 'middle';
-        this.width=ctx.measureText(this.label).width;
-        g.fillText(this.label,this.x,this.y);
-        if (pn.highlighted==this) {
-            ctx.beginPath();
-            dashed();
-            g.rect(this.x-this.width/2-1,this.y-this.size/2-2,this.width+2,this.size);
-            ctx.stroke();
+        if (this.visible) {
+            g.beginPath();
+            ctx.fillStyle=this.color;
+            if (pn.highlighted==this && COLOR_HIGHLIGHT!="black")
+                ctx.fillStyle=COLOR_HIGHLIGHT;
+            ctx.font=""+this.size+"px arial"; 
+            ctx.textAlign = "center";
+            ctx.textBaseline = 'middle';
+            this.width=ctx.measureText(this.label).width;
+            g.fillText(this.label,this.x,this.y);
+            if (pn.highlighted==this) {
+                ctx.beginPath();
+                dashed();
+                g.rect(this.x-this.width/2-1,this.y-this.size/2-2,this.width+2,this.size);
+                ctx.stroke();
+            }
         }
     }
 
@@ -42,8 +44,10 @@ class Label extends Object {
         textbox.size=this.size;
         textbox.defaulText=this.label;
         textbox.text=this.label;
+        textbox.w = textbox.size * textbox.text.length;
         textbox.ptrCursor=this.label.length;
-        textbox.enabled=true;
+        textbox.visible=true;
+        this.visible=false;
     }
 
     objectsLabel() { // label belongs to a Place/Trans

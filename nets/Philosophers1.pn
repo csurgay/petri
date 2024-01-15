@@ -1,35 +1,35 @@
-2024-01-06 06:13:41
+2024-01-15 19:27:39
 Places:
-P1 98.1 7.5 black 1 P1 98.1 -22.5 black
-P2 -7.0 95.0 black 0 P2 -7.0 65.0 black
-P3 -108.0 170.0 black 0 P3 -113.0 138.8 black
-P4 199.5 6.0 black 1 P4 199.5 -24.0 black
-P5 319.0 101.0 black 0 P5 319.0 71.0 black
-P6 407.0 173.0 black 0 P6 407.0 143.0 black
-P7 131.0 -71.1 black 1 P7 116.0 -98.6 black
-P8 126.0 -218.0 black 0 P8 141.0 -246.8 black
-P9 117.8 -358.8 black 0 P9 117.8 -388.8 black
-P10 278.1 -81.1 black 1 P10 278.1 -111.1 black
-P11 146.7 88.9 black 1 P11 146.7 58.9 black
-P12 13.8 -85.4 black 1 P12 10.1 -115.4 black
-P13 -406.3 15.8 black 1 P13 -423.8 -11.7 black
-P14 -409.1 -161.3 black 0 P14 -370.6 -162.7 black
-P15 -423.4 -334.2 black 0 P15 -426.5 -366.1 black
-P16 -516.3 38.7 black 1 P16 -523.8 8.7 black
-P17 -294.9 28.7 black 1 P17 -265.7 5.4 black
+P1 98.1 7.5 black 1 "P1" 98.1 -22.5 black
+P2 -7.0 95.0 black 0 "P2" -7.0 65.0 black
+P3 -108.0 170.0 black 0 "P3" -113.0 138.8 black
+P4 199.5 6.0 black 1 "P4" 199.5 -24.0 black
+P5 319.0 101.0 black 0 "P5" 319.0 71.0 black
+P6 407.0 173.0 black 0 "P6" 407.0 143.0 black
+P7 131.0 -71.1 black 1 "P7" 116.0 -98.6 black
+P8 126.0 -218.0 black 0 "P8" 141.0 -246.8 black
+P9 117.8 -358.8 black 0 "P9" 117.8 -388.8 black
+P10 278.1 -81.1 black 1 "P10" 278.1 -111.1 black
+P11 146.7 88.9 black 1 "P11" 146.7 58.9 black
+P12 13.8 -85.4 black 1 "P12" 10.1 -115.4 black
+P13 -406.3 15.8 black 1 "P13" -423.8 -11.7 black
+P14 -409.1 -161.3 black 0 "P14" -370.6 -162.7 black
+P15 -423.4 -334.2 black 0 "P15" -426.5 -366.1 black
+P16 -516.3 38.7 black 1 "P16" -523.8 8.7 black
+P17 -294.9 28.7 black 1 "P17" -265.7 5.4 black
 Transitions:
-T1 39.0 59.0 black -0.709 T1 71.5 76.5 black
-T2 -56.0 128.0 black -0.671 T2 -47.3 106.8 black
-T3 278.0 66.0 black 0.699 T3 269.3 34.8 black
-T4 362.0 133.0 black 0.649 T4 370.8 103.0 black
-T5 125.0 -159.0 black 1.553 T5 107.5 -177.8 black
-T6 120.6 -287.4 black 1.618 T6 105.6 -307.4 black
-T7 237.0 -194.0 black -1.571 T7 244.5 -215.3 black
-T8 200.0 145.0 black -2.160 T8 201.3 173.8 black
-T9 -55.0 -4.0 black -0.982 T9 -55.0 -24.0 black
-T10 -410.6 -94.2 black 1.470 T10 -391.4 -113.3 black
-T11 -409.1 -239.9 black 1.508 T11 -427.7 -259.9 black
-T12 -282.0 -162.7 black -1.571 T12 -277.0 -182.7 black
+T1 39.0 59.0 black -0.709 "T1" 71.5 76.5 black
+T2 -56.0 128.0 black -0.671 "T2" -47.3 106.8 black
+T3 278.0 66.0 black 0.699 "T3" 269.3 34.8 black
+T4 362.0 133.0 black 0.649 "T4" 370.8 103.0 black
+T5 125.0 -159.0 black 1.553 "T5" 107.5 -177.8 black
+T6 120.6 -287.4 black 1.618 "T6" 105.6 -307.4 black
+T7 237.0 -194.0 black -1.571 "T7" 244.5 -215.3 black
+T8 200.0 145.0 black -2.160 "T8" 201.3 173.8 black
+T9 -55.0 -4.0 black -0.982 "T9" -55.0 -24.0 black
+T10 -410.6 -94.2 black 1.470 "T10" -391.4 -113.3 black
+T11 -409.1 -239.9 black 1.508 "T11" -427.7 -259.9 black
+T12 -282.0 -162.7 black -1.571 "T12" -277.0 -182.7 black
 Flows:
 F96 black ENABLER 1 P1 T1 false 3 0
 F97 black ENABLER 1 T1 P2 false -1 0
@@ -71,8 +71,11 @@ F132 black ENABLER 1 T12 P17 false -1 0
 F133 black ENABLER 1 T12 P16 false -1 0
 F134 black ENABLER 1 P17 T10 false 15 0
 F135 black ENABLER 1 P16 T11 false 13 0
+Labels:
 Config:
 zoom: 1.0
+vpx: 200.0
+vpy: 200.0
 vpx: 399.0
 vpy: 274.0
 End
