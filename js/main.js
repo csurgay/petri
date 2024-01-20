@@ -1,12 +1,13 @@
 const canvas=document.getElementById("petrinetCanvas");
 const ctx=canvas.getContext("2d");
 const g=new graphics(ctx);
-const events=new Event();
+const events=new Events();
 addEventListener('mousedown',events.mousedownevent);
 addEventListener('mouseup',events.mouseupevent);
 addEventListener('mousemove',events.mousemoveevent);
 addEventListener('mousewheel',events.mousewheelevent);
 addEventListener('keyup', events.keyupevent);
+addEventListener('keydown', events.keydownevent);
 addEventListener('contextmenu',evt=>{evt.preventDefault();});
 
 const pn=new Petrinet();

@@ -15,12 +15,12 @@ Done:
 - Mouse location as center of zooming
 - Also load file from upload
 - Snap to grid and free drag too
+- Mouse must not snap for move over arrow to highlight
+- Labels input and placement
 
 Todo:
-- Mouse must not snap for move over arrow to highlight
 - Settings (grid size (0=off), enabled color, debug mode, fired indicated)
 - Create logistics sample petrinet
 - Reachability
 - Select (and copy, rotate...?) subnet
-- Labels input and placement
 - Firing animation with "flames"

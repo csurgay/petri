@@ -1,4 +1,4 @@
-var DEBUG=0, RECORD=0;
+var DEBUG=0, RECORD=0, PLAYBACK=0;
 
 const           PLACE=0,TRANSITION=1,FLOW=2,MIDPOINT=3,LABEL=4,BUTTON=5;
 const objects=["PLACE","TRANSITION","FLOW","MIDPOINT","LABEL","BUTTON"];
@@ -112,8 +112,10 @@ function stateChange(newState) {
 
 function getCoord(evt) {
     const rect = canvas.getBoundingClientRect();
-    cursor.x = snap(evt.clientX/pn.zoom-rect.left-pn.cx/pn.zoom-pn.vpx);
-    cursor.y = snap(evt.clientY/pn.zoom-rect.top-pn.cy/pn.zoom-pn.vpy);
+    cursor.x = evt.clientX/pn.zoom-rect.left-pn.cx/pn.zoom-pn.vpx;
+    cursor.y = evt.clientY/pn.zoom-rect.top-pn.cy/pn.zoom-pn.vpy;
+    scursor.x = snap(evt.clientX/pn.zoom-rect.left-pn.cx/pn.zoom-pn.vpx);
+    scursor.y = snap(evt.clientY/pn.zoom-rect.top-pn.cy/pn.zoom-pn.vpy);
     ccursor.x = evt.clientX-rect.left;
     ccursor.y = evt.clientY-rect.top;
 }
@@ -187,7 +189,7 @@ function drawArrow(fromx,fromy,tox,toy,lineWidth=1,color,subtype="ENABLER") {
         zeroPad(d.getMinutes())+":"+
         zeroPad(d.getSeconds());
     if (millisec=='millisec')
-        str+="."+("00"+new Date().getMilliseconds()).substr(-3);
+        str+="."+("00"+d.getMilliseconds()).substr(-3);
     return str;
   }
 

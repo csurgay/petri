@@ -1,22 +1,12 @@
 const LEFTBUTTON=0, MIDDLEBUTTON=1, RIGHTBUTTON=2;
 
-var cursor=new Coord(0,0); // Viewport cursor
-var ccursor=new Coord(0,0); // Canvas cursor
+var cursor=new Coord(0,0); // Viewport (translated) cursor
+var scursor=new Coord(0,0); // Snapped viewport (translated) cursor
+var ccursor=new Coord(0,0); // Canvas cursor (for toolbar, not translated)
 var o;
 
-function shiftKeys(evt,key) {
-    if (key=="NONE") return !evt.ctrlKey && !evt.shiftKey && !evt.altKey;
-    else if (key=="CTRL") return evt.ctrlKey && !evt.shiftKey && !evt.altKey;
-    else if (key=="SHIFT") return !evt.ctrlKey && evt.shiftKey && !evt.altKey;
-    else if (key=="ALT") return !evt.ctrlKey && !evt.shiftKey && evt.altKey;
-    else if (key=="ALTSHIFT") return !evt.ctrlKey && evt.shiftKey && evt.altKey;
-    else if (key=="CTRLSHIFT") return evt.ctrlKey && evt.shiftKey && !evt.altKey;
-    else if (key=="ALTNONE") return !evt.ctrlKey && !evt.shiftKey;
-    else if (key=="CTRLALTNONE") return !evt.shiftKey;
-}
-
 function mousedown(evt) {
-    storedEvt.store("mousedown",Date.now(),evt);
+    storedEvt.store("mousedown",getFormattedDate('millisec'),evt);
     getCoord(evt);
     o=pn.getCursoredObject(ccursor,"CANVAS");
     if (o) {
@@ -76,7 +66,7 @@ function mousedown(evt) {
 
 var files=[], directory="", selectedFile=-1;
 function mouseup(evt) {
-    storedEvt.store("mouseup",Date.now(),evt);
+    storedEvt.store("mouseup",getFormattedDate('millisec'),evt);
     getCoord(evt); // sets cursor (translated canvas) and ccursor (orig canvas)
     o=pn.getCursoredObject(ccursor,"CANVAS");
     if (state==FILES) {
@@ -93,6 +83,7 @@ function mouseup(evt) {
             animate();
         }
     }
+    // CLicked object (Place, Trans, Midpoint, Label)
     else if (o) {
         o.clicked(evt);
     }
@@ -139,21 +130,21 @@ function mouseup(evt) {
         }
         // New Place
         else if (state==LEFTDOWN && o==null && shiftKeys(evt,"NONE") && closeEnough(pn.mouseDownCoord,cursor)) {
-            const newPlace = new Place(cursor.x,cursor.y);
+            const newPlace = new Place(scursor.x,scursor.y);
             pn.addPlace(newPlace);
             pn.highlighted=newPlace;
             pn.newUndo();
         }
         // New Transition
         else if (state==LEFTDOWN && o==null && shiftKeys(evt,"CTRL") && closeEnough(pn.mouseDownCoord,cursor)) {
-            const newTrans = new Transition(cursor.x,cursor.y);
+            const newTrans = new Transition(scursor.x,scursor.y);
             pn.addTransition(newTrans);
             pn.highlighted=newTrans;
             pn.newUndo();
         }
         // New Label
         else if (state==LEFTDOWN && o==null && shiftKeys(evt,"ALT") && closeEnough(pn.mouseDownCoord,cursor)) {
-            const newLabel = new Label("Label",cursor.x,cursor.y);
+            const newLabel = new Label(" ",scursor.x,scursor.y);
             pn.highlighted=newLabel;
             pn.newUndo();
         }
@@ -229,7 +220,7 @@ function mouseup(evt) {
 }
 
 function mousemove(evt) {
-    storedEvt.store("mousemove",Date.now(),evt);
+    storedEvt.store("mousemove",getFormattedDate('millisec'),evt);
     getCoord(evt);
     o=pn.getCursoredObject(ccursor,"CANVAS");
     if (o) pn.highlighted=o;
@@ -244,17 +235,17 @@ function mousemove(evt) {
         }
         // Do Drag
         if (state==DRAG && pn.dragged) {
-            pn.dragged.dragTo(cursor.x-pn.mouseDownCoord.x,cursor.y-pn.mouseDownCoord.y);
-            pn.mouseDownCoord.moveTo(cursor);
+            pn.dragged.dragTo(scursor.x-pn.mouseDownCoord.x,scursor.y-pn.mouseDownCoord.y);
+            pn.mouseDownCoord.moveTo(scursor);
             pn.needUndo=true;
         }
         // Do DragAll (SubNet)
         else if (state==SHIFTCLICK || state==DRAGALL) {
             stateChange(DRAGALL);
             pn.connected.forEach(da => { 
-                da.dragTo(cursor.x-pn.mouseDownCoord.x,cursor.y-pn.mouseDownCoord.y); 
+                da.dragTo(scursor.x-pn.mouseDownCoord.x,scursor.y-pn.mouseDownCoord.y); 
             });
-            pn.mouseDownCoord.moveTo(cursor);
+            pn.mouseDownCoord.moveTo(scursor);
             pn.needUndo=true;
         }
         // Draw potetntial new Flow
@@ -290,7 +281,7 @@ function mousemove(evt) {
 }
 
 function mousewheel(evt) {
-    storedEvt.store("mousewheel",Date.now(),evt);
+    storedEvt.store("mousewheel",getFormattedDate('millisec'),evt);
     const delta=-Math.sign(evt.deltaY);
     getCoord(evt);
     o=pn.getCursoredObject(cursor,"VIEWPORT");

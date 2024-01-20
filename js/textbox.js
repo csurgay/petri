@@ -1,6 +1,7 @@
 const COLOR = {
 	BACKGROUND: '#edebe9',
-	TEXTBOX : { BACKGROUND: '#ffffff', FRAME: '#d9d9d9', COLOR: '#4d4d4d' },
+//	TEXTBOX : { BACKGROUND: '#ffffff', FRAME: '#d9d9d9', COLOR: '#4d4d4d' },
+	TEXTBOX : { BACKGROUND: COLOR_CANVAS, FRAME: COLOR_CANVAS, COLOR: '#4d4d4d' },
     TEXT: { LIGHT: '#cccccc', DARK: '#555555', HIGHLIGHT: "#aecbfa" },
 }
 
@@ -92,18 +93,22 @@ class Textbox {
                 }
                 x += w;
                 ptr++;
-                if (x+ctx.measureText(this.text[ptr],x,y).width > this.ax+this.w-this.px)
-                    fits = false;
+                if (x+ctx.measureText(this.text[ptr],x,y).width > this.x+this.w-this.px) {
+                    // fits = false;
+                }
             }
             this.posChars.push( [x, y-3, this.ax+this.w-x, this.h-2*this.py+6] );
 
-            { // draw all chars rect
-            // ctx.beginPath();
-            // for (var i=0; i<this.posChars.length; i++) {
-                // var p=this.posChars[i];
-                // ctx.rect(p[0],p[1],p[2],p[3]);
-            // }
-            // ctx.stroke();
+            if (DEBUG) { // draw all chars rect
+            ctx.beginPath();
+            ctx.strokeStyle=COLOR_INK;
+            ctx.lineWidth=1;
+            solid();
+            for (var i=0; i<this.posChars.length; i++) {
+                var p=this.posChars[i];
+                ctx.rect(p[0],p[1],p[2],p[3]);
+            }
+            ctx.stroke();
             }
         }
 	}
@@ -136,7 +141,6 @@ class Textbox {
         this.visible=false;
     }
     keypressed(evt) {
-        if (DEBUG) console.log(evt.keyCode + ' ' + evt.key);
         // left, right, home, end
         if (evt.keyCode == 37) { this.ptrCursor = this.ptrCursor<=0?0:this.ptrCursor-1; }
         else if (evt.keyCode == 39) { this.ptrCursor = this.ptrCursor>=this.text.length?this.text.length:this.ptrCursor+1; }
