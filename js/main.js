@@ -1,33 +1,15 @@
 const canvas=document.getElementById("petrinetCanvas");
 const ctx=canvas.getContext("2d");
 const g=new graphics(ctx);
-addEventListener('mousedown',mousedown);
-addEventListener('mouseup',mouseup);
-addEventListener('mousemove',mousemove);
-addEventListener('mousewheel',mousewheel);
+const events=new Event();
+addEventListener('mousedown',events.mousedownevent);
+addEventListener('mouseup',events.mouseupevent);
+addEventListener('mousemove',events.mousemoveevent);
+addEventListener('mousewheel',events.mousewheelevent);
+addEventListener('keyup', events.keyupevent);
 addEventListener('contextmenu',evt=>{evt.preventDefault();});
-addEventListener('keyup', (evt) => {
-    storedEvt=evt;
-    if (state==TEXTBOX) {
-        textbox.keypressed(evt);
-    }
-    else {
-        if (evt.key=='d') DEBUG=1-DEBUG;
-        if (evt.key=='s') {
-            // Toggle sticky Flow heads of this Transition
-            var o=pn.getCursoredObject(cursor,"VIEWPORT");
-            if (o && o.type==TRANSITION) {
-                pn.f.forEach(f=>{
-                    if (f.o2==o) {
-                        f.stickyHead=!f.stickyHead;
-                    }
-                })
-            }
-        }
-    }
-});
 
-var pn=new Petrinet();
+const pn=new Petrinet();
 pn.animate=true;
 setupStatus();
 setupButton();
@@ -38,6 +20,7 @@ animate();
 
 var ms,msSlowrun=0;
 function animate() {
+    events.processEvent();
     ms=Date.now();
     clearCanvas(canvas);
     ctx.translate(0.5, 0.5);
@@ -59,9 +42,25 @@ function animate() {
     ctx.translate(pn.cx,pn.cy);
     ctx.scale(pn.zoom,pn.zoom);
     ctx.translate(pn.vpx,pn.vpy);
-    pn.draw();
+    if (pn.animate) pn.draw();
     textbox.render();
     ctx.restore();
+    // File select
+    if (state==FILES) {
+        selectedFile=-1;
+        for (var i=0; i<files.length; i++) {
+            ctx.textAlign = "left";
+            ctx.textBaseline = 'top';
+            ctx.font="16px arial";
+            ctx.fillStyle=COLOR_INK;
+            var width=ctx.measureText(files[i]).width;
+            if (ccursor.x>200 && ccursor.x<200+width && ccursor.y>100+20*i && ccursor.y<119+20*i) {
+                ctx.font="bold 16px arial";
+                selectedFile=i;
+            }
+            g.fillText(files[i],200,100+20*i);
+        }
+    }
     // Running mode
     if (state==FLY) { pn.fireOne(); }
     if (state==RUN) { 
@@ -76,5 +75,5 @@ function animate() {
             msSlowrun=ms;
         } 
     }
-    if (pn.animate) requestAnimationFrame(animate);
+    if (pn.animate || true) requestAnimationFrame(animate);
 }

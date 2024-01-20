@@ -15,7 +15,7 @@ class Status extends Label {
     dragTo() {}
 }
 
-const sx=40,sy=60,dy=15;
+const sx=40,sy=80,dy=15;
 var i=0;
 
 function setupStatus() {
@@ -36,5 +36,6 @@ function setupStatus() {
     new Status("o",sx,sy+i++*dy,function(){return o?objects[o.type]:"";});
     new Status("hl",sx,sy+i++*dy,function(){return pn.highlighted?objects[pn.highlighted.type]:"";});
     new Status("size",sx,sy+i++*dy,function(){return o?(o.type==LABEL?o.size:""):"";});
+    new Status("rec",sx,sy+i++*dy,function(){return RECORD?"REC":"";});
     new Status("",sx,sy+i++*dy,function(){return ms;});
 }

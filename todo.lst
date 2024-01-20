@@ -17,6 +17,7 @@ Done:
 - Snap to grid and free drag too
 
 Todo:
+- Mouse must not snap for move over arrow to highlight
 - Settings (grid size (0=off), enabled color, debug mode, fired indicated)
 - Create logistics sample petrinet
 - Reachability

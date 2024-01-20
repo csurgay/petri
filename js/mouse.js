@@ -3,7 +3,6 @@ const LEFTBUTTON=0, MIDDLEBUTTON=1, RIGHTBUTTON=2;
 var cursor=new Coord(0,0); // Viewport cursor
 var ccursor=new Coord(0,0); // Canvas cursor
 var o;
-var storedEvt;
 
 function shiftKeys(evt,key) {
     if (key=="NONE") return !evt.ctrlKey && !evt.shiftKey && !evt.altKey;
@@ -17,7 +16,7 @@ function shiftKeys(evt,key) {
 }
 
 function mousedown(evt) {
-    storedEvt=evt;
+    storedEvt.store("mousedown",Date.now(),evt);
     getCoord(evt);
     o=pn.getCursoredObject(ccursor,"CANVAS");
     if (o) {
@@ -77,7 +76,7 @@ function mousedown(evt) {
 
 var files=[], directory="", selectedFile=-1;
 function mouseup(evt) {
-    storedEvt=evt;
+    storedEvt.store("mouseup",Date.now(),evt);
     getCoord(evt); // sets cursor (translated canvas) and ccursor (orig canvas)
     o=pn.getCursoredObject(ccursor,"CANVAS");
     if (state==FILES) {
@@ -230,27 +229,11 @@ function mouseup(evt) {
 }
 
 function mousemove(evt) {
-    storedEvt=evt;
+    storedEvt.store("mousemove",Date.now(),evt);
     getCoord(evt);
     o=pn.getCursoredObject(ccursor,"CANVAS");
     if (o) pn.highlighted=o;
-    if (state==FILES) {
-        clearCanvas(canvas);
-        selectedFile=-1;
-        for (var i=0; i<files.length; i++) {
-            ctx.textAlign = "left";
-            ctx.textBaseline = 'top';
-            ctx.font="16px arial";
-            ctx.fillStyle=COLOR_INK;
-            var width=ctx.measureText(files[i]).width;
-            if (ccursor.x>50 && ccursor.x<50+width && ccursor.y>50+20*i && ccursor.y<69+20*i) {
-                ctx.font="bold 16px arial";
-                selectedFile=i;
-            }
-            g.fillText(files[i],50,50+20*i);
-        }
-    }
-    else if (o) {
+    if (o) {
 
     }
     else {
@@ -307,7 +290,7 @@ function mousemove(evt) {
 }
 
 function mousewheel(evt) {
-    storedEvt=evt;
+    storedEvt.store("mousewheel",Date.now(),evt);
     const delta=-Math.sign(evt.deltaY);
     getCoord(evt);
     o=pn.getCursoredObject(cursor,"VIEWPORT");

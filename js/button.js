@@ -4,7 +4,6 @@ class Button extends Object {
     constructor(button,label,x,y,w,enabled) {
         super(x,y);
         this.type=BUTTON;
-        this.enabled=true;
         this.button=button;
         this.w=w;
         pn.addButton(this);
@@ -179,6 +178,8 @@ class Button extends Object {
     }
 
     clicked(evt) {
+        if (!this.enabled()) return;
+        if (DEBUG) console.log(this.button);
         if (this.button=="PLAY") {
             if (state!=SLOWRUN) stateChange(SLOWRUN);
             else stateChange(IDLE);

@@ -1,4 +1,4 @@
-var DEBUG=0;
+var DEBUG=0, RECORD=0;
 
 const           PLACE=0,TRANSITION=1,FLOW=2,MIDPOINT=3,LABEL=4,BUTTON=5;
 const objects=["PLACE","TRANSITION","FLOW","MIDPOINT","LABEL","BUTTON"];
@@ -106,7 +106,7 @@ class Object extends Coord {
 }
 
 function stateChange(newState) {
-    if (DEBUG) console.log(states[state]+" -> "+states[newState]);
+    if (DEBUG) if (state!=newState) console.log(states[state]+" -> "+states[newState]);
     state=newState;
 }
 
@@ -178,10 +178,17 @@ function drawArrow(fromx,fromy,tox,toy,lineWidth=1,color,subtype="ENABLER") {
     return Math.hypot(p.x-xx,p.y-yy);
   }
 
-  function getFormattedDate() {
+  function getFormattedDate(millisec="none") {
     const d=new Date();
-    return d.getFullYear()+"-"+zeroPad(d.getMonth()+1)+"-"+zeroPad(d.getDate())+" "+
-        zeroPad(d.getHours())+":"+zeroPad(d.getMinutes())+":"+zeroPad(d.getSeconds());
+    var str=d.getFullYear()+"-"+
+        zeroPad(d.getMonth()+1)+"-"+
+        zeroPad(d.getDate())+" "+
+        zeroPad(d.getHours())+":"+
+        zeroPad(d.getMinutes())+":"+
+        zeroPad(d.getSeconds());
+    if (millisec=='millisec')
+        str+="."+("00"+new Date().getMilliseconds()).substr(-3);
+    return str;
   }
 
   function zeroPad(v) {
