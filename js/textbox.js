@@ -45,16 +45,16 @@ class Textbox {
 	render() {
         if (this.visible) {
             this.h = this.size + 5;
-            ctx.beginPath();
-            solid();
+            g.beginPath();
+            g.solid();
             ctx.fillStyle = this.color_background;
             ctx.fillRect(this.x,this.y+0.5,this.w,this.h);
             ctx.strokeStyle = this.color_frame;
-            ctx.lineWidth = 1;
+            g.lineWidth(1);
             if (this.frame=='frame') ctx.rect(this.x,this.y,this.w,this.h);
             ctx.stroke();
             ctx.strokeStyle = this.color;
-            ctx.lineWidth = 1;
+            g.lineWidth(1);
             var ptr = this.ptrStart;
             var fits = true;
             var x = this.x+this.px; var y = this.y+this.py; var w;
@@ -64,9 +64,9 @@ class Textbox {
             ctx.textBaseline='top';
             while (fits && ptr<=this.text.length) {
                 if (this.ptrCursor==ptr && this.cursorBlink) {
-                    ctx.beginPath();
-                    ctx.moveTo(x,y-3);
-                    ctx.lineTo(x,y+this.h-2*this.py+3);
+                    g.beginPath();
+                    g.moveTo(x,y-3);
+                    g.lineTo(x,y+this.h-2*this.py+3);
                     ctx.stroke();
                 }
                 if (Date.now()-blinkms>500) {
@@ -76,17 +76,17 @@ class Textbox {
                 if (ptr < this.text.length) {
                     w = ctx.measureText(this.text[ptr],x,y).width;
                     this.posChars[ptr] = [x,y-3,w,this.h-2*this.py+6];
-                    ctx.beginPath();
+                    g.beginPath();
                     ctx.fillStyle = COLOR.TEXT.DARK;
                     ctx.fillText(this.text[ptr],x,y-2);
                     ctx.fill();
                 }
                 if (ptr >= this.selectStart && ptr <=this.selectEnd) {
-                    ctx.beginPath();
+                    g.beginPath();
                     ctx.fillStyle = "#0000ff";
                     ctx.fillRect(x,y-3,w,this.h-2*this.py+6);
                     ctx.fill();
-                    ctx.beginPath();
+                    g.beginPath();
                     ctx.fillStyle = COLOR.TEXT.LIGHT;
                     ctx.fillText(this.text[ptr],x,y-2);
                     ctx.fill();
@@ -100,13 +100,13 @@ class Textbox {
             this.posChars.push( [x, y-3, this.ax+this.w-x, this.h-2*this.py+6] );
 
             if (DEBUG) { // draw all chars rect
-            ctx.beginPath();
+            g.beginPath();
             ctx.strokeStyle=COLOR_INK;
-            ctx.lineWidth=1;
-            solid();
+            g.lineWidth(1);
+            g.solid();
             for (var i=0; i<this.posChars.length; i++) {
                 var p=this.posChars[i];
-                ctx.rect(p[0],p[1],p[2],p[3]);
+                g.rect(p[0],p[1],p[2],p[3]);
             }
             ctx.stroke();
             }

@@ -3,7 +3,7 @@ var undoPtr=-1;
 
 class Petrinet {
     constructor() {
-        this.animate=false; // should animatie continuously
+        this.visible=true; // should pn be drawn
         this.p=[]; // Places
         this.t=[]; // Transitions
         this.f=[]; // Flows
@@ -304,12 +304,15 @@ class Petrinet {
         this.clearMarkings();
     }
 
-    oldLoad(filename) {
+    macroLoad(filename) {
         var request = new XMLHttpRequest();
-        request.onload = function() { processLoad(request.responseText); }
+        request.onload = function() {
+            events.rec=[];
+            const str=request.responseText.split("\n");
+            str.forEach(l=>events.e.push(l));
+        }
         request.open("GET", filename);
         request.send();
-        this.clearMarkings();
     }
 
     getFileNames(dir) {

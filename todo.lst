@@ -17,8 +17,11 @@ Done:
 - Snap to grid and free drag too
 - Mouse must not snap for move over arrow to highlight
 - Labels input and placement
+- Events and Macros
+- events.rec load
 
 Todo:
+- rec mousemove filter by deltaXY
 - Settings (grid size (0=off), enabled color, debug mode, fired indicated)
 - Create logistics sample petrinet
 - Reachability

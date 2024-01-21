@@ -78,7 +78,7 @@ function mouseup(evt) {
             if (files[selectedFile]!="CANCEL") {
                 pn.load(directory+"/"+files[selectedFile]);
             }
-            pn.animate=true;
+            pn.visible=true;
             stateChange(IDLE);
             animate();
         }
@@ -90,10 +90,15 @@ function mouseup(evt) {
     else {
         o=pn.getCursoredObject(cursor,"VIEWPORT");
         // New Flow
-        if (state==DRAWARROW && o && o!=pn.highlighted) {
+        if (state==DRAWARROW && o && o!=pn.highlighted &&
+            (o.type==PLACE || o.type==TRANSITION)) {
             pn.addFlows(pn.highlighted,o);
             pn.highlighted=o;
             pn.newUndo();
+        }
+        // No New Flow
+        else if (state==DRAWARROW && o==null) {
+            pn.highlighted=null;
         }
         else if (state==LEFTDOWN && o && o==pn.highlighted && 
             closeEnough(pn.mouseDownCoord,cursor) &&

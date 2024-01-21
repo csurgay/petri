@@ -60,7 +60,7 @@ class Flow extends Object {
         // Draw multisegment path
         g.beginPath();
         this.setColor();
-        ctx.lineWidth=LINEWIDTH;
+        g.lineWidth(LINEWIDTH);
         g.moveTo(this.path[0].x,this.path[0].y);
         for(var i=1; i<this.path.length-1; i++) {
             g.lineTo(this.path[i].x,this.path[i].y);
@@ -72,7 +72,7 @@ class Flow extends Object {
         if (this.weight!=1) {
             g.beginPath();
             ctx.strokeStyle=this.color;
-            ctx.lineWidth=1;
+            g.lineWidth(1);
             ctx.fillStyle=COLOR_CANVAS;
             g.arc(midx,midy,7,0,2*Math.PI);
             g.fill();
@@ -124,7 +124,7 @@ class Flow extends Object {
 
     delete() {
         pn.f.splice(pn.f.indexOf(this),1);
-        this.clearMarkings();
+        pn.clearMarkings();
     }
 }
 
@@ -138,8 +138,8 @@ class MidPoint extends Object {
         if (color=="black" || pn.highlighted==this) {
             g.beginPath();
             ctx.strokeStyle=color=="black"?COLOR_INK:COLOR_HIGHLIGHT;
-            color=="black"?solid():dashed();
-            ctx.lineWidth=LINEWIDTH;
+            color=="black"?g.solid():g.dashed();
+            g.lineWidth(LINEWIDTH);
             g.arc(this.x,this.y,6,0,2*Math.PI);
             g.stroke();
         }

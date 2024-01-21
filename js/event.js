@@ -60,7 +60,7 @@ class Events {
     }
 
     processEvent() {
-        if (Date.now()-msEvent>20) {
+        if (Date.now()-msEvent>1) {
             msEvent=Date.now();
             if (this.e.length>0) {
                 evt=this.e.shift();
@@ -140,12 +140,14 @@ function keyup(myevt) {
     if (state!=TEXTBOX) {
         if (myevt.key=='d') DEBUG=1-DEBUG;
         else if (myevt.key=='p') {
-            RECORD=0;
             PLAYBACK=1-PLAYBACK;
         }
         else if (myevt.key=='r' && PLAYBACK==0) {
             RECORD=1-RECORD;
             if (RECORD==1) events.rec=[];
+        }
+        else if (myevt.key=='l') {
+            pn.macroLoad("macro/nemtudom.rec");
         }
         else if (myevt.key=='s') {
             // Toggle sticky Flow heads of this Transition

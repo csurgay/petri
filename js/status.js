@@ -39,6 +39,7 @@ function setupStatus() {
     new Status("rec",sx,sy+i++*dy,function(){return PLAYBACK?"PLAYBACK":RECORD?"REC":"";});
     new Status("shifts",sx,sy+i++*dy,function(){return sca();});
     new Status("key",sx,sy+i++*dy,function(){return storedEvt.key+"("+storedEvt.keyCode+")";});
+    new Status("events",sx,sy+i++*dy,function(){return events.e.length;});
     new Status("",sx,sy+i++*dy,function(){return storedEvt.type;});
     new Status("",sx,sy+i++*dy,function(){return storedEvt.tstamp;});
     new Status("",sx,sy+i++*dy,function(){return ms;});

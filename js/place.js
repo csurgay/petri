@@ -33,7 +33,7 @@ class Place extends Object {
     draw() {
         // Circle
         g.beginPath();
-        ctx.lineWidth=LINEWIDTH;
+        g.lineWidth(LINEWIDTH);
         this.setColor();
         ctx.fillStyle=COLOR_CANVAS;
         g.arc(this.x,this.y,PLACE_R,0,2*Math.PI);

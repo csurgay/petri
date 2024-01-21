@@ -30,7 +30,7 @@ class Transition extends Object {
 
     draw() {
         g.beginPath();
-        ctx.lineWidth=LINEWIDTH;
+        g.lineWidth(LINEWIDTH);
         ctx.fillStyle=COLOR_CANVAS;
         if (this.enabled()) ctx.fillStyle=COLOR_ENABLED;
         this.setColor();
@@ -52,7 +52,7 @@ class Transition extends Object {
         if (false) {
             g.beginPath();
             ctx.strokeStyle=COLOR_HIGHLIGHT;
-            solid();
+            g.solid();
             transConnectors.forEach(c=>{
                 var rot=rotate(0,0,c[0],c[1],this.alpha);
                 g.moveTo(this.x+rot[0],this.y+rot[1]);

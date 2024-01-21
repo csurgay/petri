@@ -11,7 +11,6 @@ addEventListener('keydown', events.keydownevent);
 addEventListener('contextmenu',evt=>{evt.preventDefault();});
 
 const pn=new Petrinet();
-pn.animate=true;
 setupStatus();
 setupButton();
 
@@ -23,7 +22,7 @@ var ms,msSlowrun=0;
 function animate() {
     events.processEvent();
     ms=Date.now();
-    clearCanvas(canvas);
+    g.clearCanvas(canvas);
     ctx.translate(0.5, 0.5);
     if (DEBUG) drawRotatingPacman();    
     // Title line
@@ -43,7 +42,7 @@ function animate() {
     ctx.translate(pn.cx,pn.cy);
     ctx.scale(pn.zoom,pn.zoom);
     ctx.translate(pn.vpx,pn.vpy);
-    if (pn.animate) pn.draw();
+    if (pn.visible) pn.draw();
     textbox.render();
     ctx.restore();
     // File select
@@ -76,5 +75,5 @@ function animate() {
             msSlowrun=ms;
         } 
     }
-    if (pn.animate || true) requestAnimationFrame(animate);
+    requestAnimationFrame(animate);
 }

@@ -13,12 +13,8 @@ class Button extends Object {
     }
 
     draw() {
-//        this.setEnabled();
         g.beginPath();
-        solid();
-        ctx.lineWidth=1;
-        ctx.strokeStyle="black";
-        ctx.fillStyle=COLOR_CANVAS;
+        g.standard(1);
         if (this.enabled() && pn.highlighted==this) ctx.fillStyle=COLOR_ENABLED;
         ovalPatch(this.x,this.y,this.w,bh,br);
         g.fill();
@@ -87,7 +83,7 @@ class Button extends Object {
         }
         else if (this.button=="CLEAR") {
             g.beginPath();
-            ctx.lineWidth=2;
+            g.lineWidth(2);
             g.rect(this.x-bdh/2,this.y-bdh/2,bdh,bdh);
             g.stroke();
         }
@@ -100,7 +96,7 @@ class Button extends Object {
             g.lineTo(this.x-8,this.y+7);
             g.fill();
             g.beginPath();
-            ctx.lineWidth=2;
+            g.lineWidth(2);
             g.moveTo(this.x+8,this.y-3);
             g.lineTo(this.x+8,this.y-5);
             g.lineTo(this.x+2,this.y-5);
@@ -113,7 +109,7 @@ class Button extends Object {
         }
         else if (this.button=="SAVE") {
             g.beginPath();
-            ctx.lineWidth=1;
+            g.lineWidth(1);
             g.moveTo(this.x-8,this.y+8);
             g.lineTo(this.x+8,this.y+8);
             g.lineTo(this.x+8,this.y-4);
@@ -122,7 +118,7 @@ class Button extends Object {
             g.lineTo(this.x-8,this.y+8);
             g.fill();
             g.beginPath();
-            ctx.lineWidth=2;
+            g.lineWidth(2);
             ctx.strokeStyle="white";
             g.moveTo(this.x+2,this.y-7);
             g.lineTo(this.x+2,this.y-3);
@@ -227,7 +223,7 @@ class Button extends Object {
             }
         }
         else if (this.button=="OPEN") {
-            pn.animate=false;
+            pn.visible=false;
             directory="nets";
             if (shiftKeys(evt,"CTRLSHIFT")) directory="upload";
             pn.getFileNames(directory);
@@ -240,7 +236,7 @@ class Button extends Object {
 }
 
 function selectFile() {
-    clearCanvas(canvas);
+    g.clearCanvas(canvas);
     g.beginPath();
     ctx.fillStyle=COLOR_INK;
     ctx.textAlign = "left";
@@ -255,16 +251,14 @@ function selectFile() {
 function ovalPatch(x,y,w,h,r) {
     g.moveTo(x-w/2+r,y-h/2);
     g.lineTo(x+w/2-r,y-h/2);
-//    g.moveTo(x+w/2-r,y-h/2);
     g.arc(x+w/2-r,y,r,3*Math.PI/2,Math.PI/2);
-//    g.moveTo(x+w/2-r,y+h/2);
     g.lineTo(x-w/2+r,y+h/2);
     g.arc(x-w/2+r,y,r,Math.PI/2,3*Math.PI/2);
 }
 
 function triangle(x,y,w,h,o,r=1) { // r for reverse
     g.beginPath();
-    ctx.lineWidth=1;
+    g.lineWidth(1);
     g.moveTo(x-r*w/2+o,y-h/2);
     g.lineTo(x+r*w/2+o,y);
     g.lineTo(x-r*w/2+o,y+h/2);
@@ -274,7 +268,7 @@ function triangle(x,y,w,h,o,r=1) { // r for reverse
 
 function curvedArrow(x,y,r=1) { // r for reverse
     g.beginPath();
-    ctx.lineWidth=3;
+    g.lineWidth(3);
     var ux=-4,uy=-3,a1=3,a2=7;
     g.moveTo(x+r*(ux-a1),y+(uy-a1));
     g.lineTo(x+r*(ux+a1),y+(uy+a1));

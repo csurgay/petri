@@ -21,8 +21,9 @@ class Label extends Object {
             this.width=ctx.measureText(this.label).width;
             g.fillText(this.label,this.x,this.y);
             if (pn.highlighted==this) {
-                ctx.beginPath();
-                dashed();
+                g.beginPath();
+                g.standard(1);
+                g.dashed();
                 g.rect(this.x-this.width/2-1,this.y-this.size/2-2,this.width+2,this.size);
                 ctx.stroke();
             }
