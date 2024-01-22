@@ -141,6 +141,7 @@ function keyup(myevt) {
         if (myevt.key=='d') DEBUG=1-DEBUG;
         else if (myevt.key=='p') {
             PLAYBACK=1-PLAYBACK;
+            if (PLAYBACK==1) RECORD=0;
         }
         else if (myevt.key=='r' && PLAYBACK==0) {
             RECORD=1-RECORD;

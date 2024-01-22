@@ -62,7 +62,7 @@ class graphics {
 }
 
 function snap(v) {
-    if (grid==0||shiftKeys(storedEvt,"ALT")||shiftKeys(storedEvt,"ALTSHIFT")||state==PAN) return v
+    if (grid==0||shiftKeys(storedEvt,"ALT")||shiftKeys(storedEvt,"ALTSHIFT")) return v
     else return Math.round(v/grid)*grid;
 }
 

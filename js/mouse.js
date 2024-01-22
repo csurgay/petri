@@ -262,8 +262,8 @@ function mousemove(evt) {
             if (!closeEnough(pn.mouseDownCoord,cursor))
             {
                 stateChange(PAN);
-                pn.vpx+=cursor.x-pn.mouseDownCoord.x;
-                pn.vpy+=cursor.y-pn.mouseDownCoord.y;
+                pn.vpx+=snap(cursor.x-pn.mouseDownCoord.x);
+                pn.vpy+=snap(cursor.y-pn.mouseDownCoord.y);
             }
         }
         // Multisegment Flow

@@ -307,7 +307,7 @@ class Petrinet {
     macroLoad(filename) {
         var request = new XMLHttpRequest();
         request.onload = function() {
-            events.rec=[];
+            RECORD=0; PLAYBACK=1;
             const str=request.responseText.split("\n");
             str.forEach(l=>events.e.push(l));
         }
