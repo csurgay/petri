@@ -175,7 +175,7 @@ class Button extends Object {
 
     clicked(evt) {
         if (!this.enabled()) return;
-        if (DEBUG) console.log(this.button);
+        if (DEBUG) log("Button: "+this.button);
         if (this.button=="PLAY") {
             if (state!=SLOWRUN) stateChange(SLOWRUN);
             else stateChange(IDLE);

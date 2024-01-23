@@ -215,7 +215,7 @@ class Petrinet {
         const e = this.getEnabled();
         if (trans) {
             if (!e.includes(trans)) {
-                console.log("not enabled, cannot fire");
+                error("trans not enabled, cannot fire");
             }
         }
         else {
@@ -320,7 +320,7 @@ class Petrinet {
         request.open('POST','php/scandir.php',true);
         request.onreadystatechange=function() {
             if (request.readyState==4 && request.status==200) {
-                if (DEBUG) console.log(request.responseText);
+                if (DEBUG) log(request.responseText);
                 files.length=0;
                 files.push(...request.responseText.split('\n'));
                 files.pop();

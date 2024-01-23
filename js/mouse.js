@@ -72,8 +72,8 @@ function mouseup(evt) {
     if (state==FILES) {
         if (selectedFile!=-1) {
             if (DEBUG) { 
-                console.log(selectedFile);
-                console.log(files[selectedFile]);
+                log(selectedFile);
+                log(files[selectedFile]);
             }
             if (files[selectedFile]!="CANCEL") {
                 pn.load(directory+"/"+files[selectedFile]);

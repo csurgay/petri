@@ -127,7 +127,7 @@ class Textbox {
 	}
     confirm() {
         if (this.text=="") this.text="-";
-        if (DEBUG) console.log(this.text);
+        if (DEBUG) log(this.text);
         this.callbackObject.label=this.text;
         this.callbackObject.visible=true;
         stateChange(IDLE);
@@ -135,7 +135,7 @@ class Textbox {
         pn.newUndo();
     }
     cancel() {
-        if (DEBUG) console.log(this.text);
+        if (DEBUG) log(this.text);
         stateChange(IDLE);
         this.callbackObject.visible=true;
         this.visible=false;

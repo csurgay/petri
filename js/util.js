@@ -12,6 +12,10 @@ function log(str) {
     console.log(str);
 }
 
+function error(str) {
+    console.log("Error: "+str);
+}
+
 var idPlace=0, idTrans=0, idFlow=0, idLabel=0;
 function nextId(type) {
     if (type==PLACE) return ++idPlace;
@@ -80,7 +84,7 @@ class Object extends Coord {
 }
 
 function stateChange(newState) {
-    if (DEBUG) if (state!=newState) console.log(states[state]+" -> "+states[newState]);
+    if (DEBUG) if (state!=newState) log(states[state]+" -> "+states[newState]);
     state=newState;
 }
 

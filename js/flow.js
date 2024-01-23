@@ -45,7 +45,7 @@ class Flow extends Object {
             }
             const c=transConnectors[this.stickyTransConnector];
             if (c==null) 
-                console.log(this.stickyTransConnector);
+                error("transConn=null: "+this.stickyTransConnector);
             const rot=rotate(0,0,c[0],c[1],this.o2.alpha);
             this.conn.x=this.o2.x+rot[0]; 
             this.conn.y=this.o2.y+rot[1];
