@@ -35,8 +35,8 @@ F16 black ENABLER 1 T6 P4 false -1 1 450.0 -80.0
 Labels:
 Config:
 zoom: 1.0
-vpx: 200.0
-vpy: 200.0
-vpx: -10.0
-vpy: -2.0
+cx: 200.0
+cy: 200.0
+vpx: 0.0
+vpy: 0.0
 End

@@ -23,8 +23,8 @@ F10 black ENABLER 1 T4 P5 false -1 1 360.0 70.0
 Labels:
 Config:
 zoom: 1.0
-vpx: 200.0
-vpy: 200.0
-vpx: -4.0
-vpy: -12.0
+cx: 200.0
+cy: 200.0
+vpx: 0.0
+vpy: 0.0
 End

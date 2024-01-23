@@ -31,8 +31,8 @@ Labels:
 L17 black 23 "Four Seasons and Leap Years" 70.0 180.0 
 Config:
 zoom: 1.0
-vpx: 200.0
-vpy: 200.0
-vpx: 62.0
-vpy: -22.0
+cx: 200.0
+cy: 200.0
+vpx: 60.0
+vpy: -20.0
 End

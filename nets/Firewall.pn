@@ -119,8 +119,8 @@ F82 black ENABLER 1 T17 P28 false -1 0
 Labels:
 Config:
 zoom: 0.7
-vpx: 200.0
-vpy: 200.0
+cx: 200.0
+cy: 200.0
 vpx: 0.0
-vpy: 90.0
+vpy: 100.0
 End

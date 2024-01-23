@@ -28,7 +28,7 @@ function rawSave() {
         }
     });
     str+="\nConfig:\nzoom: "+pn.zoom.toFixed(1)
-    +"\nvpx: "+pn.cx.toFixed(1)+"\nvpy: "+pn.cy.toFixed(1)
+    +"\ncx: "+pn.cx.toFixed(1)+"\ncy: "+pn.cy.toFixed(1)
     +"\nvpx: "+pn.vpx.toFixed(1)+"\nvpy: "+pn.vpy.toFixed(1);
     str+="\nEnd";
     return str;

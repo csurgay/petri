@@ -10,8 +10,8 @@ L39 black 49 Label3 8.0 79.0
 L40 black 76 Label4 10.0 150.0 
 Config:
 zoom: 1.0
-vpx: 200.0
-vpy: 200.0
+cx: 200.0
+cy: 200.0
 vpx: 0.0
 vpy: 0.0
 End

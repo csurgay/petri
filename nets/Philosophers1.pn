@@ -74,8 +74,8 @@ F135 black ENABLER 1 P16 T11 false 13 0
 Labels:
 Config:
 zoom: 1.0
-vpx: 200.0
-vpy: 200.0
-vpx: 399.0
-vpy: 274.0
+cx: 200.0
+cy: 200.0
+vpx: 400.0
+vpy: 280.0
 End

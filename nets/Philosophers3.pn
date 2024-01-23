@@ -66,8 +66,8 @@ L27 black 24 "Semaphore preventing deadlock" 560.0 160.0
 L28 black 24 "csurgay@gmail.com" 560.0 190.0 
 Config:
 zoom: 1.0
-vpx: 200.0
-vpy: 200.0
-vpx: 19.0
-vpy: 6.0
+cx: 200.0
+cy: 200.0
+vpx: 20.0
+vpy: 0.0
 End
