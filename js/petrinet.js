@@ -309,7 +309,10 @@ class Petrinet {
         request.onload = function() {
             RECORD=0; PLAYBACK=1;
             const str=request.responseText.split("\n");
-            str.forEach(l=>events.e.push(l));
+            str.forEach(l=>{
+                if (l.length>10)
+                    events.e.push(l)
+            })
         }
         request.open("GET", filename);
         request.send();

@@ -129,6 +129,7 @@ function getCoord(evt) {
   }
 
   function getFormattedDate(millisec="none") {
+    if (millisec=='millisec') return Date.now();
     const d=new Date();
     var str=d.getFullYear()+"-"+
         zeroPad(d.getMonth()+1)+"-"+

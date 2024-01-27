@@ -323,7 +323,7 @@ function mousewheel(evt) {
         }
         // Adjust Label size
         else if (state!=TEXTBOX && o.type==LABEL) {
-            o.size+=delta;
+            o.size+=2*delta;
             if (o.size<8) o.size=8;
             pn.needTimedUndo=true;
         }

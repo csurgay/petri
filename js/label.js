@@ -1,3 +1,5 @@
+const sizes=[8,14,20,32,48,72];
+
 class Label extends Object {
     constructor(label,x,y) {
         super(x,y);

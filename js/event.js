@@ -29,13 +29,15 @@ class MyEvent { // Data structure for an Event (mouse and keys)
         return value===undefined?"-":value;
     }
     toString() {
+//        console.log("toString sca: "+sca(this.shiftKey,this.ctrlKey,this.altKey));
         return ""+this.type+' "'+this.tstamp+'" '+
             this.clientX+" "+this.clientY+" "+this.button+" "+
             this.deltaY+' "'+this.key+'" '+this.keyCode+" "+
-            this.ctrlKey+" "+this.shiftKey+" "+this.altKey;
+            sca(this.shiftKey,this.ctrlKey,this.altKey);
     }
     parse(str) {
         resultArray=[]; tokenize(str,resultArray); str=resultArray;
+//        console.log('str: '+str);
         this.type=str[0];
         this.tstamp=str[1];
         this.clientX=+str[2];
@@ -44,13 +46,15 @@ class MyEvent { // Data structure for an Event (mouse and keys)
         this.deltaY=+str[5];
         this.key=str[6];
         this.keyCode=+str[7];
-        this.ctrlKey=str[8]=='true';
-        this.shiftKey=str[9]=='true';
-        this.altKey=str[10]=='true';
+        var tmp=sca2(str[8]);
+//        console.log(this.clientX+" "+str[8]+" "+tmp);
+        this.shiftKey=tmp[0];
+        this.ctrlKey=tmp[1];
+        this.altKey=tmp[2];
     }
 }
 
-const myEvent=new MyEvent(), storedEvt=new MyEvent();
+const myEvent=new MyEvent(), storedEvt=new MyEvent(), e1=new MyEvent(), e2=new MyEvent();
 var evt, msEvent=0, l;
 
 class Events {
@@ -64,30 +68,36 @@ class Events {
             msEvent=Date.now();
             if (this.e.length>0) {
                 evt=this.e.shift();
+//                console.log(evt);
                 myEvent.parse(evt);
                 storedEvt.store(myEvent.type,myEvent.tstamp,myEvent);
-                if (myEvent.type=="mousemove") {
-                    l=events.rec.length;
-                    if (l>1 && events.rec[l-1][0]=="mousemove" && events.rec[l-2][0]=="mousemove") 
-                        if (+events.rec[l-1][1]-events.rec[l-2][1]<100) events.rec.pop()
+                if (myEvent.type=="mm") {
+                    l=this.rec.length;
+                    if (l>1) {
+                        e1.parse(this.rec[l-1]);
+                        e2.parse(this.rec[l-2]);
+                        if (e1.type=="mm" && e2.type=="mm") {
+                          if (Math.hypot(e1.clientX-e2.clientX,e1.clientY-e2.clientY)<50) this.rec.pop()
+                        }
+                    }
                 }
-                if (RECORD) events.rec.push(evt);
-                if (myEvent.type=="mousedown") {
+                if (RECORD) this.rec.push(evt);
+                if (myEvent.type=="md") {
                     mousedown(myEvent);
                 }
-                else if (myEvent.type=="mouseup") {
+                else if (myEvent.type=="mu") {
                     mouseup(myEvent);
                 }
-                else if (myEvent.type=="mousemove") {
+                else if (myEvent.type=="mm") {
                     mousemove(myEvent);
                 }
-                else if (myEvent.type=="mousewheel") {
+                else if (myEvent.type=="mw") {
                     mousewheel(myEvent);
                 }
-                else if (myEvent.type=="keyup") {
+                else if (myEvent.type=="ku") {
                     keyup(myEvent);
                 }
-                else if (myEvent.type=="keydown") {
+                else if (myEvent.type=="kd") {
                     keydown(myEvent);
                 }
             }
@@ -95,37 +105,37 @@ class Events {
     }
 
     mousedownevent(evt) {
-        myEvent.store("mousedown",getFormattedDate('millisec'),evt);
+        myEvent.store("md",getFormattedDate('millisec'),evt);
         events.e.push(myEvent.toString());
     }
     mouseupevent(evt) {
-        myEvent.store("mouseup",getFormattedDate('millisec'),evt);
+        myEvent.store("mu",getFormattedDate('millisec'),evt);
         events.e.push(myEvent.toString());
     }
     mousemoveevent(evt) {
         l=events.e.length;
         if (l>0) {
             myEvent.parse(events.e[l-1]);
-            if (myEvent.type=="mousemove") {
+            if (myEvent.type=="mm") {
                 if (Math.hypot(myEvent.clientX-evt.clientX,
-                    myEvent.clientY-evt.clientY)<10) {
+                    myEvent.clientY-evt.clientY)<50) {
                     events.e.pop();
                 }
             }
         }
-        myEvent.store("mousemove",getFormattedDate('millisec'),evt);
+        myEvent.store("mm",getFormattedDate('millisec'),evt);
         events.e.push(myEvent.toString());
     }
     mousewheelevent(evt) {
-        myEvent.store("mousewheel",getFormattedDate('millisec'),evt);
+        myEvent.store("mw",getFormattedDate('millisec'),evt);
         events.e.push(myEvent.toString());
     }
     keyupevent(evt) {
-        myEvent.store("keyup",getFormattedDate('millisec'),evt);
+        myEvent.store("ku",getFormattedDate('millisec'),evt);
         events.e.push(myEvent.toString());
     }
     keydownevent(evt) {
-        myEvent.store("keydown",getFormattedDate('millisec'),evt);
+        myEvent.store("kd",getFormattedDate('millisec'),evt);
         events.e.push(myEvent.toString());
     }
 }
@@ -137,6 +147,7 @@ function keydown(myevt) {
 }
 
 function keyup(myevt) {
+    var o=pn.getCursoredObject(cursor,"VIEWPORT");
     if (state!=TEXTBOX) {
         if (myevt.key=='d') DEBUG=1-DEBUG;
         else if (myevt.key=='p') {
@@ -152,13 +163,18 @@ function keyup(myevt) {
         }
         else if (myevt.key=='s') {
             // Toggle sticky Flow heads of this Transition
-            var o=pn.getCursoredObject(cursor,"VIEWPORT");
             if (o && o.type==TRANSITION) {
                 pn.f.forEach(f=>{
                     if (f.o2==o) {
                         f.stickyHead=!f.stickyHead;
                     }
                 })
+            }
+        }
+        // Label size number key
+        else if (myevt.key>='0' && myevt.key<='5') {
+            if (o && o.type==LABEL) {
+                o.size=sizes[myevt.keyCode-48];
             }
         }
     }
@@ -175,6 +191,15 @@ function shiftKeys(evt,shifts) {
     else if (shifts=="CTRLALTNONE") return !evt.shiftKey;
 }
 
-function sca() {
+function stored_sca() {
+//    console.log('stored_sca param: '+storedEvt.shiftKey);
     return ""+(storedEvt.shiftKey?"S":"s")+(storedEvt.ctrlKey?"C":"c")+(storedEvt.altKey?"A":"a");
+}
+function sca(s,c,a) {
+//    console.log('sca param: '+s);
+    return ""+(s?"S":"s")+(c?"C":"c")+(a?"A":"a");
+}
+function sca2(sca) {
+//    console.log('sca2 param: '+sca);
+    return [sca[0]=='S',sca[1]=='C',sca[2]=='A'];
 }

@@ -99,7 +99,7 @@ class Textbox {
             }
             this.posChars.push( [x, y-3, this.ax+this.w-x, this.h-2*this.py+6] );
 
-            if (DEBUG) { // draw all chars rect
+            if (DEBUG && false) { // draw all chars rect
             g.beginPath();
             ctx.strokeStyle=COLOR_INK;
             g.lineWidth(1);
