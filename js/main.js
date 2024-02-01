@@ -19,6 +19,7 @@ const textbox=new Textbox("title",100,0,100,20,'frame',false,"default text");
 animate();
 
 var ms,msSlowrun=0;
+
 function animate() {
     events.processEvent();
     ms=Date.now();

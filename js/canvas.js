@@ -32,6 +32,7 @@ class graphics {
     }
     dashed() {
         ctx.setLineDash(DASHED);
+        ctx.lineDashOffset=7-Math.floor(ms/49)%8;
     }
     solid() {
         ctx.setLineDash([]);
