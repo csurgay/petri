@@ -14,20 +14,20 @@ class Label extends Object {
     draw() {
         if (this.visible) {
             g.beginPath();
-            ctx.fillStyle=this.color;
+            g.fillStyle(this.color);
             if (pn.highlighted==this && COLOR_HIGHLIGHT!="black")
-                ctx.fillStyle=COLOR_HIGHLIGHT;
-            ctx.font=""+this.size+"px arial"; 
-            ctx.textAlign = "center";
-            ctx.textBaseline = 'middle';
-            this.width=ctx.measureText(this.label).width;
+                g.fillStyle(COLOR_HIGHLIGHT);
+            g.font(""+this.size+"px arial"); 
+            g.textAlign("center");
+            g.textBaseline('middle');
+            this.width=g.measureText(this.label).width;
             g.fillText(this.label,this.x,this.y);
             if (pn.highlighted==this) {
                 g.beginPath();
                 g.standard(1);
                 g.dashed();
                 g.rect(this.x-this.width/2-1,this.y-this.size/2-2,this.width+2,this.size);
-                ctx.stroke();
+                g.stroke();
             }
         }
     }

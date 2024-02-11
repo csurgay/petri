@@ -15,13 +15,13 @@ class Button extends Object {
     draw() {
         g.beginPath();
         g.standard(1);
-        if (this.enabled() && pn.highlighted==this) ctx.fillStyle=COLOR_ENABLED;
+        if (this.enabled() && pn.highlighted==this) g.fillStyle(COLOR_ENABLED);
         ovalPatch(this.x,this.y,this.w,bh,br);
         g.fill();
         g.stroke();
         g.beginPath();
-        ctx.fillStyle=this.enabled()?COLOR_INK:"gray";
-        ctx.strokeStyle=this.enabled()?COLOR_INK:"gray";
+        g.fillStyle(this.enabled()?COLOR_INK:"gray");
+        g.strokeStyle(this.enabled()?COLOR_INK:"gray");
         if (this.button=="PLAY") {
             triangle(this.x,this.y,bdw,bdh,bdo);
         }
@@ -66,7 +66,7 @@ class Button extends Object {
         }
         else if (this.button=="HELP") {
             g.beginPath();
-            ctx.font="bold 18px arial";
+            g.font("bold 18px arial");
             g.fillText("?",this.x,this.y+1);
             g.fillText("?",this.x-1,this.y+1);
             g.fillText("?",this.x+1,this.y+1);
@@ -119,7 +119,7 @@ class Button extends Object {
             g.fill();
             g.beginPath();
             g.lineWidth(2);
-            ctx.strokeStyle="white";
+            g.strokeStyle("white");
             g.moveTo(this.x+2,this.y-7);
             g.lineTo(this.x+2,this.y-3);
             g.lineTo(this.x-4,this.y-3);
@@ -155,7 +155,7 @@ class Button extends Object {
                 }
                 toggle = !toggle;
             }
-            ctx.closePath();
+            g.closePath();
             // Punch hole
             g.moveTo(cx + radiusH, cy);
             g.arc(cx, cy, radiusH, 0,2*Math.PI);
@@ -238,10 +238,10 @@ class Button extends Object {
 function selectFile() {
     g.clearCanvas(canvas);
     g.beginPath();
-    ctx.fillStyle=COLOR_INK;
-    ctx.textAlign = "left";
-    ctx.textBaseline = 'top';
-    ctx.font="16px arial";
+    g.fillStyle(COLOR_INK);
+    g.textAlign("left");
+    g.textBaseline('top');
+    g.font("16px arial");
     for (var i=0; i<files.length; i++) {
         g.fillText(files[i],50,50+i*20);
     }

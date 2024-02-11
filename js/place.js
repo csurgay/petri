@@ -35,13 +35,13 @@ class Place extends Object {
         g.beginPath();
         g.lineWidth(LINEWIDTH);
         this.setColor();
-        ctx.fillStyle=COLOR_CANVAS;
+        g.fillStyle(COLOR_CANVAS);
         g.arc(this.x,this.y,PLACE_R,0,2*Math.PI);
         g.fill();
         g.stroke();
         // Tokens dice
         g.beginPath();
-        ctx.fillStyle=COLOR_INK;
+        g.fillStyle(COLOR_INK);
         if (this.tokens<=6) {
             tokenpos[this.tokens].forEach(t => {
                 g.moveTo(this.x+t[0],this.y+t[1]);
@@ -51,9 +51,9 @@ class Place extends Object {
         }
         // Tokens number
         else {
-            ctx.font ="20px arial";
-            ctx.textAlign = "center";
-            ctx.textBaseline = 'middle';
+            g.font("20px arial");
+            g.textAlign("center");
+            g.textBaseline('middle');
             g.fillText(this.tokens,this.x,this.y+2);
         }
     }

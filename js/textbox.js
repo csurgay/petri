@@ -47,53 +47,51 @@ class Textbox {
             this.h = this.size + 5;
             g.beginPath();
             g.solid();
-            ctx.fillStyle = this.color_background;
-            ctx.fillRect(this.x,this.y+0.5,this.w,this.h);
-            ctx.strokeStyle = this.color_frame;
+            g.fillStyle(this.color_background);
+            g.fillRect(this.x,this.y+0.5,this.w,this.h);
+            g.strokeStyle(this.color_frame);
             g.lineWidth(1);
-            if (this.frame=='frame') ctx.rect(this.x,this.y,this.w,this.h);
-            ctx.stroke();
-            ctx.strokeStyle = this.color;
+            if (this.frame=='frame') g.rect(this.x,this.y,this.w,this.h);
+            g.stroke();
+            g.strokeStyle(this.color);
             g.lineWidth(1);
             var ptr = this.ptrStart;
             var fits = true;
             var x = this.x+this.px; var y = this.y+this.py; var w;
             this.posChars = [];
-            ctx.font = ""+this.size+"px arial";
-            ctx.textAlign='left';
-            ctx.textBaseline='top';
+            g.font(""+this.size+"px arial");
+            g.textAlign('left');
+            g.textBaseline('top');
             while (fits && ptr<=this.text.length) {
                 if (this.ptrCursor==ptr && this.cursorBlink) {
                     g.beginPath();
                     g.moveTo(x,y-3);
                     g.lineTo(x,y+this.h-2*this.py+3);
-                    ctx.stroke();
+                    g.stroke();
                 }
                 if (Date.now()-blinkms>500) {
                     this.cursorBlink=!this.cursorBlink;
                     blinkms=Date.now();
                 }
                 if (ptr < this.text.length) {
-                    w = ctx.measureText(this.text[ptr],x,y).width;
+                    w = g.measureText(this.text[ptr],x,y).width;
                     this.posChars[ptr] = [x,y-3,w,this.h-2*this.py+6];
                     g.beginPath();
-                    ctx.fillStyle = COLOR.TEXT.DARK;
-                    ctx.fillText(this.text[ptr],x,y-2);
-                    ctx.fill();
+                    g.fillStyle(COLOR.TEXT.DARK);
+                    g.fillText(this.text[ptr],x,y-2);
                 }
                 if (ptr >= this.selectStart && ptr <=this.selectEnd) {
                     g.beginPath();
-                    ctx.fillStyle = "#0000ff";
-                    ctx.fillRect(x,y-3,w,this.h-2*this.py+6);
-                    ctx.fill();
+                    g.fillStyle("#0000ff");
+                    g.fillRect(x,y-3,w,this.h-2*this.py+6);
+                    g.fill();
                     g.beginPath();
-                    ctx.fillStyle = COLOR.TEXT.LIGHT;
-                    ctx.fillText(this.text[ptr],x,y-2);
-                    ctx.fill();
+                    g.fillStyle(COLOR.TEXT.LIGHT);
+                    g.fillText(this.text[ptr],x,y-2);
                 }
                 x += w;
                 ptr++;
-                if (x+ctx.measureText(this.text[ptr],x,y).width > this.x+this.w-this.px) {
+                if (x+g.measureText(this.text[ptr],x,y).width > this.x+this.w-this.px) {
                     // fits = false;
                 }
             }
@@ -101,14 +99,14 @@ class Textbox {
 
             if (DEBUG && false) { // draw all chars rect
             g.beginPath();
-            ctx.strokeStyle=COLOR_INK;
+            g.strokeStyle(COLOR_INK);
             g.lineWidth(1);
             g.solid();
             for (var i=0; i<this.posChars.length; i++) {
                 var p=this.posChars[i];
                 g.rect(p[0],p[1],p[2],p[3]);
             }
-            ctx.stroke();
+            g.stroke();
             }
         }
 	}

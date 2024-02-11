@@ -21,6 +21,7 @@ Done:
 - events.rec load
 
 Todo:
+- Play Run Fly pressed indicator red bg
 - rec mousemove filter by deltaXY
 - Settings (grid size (0=off), enabled color, debug mode, fired indicated)
 - Create logistics sample petrinet

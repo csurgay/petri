@@ -67,20 +67,20 @@ class Flow extends Object {
         }
         g.stroke();
         drawArrow(lastPoint.x,lastPoint.y,lastPoint.x+l*x,lastPoint.y+l*y,2,
-            ctx.strokeStyle,this.subtype);
+            g.getStrokeStyle(),this.subtype);
         // Flow weight circle
         if (this.weight!=1) {
             g.beginPath();
-            ctx.strokeStyle=this.color;
+            g.strokeStyle(this.color);
             g.lineWidth(1);
-            ctx.fillStyle=COLOR_CANVAS;
+            g.fillStyle(COLOR_CANVAS);
             g.arc(midx,midy,7,0,2*Math.PI);
             g.fill();
             g.stroke();
-            ctx.font ="11px arial";
-            ctx.fillStyle=COLOR_INK;
-            ctx.textAlign = "center";
-            ctx.textBaseline = 'middle';
+            g.font("11px arial");
+            g.fillStyle(COLOR_INK);
+            g.textAlign("center");
+            g.textBaseline('middle');
             g.fillText(this.weight,midx,midy+1);
         }
         for (var i=1; i<this.path.length-1; i++) {
@@ -137,7 +137,7 @@ class MidPoint extends Object {
     draw(color) {
         if (color=="black" || pn.highlighted==this) {
             g.beginPath();
-            ctx.strokeStyle=color=="black"?COLOR_INK:COLOR_HIGHLIGHT;
+            g.strokeStyle(color=="black"?COLOR_INK:COLOR_HIGHLIGHT);
             color=="black"?g.solid():g.dashed();
             g.lineWidth(LINEWIDTH);
             g.arc(this.x,this.y,6,0,2*Math.PI);

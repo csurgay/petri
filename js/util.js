@@ -53,11 +53,11 @@ class Object extends Coord {
 
     setColor() {
         if (COLOR_HIGHLIGHT=="black") {
-            ctx.strokeStyle=this.color;
+            g.strokeStyle(this.color);
             pn.highlighted==this?g.dashed():g.solid();
         }
         else {
-            ctx.strokeStyle=pn.highlighted==this?COLOR_HIGHLIGHT:this.color;
+            g.strokeStyle(pn.highlighted==this?COLOR_HIGHLIGHT:this.color);
         }
     }
 

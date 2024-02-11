@@ -49,6 +49,10 @@ class graphics {
         if (snap=="SNAP") this.ctx.rect(snap(x),snap(y),w,h);
         else this.ctx.rect(x,y,w,h);
     }
+    fillRect(x,y,w,h) {
+        if (snap=="SNAP") this.ctx.fillRect(snap(x),snap(y),w,h);
+        else this.ctx.fillRect(x,y,w,h);
+    }
     arc(x,y,r,a1,a2) {
         if (snap=="SNAP") this.ctx.arc(snap(x),snap(y),r,a1,a2);
         else this.ctx.arc(x,y,r,a1,a2);
@@ -58,8 +62,21 @@ class graphics {
         else this.ctx.fillText(t,x,y);
     }
     beginPath() { this.ctx.beginPath() }
+    closePath() { this.ctx.closePath() }
     fill(mode) { this.ctx.fill(mode) }
     stroke() { this.ctx.stroke() }
+    save() { this.ctx.save() }
+    restore() { this.ctx.restore() }
+    fillStyle(style) { this.ctx.fillStyle=style; }
+    strokeStyle(style) { this.ctx.strokeStyle=style; }
+    getStrokeStyle() { return this.ctx.strokeStyle; }
+    font(style) { this.ctx.font=style; }
+    textAlign(style) { this.ctx.textAlign=style; }
+    textBaseline(style) { this.ctx.textBaseline=style; }
+    translate(dx, dy) { this.ctx.translate(dx, dy); }
+    scale(qx, qy) { this.ctx.scale(qx, qy); }
+    rotate(angle) { this.ctx.rotate(angle); }
+    measureText(text) { return this.ctx.measureText(text); }
 }
 
 function snap(v) {

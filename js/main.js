@@ -24,39 +24,39 @@ function animate() {
     events.processEvent();
     ms=Date.now();
     g.clearCanvas(canvas);
-    ctx.translate(0.5, 0.5);
+    g.translate(0.5, 0.5);
     if (DEBUG) drawRotatingPacman();    
     // Title line
     g.beginPath();
-    ctx.font ="16px arial";
-    ctx.fillStyle=COLOR_INK;
-    ctx.textAlign = "left";
-    ctx.textBaseline = 'top';
+    g.font("16px arial");
+    g.fillStyle(COLOR_INK);
+    g.textAlign("left");
+    g.textBaseline('top');
 //    g.fillText("Petrinet Simulator - 2023 csurgay@gmail.com",40,15);
-    ctx.textAlign = "right";
+    g.textAlign("right");
     g.fillText(getFormattedDate(),canvas.width-20,15);
     // Static Status and Buttons
     pn.s.forEach(item => item.draw());
     pn.b.forEach(item => item.draw());
     // Draw PetriNet
-    ctx.save();
-    ctx.translate(pn.cx,pn.cy);
-    ctx.scale(pn.zoom,pn.zoom);
-    ctx.translate(pn.vpx,pn.vpy);
+    g.save();
+    g.translate(pn.cx,pn.cy);
+    g.scale(pn.zoom,pn.zoom);
+    g.translate(pn.vpx,pn.vpy);
     if (pn.visible) pn.draw();
     textbox.render();
-    ctx.restore();
+    g.restore();
     // File select
     if (state==FILES) {
         selectedFile=-1;
         for (var i=0; i<files.length; i++) {
-            ctx.textAlign = "left";
-            ctx.textBaseline = 'top';
-            ctx.font="16px arial";
-            ctx.fillStyle=COLOR_INK;
-            var width=ctx.measureText(files[i]).width;
+            g.textAlign("left");
+            g.textBaseline('top');
+            g.font("16px arial");
+            g.fillStyle(COLOR_INK);
+            var width=g.measureText(files[i]).width;
             if (ccursor.x>200 && ccursor.x<200+width && ccursor.y>100+20*i && ccursor.y<119+20*i) {
-                ctx.font="bold 16px arial";
+                g.font("bold 16px arial");
                 selectedFile=i;
             }
             g.fillText(files[i],200,100+20*i);

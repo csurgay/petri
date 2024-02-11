@@ -31,16 +31,16 @@ class Transition extends Object {
     draw() {
         g.beginPath();
         g.lineWidth(LINEWIDTH);
-        ctx.fillStyle=COLOR_CANVAS;
-        if (this.enabled()) ctx.fillStyle=COLOR_ENABLED;
+        g.fillStyle(COLOR_CANVAS);
+        if (this.enabled()) g.fillStyle(COLOR_ENABLED);
         this.setColor();
-        ctx.save();
-        ctx.translate(this.x,this.y);
-        ctx.rotate(this.alpha);
+        g.save();
+        g.translate(this.x,this.y);
+        g.rotate(this.alpha);
         g.rect(-tw/2,-th/2,tw,th);
         g.fill();
         g.stroke();
-        ctx.restore();
+        g.restore();
         this.adjust_p1p2();
 //        if (pn.transeq[pn.mptr]==this || pn.transeq[pn.mptr-1]==this) {
         if (pn.transeq[pn.mptr]==this) {
@@ -49,9 +49,10 @@ class Transition extends Object {
             g.lineTo(p2.x,p2.y);
         g.stroke();
         }
-        if (false) {
+        // DEBUG indicators of connectors
+        if (DEBUG) {
             g.beginPath();
-            ctx.strokeStyle=COLOR_HIGHLIGHT;
+            g.strokeStyle(COLOR_HIGHLIGHT);
             g.solid();
             transConnectors.forEach(c=>{
                 var rot=rotate(0,0,c[0],c[1],this.alpha);
