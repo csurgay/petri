@@ -14,6 +14,16 @@ const pn=new Petrinet();
 setupStatus();
 setupButton();
 
+var m=16; // margin for help frame
+const fh=new Frame("Help", 
+    window.innerWidth/m, 20+window.innerHeight/m, 
+    (m-2)*window.innerWidth/m, (m-2)*window.innerHeight/m, 
+    window.innerWidth/2);
+m=10; // margin for prefs frame
+const fp=new Frame("Preferences", 
+    window.innerWidth/m, 20+window.innerHeight/m, 
+    (m-2)*window.innerWidth/m, (m-2)*window.innerHeight/m, 
+    window.innerWidth/2);
 const textbox=new Textbox("title",100,0,100,20,'frame',false,"default text");
 
 animate();
@@ -61,6 +71,14 @@ function animate() {
             }
             g.fillText(files[i],200,100+20*i);
         }
+    }
+    // Help mode
+    if (state==HELP) {
+        fh.draw();
+    }
+    // Prefs mode
+    if (state==PREFS) {
+        fp.draw();
     }
     // Running mode
     if (state==FLY) { pn.fireOne(); }

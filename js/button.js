@@ -132,7 +132,7 @@ class Button extends Object {
             g.lineTo(this.x+5,this.y+3);
             g.stroke();
         }
-        else if (this.button=="SETTINGS") {
+        else if (this.button=="PREFS") {
             g.beginPath();
             var cx=this.x,cy=this.y,notches=8,
             radiusO=bh/2-2,radiusI=bh/3-1,radiusH=bh/7,
@@ -204,7 +204,11 @@ class Button extends Object {
             pn.rewind();
         }
         else if (this.button=="HELP") {
-            window.open("help.html", "_blank");
+            stateChange(HELP);
+//            window.open("help.html", "_blank");
+        }
+        else if (this.button=="PREFS") {
+            stateChange(PREFS);
         }
         else if (this.button=="UNDO") {
             if (undoPtr>0) rawLoad(undo[--undoPtr]);
@@ -301,6 +305,6 @@ function setupButton() {
     new Button("FLY","FLY",x+dx++*(w+ddw),y,w,()=>{return true});
 
     x+=dx*(w+ddw)-w/2,w=35,x+=w/2+dw,dx=0;
-    new Button("SETTINGS","PREF",x+dx++*(w+ddw),y,w,()=>{return false});
+    new Button("PREFS","PREF",x+dx++*(w+ddw),y,w,()=>{return true});
     new Button("HELP","HELP",x+dx++*(w+ddw),y,w,()=>{return true});
 }
