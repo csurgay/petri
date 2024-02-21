@@ -8,9 +8,9 @@ class Label extends Object {
         this.label=label;
         this.width;
         this.size=14;
+        this.attached=null; // the Object that this Label is attached to
         pn.addLabel(this);
     }
-
     draw() {
         if (this.visible) {
             g.beginPath();
@@ -31,14 +31,12 @@ class Label extends Object {
             }
         }
     }
-
     cursored(cursor) {
         if (Math.abs(this.x-cursor.x)<this.width/2+2 && Math.abs(this.y-cursor.y)<this.size/2+2)
             return true;
         else 
             return false;
     }
-
     clicked(cursor) {
         stateChange(TEXTBOX);
         textbox.registerCallbackObject(this);
@@ -52,7 +50,6 @@ class Label extends Object {
         textbox.visible=true;
         this.visible=false;
     }
-
     objectsLabel() { // label belongs to a Place/Trans
         for (var i=pn.p.length-1; i>=0; i--) {
             if (pn.p[i].label==this) return true;
@@ -62,9 +59,13 @@ class Label extends Object {
         }
         return false;
     }
-
     delete() {
         if (!this.objectsLabel()) pn.l.splice(pn.l.indexOf(this),1);
     }
-
+    setAttached(o) {
+        this.attached=o;
+    }
+    getAttached() {
+        return this.attached;
+    }
 }

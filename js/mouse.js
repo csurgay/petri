@@ -9,7 +9,10 @@ function mousedown(evt) {
     storedEvt.store("mousedown",getFormattedDate('millisec'),evt);
     getCoord(evt);
     o=pn.getCursoredObject(ccursor,"CANVAS");
-    if (o) {
+    if (state==FILES) {
+
+    }
+    else if (o) {
 
     }
     else {
@@ -126,6 +129,10 @@ function mouseup(evt) {
         // Textbox cancel click
         else if (state==TEXTBOX && !o) {
             textbox.cancel();
+        }
+        // Textbox attach to Object
+        else if (state==TEXTBOX && o && shiftKeys(evt,"ALT")) {
+            textbox.attach(o);
         }
         // Toggle Flow Enabler/Inhiboitor
         else if(state==MULTISEGMENT && o && o.type==FLOW && o.o1.type==PLACE) {
@@ -362,6 +369,10 @@ function mousewheel(evt) {
                 rot=rotate(o.x,o.y,r.label.x,r.label.y,delta*Math.PI/32);
                 r.label.x=rot[0]; r.label.y=rot[1];
             }
+            r.attachedLabels.forEach(l=>{
+                rot=rotate(o.x,o.y,l.x,l.y,delta*Math.PI/32);
+                l.x=rot[0]; l.y=rot[1];
+            })
         });
         pn.needTimedUndo=true;
     }

@@ -16,6 +16,11 @@ class Button extends Object {
         g.beginPath();
         g.standard(1);
         if (this.enabled() && pn.highlighted==this) g.fillStyle(COLOR_ENABLED);
+        if (state==RUN && this.button=="RUN" ||
+            state==SLOWRUN && this.button=="PLAY" ||
+            state==FLY && this.button=="FLY") {
+                g.fillStyle("red");
+        }
         ovalPatch(this.x,this.y,this.w,bh,br);
         g.fill();
         g.stroke();

@@ -19,9 +19,11 @@ Done:
 - Labels input and placement
 - Events and Macros
 - events.rec load
+- Play Run Fly pressed indicator red bg
+- Labels to attach to Places/Transitions/MidPoints
 
 Todo:
-- Play Run Fly pressed indicator red bg
+- attached Labels save/load
 - rec mousemove filter by deltaXY
 - Settings (grid size (0=off), enabled color, debug mode, fired indicated)
 - Create logistics sample petrinet

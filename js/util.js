@@ -47,10 +47,10 @@ class Object extends Coord {
         this.id;
         this.color=COLOR_INK;
         this.visible=true;
+        this.attachedLabels=[]; // the Labels attached this Object
     }
-
-    draw() {}
-
+    draw() {
+    }
     setColor() {
         if (COLOR_HIGHLIGHT=="black") {
             g.strokeStyle(this.color);
@@ -60,7 +60,6 @@ class Object extends Coord {
             g.strokeStyle(pn.highlighted==this?COLOR_HIGHLIGHT:this.color);
         }
     }
-
     nextColor(delta) {
         if (delta>0) {
             this.color=COLORS[(COLORS.indexOf(this.color)+1)%COLORS.length];
@@ -70,17 +69,25 @@ class Object extends Coord {
         }
         if (COLOR_HIGHLIGHT!="black") pn.highlighted=null;
     }
-
-    cursored() {}
-
-    clicked() {}
-
+    cursored() {
+    }
+    clicked() {
+    }
     dragTo(dx,dy) {
         this.x=snap(this.x+dx);
         this.y=snap(this.y+dy);
+        this.attachedLabels.forEach(o=>{
+            o.dragTo(dx,dy);
+        })
     }
-
-    delete() {};
+    delete() {
+    }
+    attach(o) {
+        this.attachedLabels.push(o);
+    }
+    detach(o) {
+        this.attachedLabels.splice(this.attachedLabels.indexOf(o));
+    }
 }
 
 function stateChange(newState) {

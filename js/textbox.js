@@ -125,7 +125,7 @@ class Textbox {
 	}
     confirm() {
         if (this.text=="") this.text="-";
-        if (DEBUG) log(this.text);
+        if (DEBUG) log("confirm: "+this.text);
         this.callbackObject.label=this.text;
         this.callbackObject.visible=true;
         stateChange(IDLE);
@@ -133,10 +133,17 @@ class Textbox {
         pn.newUndo();
     }
     cancel() {
-        if (DEBUG) log(this.text);
+        if (DEBUG) log("cancel: "+this.text);
         stateChange(IDLE);
         this.callbackObject.visible=true;
         this.visible=false;
+    }
+    attach(o) {
+        if (DEBUG) log("attach: "+this.text);
+        var a=this.callbackObject.getAttached();
+        if (a) a.detach(this.callbackObject);
+        this.callbackObject.setAttached(o);
+        o.attach(this.callbackObject);
     }
     keypressed(evt) {
         // left, right, home, end
