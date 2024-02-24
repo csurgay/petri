@@ -22,10 +22,11 @@ Done:
 - Play Run Fly pressed indicator red bg
 - Labels to attach to Places/Transitions/MidPoints
 - attached Labels save/load
-
-Todo:
 - label attached to label: rotate
 - label attached to MiddlePoint: save, load
+
+Todo:
+- error: undo MidPoints
 - label edit: nothing else should be active!
 - comments in .pn files
 - rec mousemove filter by deltaXY

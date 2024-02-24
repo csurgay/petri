@@ -28,7 +28,7 @@ F93 purple ENABLER 1 T2 P6 false -1 0
 F94 red ENABLER 4 P5 T5 false 2 0
 F95 red ENABLER 1 T5 P7 false -1 0
 Labels:
-L17 black 23 "Four Seasons and Leap Years" 70.0 180.0 
+L17 black 23 "Four Seasons and Leap Years" 70.0 180.0 none
 Config:
 zoom: 1.0
 cx: 200.0

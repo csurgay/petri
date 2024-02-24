@@ -133,6 +133,7 @@ class MidPoint extends Object {
     constructor(x,y) {
         super(x,y);
         this.type=MIDPOINT;
+        this.id="M"+nextId(this.type);
     }
     
     draw(color) {

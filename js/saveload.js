@@ -18,7 +18,7 @@ function rawSave() {
         o.subtype+" "+o.weight+" "+
         o.o1.id+" "+o.o2.id+" "+o.stickyHead+" "+o.stickyTransConnector;
         str+=" "+(o.path.length-2);
-        for (var i=1; i<o.path.length-1; i++) str+=" "+o.path[i].x.toFixed(1)+" "+o.path[i].y.toFixed(1);
+        for (var i=1; i<o.path.length-1; i++) str+=" "+o.path[i].id+" "+o.path[i].x.toFixed(1)+" "+o.path[i].y.toFixed(1);
     });
     str+="\nLabels:";
     pn.l.forEach(o=>{
@@ -73,8 +73,11 @@ function rawLoad(str) {
             j=8;
             o.stickyHead=l[6]==="true"; o.stickyTransConnector=+l[7];
         }
-        for (var i=j+1; i<j+1+2*parseInt(l[j]); i+=2) {
-            o.path.splice(o.path.length-1,0,new MidPoint(+l[i],+l[i+1]));
+        for (var i=j+1; i<j+1+3*parseInt(l[j]); i+=3) {
+            var mp = new MidPoint(+l[i+1],+l[i+2]);
+            mp.id = l[i];
+            pn.m.push(mp);
+            o.path.splice(o.path.length-1,0,mp);
         }
         pn.addFlow(o);
         ptr++;
@@ -90,6 +93,7 @@ function rawLoad(str) {
         if (l[6][0]=='P') { pn.p.forEach(i=>{ if (l[6]==i.id) { o.attached=i; i.attachedLabels.push(o); }}) }
         if (l[6][0]=='T') { pn.t.forEach(i=>{ if (l[6]==i.id) { o.attached=i; i.attachedLabels.push(o); }}) }
         if (l[6][0]=='L') { pn.l.forEach(i=>{ if (l[6]==i.id) { o.attached=i; i.attachedLabels.push(o); }}) }
+        if (l[6][0]=='M') { pn.m.forEach(i=>{ if (l[6]==i.id) { o.attached=i; i.attachedLabels.push(o); }}) }
         ptr++;
     }
     ptr++;

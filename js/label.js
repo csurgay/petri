@@ -76,4 +76,9 @@ class Label extends Object {
     getAttached() {
         return this.attached;
     }
+    rotate(x,y,delta) {
+        rot=rotate(x,y,this.x,this.y,delta);
+        this.x=rot[0]; this.y=rot[1];
+        this.attachedLabels.forEach(l=>l.rotate(x,y,delta));
+    }
 }

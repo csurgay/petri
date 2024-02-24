@@ -370,8 +370,7 @@ function mousewheel(evt) {
                 r.label.x=rot[0]; r.label.y=rot[1];
             }
             r.attachedLabels.forEach(l=>{
-                rot=rotate(o.x,o.y,l.x,l.y,delta*Math.PI/32);
-                l.x=rot[0]; l.y=rot[1];
+                l.rotate(o.x,o.y,delta*Math.PI/32);
             })
         });
         pn.needTimedUndo=true;

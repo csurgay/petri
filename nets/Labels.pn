@@ -3,11 +3,11 @@ Places:
 Transitions:
 Flows:
 Labels:
-L36 black 48 Label -60.0 -91.0 
-L37 black 14 Label1 11.0 -24.0 
-L38 black 28 Label2 8.0 25.0 
-L39 black 49 Label3 8.0 79.0 
-L40 black 76 Label4 10.0 150.0 
+L36 black 48 Label -60.0 -91.0 none
+L37 black 14 Label1 11.0 -24.0 none
+L38 black 28 Label2 8.0 25.0 none
+L39 black 49 Label3 8.0 79.0 none
+L40 black 76 Label4 10.0 150.0 none
 Config:
 zoom: 1.0
 cx: 200.0

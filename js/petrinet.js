@@ -8,6 +8,7 @@ class Petrinet {
         this.t=[]; // Transitions
         this.f=[]; // Flows
         this.l=[]; // Labels
+        this.m=[]; // MidPoints - this array only for loading attachedLabels
         this.s=[]; // Status
         this.b=[]; // Buttons
         this.highlighted = null;
@@ -53,6 +54,7 @@ class Petrinet {
         this.t.length=0;
         this.f.length=0;
         this.l.length=0;
+        this.m.length=0;
         idPlace=0;
         idTrans=0;
         idFlow=0;
@@ -203,7 +205,7 @@ class Petrinet {
     getConnectedAll(o) {
         if (this.connected.includes(o)) return;
         this.connected.push(o);
-        pn.f.forEach(f=>{
+                pn.f.forEach(f=>{
             if (f.o1==o) this.getConnectedAll(f.o2);
             if (f.o2==o) this.getConnectedAll(f.o1);
             if (f.o1==o || f.o2==o) for (var i=1; i<f.path.length-1; i++)
