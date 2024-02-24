@@ -45,11 +45,20 @@ class Object extends Coord {
     constructor(x,y) {
         super(x,y);
         this.id;
+        this.label=null;
         this.color=COLOR_INK;
         this.visible=true;
         this.attachedLabels=[]; // the Labels attached this Object
     }
     draw() {
+        if (this.label) {
+            g.beginPath();
+            g.strokeStyle(COLOR_INK);
+            g.dashed(1,1);
+            g.moveTo(this.x,this.y);
+            g.lineTo(this.label.x,this.label.y);
+            g.stroke();
+        }
     }
     setColor() {
         if (COLOR_HIGHLIGHT=="black") {

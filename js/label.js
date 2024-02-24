@@ -29,6 +29,14 @@ class Label extends Object {
                 g.rect(this.x-this.width/2-1,this.y-this.size/2-2,this.width+2,this.size);
                 g.stroke();
             }
+            if (DEBUG) if (this.attached) {
+                g.beginPath();
+                g.dashed(1,1);
+                g.strokeStyle(COLOR_INK);
+                g.moveTo(this.x,this.y);
+                g.lineTo(this.attached.x,this.attached.y);
+                g.stroke();
+            }
         }
     }
     cursored(cursor) {

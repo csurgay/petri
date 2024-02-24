@@ -61,6 +61,7 @@ class Transition extends Object {
             });
             g.stroke();
         }
+        if (DEBUG) super.draw();
     }
 
     dragTo(dx,dy) {

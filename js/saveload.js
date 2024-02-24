@@ -24,7 +24,8 @@ function rawSave() {
     pn.l.forEach(o=>{
         if (!o.objectsLabel()) {
             str+="\n"+o.id+" "+o.color+" "+o.size+' "'+
-            o.label+'" '+o.x.toFixed(1)+" "+o.y.toFixed(1)+" ";
+            o.label+'" '+o.x.toFixed(1)+" "+o.y.toFixed(1)+" "+
+            (o.attached==null?"none":o.attached.id);
         }
     });
     str+="\nConfig:\nzoom: "+pn.zoom.toFixed(1)
@@ -83,8 +84,12 @@ function rawLoad(str) {
     while(str[ptr]!="Config:") {
         if (DEBUG) log(str[ptr]);
         l=[]; tokenize(str[ptr],l);
+        if (DEBUG) console.log(l);
         const o=new Label(l[3],+l[4],+l[5]); 
         o.id=l[0]; o.color=l[1]; o.size=+l[2];
+        if (l[6][0]=='P') { pn.p.forEach(i=>{ if (l[6]==i.id) { o.attached=i; i.attachedLabels.push(o); }}) }
+        if (l[6][0]=='T') { pn.t.forEach(i=>{ if (l[6]==i.id) { o.attached=i; i.attachedLabels.push(o); }}) }
+        if (l[6][0]=='L') { pn.l.forEach(i=>{ if (l[6]==i.id) { o.attached=i; i.attachedLabels.push(o); }}) }
         ptr++;
     }
     ptr++;

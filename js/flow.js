@@ -87,6 +87,7 @@ class Flow extends Object {
             if (pn.highlighted==this) this.path[i].draw("black");
             else this.path[i].draw("highlighted");
         }
+        if (DEBUG) super.draw();
     }
 
     cursored(cursor) {

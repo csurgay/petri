@@ -56,6 +56,7 @@ class Place extends Object {
             g.textBaseline('middle');
             g.fillText(this.tokens,this.x,this.y+2);
         }
+        if (DEBUG) super.draw();
     }
 
     dragTo(dx,dy) {
