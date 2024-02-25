@@ -32,7 +32,8 @@ class Transition extends Object {
         g.beginPath();
         g.lineWidth(LINEWIDTH);
         g.fillStyle(COLOR_CANVAS);
-        if (this.enabled()) g.fillStyle(COLOR_ENABLED);
+        if (this.enabled()) g.fillStyle(pn.transeq[pn.mptr]==
+            this?COLOR_WILLFIRE:COLOR_ENABLED);
         this.setColor();
         g.save();
         g.translate(this.x,this.y);
@@ -42,13 +43,6 @@ class Transition extends Object {
         g.stroke();
         g.restore();
         this.adjust_p1p2();
-//        if (pn.transeq[pn.mptr]==this || pn.transeq[pn.mptr-1]==this) {
-        if (pn.transeq[pn.mptr]==this) {
-            g.beginPath();
-            g.moveTo(p1.x,p1.y);
-            g.lineTo(p2.x,p2.y);
-        g.stroke();
-        }
         // DEBUG indicators of connectors
         if (DEBUG) {
             g.beginPath();

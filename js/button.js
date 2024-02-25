@@ -15,11 +15,15 @@ class Button extends Object {
     draw() {
         g.beginPath();
         g.standard(1);
-        if (this.enabled() && pn.highlighted==this) g.fillStyle(COLOR_ENABLED);
+        if (this.enabled() && pn.highlighted==this) {
+            g.fillStyle(COLOR_CANVAS);
+            g.standard(3);
+        }
         if (isState("RUN") && this.button=="RUN" ||
             isState("SLOWRUN") && this.button=="PLAY" ||
             isState("FLY") && this.button=="FLY") {
-                g.fillStyle("red");
+                g.fillStyle(COLOR_CANVAS);
+                g.standard(5);
         }
         ovalPatch(this.x,this.y,this.w,bh,br);
         g.fill();
@@ -81,10 +85,6 @@ class Button extends Object {
         }
         else if (this.button=="REDO") {
             curvedArrow(this.x,this.y,-1);
-        }
-        else if (this.button=="UNDO_ALL") {
-            triangle(this.x,this.y,2*bdw/3,bdh,-6,-1);
-            triangle(this.x+2*bdw/3-2,this.y,2*bdw/3,bdh,-6,-1);
         }
         else if (this.button=="CLEAR") {
             g.beginPath();
@@ -221,9 +221,6 @@ class Button extends Object {
         else if (this.button=="REDO") {
             if (undoPtr<undo.length-1) rawLoad(undo[++undoPtr]);
         }
-        else if (this.button=="UNDO_ALL") {
-            if (undo.length>0) { undoPtr=0; rawLoad(undo[undoPtr]) };
-        }
         else if (this.button=="CLEAR") {
             if (confirm("Sure want to clear workspace?")) {
                 pn.clear();
@@ -283,11 +280,10 @@ function curvedArrow(x,y,r=1) { // r for reverse
 
 var x,y=20,w,dx,ddw=5,dw=20;
 function setupButton() {
-    x=dw+ddw,w=35,x+=w/2,dx=0;
+    x=dw+ddw+15,w=35,x+=w/2,dx=0;
     new Button("CLEAR","NEW",x+dx++*(w+ddw),y,w,()=>{return true});
     new Button("OPEN","OPEN",x+dx++*(w+ddw),y,w,()=>{return true});
     new Button("SAVE","SAVE",x+dx++*(w+ddw),y,w,()=>{return true});
-    new Button("UNDO_ALL","ORIG",x+dx++*(w+ddw),y,w,()=>{return undo.length>1&&undoPtr>0});
     new Button("UNDO","UNDO",x+dx++*(w+ddw),y,w,()=>{return undoPtr>0});
     new Button("REDO","REDO",x+dx++*(w+ddw),y,w,()=>{return undoPtr<undo.length-1});
 

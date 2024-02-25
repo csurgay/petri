@@ -48,7 +48,7 @@ function isState(oldState) {
 
 function stateChange(newState) {
     if (!states.includes(newState)) { console.log("ERROR: unknown state '"+newState+"'"); }
-    if (DEBUG) if (!isState(newState)) log(states[state]+" -> "+states[newState]);
+    if (DEBUG) if (!isState(newState)) log(state+" -> "+newState);
     state=newState;
 }
 
