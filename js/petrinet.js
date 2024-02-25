@@ -30,7 +30,7 @@ class Petrinet {
 
     draw() {
         // Draw potential new Flow
-        if (this.paleArrow && state==DRAWARROW) {
+        if (this.paleArrow && isState("DRAWARROW")) {
             const o=this.paleArrow[0];
             const c=this.paleArrow[1];
             drawArrow(o.x,o.y,c.x,c.y);
@@ -49,7 +49,7 @@ class Petrinet {
     }
 
     clear() {
-        stateChange(IDLE);
+        stateChange("IDLE");
         this.p.length=0;
         this.t.length=0;
         this.f.length=0;

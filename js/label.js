@@ -46,7 +46,7 @@ class Label extends Object {
             return false;
     }
     clicked(cursor) {
-        stateChange(TEXTBOX);
+        stateChange("TEXTBOX");
         textbox.registerCallbackObject(this);
         textbox.x=this.x-this.width/2-6;
         textbox.y=this.y-this.size/2-5;

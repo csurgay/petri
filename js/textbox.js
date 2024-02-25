@@ -128,13 +128,13 @@ class Textbox {
         if (DEBUG) log("confirm: "+this.text);
         this.callbackObject.label=this.text;
         this.callbackObject.visible=true;
-        stateChange(IDLE);
+        stateChange("IDLE");
         this.visible=false;
         pn.newUndo();
     }
     cancel() {
         if (DEBUG) log("cancel: "+this.text);
-        stateChange(IDLE);
+        stateChange("IDLE");
         this.callbackObject.visible=true;
         this.visible=false;
     }

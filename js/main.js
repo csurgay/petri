@@ -1,6 +1,7 @@
 const canvas=document.getElementById("petrinetCanvas");
 const ctx=canvas.getContext("2d");
 const g=new graphics(ctx);
+const ww=window.innerWidth, wh=window.innerHeight;
 const events=new Events();
 addEventListener('mousedown',events.mousedownevent);
 addEventListener('mouseup',events.mouseupevent);
@@ -15,15 +16,11 @@ setupStatus();
 setupButton();
 
 var m=16; // margin for help frame
-const fh=new Frame("Help", 
-    window.innerWidth/m, 20+window.innerHeight/m, 
-    (m-2)*window.innerWidth/m, (m-2)*window.innerHeight/m, 
-    window.innerWidth/2);
+const fh=new Frame("Help", ww/m, 20+wh/m, (m-2)*ww/m, (m-2)*wh/m, ww/2);
 m=10; // margin for prefs frame
-const fp=new Frame("Preferences", 
-    window.innerWidth/m, 20+window.innerHeight/m, 
-    (m-2)*window.innerWidth/m, (m-2)*window.innerHeight/m, 
-    window.innerWidth/2);
+const fp=new Frame("Preferences", ww/m, 20+wh/m, (m-2)*ww/m, (m-2)*wh/m, ww/2);
+m=12; // margin for file frame
+const ff=new Frame("Open Nets File", ww/m, 20+wh/m, (m-2)*ww/m, (m-2)*wh/m, ww/2);
 const textbox=new Textbox("title",100,0,100,20,'frame',false,"default text");
 
 animate();
@@ -57,7 +54,8 @@ function animate() {
     textbox.render();
     g.restore();
     // File select
-    if (state==FILES) {
+    if (isState("FILES")) {
+        ff.draw();
         selectedFile=-1;
         for (var i=0; i<files.length; i++) {
             g.textAlign("left");
@@ -73,22 +71,22 @@ function animate() {
         }
     }
     // Help mode
-    if (state==HELP) {
+    if (isState("HELP")) {
         fh.draw();
     }
     // Prefs mode
-    if (state==PREFS) {
+    if (isState("PREFS")) {
         fp.draw();
     }
     // Running mode
-    if (state==FLY) { pn.fireOne(); }
-    if (state==RUN) { 
+    if (isState("FLY")) { pn.fireOne(); }
+    if (isState("RUN")) { 
         if (ms-msSlowrun>100) {
             pn.fireOne();
             msSlowrun=ms;
         } 
     }
-    if (state==SLOWRUN) { 
+    if (isState("SLOWRUN")) { 
         if (ms-msSlowrun>1000) {
             pn.fireOne();
             msSlowrun=ms;

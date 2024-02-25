@@ -5,8 +5,7 @@ const objects=["PLACE","TRANSITION","FLOW","MIDPOINT","LABEL","BUTTON"];
 
 const states=[
      "IDLE","SELECT","DRAG","DRAWARROW","LEFTDOWN","DELETE","MIDDLE","PAN","RUN","SHIFTCLICK","ZOOM", "MULTISEGMENT", "SLOWRUN", "FILES", "FLY", "TEXTBOX", "DRAGALL", "HELP", "PREFS"];
-const IDLE=0,SELECT=1,DRAG=2,DRAWARROW=3,LEFTDOWN=4,DELETE=5,MIDDLE=6,PAN=7,RUN=8,SHIFTCLICK=9,ZOOM=10,MULTISEGMENT=11,SLOWRUN=12,FILES=13,FLY=14,TEXTBOX=15,DRAGALL=16,HELP=17,PREFS=18;
-var state=IDLE;
+var state="IDLE";
 
 function log(str) {
     console.log(str);
@@ -42,8 +41,14 @@ class Coord {
     }
 }
 
+function isState(oldState) {
+    if (!states.includes(oldState)) { console.log("ERROR: unknown state '"+oldState+"'"); }
+    return state==oldState;
+}
+
 function stateChange(newState) {
-    if (DEBUG) if (state!=newState) log(states[state]+" -> "+states[newState]);
+    if (!states.includes(newState)) { console.log("ERROR: unknown state '"+newState+"'"); }
+    if (DEBUG) if (!isState(newState)) log(states[state]+" -> "+states[newState]);
     state=newState;
 }
 

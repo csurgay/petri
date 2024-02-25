@@ -9,7 +9,7 @@ function mousedown(evt) {
     storedEvt.store("mousedown",getFormattedDate('millisec'),evt);
     getCoord(evt);
     o=pn.getCursoredObject(ccursor,"CANVAS");
-    if (state==FILES) {
+    if (isState("FILES")) {
 
     }
     else if (o) {
@@ -22,29 +22,29 @@ function mousedown(evt) {
         if (evt.button==LEFTBUTTON) {
             if (o==null) {
                 // New Object, Pan
-                if (state==IDLE && shiftKeys(evt,"CTRLALTNONE")) {
-                    stateChange(LEFTDOWN);
+                if (isState("IDLE") && shiftKeys(evt,"CTRLALTNONE")) {
+                    stateChange("LEFTDOWN");
                 }
             }
             else if (o) {
                 // Object click, Drag
-                if (state!=TEXTBOX && o.type!=FLOW && shiftKeys(evt,"ALTNONE")) {
-                    stateChange(LEFTDOWN);
+                if (!isState("TEXTBOX") && o.type!=FLOW && shiftKeys(evt,"ALTNONE")) {
+                    stateChange("LEFTDOWN");
                     pn.dragged=o;
                 }
                 // Subnet drag
                 else if (shiftKeys(evt,"SHIFT")||shiftKeys(evt,"ALTSHIFT")) {
-                    stateChange(SHIFTCLICK);
+                    stateChange("SHIFTCLICK");
                     pn.connected.length=0;
                     pn.getConnectedAll(o);
                 }
                 // New potential Flow
                 else if (o && (o.type==PLACE || o.type==TRANSITION) && shiftKeys(evt,"CTRL")) {
-                    stateChange(DRAWARROW);
+                    stateChange("DRAWARROW");
                 }
                 // Multisegment Flow or Flow Toggle
                 else if (o.type==FLOW && shiftKeys(evt,"NONE")) {
-                    stateChange(MULTISEGMENT);
+                    stateChange("MULTISEGMENT");
                     pn.dragged=o;
                 }
             }
@@ -52,17 +52,17 @@ function mousedown(evt) {
         else if (evt.button==RIGHTBUTTON && shiftKeys(evt,"NONE")) {
             if (o==null) {
                 // Running mode
-                if (state==IDLE) stateChange(RUN);
-                else if (state==RUN) stateChange(IDLE);
+                if (isState("IDLE")) stateChange("RUN");
+                else if (isState("RUN")) stateChange("IDLE");
             }
             // Delete
             else {
-                stateChange(DELETE);
+                stateChange("DELETE");
             }
         }
         // Zoom
         else if (evt.button==MIDDLEBUTTON && shiftKeys(evt,"NONE")) {
-            stateChange(MIDDLE);
+            stateChange("MIDDLE");
         }
     }
 }
@@ -72,7 +72,7 @@ function mouseup(evt) {
     storedEvt.store("mouseup",getFormattedDate('millisec'),evt);
     getCoord(evt); // sets cursor (translated canvas) and ccursor (orig canvas)
     o=pn.getCursoredObject(ccursor,"CANVAS");
-    if (state==FILES) {
+    if (isState("FILES")) {
         if (selectedFile!=-1) {
             if (DEBUG) { 
                 log(selectedFile);
@@ -82,7 +82,7 @@ function mouseup(evt) {
                 pn.load(directory+"/"+files[selectedFile]);
             }
             pn.visible=true;
-            stateChange(IDLE);
+            stateChange("IDLE");
             animate();
         }
     }
@@ -93,17 +93,17 @@ function mouseup(evt) {
     else {
         o=pn.getCursoredObject(cursor,"VIEWPORT");
         // New Flow
-        if (state==DRAWARROW && o && o!=pn.highlighted &&
+        if (isState("DRAWARROW") && o && o!=pn.highlighted &&
             (o.type==PLACE || o.type==TRANSITION)) {
             pn.addFlows(pn.highlighted,o);
             pn.highlighted=o;
             pn.newUndo();
         }
         // No New Flow
-        else if (state==DRAWARROW && o==null) {
+        else if (isState("DRAWARROW") && o==null) {
             pn.highlighted=null;
         }
-        else if (state==LEFTDOWN && o && o==pn.highlighted && 
+        else if (isState("LEFTDOWN") && o && o==pn.highlighted && 
             closeEnough(pn.mouseDownCoord,cursor) &&
             (o.type==PLACE || o.type==TRANSITION)) {
             // Toggles
@@ -118,57 +118,57 @@ function mouseup(evt) {
             }
         }
         // Label enter edit click
-        else if (state==LEFTDOWN && o && o.type==LABEL && 
+        else if (isState("LEFTDOWN") && o && o.type==LABEL && 
             closeEnough(pn.mouseDownCoord,cursor)) {
             o.clicked(evt);
         }
         // Textbox text cursor click
-        else if (state==TEXTBOX && textbox.cursorIn(cursor)) {
+        else if (isState("TEXTBOX") && textbox.cursorIn(cursor)) {
             textbox.clicked(cursor);
         }
         // Textbox cancel click
-        else if (state==TEXTBOX && !o) {
+        else if (isState("TEXTBOX") && !o) {
             textbox.cancel();
         }
         // Textbox attach to Object
-        else if (state==TEXTBOX && o && shiftKeys(evt,"ALT")) {
+        else if (isState("TEXTBOX") && o && shiftKeys(evt,"ALT")) {
             textbox.attach(o);
         }
         // Toggle Flow Enabler/Inhiboitor
-        else if(state==MULTISEGMENT && o && o.type==FLOW && o.o1.type==PLACE) {
+        else if(isState("MULTISEGMENT") && o && o.type==FLOW && o.o1.type==PLACE) {
             if (o.subtype=="ENABLER") o.subtype="INHIBITOR";
             else if (o.subtype=="INHIBITOR") o.subtype="ENABLER";
             pn.newUndo();
         }
         // New Place
-        else if (state==LEFTDOWN && o==null && shiftKeys(evt,"NONE") && closeEnough(pn.mouseDownCoord,cursor)) {
+        else if (isState("LEFTDOWN") && o==null && shiftKeys(evt,"NONE") && closeEnough(pn.mouseDownCoord,cursor)) {
             const newPlace = new Place(scursor.x,scursor.y);
             pn.addPlace(newPlace);
             pn.highlighted=newPlace;
             pn.newUndo();
         }
         // New Transition
-        else if (state==LEFTDOWN && o==null && shiftKeys(evt,"CTRL") && closeEnough(pn.mouseDownCoord,cursor)) {
+        else if (isState("LEFTDOWN") && o==null && shiftKeys(evt,"CTRL") && closeEnough(pn.mouseDownCoord,cursor)) {
             const newTrans = new Transition(scursor.x,scursor.y);
             pn.addTransition(newTrans);
             pn.highlighted=newTrans;
             pn.newUndo();
         }
         // New Label
-        else if (state==LEFTDOWN && o==null && shiftKeys(evt,"ALT") && closeEnough(pn.mouseDownCoord,cursor)) {
+        else if (isState("LEFTDOWN") && o==null && shiftKeys(evt,"ALT") && closeEnough(pn.mouseDownCoord,cursor)) {
             const newLabel = new Label(" ",scursor.x,scursor.y);
             pn.highlighted=newLabel;
             pn.newUndo();
         }
         // Delete Object
-        else if (state==DELETE && o && closeEnough(pn.mouseDownCoord,cursor)) {
+        else if (isState("DELETE") && o && closeEnough(pn.mouseDownCoord,cursor)) {
             o.delete();
             delete o;
             pn.highlighted=null;
             pn.newUndo();
         }
         // Copy subnet
-        else if (state==SHIFTCLICK && o && shiftKeys(evt,"SHIFT") && closeEnough(pn.mouseDownCoord,cursor)) {
+        else if (isState("SHIFTCLICK") && o && shiftKeys(evt,"SHIFT") && closeEnough(pn.mouseDownCoord,cursor)) {
             pn.connected.forEach(o=>{
                 if (o.type==PLACE) {
                     const newObject=new Place(o.x+20,o.y+20);
@@ -212,12 +212,12 @@ function mouseup(evt) {
             pn.newUndo();
         }
         // Clear Place Tokens
-        else if (state==MIDDLE && o && o.type==PLACE) {
+        else if (isState("MIDDLE") && o && o.type==PLACE) {
             o.changeTokens(-o.tokens);
             pn.newUndo();
         }
         // Clear all net Tokens
-        else if (state==MIDDLE && !o) {
+        else if (isState("MIDDLE") && !o) {
             pn.p.forEach(p => p.changeTokens(-p.tokens));
             pn.newUndo();
         }
@@ -225,7 +225,7 @@ function mouseup(evt) {
             pn.needUndo=false;
             pn.newUndo();
         }
-        if (state!=RUN && state!=TEXTBOX) stateChange(IDLE);
+        if (!isState("RUN") && !isState("TEXTBOX")) stateChange("IDLE");
         pn.dragged=null;
         pn.paleArrow=null;
     }
@@ -242,18 +242,18 @@ function mousemove(evt) {
     else {
         o=pn.getCursoredObject(cursor,"VIEWPORT");
         // Init Drag
-        if (state==LEFTDOWN && !closeEnough(pn.mouseDownCoord,cursor)) {
-            stateChange(DRAG);
+        if (isState("LEFTDOWN") && !closeEnough(pn.mouseDownCoord,cursor)) {
+            stateChange("DRAG");
         }
         // Do Drag
-        if (state==DRAG && pn.dragged) {
+        if (isState("DRAG") && pn.dragged) {
             pn.dragged.dragTo(scursor.x-pn.mouseDownCoord.x,scursor.y-pn.mouseDownCoord.y);
             pn.mouseDownCoord.moveTo(scursor);
             pn.needUndo=true;
         }
         // Do DragAll (SubNet)
-        else if (state==SHIFTCLICK || state==DRAGALL) {
-            stateChange(DRAGALL);
+        else if (isState("SHIFTCLICK") || isState("DRAGALL")) {
+            stateChange("DRAGALL");
             pn.connected.forEach(da => { 
                 da.dragTo(scursor.x-pn.mouseDownCoord.x,scursor.y-pn.mouseDownCoord.y); 
             });
@@ -261,23 +261,23 @@ function mousemove(evt) {
             pn.needUndo=true;
         }
         // Draw potetntial new Flow
-        else if (state==DRAWARROW) {
+        else if (isState("DRAWARROW")) {
             pn.paleArrow=[pn.highlighted, cursor];
         }
         // Do Pan
-        else if (state==DRAG || state==PAN) {
+        else if (isState("DRAG") || isState("PAN")) {
             if (!closeEnough(pn.mouseDownCoord,cursor))
             {
-                stateChange(PAN);
+                stateChange("PAN");
                 pn.vpx+=snap(cursor.x-pn.mouseDownCoord.x);
                 pn.vpy+=snap(cursor.y-pn.mouseDownCoord.y);
             }
         }
         // Multisegment Flow
-        else if (state==MULTISEGMENT) {
+        else if (isState("MULTISEGMENT")) {
             pn.highlighted=pn.dragged.addSegment(pn.mouseDownCoord);
             pn.dragged=pn.highlighted;
-            stateChange(DRAG);
+            stateChange("DRAG");
             pn.newUndo();
         }
         // Highlight mouseovered object
@@ -298,14 +298,14 @@ function mousewheel(evt) {
     getCoord(evt);
     o=pn.getCursoredObject(cursor,"VIEWPORT");
     // Zoom
-    if (state==MIDDLE || state==ZOOM) {
-        if (state==MIDDLE) {
+    if (isState("MIDDLE") || isState("ZOOM")) {
+        if (isState("MIDDLE")) {
             var deltaX=ccursor.x-pn.cx;
             var deltaY=ccursor.y-pn.cy;
             pn.cx=ccursor.x; pn.cy=ccursor.y;
             pn.vpx-=deltaX/pn.zoom; pn.vpy-=deltaY/pn.zoom;
         }
-        stateChange(ZOOM);
+        stateChange("ZOOM");
         pn.zoom+=delta/10;
         pn.zoom=Math.round(10*pn.zoom)/10;
         if (pn.zoom<0.3) pn.zoom=0.3;
@@ -313,50 +313,50 @@ function mousewheel(evt) {
     }
     else if (o && shiftKeys(evt,"NONE")) {
         // Tokens add/remove
-        if (state!=TEXTBOX && o.type==PLACE) {
+        if (!isState("TEXTBOX") && o.type==PLACE) {
             o.changeTokens(delta);
             pn.needTimedUndo=true;
         }
         // Rotate Transition
-        else if (state!=TEXTBOX && o.type==TRANSITION) {
+        else if (!isState("TEXTBOX") && o.type==TRANSITION) {
             o.rotate(delta);
             pn.needTimedUndo=true;
         }
         // Adjust Flow weight
-        else if (state!=TEXTBOX && o.type==FLOW) {
+        else if (!isState("TEXTBOX") && o.type==FLOW) {
             o.weight+=delta;
             if (o.weight<1) o.weight=1;
             pn.needTimedUndo=true;
         }
         // Adjust Label size
-        else if (state!=TEXTBOX && o.type==LABEL) {
+        else if (!isState("TEXTBOX") && o.type==LABEL) {
             o.size+=2*delta;
             if (o.size<8) o.size=8;
             pn.needTimedUndo=true;
         }
     }
     // Color change on Object
-    else if (state!=TEXTBOX && o && shiftKeys(evt,"ALT")) {
+    else if (!isState("TEXTBOX") && o && shiftKeys(evt,"ALT")) {
         if (!evt.shiftKey) {
             o.nextColor(delta);
             pn.needTimedUndo=true;
         }
     }
     // Color change Shubnet
-    else if (state!=TEXTBOX && o && shiftKeys(evt,"ALTSHIFT")) {
+    else if (!isState("TEXTBOX") && o && shiftKeys(evt,"ALTSHIFT")) {
         pn.connected.length=0;
         pn.getConnected(o);
         pn.connected.forEach(o=>o.nextColor(delta));
         pn.needTimedUndo=true;
     }
     // Rewind and Forward
-    else if (state!=TEXTBOX && shiftKeys(evt,"NONE")) {
-        stateChange(IDLE);
+    else if (!isState("TEXTBOX") && shiftKeys(evt,"NONE")) {
+        stateChange("IDLE");
         if (delta<0) pn.stepBackward();
         if (delta>0) pn.stepForward();
     }
     // Rotate subnet
-    else if (state!=TEXTBOX && o && shiftKeys(evt,"SHIFT")) {
+    else if (!isState("TEXTBOX") && o && shiftKeys(evt,"SHIFT")) {
         pn.connected.length=0;
         pn.getConnectedAll(o);
         pn.connected.forEach(r=>{

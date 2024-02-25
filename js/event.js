@@ -141,14 +141,14 @@ class Events {
 }
 
 function keydown(myevt) {
-    if (state==TEXTBOX) {
+    if (isState("TEXTBOX")) {
         textbox.keypressed(myevt);
     }
 }
 
 function keyup(myevt) {
     var o=pn.getCursoredObject(cursor,"VIEWPORT");
-    if (state!=TEXTBOX) {
+    if (!isState("TEXTBOX")) {
         if (myevt.key=='d') DEBUG=1-DEBUG;
         else if (myevt.key=='p') {
             PLAYBACK=1-PLAYBACK;

@@ -16,9 +16,9 @@ class Button extends Object {
         g.beginPath();
         g.standard(1);
         if (this.enabled() && pn.highlighted==this) g.fillStyle(COLOR_ENABLED);
-        if (state==RUN && this.button=="RUN" ||
-            state==SLOWRUN && this.button=="PLAY" ||
-            state==FLY && this.button=="FLY") {
+        if (isState("RUN") && this.button=="RUN" ||
+            isState("SLOWRUN") && this.button=="PLAY" ||
+            isState("FLY") && this.button=="FLY") {
                 g.fillStyle("red");
         }
         ovalPatch(this.x,this.y,this.w,bh,br);
@@ -182,38 +182,38 @@ class Button extends Object {
         if (!this.enabled()) return;
         if (DEBUG) log("Button: "+this.button);
         if (this.button=="PLAY") {
-            if (state!=SLOWRUN) stateChange(SLOWRUN);
-            else stateChange(IDLE);
+            if (!isState("SLOWRUN")) stateChange("SLOWRUN");
+            else stateChange("IDLE");
         }
         else if (this.button=="RUN") {
-            if (state!=RUN) stateChange(RUN);
-            else stateChange(IDLE);
+            if (!isState("RUN")) stateChange("RUN");
+            else stateChange("IDLE");
         }
         else if (this.button=="FLY") {
-            if (state!=FLY) stateChange(FLY);
-            else stateChange(IDLE);
+            if (!isState("FLY")) stateChange("FLY");
+            else stateChange("IDLE");
         }
         else if (this.button=="STOP") {
-            stateChange(IDLE);
+            stateChange("IDLE");
         }
         else if (this.button=="STEP_BWD") {
-            stateChange(IDLE);
+            stateChange("IDLE");
             pn.stepBackward();
         }
         else if (this.button=="STEP_FWD") {
-            stateChange(IDLE);
+            stateChange("IDLE");
             pn.stepForward();
         }
         else if (this.button=="REWIND") {
-            stateChange(IDLE);
+            stateChange("IDLE");
             pn.rewind();
         }
         else if (this.button=="HELP") {
-            stateChange(HELP);
+            stateChange("HELP");
 //            window.open("help.html", "_blank");
         }
         else if (this.button=="PREFS") {
-            stateChange(PREFS);
+            stateChange("PREFS");
         }
         else if (this.button=="UNDO") {
             if (undoPtr>0) rawLoad(undo[--undoPtr]);
@@ -245,16 +245,7 @@ class Button extends Object {
 }
 
 function selectFile() {
-    g.clearCanvas(canvas);
-    g.beginPath();
-    g.fillStyle(COLOR_INK);
-    g.textAlign("left");
-    g.textBaseline('top');
-    g.font("16px arial");
-    for (var i=0; i<files.length; i++) {
-        g.fillText(files[i],50,50+i*20);
-    }
-    stateChange(FILES);
+    stateChange("FILES");
 }
 
 function ovalPatch(x,y,w,h,r) {
@@ -305,7 +296,7 @@ function setupButton() {
     new Button("STEP_BWD","STEP-",x+dx++*(w+ddw),y,w,()=>{return pn.mptr>0});
     new Button("STEP_FWD","STEP+",x+dx++*(w+ddw),y,w,()=>{return pn.mptr<pn.markings.length-1||pn.getEnabled().length>0});
     new Button("PLAY","PLAY",x+dx++*(w+ddw),y,w,()=>{return true});
-    new Button("STOP","STOP",x+dx++*(w+ddw),y,w,()=>{return state==RUN||state==SLOWRUN||state==FLY});
+    new Button("STOP","STOP",x+dx++*(w+ddw),y,w,()=>{return isState("RUN")||isState("SLOWRUN")||isState("FLY")});
     new Button("RUN","RUN",x+dx++*(w+ddw),y,w,()=>{return true});
     new Button("FLY","FLY",x+dx++*(w+ddw),y,w,()=>{return true});
 

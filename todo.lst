@@ -24,11 +24,11 @@ Done:
 - attached Labels save/load
 - label attached to label: rotate
 - label attached to MiddlePoint: save, load
+- comments in .pn files - ok as it is
 
 Todo:
 - error: undo MidPoints
 - label edit: nothing else should be active!
-- comments in .pn files
 - rec mousemove filter by deltaXY
 - Settings (grid size (0=off), enabled color, debug mode, fired indicated)
 - Create logistics sample petrinet
