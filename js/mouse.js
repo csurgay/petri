@@ -132,7 +132,7 @@ function mouseup(evt) {
         }
         // Textbox attach to Object
         else if (isState("TEXTBOX") && o && shiftKeys(evt,"ALT")) {
-            textbox.attach(o);
+            textbox.attachToObject(o);
         }
         // Toggle Flow Enabler/Inhiboitor
         else if(isState("MULTISEGMENT") && o && o.type==FLOW && o.o1.type==PLACE) {

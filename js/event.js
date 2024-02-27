@@ -54,7 +54,8 @@ class MyEvent { // Data structure for an Event (mouse and keys)
     }
 }
 
-const myEvent=new MyEvent(), storedEvt=new MyEvent(), e1=new MyEvent(), e2=new MyEvent();
+const myEvent=new MyEvent(), storedEvt=new MyEvent(), 
+    e1=new MyEvent(), e2=new MyEvent();
 var evt, msEvent=0, l;
 
 class Events {

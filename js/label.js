@@ -45,9 +45,10 @@ class Label extends Object {
         else 
             return false;
     }
+    // gives focus to the one Textbox referencing this Label
     clicked(cursor) {
         stateChange("TEXTBOX");
-        textbox.registerCallbackObject(this);
+        textbox.referencedLabel=this;
         textbox.x=this.x-this.width/2-6;
         textbox.y=this.y-this.size/2-5;
         textbox.size=this.size;

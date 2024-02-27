@@ -29,11 +29,8 @@ class Textbox {
 		this.color_background = COLOR.TEXTBOX.BACKGROUND;
 		this.color_frame = COLOR.TEXTBOX.FRAME;
 		this.color = COLOR.TEXTBOX.COLOR;
-        this.callbackObject = null; // shall have a .label datamember
+        this.referencedLabel = null; // shall have a .label datamember
 	}
-    registerCallbackObject(o) {
-        this.callbackObject=o;
-    }
 	cursorIn(cursor) {
 		return cursor.x>this.x && cursor.x<this.x+this.w && 
             cursor.y>this.y && cursor.y<this.y+this.h;
@@ -138,8 +135,8 @@ class Textbox {
         this.callbackObject.visible=true;
         this.visible=false;
     }
-    attach(o) {
-        if (DEBUG) log("attach: "+this.text);
+    attachToObject(o) {
+        if (DEBUG) log("attach: "+this.text+" to object: "+o.id);
         var a=this.callbackObject.getAttached();
         if (a) a.detach(this.callbackObject);
         this.callbackObject.setAttached(o);
