@@ -132,8 +132,11 @@ class Events {
         events.e.push(myEvent.toString());
     }
     keyupevent(evt) {
-        myEvent.store("ku",getFormattedDate('millisec'),evt);
-        events.e.push(myEvent.toString());
+        if (!RUNNING && evt.key==".") { RUNNING=true; animate(); }
+        else {
+            myEvent.store("ku",getFormattedDate('millisec'),evt);
+            events.e.push(myEvent.toString());
+        }
     }
     keydownevent(evt) {
         myEvent.store("kd",getFormattedDate('millisec'),evt);
@@ -151,6 +154,9 @@ function keyup(myevt) {
     var o=pn.getCursoredObject(cursor,"VIEWPORT");
     if (!isState("TEXTBOX")) {
         if (myevt.key=='d') DEBUG=1-DEBUG;
+        else if (myevt.key=='.') {
+            RUNNING=!RUNNING;
+        }
         else if (myevt.key=='p') {
             PLAYBACK=1-PLAYBACK;
             if (PLAYBACK==1) RECORD=0;

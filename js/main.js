@@ -10,17 +10,18 @@ addEventListener('mousewheel',events.mousewheelevent);
 addEventListener('keyup', events.keyupevent);
 addEventListener('keydown', events.keydownevent);
 addEventListener('contextmenu',evt=>{evt.preventDefault();});
+var RUNNING=true;
 
 const pn=new Petrinet();
 setupStatus();
 setupButton();
 
 var m=16; // margin for help frame
-const fh=new Frame("Help", ww/m, 20+wh/m, (m-2)*ww/m, (m-2)*wh/m, ww/2);
+const fh=new Form("Help", ww/m, 20+wh/m, (m-2)*ww/m, (m-2)*wh/m);
 m=10; // margin for prefs frame
-const fp=new Frame("Preferences", ww/m, 20+wh/m, (m-2)*ww/m, (m-2)*wh/m, ww/2);
+const fp=new Form("Preferences", ww/m, 20+wh/m, (m-2)*ww/m, (m-2)*wh/m);
 m=12; // margin for file frame
-const ff=new Frame("Open Nets File", ww/m, 20+wh/m, (m-2)*ww/m, (m-2)*wh/m, ww/2);
+const ff=new FileForm("Open Files", ww/m, 20+wh/m, (m-2)*ww/m, (m-2)*wh/m);
 const textbox=new Textbox("title",100,0,100,20,'frame',false,"default text");
 
 animate();
@@ -56,41 +57,28 @@ function animate() {
     // File select
     if (isState("FILES")) {
         ff.draw();
-        selectedFile=-1;
-        for (var i=0; i<files.length; i++) {
-            g.textAlign("left");
-            g.textBaseline('top');
-            g.font("16px arial");
-            g.fillStyle(COLOR_INK);
-            var width=g.measureText(files[i]).width;
-            if (ccursor.x>200 && ccursor.x<200+width && ccursor.y>100+20*i && ccursor.y<119+20*i) {
-                g.font("bold 16px arial");
-                selectedFile=i;
-            }
-            g.fillText(files[i],200,100+20*i);
-        }
     }
     // Help mode
-    if (isState("HELP")) {
+    else if (isState("HELP")) {
         fh.draw();
     }
     // Prefs mode
-    if (isState("PREFS")) {
+    else if (isState("PREFS")) {
         fp.draw();
     }
     // Running mode
-    if (isState("FLY")) { pn.fireOne(); }
-    if (isState("RUN")) { 
+    else if (isState("FLY")) { pn.fireOne(); }
+    else if (isState("RUN")) { 
         if (ms-msSlowrun>100) {
             pn.fireOne();
             msSlowrun=ms;
         } 
     }
-    if (isState("SLOWRUN")) { 
+    else if (isState("PLAY")) { 
         if (ms-msSlowrun>1000) {
             pn.fireOne();
             msSlowrun=ms;
         } 
     }
-    requestAnimationFrame(animate);
+    if (RUNNING) requestAnimationFrame(animate);
 }
