@@ -209,11 +209,13 @@ class Button extends Object {
             pn.rewind();
         }
         else if (this.button=="HELP") {
-            stateChange("HELP");
+            fh.visible=true;
+            fh.active=true;
 //            window.open("help.html", "_blank");
         }
         else if (this.button=="PREFS") {
-            stateChange("PREFS");
+            fp.visible=true;
+            fp.active=true;
         }
         else if (this.button=="UNDO") {
             if (undoPtr>0) rawLoad(undo[--undoPtr]);
@@ -229,20 +231,16 @@ class Button extends Object {
             }
         }
         else if (this.button=="OPEN") {
-            pn.visible=false;
+            fb.active=false;
             directory="nets";
             if (shiftKeys(evt,"CTRLSHIFT")) directory="upload";
-            pn.getFileNames(directory);
+            ff.getFileNames(directory);
         }
         else if (this.button=="SAVE") {
             pn.save(""+ms+".pn");
             alert("PetriNet uploaded for review.");
         }
     }
-}
-
-function selectFile() {
-    stateChange("FILES");
 }
 
 function ovalPatch(x,y,w,h,r) {
@@ -278,9 +276,9 @@ function curvedArrow(x,y,r=1) { // r for reverse
     g.stroke();
 }
 
-var x,y=20,w,dx,ddw=5,dw=20;
+var x,y=30,w,dx,ddw=5,dw=20;
 function setupButton() {
-    x=dw+ddw+15,w=35,x+=w/2,dx=0;
+    x=dw+ddw+25,w=35,x+=w/2,dx=0;
     new Button("CLEAR","NEW",x+dx++*(w+ddw),y,w,()=>{return true});
     new Button("OPEN","OPEN",x+dx++*(w+ddw),y,w,()=>{return true});
     new Button("SAVE","SAVE",x+dx++*(w+ddw),y,w,()=>{return true});

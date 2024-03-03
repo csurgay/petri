@@ -51,9 +51,7 @@ class Place extends Object {
         }
         // Tokens number
         else {
-            g.font("20px arial");
-            g.textAlign("center");
-            g.textBaseline('middle');
+            g.setupText("20px arial","center","middle");
             g.fillText(this.tokens,this.x,this.y+2);
         }
         if (DEBUG) super.draw();

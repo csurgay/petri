@@ -9,11 +9,7 @@ function mousedown(evt) {
     storedEvt.store("mousedown",getFormattedDate('millisec'),evt);
     getCoord(evt);
     o=pn.getCursoredObject(ccursor,"CANVAS");
-    if (isState("FILES")) {
-
-    }
-    else if (o) {
-
+    if (o) {
     }
     else {
         pn.mouseDownCoord.x=cursor.x; 
@@ -72,22 +68,8 @@ function mouseup(evt) {
     storedEvt.store("mouseup",getFormattedDate('millisec'),evt);
     getCoord(evt); // sets cursor (translated canvas) and ccursor (orig canvas)
     o=pn.getCursoredObject(ccursor,"CANVAS");
-    if (isState("FILES")) {
-        if (selectedFile!=-1) {
-            if (DEBUG) { 
-                log(selectedFile);
-                log(files[selectedFile]);
-            }
-            if (files[selectedFile]!="CANCEL") {
-                pn.load(directory+"/"+files[selectedFile]);
-            }
-            pn.visible=true;
-            stateChange("IDLE");
-            animate();
-        }
-    }
     // CLicked object (Place, Trans, Midpoint, Label)
-    else if (o) {
+    if (o) {
         o.clicked(evt);
     }
     else {
@@ -227,7 +209,7 @@ function mouseup(evt) {
         }
         if (!isState("RUN") && !isState("TEXTBOX")) stateChange("IDLE");
         pn.dragged=null;
-        pn.paleArrow=null;
+        fb.paleArrow=null;
     }
 }
 
@@ -262,7 +244,7 @@ function mousemove(evt) {
         }
         // Draw potetntial new Flow
         else if (isState("DRAWARROW")) {
-            pn.paleArrow=[pn.highlighted, cursor];
+            fb.paleArrow=[pn.highlighted, cursor];
         }
         // Do Pan
         else if (isState("DRAG") || isState("PAN")) {

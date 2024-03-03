@@ -17,9 +17,7 @@ class Label extends Object {
             g.fillStyle(this.color);
             if (pn.highlighted==this && COLOR_HIGHLIGHT!="black")
                 g.fillStyle(COLOR_HIGHLIGHT);
-            g.font(""+this.size+"px arial"); 
-            g.textAlign("center");
-            g.textBaseline('middle');
+            g.setupText(""+this.size+"px arial","center","middle"); 
             this.width=g.measureText(this.label).width;
             g.fillText(this.label,this.x,this.y);
             if (pn.highlighted==this) {

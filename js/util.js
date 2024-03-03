@@ -4,9 +4,9 @@ const           PLACE=0,TRANSITION=1,FLOW=2,MIDPOINT=3,LABEL=4,BUTTON=5;
 const objects=["PLACE","TRANSITION","FLOW","MIDPOINT","LABEL","BUTTON"];
 
 const states=[
-     "IDLE","SELECT","DRAG","DRAWARROW","LEFTDOWN","DELETE",
-     "MIDDLE","PAN","RUN","SHIFTCLICK","ZOOM", "MULTISEGMENT", 
-     "PLAY", "FILES", "FLY", "TEXTBOX", "DRAGALL", "HELP", "PREFS"];
+     "IDLE", "SELECT", "DRAG", "DRAWARROW", "LEFTDOWN", "DELETE",
+     "MIDDLE", "PAN", "RUN", "SHIFTCLICK", "ZOOM", "MULTISEGMENT", 
+     "PLAY", "FLY", "TEXTBOX", "DRAGALL", "HELP", "PREFS"];
 var state="IDLE";
 
 function log(str) {

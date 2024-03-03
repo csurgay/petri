@@ -3,7 +3,6 @@ var undoPtr=-1;
 
 class Petrinet {
     constructor() {
-        this.visible=true; // should pn be drawn
         this.p=[]; // Places
         this.t=[]; // Transitions
         this.f=[]; // Flows
@@ -13,7 +12,6 @@ class Petrinet {
         this.b=[]; // Buttons
         this.highlighted = null;
         this.dragged=null;
-        this.paleArrow=null; // Potential new Flow
         this.mouseDownCoord=new Coord(0,0);
         this.zoom=1;
         this.cx=200; // Center of zooming (Should be mouse location)
@@ -27,20 +25,6 @@ class Petrinet {
         this.needUndo=false; // need newUndo after move but not during
         this.needTimedUndo=false; // need timed newUndo after wheel
     }
-
-    draw() {
-        // Draw potential new Flow
-        if (this.paleArrow && isState("DRAWARROW")) {
-            const o=this.paleArrow[0];
-            const c=this.paleArrow[1];
-            drawArrow(o.x,o.y,c.x,c.y);
-        }
-        this.f.forEach(item => { item.draw(); })
-        this.t.forEach(item => { item.draw(); })
-        this.p.forEach(item => { item.draw(); })
-        this.l.forEach(item => { item.draw(); })
-    }
-
     snap() {
         this.f.forEach(item => { item.x=snap(item.x); item.y=snap(item.y); })
         this.f.forEach(item => { item.path.forEach(mp=> {mp.x=snap(mp.x); mp.y=snap(mp.y); })})
@@ -61,7 +45,7 @@ class Petrinet {
         idLabel=0;
         this.highlighted=null;
         this.dragged=null;
-        this.paleArrow=null;
+        fb.paleArrow=null;
         this.connected.length=0;
         this.markings.length=0;
         this.mptr=-1;
@@ -318,22 +302,5 @@ class Petrinet {
         }
         request.open("GET", filename);
         request.send();
-    }
-
-    getFileNames(dir) {
-        var request=new XMLHttpRequest();
-        request.open('POST','php/scandir.php',true);
-        request.onreadystatechange=function() {
-            if (request.readyState==4 && request.status==200) {
-                if (DEBUG) log(request.responseText);
-                files.length=0;
-                files.push(...request.responseText.split('\n'));
-                files.pop();
-                files.push("CANCEL");
-                selectFile();
-            }
-        }
-        request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-        request.send("dir="+dir);
     }
 }

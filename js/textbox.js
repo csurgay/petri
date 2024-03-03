@@ -56,9 +56,7 @@ class Textbox {
             var fits = true;
             var x = this.x+this.px; var y = this.y+this.py; var w;
             this.posChars = [];
-            g.font(""+this.size+"px arial");
-            g.textAlign('left');
-            g.textBaseline('top');
+            g.setupText(""+this.size+"px arial","left","top");
             while (fits && ptr<=this.text.length) {
                 if (this.ptrCursor==ptr && this.cursorBlink) {
                     g.beginPath();
@@ -123,8 +121,8 @@ class Textbox {
     confirm() {
         if (this.text=="") this.text="-";
         if (DEBUG) log("confirm: "+this.text);
-        this.callbackObject.label=this.text;
-        this.callbackObject.visible=true;
+        this.referencedLabel.label=this.text;
+        this.referencedLabel.visible=true;
         stateChange("IDLE");
         this.visible=false;
         pn.newUndo();
@@ -132,15 +130,15 @@ class Textbox {
     cancel() {
         if (DEBUG) log("cancel: "+this.text);
         stateChange("IDLE");
-        this.callbackObject.visible=true;
+        this.referencedLabel.visible=true;
         this.visible=false;
     }
     attachToObject(o) {
         if (DEBUG) log("attach: "+this.text+" to object: "+o.id);
-        var a=this.callbackObject.getAttached();
-        if (a) a.detach(this.callbackObject);
-        this.callbackObject.setAttached(o);
-        o.attach(this.callbackObject);
+        var a=this.referencedLabel.getAttached();
+        if (a) a.detach(this.referencedLabel);
+        this.referencedLabel.setAttached(o);
+        o.attach(this.referencedLabel);
     }
     keypressed(evt) {
         // left, right, home, end

@@ -77,10 +77,8 @@ class Flow extends Object {
             g.arc(midx,midy,7,0,2*Math.PI);
             g.fill();
             g.stroke();
-            g.font("11px arial");
+            g.setupText("11px arial","center","middle");
             g.fillStyle(COLOR_INK);
-            g.textAlign("center");
-            g.textBaseline('middle');
             g.fillText(this.weight,midx,midy+1);
         }
         for (var i=1; i<this.path.length-1; i++) {

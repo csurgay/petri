@@ -74,6 +74,11 @@ class graphics {
     font(style) { this.ctx.font=style; }
     textAlign(style) { this.ctx.textAlign=style; }
     textBaseline(style) { this.ctx.textBaseline=style; }
+    setupText(style,textAlign,baseline) {
+        this.ctx.font=style;
+        this.ctx.textAlign=textAlign;
+        this.ctx.textBaseline=baseline;
+    }
     translate(dx, dy) { this.ctx.translate(dx, dy); }
     scale(qx, qy) { this.ctx.scale(qx, qy); }
     rotate(angle) { this.ctx.rotate(angle); }
@@ -90,8 +95,8 @@ function drawRotatingPacman() {
     g.standard(1);
     const alpha=(ms%(628*1000/628))/(100*1000/628)-Math.PI/2;
     const z=pn.zoom==1?7:6;
-    g.arc(12,20,10,alpha,alpha+z*Math.PI/4)
-    g.lineTo(12,20)
+    g.arc(30,30,10,alpha,alpha+z*Math.PI/4)
+    g.lineTo(30,30)
     ctx.closePath();
     g.stroke();
 }
