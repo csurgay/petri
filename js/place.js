@@ -50,9 +50,17 @@ class Place extends Object {
             g.fill();
         }
         // Tokens number
-        else {
+        else if (this.tokens<=999) {
             g.setupText("20px arial","center","middle");
             g.fillText(this.tokens,this.x,this.y+2);
+        }
+        else {
+            var t1000=Math.floor(this.tokens/1000);
+            var t="000"+(this.tokens-1000*t1000);
+            t=t.slice(-3);
+            g.setupText("14px arial","center","middle");
+            g.fillText(t1000,this.x,this.y-7);
+            g.fillText(t,this.x,this.y+8);
         }
         if (DEBUG) super.draw();
     }

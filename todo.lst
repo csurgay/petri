@@ -25,6 +25,7 @@ Done:
 - label attached to label: rotate
 - label attached to MiddlePoint: save, load
 - comments in .pn files - ok as it is
+- show tokens more than 999
 
 Todo:
 - error: undo MidPoints
