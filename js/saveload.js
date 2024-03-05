@@ -66,14 +66,10 @@ function rawLoad(str) {
     while(str[ptr]!="Labels:") {
         if (DEBUG) log(str[ptr]);
         l=[]; tokenize(str[ptr],l);
-        const o=new Flow(pn.locate(l[4]),pn.locate(l[5])); o.id=l[0]; o.color=l[1];
-        o.subtype=l[2]; o.weight=+l[3];
-        var j=6; 
-        if (l[6]=="true" || l[6]=="false") {
-            j=8;
-            o.stickyHead=l[6]==="true"; o.stickyTransConnector=+l[7];
-        }
-        for (var i=j+1; i<j+1+3*parseInt(l[j]); i+=3) {
+        const o=new Flow(pn.locate(l[4]),pn.locate(l[5])); 
+        o.id=l[0]; o.color=l[1]; o.subtype=l[2]; o.weight=+l[3];
+        o.stickyHead=l[6]==="true"; o.stickyTransConnector=+l[7];
+        for (var i=9; i<9+3*parseInt(l[8]); i+=3) {
             var mp = new MidPoint(+l[i+1],+l[i+2]);
             mp.id = l[i];
             pn.m.push(mp);
