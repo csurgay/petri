@@ -23,7 +23,7 @@ m=10; // margin for prefs frame
 const fp=new Form("PREFS","Preferences", ww/m, 20+wh/m, (m-2)*ww/m, (m-2)*wh/m);
 m=12; // margin for file frame
 const ff=new FileForm("Open Files", ww/m, 20+wh/m, (m-2)*ww/m, (m-2)*wh/m);
-const textbox=new Textbox("title",100,0,100,20,'frame',false,"default text");
+const textbox=new TextboxForm("Textbox",100,0,100,20,'frame',"default text");
 
 animate();
 

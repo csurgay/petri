@@ -7,13 +7,13 @@ const COLOR = {
 
 var blinkms=0; // blink millisec counter
     
-class Textbox {
-	constructor(name, x,y,w,h, frame, visible, defaultText) {
+class TextboxForm extends Form {
+	constructor(name, x,y,w,h, frame, defaultText) {
+        super("TEXTBOX",name,x,y,w,h);
 		this.x = x;
 		this.y = y;
 		this.w = w;
 		this.h = h;
-		this.visible = visible;
 		this.frame = frame;
 		this.name = name;
 		this.defaultText = defaultText;
@@ -39,8 +39,12 @@ class Textbox {
 		this.text = '';
 		this.ptrCursor = 0;
 	}
-	render() {
+	draw() {
         if (this.visible) {
+            g.save();
+            g.translate(pn.cx,pn.cy);
+            g.scale(pn.zoom,pn.zoom);
+            g.translate(pn.vpx,pn.vpy);
             this.h = this.size + 5;
             g.beginPath();
             g.solid();
@@ -93,18 +97,33 @@ class Textbox {
             this.posChars.push( [x, y-3, this.ax+this.w-x, this.h-2*this.py+6] );
 
             if (DEBUG && false) { // draw all chars rect
-            g.beginPath();
-            g.strokeStyle(COLOR_INK);
-            g.lineWidth(1);
-            g.solid();
-            for (var i=0; i<this.posChars.length; i++) {
-                var p=this.posChars[i];
-                g.rect(p[0],p[1],p[2],p[3]);
+                g.beginPath();
+                g.strokeStyle(COLOR_INK);
+                g.lineWidth(1);
+                g.solid();
+                for (var i=0; i<this.posChars.length; i++) {
+                    var p=this.posChars[i];
+                    g.rect(p[0],p[1],p[2],p[3]);
+                }
+                g.stroke();
             }
-            g.stroke();
-            }
+            g.restore();
         }
 	}
+    mouseup() {
+        // Textbox text cursor click
+        if (textbox.cursorIn(cursor)) {
+            textbox.clicked(cursor);
+        }
+        // Textbox cancel click
+        else if (!o) {
+            textbox.cancel();
+        }
+        // Textbox attach to Object
+        else if (o && shiftKeys(evt,"ALT")) {
+            textbox.attachToObject(o);
+        }
+    }
 	clicked(cursor) {
         var mx=cursor.x, my=cursor.y;
 		if (this.text == this.defaultText) {
@@ -125,6 +144,8 @@ class Textbox {
         this.referencedLabel.visible=true;
         stateChange("IDLE");
         this.visible=false;
+        this.active=false;
+        fb.active=true;
         pn.newUndo();
     }
     cancel() {
@@ -132,6 +153,8 @@ class Textbox {
         stateChange("IDLE");
         this.referencedLabel.visible=true;
         this.visible=false;
+        this.active=false;
+        fb.active=true;
     }
     attachToObject(o) {
         if (DEBUG) log("attach: "+this.text+" to object: "+o.id);
@@ -140,7 +163,7 @@ class Textbox {
         this.referencedLabel.setAttached(o);
         o.attach(this.referencedLabel);
     }
-    keypressed(evt) {
+    keyup(evt) {
         // left, right, home, end
         if (evt.keyCode == 37) { this.ptrCursor = this.ptrCursor<=0?0:this.ptrCursor-1; }
         else if (evt.keyCode == 39) { this.ptrCursor = this.ptrCursor>=this.text.length?this.text.length:this.ptrCursor+1; }

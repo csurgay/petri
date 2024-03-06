@@ -10,6 +10,9 @@ function mousedown(evt) {
     getCoord(evt);
     o=pn.getCursoredObject(ccursor,"CANVAS");
     if (o) {
+        if (o.type==BUTTON && evt.button==LEFTBUTTON) {
+            stateChange("BUTTONCLICK");
+        }
     }
     else {
         pn.mouseDownCoord.x=cursor.x; 
@@ -24,7 +27,7 @@ function mousedown(evt) {
             }
             else if (o) {
                 // Object click, Drag
-                if (!isState("TEXTBOX") && o.type!=FLOW && shiftKeys(evt,"ALTNONE")) {
+                if (o.type!=FLOW && shiftKeys(evt,"ALTNONE")) {
                     stateChange("LEFTDOWN");
                     pn.dragged=o;
                 }
@@ -68,10 +71,10 @@ function mouseup(evt) {
     storedEvt.store("mouseup",getFormattedDate('millisec'),evt);
     getCoord(evt); // sets cursor (translated canvas) and ccursor (orig canvas)
     o=pn.getCursoredObject(ccursor,"CANVAS");
-    // CLicked object (Place, Trans, Midpoint, Label)
     if (o) {
-        o.clicked(evt);
+        if (isState("BUTTONCLICK")) o.clicked(evt);
     }
+    // CLicked object (Place, Trans, Midpoint, Label, Button)
     else {
         o=pn.getCursoredObject(cursor,"VIEWPORT");
         // New Flow
@@ -103,18 +106,6 @@ function mouseup(evt) {
         else if (isState("LEFTDOWN") && o && o.type==LABEL && 
             closeEnough(pn.mouseDownCoord,cursor)) {
             o.clicked(evt);
-        }
-        // Textbox text cursor click
-        else if (isState("TEXTBOX") && textbox.cursorIn(cursor)) {
-            textbox.clicked(cursor);
-        }
-        // Textbox cancel click
-        else if (isState("TEXTBOX") && !o) {
-            textbox.cancel();
-        }
-        // Textbox attach to Object
-        else if (isState("TEXTBOX") && o && shiftKeys(evt,"ALT")) {
-            textbox.attachToObject(o);
         }
         // Toggle Flow Enabler/Inhiboitor
         else if(isState("MULTISEGMENT") && o && o.type==FLOW && o.o1.type==PLACE) {
@@ -207,7 +198,7 @@ function mouseup(evt) {
             pn.needUndo=false;
             pn.newUndo();
         }
-        if (!isState("RUN") && !isState("TEXTBOX")) stateChange("IDLE");
+        if (!isState("RUN")) stateChange("IDLE");
         pn.dragged=null;
         fb.paleArrow=null;
     }
@@ -295,50 +286,50 @@ function mousewheel(evt) {
     }
     else if (o && shiftKeys(evt,"NONE")) {
         // Tokens add/remove
-        if (!isState("TEXTBOX") && o.type==PLACE) {
+        if (o.type==PLACE) {
             o.changeTokens(delta);
             pn.needTimedUndo=true;
         }
         // Rotate Transition
-        else if (!isState("TEXTBOX") && o.type==TRANSITION) {
+        else if (o.type==TRANSITION) {
             o.rotate(delta);
             pn.needTimedUndo=true;
         }
         // Adjust Flow weight
-        else if (!isState("TEXTBOX") && o.type==FLOW) {
+        else if (o.type==FLOW) {
             o.weight+=delta;
             if (o.weight<1) o.weight=1;
             pn.needTimedUndo=true;
         }
         // Adjust Label size
-        else if (!isState("TEXTBOX") && o.type==LABEL) {
+        else if (o.type==LABEL) {
             o.size+=2*delta;
             if (o.size<8) o.size=8;
             pn.needTimedUndo=true;
         }
     }
     // Color change on Object
-    else if (!isState("TEXTBOX") && o && shiftKeys(evt,"ALT")) {
+    else if (o && shiftKeys(evt,"ALT")) {
         if (!evt.shiftKey) {
             o.nextColor(delta);
             pn.needTimedUndo=true;
         }
     }
     // Color change Shubnet
-    else if (!isState("TEXTBOX") && o && shiftKeys(evt,"ALTSHIFT")) {
+    else if (o && shiftKeys(evt,"ALTSHIFT")) {
         pn.connected.length=0;
         pn.getConnected(o);
         pn.connected.forEach(o=>o.nextColor(delta));
         pn.needTimedUndo=true;
     }
     // Rewind and Forward
-    else if (!isState("TEXTBOX") && shiftKeys(evt,"NONE")) {
+    else if (shiftKeys(evt,"NONE")) {
         stateChange("IDLE");
         if (delta<0) pn.stepBackward();
         if (delta>0) pn.stepForward();
     }
     // Rotate subnet
-    else if (!isState("TEXTBOX") && o && shiftKeys(evt,"SHIFT")) {
+    else if (o && shiftKeys(evt,"SHIFT")) {
         pn.connected.length=0;
         pn.getConnectedAll(o);
         pn.connected.forEach(r=>{

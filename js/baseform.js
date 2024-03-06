@@ -30,51 +30,44 @@ class BaseForm extends Form {
         pn.t.forEach(item => { item.draw(); })
         pn.p.forEach(item => { item.draw(); })
         pn.l.forEach(item => { item.draw(); })
-        textbox.render();
         g.restore();
     }
     mousedown(myevt) { mousedown(myevt); }
     mouseup(myevt) { mouseup(myevt); }
     mousemove(myevt) { mousemove(myevt); }
     mousewheel(myevt) { mousewheel(myevt); }
-    keydown(myevt) {
-        if (isState("TEXTBOX")) {
-            textbox.keypressed(myevt);
-        }
-    }
+    keydown(myevt) {}
     keyup(myevt) {
         var o=pn.getCursoredObject(cursor,"VIEWPORT");
-        if (!isState("TEXTBOX")) {
-            if (myevt.key=='d') DEBUG=1-DEBUG;
-            else if (myevt.key=='.') {
-                RUNNING=!RUNNING;
+        if (myevt.key=='d') DEBUG=1-DEBUG;
+        else if (myevt.key=='.') {
+            RUNNING=!RUNNING;
+        }
+        else if (myevt.key=='p') {
+            PLAYBACK=1-PLAYBACK;
+            if (PLAYBACK==1) RECORD=0;
+        }
+        else if (myevt.key=='r' && PLAYBACK==0) {
+            RECORD=1-RECORD;
+            if (RECORD==1) events.rec=[];
+        }
+        else if (myevt.key=='l') {
+            pn.macroLoad("macro/nemtudom.rec");
+        }
+        else if (myevt.key=='s') {
+            // Toggle sticky Flow heads of this Transition
+            if (o && o.type==TRANSITION) {
+                pn.f.forEach(f=>{
+                    if (f.o2==o) {
+                        f.stickyHead=!f.stickyHead;
+                    }
+                })
             }
-            else if (myevt.key=='p') {
-                PLAYBACK=1-PLAYBACK;
-                if (PLAYBACK==1) RECORD=0;
-            }
-            else if (myevt.key=='r' && PLAYBACK==0) {
-                RECORD=1-RECORD;
-                if (RECORD==1) events.rec=[];
-            }
-            else if (myevt.key=='l') {
-                pn.macroLoad("macro/nemtudom.rec");
-            }
-            else if (myevt.key=='s') {
-                // Toggle sticky Flow heads of this Transition
-                if (o && o.type==TRANSITION) {
-                    pn.f.forEach(f=>{
-                        if (f.o2==o) {
-                            f.stickyHead=!f.stickyHead;
-                        }
-                    })
-                }
-            }
-            // Label size number key
-            else if (myevt.key>='0' && myevt.key<='5') {
-                if (o && o.type==LABEL) {
-                    o.size=sizes[myevt.keyCode-48];
-                }
+        }
+        // Label size number key
+        else if (myevt.key>='0' && myevt.key<='5') {
+            if (o && o.type==LABEL) {
+                o.size=sizes[myevt.keyCode-48];
             }
         }
     }
