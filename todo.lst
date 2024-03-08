@@ -27,10 +27,10 @@ Done:
 - comments in .pn files - ok as it is
 - show tokens more than 999
 - cursor xy also for key events!
+- label edit: nothing else should be active!
 
 Todo:
 - error: undo MidPoints
-- label edit: nothing else should be active!
 - rec mousemove filter by deltaXY
 - Settings (grid size (0=off), enabled color, debug mode, fired indicated)
 - Create logistics sample petrinet

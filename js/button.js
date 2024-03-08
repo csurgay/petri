@@ -210,11 +210,13 @@ class Button extends Object {
             pn.rewind();
         }
         else if (this.button=="HELP") {
+            fb.active=false;
             fh.visible=true;
             fh.active=true;
 //            window.open("help.html", "_blank");
         }
         else if (this.button=="PREF") {
+            fb.active=false;
             fp.visible=true;
             fp.active=true;
         }

@@ -28,11 +28,13 @@ class Form extends Frame {
     keyup(evt) {
         if (evt.key=="Escape") {
             this.active=this.visible=false;
-            pn.visible=true;
+            fb.active=true;
         }
     }
     keydown(evt) {}
 }
+
+var files=[], directory="", selectedFile=-1;
 
 class FileForm extends Form {
     constructor(title,x,y,w,h) {

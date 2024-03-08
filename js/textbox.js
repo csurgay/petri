@@ -118,7 +118,7 @@ class TextboxForm extends Form {
             textbox.clicked(cursor);
         }
         // Textbox cancel click
-        else if (!o) {
+        else if (!o || o!=this) {
             textbox.cancel();
         }
         // Textbox attach to Object

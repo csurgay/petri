@@ -66,7 +66,6 @@ function mousedown(evt) {
     }
 }
 
-var files=[], directory="", selectedFile=-1;
 function mouseup(evt) {
     storedEvt.store("mouseup",getFormattedDate('millisec'),evt);
     getCoord(evt); // sets cursor (translated canvas) and ccursor (orig canvas)

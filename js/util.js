@@ -44,12 +44,12 @@ class Coord {
 }
 
 function isState(oldState) {
-    if (!states.includes(oldState)) { console.log("ERROR: unknown state '"+oldState+"'"); }
+    if (!states.includes(oldState)) { error("unknown state '"+oldState+"'"); }
     return state==oldState;
 }
 
 function stateChange(newState) {
-    if (!states.includes(newState)) { console.log("ERROR: unknown state '"+newState+"'"); }
+    if (!states.includes(newState)) { error("unknown state '"+newState+"'"); }
     if (DEBUG) if (!isState(newState)) log(state+" -> "+newState);
     state=newState;
 }

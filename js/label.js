@@ -44,7 +44,7 @@ class Label extends Object {
             return false;
     }
     // gives focus to the one Textbox referencing this Label
-    clicked(cursor) {
+    clicked(evt) {
         textbox.referencedLabel=this;
         textbox.x=this.x-this.width/2-7;
         textbox.y=this.y-this.size/2-5;
@@ -52,7 +52,7 @@ class Label extends Object {
         textbox.defaulText=this.label;
         textbox.text=this.label;
         textbox.w = this.width+30;
-        textbox.ptrCursor=this.label.length;
+//        textbox.ptrCursor=this.label.length;
         textbox.visible=true;
         textbox.active=true;
         this.visible=false;

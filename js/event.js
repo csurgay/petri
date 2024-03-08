@@ -1,5 +1,3 @@
-resultArray=[];
-
 class MyEvent { // Data structure for an Event (mouse and keys)
     constructor() {
         this.clientX;
@@ -38,7 +36,7 @@ class MyEvent { // Data structure for an Event (mouse and keys)
             sca(this.shiftKey,this.ctrlKey,this.altKey);
     }
     parse(str) {
-        resultArray=[]; tokenize(str,resultArray); str=resultArray;
+        var arrayResult=[]; tokenize(str,arrayResult); str=arrayResult;
         this.type=str[0];
         this.tstamp=str[1];
         this.clientX=+str[2];
