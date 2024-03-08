@@ -6,7 +6,7 @@ const objects=["PLACE","TRANSITION","FLOW","MIDPOINT","LABEL","BUTTON"];
 const states=[
      "IDLE", "SELECT", "DRAG", "DRAWARROW", "LEFTDOWN", "DELETE",
      "MIDDLE", "PAN", "RUN", "SHIFTCLICK", "ZOOM", "MULTISEGMENT", 
-     "PLAY", "FLY", "DRAGALL", "HELP", "PREFS", "BUTTONCLICK"];
+     "PLAY", "FLY", "DRAGALL", "BUTTONCLICK"];
 var state="IDLE";
 
 function log(str) {

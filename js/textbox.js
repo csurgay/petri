@@ -124,6 +124,10 @@ class TextboxForm extends Form {
         // Textbox attach to Object
         else if (o && shiftKeys(evt,"ALT")) {
             textbox.attachToObject(o);
+            this.referencedLabel.visible=true;
+            this.active=false;
+            this.visible=false;
+            fb.active=true;
         }
     }
     mousemove(evt) {

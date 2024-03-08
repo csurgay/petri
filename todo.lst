@@ -26,6 +26,7 @@ Done:
 - label attached to MiddlePoint: save, load
 - comments in .pn files - ok as it is
 - show tokens more than 999
+- cursor xy also for key events!
 
 Todo:
 - error: undo MidPoints

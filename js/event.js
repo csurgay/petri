@@ -21,9 +21,12 @@ class MyEvent { // Data structure for an Event (mouse and keys)
         this.shiftKey=this.undefined(e.shiftKey);
         this.altKey=this.undefined(e.altKey);
         this.button=this.undefined(e.button);
-        this.clientX=this.undefined(e.clientX);
-        this.clientY=this.undefined(e.clientY);
         this.deltaY=this.undefined(e.deltaY);
+        // only for mouse events so as to preserve coords for key events
+        if (this.type[0]=="m") {
+            this.clientX=this.undefined(e.clientX);
+            this.clientY=this.undefined(e.clientY);
+        }
     }
     undefined(value) {
         return value===undefined?"-":value;

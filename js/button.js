@@ -3,6 +3,7 @@ const bh=20,br=10,bdw=17,bdh=12,bdo=3;
 class Button extends Object {
     constructor(button,label,x,y,w,enabled) {
         super(x,y);
+        this.id=button;
         this.type=BUTTON;
         this.button=button;
         this.w=w;
@@ -137,7 +138,7 @@ class Button extends Object {
             g.lineTo(this.x+5,this.y+3);
             g.stroke();
         }
-        else if (this.button=="PREFS") {
+        else if (this.button=="PREF") {
             g.beginPath();
             var cx=this.x,cy=this.y,notches=8,
             radiusO=bh/2-2,radiusI=bh/3-1,radiusH=bh/7,
@@ -213,7 +214,7 @@ class Button extends Object {
             fh.active=true;
 //            window.open("help.html", "_blank");
         }
-        else if (this.button=="PREFS") {
+        else if (this.button=="PREF") {
             fp.visible=true;
             fp.active=true;
         }
@@ -295,6 +296,6 @@ function setupButton() {
     new Button("FLY","FLY",x+dx++*(w+ddw),y,w,()=>{return true});
 
     x+=dx*(w+ddw)-w/2,w=35,x+=w/2+dw,dx=0;
-    new Button("PREFS","PREF",x+dx++*(w+ddw),y,w,()=>{return true});
+    new Button("PREF","PREF",x+dx++*(w+ddw),y,w,()=>{return true});
     new Button("HELP","HELP",x+dx++*(w+ddw),y,w,()=>{return true});
 }
