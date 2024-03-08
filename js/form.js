@@ -21,17 +21,17 @@ class Form extends Frame {
         else if (myEvent.type=="ku") { this.keyup(myEvent); }
         else if (myEvent.type=="kd") { this.keydown(myEvent); }
     }
-    mousedown() {}
-    mouseup() {}
-    mousemove() {}
-    mousewheel() {}
+    mousedown(evt) {}
+    mouseup(evt) {}
+    mousemove(evt) {}
+    mousewheel(evt) {}
     keyup(evt) {
         if (evt.key=="Escape") {
             this.active=this.visible=false;
             pn.visible=true;
         }
     }
-    keydown() {}
+    keydown(evt) {}
 }
 
 class FileForm extends Form {

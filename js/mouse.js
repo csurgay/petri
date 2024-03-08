@@ -3,7 +3,7 @@ const LEFTBUTTON=0, MIDDLEBUTTON=1, RIGHTBUTTON=2;
 var cursor=new Coord(0,0); // Viewport (translated) cursor
 var scursor=new Coord(0,0); // Snapped viewport (translated) cursor
 var ccursor=new Coord(0,0); // Canvas cursor (for toolbar, not translated)
-var o;
+var o; // Object instance at mouse cursor
 
 function mousedown(evt) {
     storedEvt.store("mousedown",getFormattedDate('millisec'),evt);
@@ -129,7 +129,7 @@ function mouseup(evt) {
         }
         // New Label
         else if (isState("LEFTDOWN") && o==null && shiftKeys(evt,"ALT") && closeEnough(pn.mouseDownCoord,cursor)) {
-            const newLabel = new Label(" ",scursor.x,scursor.y);
+            const newLabel = new Label("-",scursor.x,scursor.y);
             pn.highlighted=newLabel;
             pn.newUndo();
         }

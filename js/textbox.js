@@ -110,8 +110,10 @@ class TextboxForm extends Form {
             g.restore();
         }
 	}
-    mouseup() {
-        // Textbox text cursor click
+    mouseup(evt) {
+        getCoord(evt); // sets cursor (translated canvas) and ccursor (orig canvas)
+        o=pn.getCursoredObject(cursor,"VIEWPORT");
+            // Textbox text cursor click
         if (textbox.cursorIn(cursor)) {
             textbox.clicked(cursor);
         }
@@ -123,6 +125,10 @@ class TextboxForm extends Form {
         else if (o && shiftKeys(evt,"ALT")) {
             textbox.attachToObject(o);
         }
+    }
+    mousemove(evt) {
+        getCoord(evt); // sets cursor (translated canvas) and ccursor (orig canvas)
+        o=pn.getCursoredObject(cursor,"VIEWPORT");
     }
 	clicked(cursor) {
         var mx=cursor.x, my=cursor.y;

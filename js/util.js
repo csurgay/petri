@@ -54,14 +54,14 @@ function stateChange(newState) {
     state=newState;
 }
 
-function getCoord(evt) {
+function getCoord(myevt) {
     const rect = canvas.getBoundingClientRect();
-    cursor.x = evt.clientX/pn.zoom-rect.left-pn.cx/pn.zoom-pn.vpx;
-    cursor.y = evt.clientY/pn.zoom-rect.top-pn.cy/pn.zoom-pn.vpy;
-    scursor.x = snap(evt.clientX/pn.zoom-rect.left-pn.cx/pn.zoom-pn.vpx);
-    scursor.y = snap(evt.clientY/pn.zoom-rect.top-pn.cy/pn.zoom-pn.vpy);
-    ccursor.x = evt.clientX-rect.left;
-    ccursor.y = evt.clientY-rect.top;
+    cursor.x = myevt.clientX/pn.zoom-rect.left-pn.cx/pn.zoom-pn.vpx;
+    cursor.y = myevt.clientY/pn.zoom-rect.top-pn.cy/pn.zoom-pn.vpy;
+    scursor.x = snap(myevt.clientX/pn.zoom-rect.left-pn.cx/pn.zoom-pn.vpx);
+    scursor.y = snap(myevt.clientY/pn.zoom-rect.top-pn.cy/pn.zoom-pn.vpy);
+    ccursor.x = myevt.clientX-rect.left;
+    ccursor.y = myevt.clientY-rect.top;
 }
 
   function closeEnough(c1,c2) {

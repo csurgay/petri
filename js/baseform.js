@@ -38,7 +38,11 @@ class BaseForm extends Form {
     mousewheel(myevt) { mousewheel(myevt); }
     keydown(myevt) {}
     keyup(myevt) {
-        var o=pn.getCursoredObject(cursor,"VIEWPORT");
+        console.log(myevt.clientX);
+        getCoord(myevt); // sets cursor (translated canvas) and ccursor (orig canvas)
+        console.log(myevt.clientX);
+        console.log(cursor);
+        o=pn.getCursoredObject(cursor,"VIEWPORT");
         if (myevt.key=='d') DEBUG=1-DEBUG;
         else if (myevt.key=='.') {
             RUNNING=!RUNNING;
