@@ -207,7 +207,7 @@ function mousemove(evt) {
     storedEvt.store("mousemove",getFormattedDate('millisec'),evt);
     getCoord(evt);
     o=pn.getCursoredObject(ccursor,"CANVAS");
-    if (o) pn.highlighted=o;
+    if (isState("IDLE") && o) pn.highlighted=o;
     if (o) {
 
     }
