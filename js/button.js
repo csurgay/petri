@@ -20,9 +20,9 @@ class Button extends Object {
             g.fillStyle(COLOR_CANVAS);
             g.standard(3);
         }
-        if (isState("RUN") && this.button=="RUN" ||
-            isState("PLAY") && this.button=="PLAY" ||
-            isState("FLY") && this.button=="FLY") {
+        if (state.is("RUN") && this.button=="RUN" ||
+            state.is("PLAY") && this.button=="PLAY" ||
+            state.is("FLY") && this.button=="FLY") {
                 g.fillStyle(COLOR_CANVAS);
                 g.standard(5);
         }
@@ -183,30 +183,30 @@ class Button extends Object {
         if (!this.enabled()) return;
         if (DEBUG) log("Button: "+this.button);
         if (this.button=="PLAY") {
-            if (!isState("PLAY")) stateChange("PLAY");
-            else stateChange("IDLE");
+            if (!state.is("PLAY")) state.set("PLAY");
+            else state.set("IDLE");
         }
         else if (this.button=="RUN") {
-            if (!isState("RUN")) stateChange("RUN");
-            else stateChange("IDLE");
+            if (!state.is("RUN")) state.set("RUN");
+            else state.set("IDLE");
         }
         else if (this.button=="FLY") {
-            if (!isState("FLY")) stateChange("FLY");
-            else stateChange("IDLE");
+            if (!state.is("FLY")) state.set("FLY");
+            else state.set("IDLE");
         }
         else if (this.button=="STOP") {
-            stateChange("IDLE");
+            state.set("IDLE");
         }
         else if (this.button=="STEP_BWD") {
-            stateChange("IDLE");
+            state.set("IDLE");
             pn.stepBackward();
         }
         else if (this.button=="STEP_FWD") {
-            stateChange("IDLE");
+            state.set("IDLE");
             pn.stepForward();
         }
         else if (this.button=="REWIND") {
-            stateChange("IDLE");
+            state.set("IDLE");
             pn.rewind();
         }
         else if (this.button=="HELP") {
@@ -293,7 +293,7 @@ function setupButton() {
     new Button("STEP_BWD","STEP-",x+dx++*(w+ddw),y,w,()=>{return pn.mptr>0});
     new Button("STEP_FWD","STEP+",x+dx++*(w+ddw),y,w,()=>{return pn.mptr<pn.markings.length-1||pn.getEnabled().length>0});
     new Button("PLAY","PLAY",x+dx++*(w+ddw),y,w,()=>{return true});
-    new Button("STOP","STOP",x+dx++*(w+ddw),y,w,()=>{return isState("RUN")||isState("PLAY")||isState("FLY")});
+    new Button("STOP","STOP",x+dx++*(w+ddw),y,w,()=>{return state.is("RUN")||state.is("PLAY")||state.is("FLY")});
     new Button("RUN","RUN",x+dx++*(w+ddw),y,w,()=>{return true});
     new Button("FLY","FLY",x+dx++*(w+ddw),y,w,()=>{return true});
 

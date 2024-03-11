@@ -152,7 +152,7 @@ class TextboxForm extends Form {
         if (DEBUG) log("confirm: "+this.text);
         this.referencedLabel.label=this.text;
         this.referencedLabel.visible=true;
-        stateChange("IDLE");
+        state.set("IDLE");
         this.visible=false;
         this.active=false;
         fb.active=true;
@@ -160,7 +160,7 @@ class TextboxForm extends Form {
     }
     cancel() {
         if (DEBUG) log("cancel: "+this.text);
-        stateChange("IDLE");
+        state.set("IDLE");
         this.referencedLabel.visible=true;
         this.visible=false;
         this.active=false;

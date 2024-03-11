@@ -33,7 +33,7 @@ class Petrinet {
     }
 
     clear() {
-        stateChange("IDLE");
+        state.set("IDLE");
         this.p.length=0;
         this.t.length=0;
         this.f.length=0;

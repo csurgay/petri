@@ -12,6 +12,7 @@ addEventListener('keydown', events.keydownevent);
 addEventListener('contextmenu',evt=>{evt.preventDefault();});
 var RUNNING=true;
 
+const state=new State("IDLE");
 const pn=new Petrinet();
 const fb=new BaseForm("PetriNet (c) 2024 csurgay@gmail.com",0,0,ww,wh);
 setupStatus();
@@ -38,14 +39,14 @@ function animate() {
     forms.forEach(f=>{if (f.visible) f.draw();})
     if (DEBUG || true) drawRotatingPacman();    
     // Running mode
-    if (isState("FLY")) { pn.fireOne(); }
-    else if (isState("RUN")) { 
+    if (state.is("FLY")) { pn.fireOne(); }
+    else if (state.is("RUN")) { 
         if (ms-msSlowrun>100) {
             pn.fireOne();
             msSlowrun=ms;
         } 
     }
-    else if (isState("PLAY")) { 
+    else if (state.is("PLAY")) { 
         if (ms-msSlowrun>1000) {
             pn.fireOne();
             msSlowrun=ms;

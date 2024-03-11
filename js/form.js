@@ -66,7 +66,7 @@ class FileForm extends Form {
             ff.active=false;
             ff.visible=false;
             fb.active=true;
-            stateChange("IDLE");
+            state.set("IDLE");
             animate();
         }
     }

@@ -21,7 +21,7 @@ class BaseForm extends Form {
         g.scale(pn.zoom,pn.zoom);
         g.translate(pn.vpx,pn.vpy);
         // Draw potential new Flow
-        if (this.paleArrow && isState("DRAWARROW")) {
+        if (this.paleArrow && state.is("DRAWARROW")) {
             const o=this.paleArrow[0];
             const c=this.paleArrow[1];
             drawArrow(o.x,o.y,c.x,c.y);

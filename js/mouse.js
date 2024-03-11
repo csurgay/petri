@@ -11,7 +11,7 @@ function mousedown(evt) {
     o=pn.getCursoredObject(ccursor,"CANVAS");
     if (o) {
         if (o.type==BUTTON && evt.button==LEFTBUTTON) {
-            stateChange("BUTTONCLICK");
+            state.set("BUTTONCLICK");
         }
     }
     else {
@@ -21,29 +21,29 @@ function mousedown(evt) {
         if (evt.button==LEFTBUTTON) {
             if (o==null) {
                 // New Object, Pan
-                if (isState("IDLE") && shiftKeys(evt,"CTRLALTNONE")) {
-                    stateChange("LEFTDOWN");
+                if (state.is("IDLE") && shiftKeys(evt,"CTRLALTNONE")) {
+                    state.set("LEFTDOWN");
                 }
             }
             else if (o) {
                 // Object click, Drag
                 if (o.type!=FLOW && shiftKeys(evt,"ALTNONE")) {
-                    stateChange("LEFTDOWN");
+                    state.set("LEFTDOWN");
                     pn.dragged=o;
                 }
                 // Subnet drag
                 else if (shiftKeys(evt,"SHIFT")||shiftKeys(evt,"ALTSHIFT")) {
-                    stateChange("SHIFTCLICK");
+                    state.set("SHIFTCLICK");
                     pn.connected.length=0;
                     pn.getConnectedAll(o);
                 }
                 // New potential Flow
                 else if (o && (o.type==PLACE || o.type==TRANSITION) && shiftKeys(evt,"CTRL")) {
-                    stateChange("DRAWARROW");
+                    state.set("DRAWARROW");
                 }
                 // Multisegment Flow or Flow Toggle
                 else if (o.type==FLOW && shiftKeys(evt,"NONE")) {
-                    stateChange("MULTISEGMENT");
+                    state.set("MULTISEGMENT");
                     pn.dragged=o;
                 }
             }
@@ -51,17 +51,17 @@ function mousedown(evt) {
         else if (evt.button==RIGHTBUTTON && shiftKeys(evt,"NONE")) {
             if (o==null) {
                 // Running mode
-                if (isState("IDLE")) stateChange("RUN");
-                else if (isState("RUN")) stateChange("IDLE");
+                if (state.is("IDLE")) state.set("RUN");
+                else if (state.is("RUN")) state.set("IDLE");
             }
             // Delete
             else {
-                stateChange("DELETE");
+                state.set("DELETE");
             }
         }
         // Zoom
         else if (evt.button==MIDDLEBUTTON && shiftKeys(evt,"NONE")) {
-            stateChange("MIDDLE");
+            state.set("MIDDLE");
         }
     }
 }
@@ -71,23 +71,23 @@ function mouseup(evt) {
     getCoord(evt); // sets cursor (translated canvas) and ccursor (orig canvas)
     o=pn.getCursoredObject(ccursor,"CANVAS");
     if (o) {
-        if (isState("BUTTONCLICK")) o.clicked(evt);
+        if (state.is("BUTTONCLICK")) o.clicked(evt);
     }
     // CLicked object (Place, Trans, Midpoint, Label, Button)
     else {
         o=pn.getCursoredObject(cursor,"VIEWPORT");
         // New Flow
-        if (isState("DRAWARROW") && o && o!=pn.highlighted &&
+        if (state.is("DRAWARROW") && o && o!=pn.highlighted &&
             (o.type==PLACE || o.type==TRANSITION)) {
             pn.addFlows(pn.highlighted,o);
             pn.highlighted=o;
             pn.newUndo();
         }
         // No New Flow
-        else if (isState("DRAWARROW") && o==null) {
+        else if (state.is("DRAWARROW") && o==null) {
             pn.highlighted=null;
         }
-        else if (isState("LEFTDOWN") && o && o==pn.highlighted && 
+        else if (state.is("LEFTDOWN") && o && o==pn.highlighted && 
             closeEnough(pn.mouseDownCoord,cursor) &&
             (o.type==PLACE || o.type==TRANSITION)) {
             // Toggles
@@ -102,45 +102,45 @@ function mouseup(evt) {
             }
         }
         // Label enter edit click
-        else if (isState("LEFTDOWN") && o && o.type==LABEL && 
+        else if (state.is("LEFTDOWN") && o && o.type==LABEL && 
             closeEnough(pn.mouseDownCoord,cursor)) {
             o.clicked(evt);
         }
         // Toggle Flow Enabler/Inhiboitor
-        else if(isState("MULTISEGMENT") && o && o.type==FLOW && o.o1.type==PLACE) {
+        else if(state.is("MULTISEGMENT") && o && o.type==FLOW && o.o1.type==PLACE) {
             if (o.subtype=="ENABLER") o.subtype="INHIBITOR";
             else if (o.subtype=="INHIBITOR") o.subtype="ENABLER";
             pn.newUndo();
         }
         // New Place
-        else if (isState("LEFTDOWN") && o==null && shiftKeys(evt,"NONE") && closeEnough(pn.mouseDownCoord,cursor)) {
+        else if (state.is("LEFTDOWN") && o==null && shiftKeys(evt,"NONE") && closeEnough(pn.mouseDownCoord,cursor)) {
             const newPlace = new Place(scursor.x,scursor.y);
             pn.addPlace(newPlace);
             pn.highlighted=newPlace;
             pn.newUndo();
         }
         // New Transition
-        else if (isState("LEFTDOWN") && o==null && shiftKeys(evt,"CTRL") && closeEnough(pn.mouseDownCoord,cursor)) {
+        else if (state.is("LEFTDOWN") && o==null && shiftKeys(evt,"CTRL") && closeEnough(pn.mouseDownCoord,cursor)) {
             const newTrans = new Transition(scursor.x,scursor.y);
             pn.addTransition(newTrans);
             pn.highlighted=newTrans;
             pn.newUndo();
         }
         // New Label
-        else if (isState("LEFTDOWN") && o==null && shiftKeys(evt,"ALT") && closeEnough(pn.mouseDownCoord,cursor)) {
+        else if (state.is("LEFTDOWN") && o==null && shiftKeys(evt,"ALT") && closeEnough(pn.mouseDownCoord,cursor)) {
             const newLabel = new Label("-",scursor.x,scursor.y);
             pn.highlighted=newLabel;
             pn.newUndo();
         }
         // Delete Object
-        else if (isState("DELETE") && o && closeEnough(pn.mouseDownCoord,cursor)) {
+        else if (state.is("DELETE") && o && closeEnough(pn.mouseDownCoord,cursor)) {
             o.delete();
             delete o;
             pn.highlighted=null;
             pn.newUndo();
         }
         // Copy subnet
-        else if (isState("SHIFTCLICK") && o && shiftKeys(evt,"SHIFT") && closeEnough(pn.mouseDownCoord,cursor)) {
+        else if (state.is("SHIFTCLICK") && o && shiftKeys(evt,"SHIFT") && closeEnough(pn.mouseDownCoord,cursor)) {
             pn.connected.forEach(o=>{
                 if (o.type==PLACE) {
                     const newObject=new Place(o.x+20,o.y+20);
@@ -184,12 +184,12 @@ function mouseup(evt) {
             pn.newUndo();
         }
         // Clear Place Tokens
-        else if (isState("MIDDLE") && o && o.type==PLACE) {
+        else if (state.is("MIDDLE") && o && o.type==PLACE) {
             o.changeTokens(-o.tokens);
             pn.newUndo();
         }
         // Clear all net Tokens
-        else if (isState("MIDDLE") && !o) {
+        else if (state.is("MIDDLE") && !o) {
             pn.p.forEach(p => p.changeTokens(-p.tokens));
             pn.newUndo();
         }
@@ -197,7 +197,7 @@ function mouseup(evt) {
             pn.needUndo=false;
             pn.newUndo();
         }
-        if (!isState("RUN")) stateChange("IDLE");
+        if (!state.is("RUN")) state.set("IDLE");
         pn.dragged=null;
         fb.paleArrow=null;
     }
@@ -207,25 +207,25 @@ function mousemove(evt) {
     storedEvt.store("mousemove",getFormattedDate('millisec'),evt);
     getCoord(evt);
     o=pn.getCursoredObject(ccursor,"CANVAS");
-    if (isState("IDLE") && o) pn.highlighted=o;
+    if (state.is("IDLE") && o) pn.highlighted=o;
     if (o) {
 
     }
     else {
         o=pn.getCursoredObject(cursor,"VIEWPORT");
         // Init Drag
-        if (isState("LEFTDOWN") && !closeEnough(pn.mouseDownCoord,cursor)) {
-            stateChange("DRAG");
+        if (state.is("LEFTDOWN") && !closeEnough(pn.mouseDownCoord,cursor)) {
+            state.set("DRAG");
         }
         // Do Drag
-        if (isState("DRAG") && pn.dragged) {
+        if (state.is("DRAG") && pn.dragged) {
             pn.dragged.dragTo(scursor.x-pn.mouseDownCoord.x,scursor.y-pn.mouseDownCoord.y);
             pn.mouseDownCoord.moveTo(scursor);
             pn.needUndo=true;
         }
         // Do DragAll (SubNet)
-        else if (isState("SHIFTCLICK") || isState("DRAGALL")) {
-            stateChange("DRAGALL");
+        else if (state.is("SHIFTCLICK") || state.is("DRAGALL")) {
+            state.set("DRAGALL");
             pn.connected.forEach(da => { 
                 da.dragTo(scursor.x-pn.mouseDownCoord.x,scursor.y-pn.mouseDownCoord.y); 
             });
@@ -233,23 +233,23 @@ function mousemove(evt) {
             pn.needUndo=true;
         }
         // Draw potetntial new Flow
-        else if (isState("DRAWARROW")) {
+        else if (state.is("DRAWARROW")) {
             fb.paleArrow=[pn.highlighted, cursor];
         }
         // Do Pan
-        else if (isState("DRAG") || isState("PAN")) {
+        else if (state.is("DRAG") || state.is("PAN")) {
             if (!closeEnough(pn.mouseDownCoord,cursor))
             {
-                stateChange("PAN");
+                state.set("PAN");
                 pn.vpx+=snap(cursor.x-pn.mouseDownCoord.x);
                 pn.vpy+=snap(cursor.y-pn.mouseDownCoord.y);
             }
         }
         // Multisegment Flow
-        else if (isState("MULTISEGMENT")) {
+        else if (state.is("MULTISEGMENT")) {
             pn.highlighted=pn.dragged.addSegment(pn.mouseDownCoord);
             pn.dragged=pn.highlighted;
-            stateChange("DRAG");
+            state.set("DRAG");
             pn.newUndo();
         }
         // Highlight mouseovered object
@@ -270,14 +270,14 @@ function mousewheel(evt) {
     getCoord(evt);
     o=pn.getCursoredObject(cursor,"VIEWPORT");
     // Zoom
-    if (isState("MIDDLE") || isState("ZOOM")) {
-        if (isState("MIDDLE")) {
+    if (state.is("MIDDLE") || state.is("ZOOM")) {
+        if (state.is("MIDDLE")) {
             var deltaX=ccursor.x-pn.cx;
             var deltaY=ccursor.y-pn.cy;
             pn.cx=ccursor.x; pn.cy=ccursor.y;
             pn.vpx-=deltaX/pn.zoom; pn.vpy-=deltaY/pn.zoom;
         }
-        stateChange("ZOOM");
+        state.set("ZOOM");
         pn.zoom+=delta/10;
         pn.zoom=Math.round(10*pn.zoom)/10;
         if (pn.zoom<0.3) pn.zoom=0.3;
@@ -323,7 +323,7 @@ function mousewheel(evt) {
     }
     // Rewind and Forward
     else if (shiftKeys(evt,"NONE")) {
-        stateChange("IDLE");
+        state.set("IDLE");
         if (delta<0) pn.stepBackward();
         if (delta>0) pn.stepForward();
     }
