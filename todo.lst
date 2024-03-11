@@ -28,6 +28,7 @@ Done:
 - show tokens more than 999
 - cursor xy also for key events!
 - label edit: nothing else should be active!
+- state handling in its own class
 
 Todo:
 - error: undo MidPoints

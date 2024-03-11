@@ -32,7 +32,7 @@ function setupStatus() {
     new Status("vpxy",sx,sy+i++*dy,function(){return pn.vpx.toFixed()+" "+pn.vpy.toFixed();});
     new Status("cur",sx,sy+i++*dy,function(){return cursor.x.toFixed()+" "+cursor.y.toFixed();});
     new Status("ccur",sx,sy+i++*dy,function(){return ccursor.x.toFixed()+" "+ccursor.y.toFixed();});
-    new Status("s",sx,sy+i++*dy,function(){return state;});
+    new Status("s",sx,sy+i++*dy,function(){return state.s;});
     new Status("o",sx,sy+i++*dy,function(){return o?objects[o.type]:"";});
     new Status("id",sx,sy+i++*dy,function(){return o?o.id:"";});
     new Status("hl",sx,sy+i++*dy,function(){return pn.highlighted?objects[pn.highlighted.type]:"";});
