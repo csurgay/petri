@@ -181,7 +181,7 @@ class Button extends Object {
 
     clicked(evt) {
         if (!this.enabled()) return;
-        if (DEBUG) log("Button: "+this.button);
+        if (state.DEBUG) log("Button: "+this.button);
         if (this.button=="PLAY") {
             if (!state.is("PLAY")) state.set("PLAY");
             else state.set("IDLE");
@@ -236,7 +236,8 @@ class Button extends Object {
         else if (this.button=="OPEN") {
             fb.active=false;
             directory="nets";
-            if (shiftKeys(evt,"CTRLSHIFT")) directory="upload";
+            if (SCA(evt,"SCa")) // CTRLSHIFT
+                directory="upload";
             ff.getFileNames(directory);
         }
         else if (this.button=="SAVE") {
@@ -279,7 +280,7 @@ function curvedArrow(x,y,r=1) { // r for reverse
     g.stroke();
 }
 
-var x,y=30,w,dx,ddw=5,dw=20;
+var x,y=15,w,dx,ddw=5,dw=20;
 function setupButton() {
     x=dw+ddw+25,w=35,x+=w/2,dx=0;
     new Button("CLEAR","NEW",x+dx++*(w+ddw),y,w,()=>{return true});

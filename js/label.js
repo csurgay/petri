@@ -27,7 +27,7 @@ class Label extends Object {
                 g.rect(this.x-this.width/2-1,this.y-this.size/2-2,this.width+2,this.size);
                 g.stroke();
             }
-            if (DEBUG) if (this.attached) {
+            if (state.DEBUG) if (this.attached) {
                 g.beginPath();
                 g.dashed(1,1);
                 g.strokeStyle(COLOR_INK);

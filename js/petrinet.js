@@ -293,7 +293,7 @@ class Petrinet {
     macroLoad(filename) {
         var request = new XMLHttpRequest();
         request.onload = function() {
-            RECORD=0; PLAYBACK=1;
+            state.RECORD=0; state.PLAYBACK=1;
             const str=request.responseText.split("\n");
             str.forEach(l=>{
                 if (l.length>10)

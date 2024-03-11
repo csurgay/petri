@@ -43,8 +43,8 @@ class Transition extends Object {
         g.stroke();
         g.restore();
         this.adjust_p1p2();
-        // DEBUG indicators of connectors
-        if (DEBUG) {
+        // state.DEBUG indicators of connectors
+        if (state.DEBUG) {
             g.beginPath();
             g.strokeStyle(COLOR_HIGHLIGHT);
             g.solid();
@@ -55,7 +55,7 @@ class Transition extends Object {
             });
             g.stroke();
         }
-        if (DEBUG) super.draw();
+        if (state.DEBUG) super.draw();
     }
 
     dragTo(dx,dy) {

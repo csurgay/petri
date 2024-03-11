@@ -6,20 +6,30 @@ class MyEvent { // Data structure for an Event (mouse and keys)
         this.deltaY;
         this.key;
         this.keyCode;
-        this.ctrlKey;
-        this.shiftKey;
-        this.altKey;
+        this.sca;
+    }
+    copy(e) {
+        this.type=e.type;
+        this.tstamp=e.tstamp;
+        this.key=e.key;
+        this.keyCode=e.keyCode;
+        this.button=e.button;
+        this.deltaY=e.deltaY;
+        this.sca=e.sca;
+        this.clientX=e.clientX;
+        this.clientY=e.clientY;
     }
     store(type,tstamp,e) {
         this.type=type;
         this.tstamp=tstamp;
         this.key=this.undefined(e.key);
         this.keyCode=this.undefined(e.keyCode);
-        this.ctrlKey=this.undefined(e.ctrlKey);
-        this.shiftKey=this.undefined(e.shiftKey);
-        this.altKey=this.undefined(e.altKey);
         this.button=this.undefined(e.button);
         this.deltaY=this.undefined(e.deltaY);
+        // only for key events so as to preserve SCA for mouse events
+        if (this.type[0]=="k") {
+            this.sca=(e.shiftKey?"S":"s")+(e.ctrlKey?"C":"c")+(e.altKey?"A":"a");
+        }
         // only for mouse events so as to preserve coords for key events
         if (this.type[0]=="m") {
             this.clientX=this.undefined(e.clientX);
@@ -33,7 +43,7 @@ class MyEvent { // Data structure for an Event (mouse and keys)
         return ""+this.type+' "'+this.tstamp+'" '+
             this.clientX+" "+this.clientY+" "+this.button+" "+
             this.deltaY+' "'+this.key+'" '+this.keyCode+" "+
-            sca(this.shiftKey,this.ctrlKey,this.altKey);
+            this.sca;
     }
     parse(str) {
         var arrayResult=[]; tokenize(str,arrayResult); str=arrayResult;
@@ -45,10 +55,7 @@ class MyEvent { // Data structure for an Event (mouse and keys)
         this.deltaY=+str[5];
         this.key=str[6];
         this.keyCode=+str[7];
-        var tmp=sca2(str[8]);
-        this.shiftKey=tmp[0];
-        this.ctrlKey=tmp[1];
-        this.altKey=tmp[2];
+        this.sca=str[8];
     }
 }
 
@@ -79,7 +86,7 @@ class Events {
     }
     mousewheelevent(evt) { myEvent.store("mw",getFormattedDate('millisec'),evt); events.e.push(myEvent.toString()); }
     keyupevent(evt) {
-        if (!RUNNING && evt.key==".") { RUNNING=true; animate(); }
+        if (!state.RUNNING && evt.key==".") { state.RUNNING=true; animate(); }
         else { myEvent.store("ku",getFormattedDate('millisec'),evt); events.e.push(myEvent.toString()); }
     }
     keydownevent(evt) { myEvent.store("kd",getFormattedDate('millisec'),evt); events.e.push(myEvent.toString()); }
@@ -90,7 +97,7 @@ class Events {
             if (this.e.length>0) {
                 evt=this.e.shift();
                 myEvent.parse(evt);
-                storedEvt.store(myEvent.type,myEvent.tstamp,myEvent);
+                storedEvt.copy(myEvent);
                 if (myEvent.type=="mm") {
                     l=this.rec.length;
                     if (l>1) {
@@ -101,30 +108,15 @@ class Events {
                         }
                     }
                 }
-                if (RECORD) this.rec.push(evt);
-                forms.forEach(f=>{
-                    if (f.active) f.processEvent(myEvent);
-                })
+                if (state.RECORD) this.rec.push(evt);
+                // dispatch Event to the Forms
+                forms.processFormsEvent(myEvent);
             }
         }
     }
 }
-function shiftKeys(evt,shifts) {
-    if (shifts=="NONE") return !evt.ctrlKey && !evt.shiftKey && !evt.altKey;
-    else if (shifts=="CTRL") return evt.ctrlKey && !evt.shiftKey && !evt.altKey;
-    else if (shifts=="SHIFT") return !evt.ctrlKey && evt.shiftKey && !evt.altKey;
-    else if (shifts=="ALT") return !evt.ctrlKey && !evt.shiftKey && evt.altKey;
-    else if (shifts=="ALTSHIFT") return !evt.ctrlKey && evt.shiftKey && evt.altKey;
-    else if (shifts=="CTRLSHIFT") return evt.ctrlKey && evt.shiftKey && !evt.altKey;
-    else if (shifts=="ALTNONE") return !evt.ctrlKey && !evt.shiftKey;
-    else if (shifts=="CTRLALTNONE") return !evt.shiftKey;
-}
-function stored_sca() {
-    return ""+(storedEvt.shiftKey?"S":"s")+(storedEvt.ctrlKey?"C":"c")+(storedEvt.altKey?"A":"a");
-}
-function sca(s,c,a) {
-    return ""+(s?"S":"s")+(c?"C":"c")+(a?"A":"a");
-}
-function sca2(sca) {
-    return [sca[0]=='S',sca[1]=='C',sca[2]=='A'];
+function SCA(evt,s) {
+    return (s[0]=='.'?true:s[0]==evt.sca[0]) &&
+        (s[1]=='.'?true:s[1]==evt.sca[1]) &&
+        (s[2]=='.'?true:s[2]==evt.sca[2]);
 }

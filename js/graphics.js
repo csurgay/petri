@@ -83,25 +83,23 @@ class graphics {
     scale(qx, qy) { this.ctx.scale(qx, qy); }
     rotate(angle) { this.ctx.rotate(angle); }
     measureText(text) { return this.ctx.measureText(text); }
+    clip() { this.ctx.clip(); }
 }
-
 function snap(v) {
-    if (grid==0||shiftKeys(storedEvt,"ALT")||shiftKeys(storedEvt,"ALTSHIFT")) return v
+    if (grid==0||SCA(storedEvt,".cA")) return v // ALT or SHIFTALT
     else return Math.round(v/grid)*grid;
 }
-
 function drawRotatingPacman() {
     g.beginPath();
     g.standard(1);
     const alpha=(ms%(628*1000/628))/(100*1000/628)-Math.PI/2;
     const z=pn.zoom==1?7:6;
-    g.arc(30,30,10,alpha,alpha+z*Math.PI/4)
-    g.lineTo(30,30)
+    g.arc(25,20,15,alpha,alpha+z*Math.PI/4)
+    g.lineTo(25,20)
     ctx.closePath();
     g.stroke();
 }
-
-function drawArrow(fromx,fromy,tox,toy,lineWidth=1,color,subtype="ENABLER") {
+function drawArrow(fromx,fromy,tox,toy,lineWidth=1,color=COLOR_INK,subtype="ENABLER") {
     const headlen=20;
     const alpha=17;
     var dx=tox-fromx;

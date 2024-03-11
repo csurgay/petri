@@ -1,4 +1,23 @@
-var forms=[];
+class Forms {
+    constructor() {
+        this.f=[];
+        this.o=null;
+        this.highlihgted=null;
+    }
+    addForm(form) {
+        this.f.push(form);
+    }
+    draw() {
+        this.f.forEach(f=>{if (f.visible) f.draw();})
+    }
+    processFormsEvent(evt) {
+        this.f.forEach(item=>{
+            if (item.active) {
+                item.processFormEvent(evt);
+            }
+        });
+    }
+}
 
 class Form extends Frame {
     constructor(id,title,x,y,w,h) {
@@ -6,14 +25,18 @@ class Form extends Frame {
         this.id=id;
         this.visible=false; // shows up
         this.active=false; // reacts to events
-        forms.push(this);
+        forms.addForm(this);
     }
     draw() {
         super.draw();
     }
-    processEvent(myEvent) {
+    hovered(cursor) {
+        return cursor.x>=this.x && cursor.x<=this.x+this.w &&
+        cursor.y>=this.y && cursor.y<=this.y+this.h
+    }
+    processFormEvent(myEvent) {
         getCoord(myEvent); // sets cursor (translated canvas) and ccursor (orig canvas)
-        o=pn.getCursoredObject(ccursor,"CANVAS");
+        o=pn.getCursoredObject(cursor,"VIEWPORT");
         if (myEvent.type=="md") { this.mousedown(myEvent); }
         else if (myEvent.type=="mu") { this.mouseup(myEvent); }
         else if (myEvent.type=="mm") { this.mousemove(myEvent); }
@@ -56,7 +79,7 @@ class FileForm extends Form {
     }
     mouseup(evt) {
         if (selectedFile!=-1) {
-            if (DEBUG) { 
+            if (state.DEBUG) { 
                 log(selectedFile);
                 log(files[selectedFile]);
             }
@@ -75,7 +98,7 @@ class FileForm extends Form {
         request.open('POST','php/scandir.php',true);
         request.onreadystatechange=function() {
             if (request.readyState==4 && request.status==200) {
-                if (DEBUG) log(request.responseText);
+                if (state.DEBUG) log(request.responseText);
                 files.length=0;
                 files.push(...request.responseText.split('\n'));
                 files.pop();

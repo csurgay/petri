@@ -21,51 +21,51 @@ function mousedown(evt) {
         if (evt.button==LEFTBUTTON) {
             if (o==null) {
                 // New Object, Pan
-                if (state.is("IDLE") && shiftKeys(evt,"CTRLALTNONE")) {
+                if (state.is("IDLE") && SCA(evt,"s..")) { // CTRLALTNONE
                     state.set("LEFTDOWN");
                 }
             }
             else if (o) {
                 // Object click, Drag
-                if (o.type!=FLOW && shiftKeys(evt,"ALTNONE")) {
+                if (o.type!=FLOW && SCA(evt,"sc.")) { // ALTNONE
                     state.set("LEFTDOWN");
                     pn.dragged=o;
                 }
                 // Subnet drag
-                else if (shiftKeys(evt,"SHIFT")||shiftKeys(evt,"ALTSHIFT")) {
+                else if (SCA(evt,"Sc.")) { // SHIFT or ALTSHIFT
                     state.set("SHIFTCLICK");
                     pn.connected.length=0;
                     pn.getConnectedAll(o);
                 }
                 // New potential Flow
-                else if (o && (o.type==PLACE || o.type==TRANSITION) && shiftKeys(evt,"CTRL")) {
+                else if (o && (o.type==PLACE || o.type==TRANSITION) && SCA(evt,"sCa")) { // CTRL
                     state.set("DRAWARROW");
                 }
                 // Multisegment Flow or Flow Toggle
-                else if (o.type==FLOW && shiftKeys(evt,"NONE")) {
+                else if (o.type==FLOW && SCA(evt,"sca")) { // NONE
                     state.set("MULTISEGMENT");
                     pn.dragged=o;
                 }
             }
         }
-        else if (evt.button==RIGHTBUTTON && shiftKeys(evt,"NONE")) {
+        // Right mouse button click
+        else if (evt.button==RIGHTBUTTON && SCA(evt,"sca")) { // NONE
             if (o==null) {
                 // Running mode
                 if (state.is("IDLE")) state.set("RUN");
                 else if (state.is("RUN")) state.set("IDLE");
             }
-            // Delete
+            // Delete Objets
             else {
                 state.set("DELETE");
             }
         }
         // Zoom
-        else if (evt.button==MIDDLEBUTTON && shiftKeys(evt,"NONE")) {
+        else if (evt.button==MIDDLEBUTTON && SCA(evt,"sca")) { // NONE
             state.set("MIDDLE");
         }
     }
 }
-
 function mouseup(evt) {
     storedEvt.store("mouseup",getFormattedDate('millisec'),evt);
     getCoord(evt); // sets cursor (translated canvas) and ccursor (orig canvas)
@@ -113,21 +113,21 @@ function mouseup(evt) {
             pn.newUndo();
         }
         // New Place
-        else if (state.is("LEFTDOWN") && o==null && shiftKeys(evt,"NONE") && closeEnough(pn.mouseDownCoord,cursor)) {
+        else if (state.is("LEFTDOWN") && o==null && SCA(evt,"sca") && closeEnough(pn.mouseDownCoord,this.cursor)) {
             const newPlace = new Place(scursor.x,scursor.y);
             pn.addPlace(newPlace);
             pn.highlighted=newPlace;
             pn.newUndo();
         }
         // New Transition
-        else if (state.is("LEFTDOWN") && o==null && shiftKeys(evt,"CTRL") && closeEnough(pn.mouseDownCoord,cursor)) {
+        else if (state.is("LEFTDOWN") && o==null && SCA(evt,"sCa") && closeEnough(pn.mouseDownCoord,this.cursor)) {
             const newTrans = new Transition(scursor.x,scursor.y);
             pn.addTransition(newTrans);
             pn.highlighted=newTrans;
             pn.newUndo();
         }
         // New Label
-        else if (state.is("LEFTDOWN") && o==null && shiftKeys(evt,"ALT") && closeEnough(pn.mouseDownCoord,cursor)) {
+        else if (state.is("LEFTDOWN") && o==null && SCA(evt,"scA") && closeEnough(pn.mouseDownCoord,this.cursor)) {
             const newLabel = new Label("-",scursor.x,scursor.y);
             pn.highlighted=newLabel;
             pn.newUndo();
@@ -140,7 +140,7 @@ function mouseup(evt) {
             pn.newUndo();
         }
         // Copy subnet
-        else if (state.is("SHIFTCLICK") && o && shiftKeys(evt,"SHIFT") && closeEnough(pn.mouseDownCoord,cursor)) {
+        else if (state.is("SHIFTCLICK") && o && SCA(evt,"Sca") && closeEnough(pn.mouseDownCoord,this.cursor)) {
             pn.connected.forEach(o=>{
                 if (o.type==PLACE) {
                     const newObject=new Place(o.x+20,o.y+20);
@@ -202,7 +202,6 @@ function mouseup(evt) {
         fb.paleArrow=null;
     }
 }
-
 function mousemove(evt) {
     storedEvt.store("mousemove",getFormattedDate('millisec'),evt);
     getCoord(evt);
@@ -263,7 +262,6 @@ function mousemove(evt) {
         }
     }
 }
-
 function mousewheel(evt) {
     storedEvt.store("mousewheel",getFormattedDate('millisec'),evt);
     const delta=-Math.sign(evt.deltaY);
@@ -283,7 +281,7 @@ function mousewheel(evt) {
         if (pn.zoom<0.3) pn.zoom=0.3;
         if (pn.zoom>3) pn.zoom=3;
     }
-    else if (o && shiftKeys(evt,"NONE")) {
+    else if (o && SCA(evt,"sca")) {
         // Tokens add/remove
         if (o.type==PLACE) {
             o.changeTokens(delta);
@@ -308,27 +306,27 @@ function mousewheel(evt) {
         }
     }
     // Color change on Object
-    else if (o && shiftKeys(evt,"ALT")) {
+     else if (o && SCA(evt,"scA")) { // ALT
         if (!evt.shiftKey) {
             o.nextColor(delta);
             pn.needTimedUndo=true;
         }
     }
     // Color change Shubnet
-    else if (o && shiftKeys(evt,"ALTSHIFT")) {
+    else if (o && SCA(evt,"ScA")) { // ALTSHIFT
         pn.connected.length=0;
         pn.getConnected(o);
         pn.connected.forEach(o=>o.nextColor(delta));
         pn.needTimedUndo=true;
     }
     // Rewind and Forward
-    else if (shiftKeys(evt,"NONE")) {
+    else if (SCA(evt,"sca")) { // NONE
         state.set("IDLE");
         if (delta<0) pn.stepBackward();
         if (delta>0) pn.stepForward();
     }
     // Rotate subnet
-    else if (o && shiftKeys(evt,"SHIFT")) {
+    else if (o && SCA(evt,"Sca")) { // SHIFT
         pn.connected.length=0;
         pn.getConnectedAll(o);
         pn.connected.forEach(r=>{

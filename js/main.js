@@ -1,7 +1,7 @@
 const canvas=document.getElementById("petrinetCanvas");
 const ctx=canvas.getContext("2d");
 const g=new graphics(ctx);
-const ww=window.innerWidth, wh=window.innerHeight;
+var ww=window.innerWidth, wh=window.innerHeight;
 const events=new Events();
 addEventListener('mousedown',events.mousedownevent);
 addEventListener('mouseup',events.mouseupevent);
@@ -10,11 +10,11 @@ addEventListener('mousewheel',events.mousewheelevent);
 addEventListener('keyup', events.keyupevent);
 addEventListener('keydown', events.keydownevent);
 addEventListener('contextmenu',evt=>{evt.preventDefault();});
-var RUNNING=true;
 
 const state=new State("IDLE");
 const pn=new Petrinet();
-const fb=new BaseForm("PetriNet (c) 2024 csurgay@gmail.com",0,0,ww,wh);
+const forms=new Forms();
+const fb=new BaseForm("notitle",0,40,ww,wh-40);
 setupStatus();
 setupButton();
 
@@ -31,13 +31,15 @@ animate();
 var ms,msSlowrun=0;
 
 function animate() {
+    ww=window.innerWidth, wh=window.innerHeight;
+    fb.w=ww; fb.h=wh-40;
     events.processEvent();
     ms=Date.now();
     g.clearCanvas(canvas);
     g.translate(0.5, 0.5);
     // Forms
-    forms.forEach(f=>{if (f.visible) f.draw();})
-    if (DEBUG || true) drawRotatingPacman();    
+    forms.draw();
+    if (state.DEBUG || true) drawRotatingPacman();    
     // Running mode
     if (state.is("FLY")) { pn.fireOne(); }
     else if (state.is("RUN")) { 
@@ -52,5 +54,5 @@ function animate() {
             msSlowrun=ms;
         } 
     }
-    if (RUNNING) requestAnimationFrame(animate);
+    if (state.RUNNING) requestAnimationFrame(animate);
 }

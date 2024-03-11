@@ -8,7 +8,7 @@ const COLOR = {
 var blinkms=0; // blink millisec counter
     
 class TextboxForm extends Form {
-	constructor(name, x,y,w,h, frame, defaultText) {
+	constructor(name, x,y,w,h, frame, defaultText="-") {
         super("TEXTBOX",name,x,y,w,h);
 		this.x = x;
 		this.y = y;
@@ -32,8 +32,8 @@ class TextboxForm extends Form {
         this.referencedLabel = null; // shall have a .label datamember
 	}
 	cursorIn(cursor) {
-		return cursor.x>this.x && cursor.x<this.x+this.w && 
-            cursor.y>this.y && cursor.y<this.y+this.h;
+		return cursor.x>this.x-this.w && cursor.x<this.x+this.w && 
+            cursor.y>this.y-this.h && cursor.y<this.y+this.h;
 	}
 	clear() {
 		this.text = '';
@@ -45,6 +45,8 @@ class TextboxForm extends Form {
             g.translate(pn.cx,pn.cy);
             g.scale(pn.zoom,pn.zoom);
             g.translate(pn.vpx,pn.vpy);
+            g.setupText(""+this.size+"px arial","left","top");
+            this.w = g.measureText(this.text).width;
             this.h = this.size + 5;
             g.beginPath();
             g.solid();
@@ -60,7 +62,6 @@ class TextboxForm extends Form {
             var fits = true;
             var x = this.x+this.px; var y = this.y+this.py; var w;
             this.posChars = [];
-            g.setupText(""+this.size+"px arial","left","top");
             while (fits && ptr<=this.text.length) {
                 if (this.ptrCursor==ptr && this.cursorBlink) {
                     g.beginPath();
@@ -96,7 +97,7 @@ class TextboxForm extends Form {
             }
             this.posChars.push( [x, y-3, this.ax+this.w-x, this.h-2*this.py+6] );
 
-            if (DEBUG && false) { // draw all chars rect
+            if (state.DEBUG && false) { // draw all chars rect
                 g.beginPath();
                 g.strokeStyle(COLOR_INK);
                 g.lineWidth(1);
@@ -114,16 +115,16 @@ class TextboxForm extends Form {
         getCoord(evt); // sets cursor (translated canvas) and ccursor (orig canvas)
         o=pn.getCursoredObject(cursor,"VIEWPORT");
             // Textbox text cursor click
-        if (textbox.cursorIn(cursor)) {
-            textbox.clicked(cursor);
+        if (this.cursorIn(cursor) && SCA(evt,"sca")) {
+            this.clicked(cursor);
         }
         // Textbox cancel click
-        else if (!o || o!=this) {
-            textbox.cancel();
+        else if (!o || o!=this && SCA(evt,"sca")) {
+            this.cancel();
         }
         // Textbox attach to Object
-        else if (o && shiftKeys(evt,"ALT")) {
-            textbox.attachToObject(o);
+        else if (o && SCA(evt,"scA")) { // ALT
+            this.attachToObject(o);
             this.referencedLabel.visible=true;
             this.active=false;
             this.visible=false;
@@ -149,7 +150,7 @@ class TextboxForm extends Form {
 	}
     confirm() {
         if (this.text=="") this.text="-";
-        if (DEBUG) log("confirm: "+this.text);
+        if (state.DEBUG) log("confirm: "+this.text);
         this.referencedLabel.label=this.text;
         this.referencedLabel.visible=true;
         state.set("IDLE");
@@ -159,7 +160,7 @@ class TextboxForm extends Form {
         pn.newUndo();
     }
     cancel() {
-        if (DEBUG) log("cancel: "+this.text);
+        if (state.DEBUG) log("cancel: "+this.text);
         state.set("IDLE");
         this.referencedLabel.visible=true;
         this.visible=false;
@@ -167,11 +168,18 @@ class TextboxForm extends Form {
         fb.active=true;
     }
     attachToObject(o) {
-        if (DEBUG) log("attach: "+this.text+" to object: "+o.id);
         var a=this.referencedLabel.getAttached();
-        if (a) a.detach(this.referencedLabel);
-        this.referencedLabel.setAttached(o);
-        o.attach(this.referencedLabel);
+        if (a) {
+            if (state.DEBUG) log("detach: "+this.text+" from object: "+a.id);
+            this.referencedLabel.setAttached(null);
+            a.detach(this.referencedLabel);
+        }
+        if (o.id!=this.referencedLabel.id) {
+            if (state.DEBUG) log("attach: "+this.text+" to object: "+o.id);
+            this.referencedLabel.setAttached(o);
+            o.attach(this.referencedLabel);
+        }
+        pn.newUndo();
     }
     keyup(evt) {
         // left, right, home, end

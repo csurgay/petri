@@ -6,7 +6,7 @@ class Status extends Label {
         this.callback=callback;
     }
     draw() {
-        if (DEBUG) {
+        if (state.DEBUG) {
             super.draw();
             g.fillText(this.callback(),this.x+50,this.y);
         }
@@ -37,9 +37,9 @@ function setupStatus() {
     new Status("id",sx,sy+i++*dy,function(){return o?o.id:"";});
     new Status("hl",sx,sy+i++*dy,function(){return pn.highlighted?objects[pn.highlighted.type]:"";});
     new Status("size",sx,sy+i++*dy,function(){return o?(o.type==LABEL?o.size:""):"";});
-    new Status("rec",sx,sy+i++*dy,function(){return PLAYBACK?"PLAYBACK":RECORD?"REC":"";});
+    new Status("rec",sx,sy+i++*dy,function(){return state.PLAYBACK?"state.PLAYBACK":state.RECORD?"REC":"";});
     new Status("recs",sx,sy+i++*dy,function(){return events.rec.length;});
-    new Status("shifts",sx,sy+i++*dy,function(){return stored_sca();});
+    new Status("shifts",sx,sy+i++*dy,function(){return storedEvt.sca;});
     new Status("key",sx,sy+i++*dy,function(){return storedEvt.key+"("+storedEvt.keyCode+")";});
     new Status("events",sx,sy+i++*dy,function(){return events.e.length;});
     new Status("e",sx,sy+i++*dy,function(){return storedEvt.type;});

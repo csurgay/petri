@@ -62,7 +62,7 @@ class Place extends Object {
             g.fillText(t1000,this.x,this.y-7);
             g.fillText(t,this.x,this.y+8);
         }
-        if (DEBUG) super.draw();
+        if (state.DEBUG) super.draw();
     }
 
     dragTo(dx,dy) {
