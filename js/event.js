@@ -6,7 +6,7 @@ class MyEvent { // Data structure for an Event (mouse and keys)
         this.deltaY;
         this.key;
         this.keyCode;
-        this.sca;
+        this.sca="sca";
     }
     copy(e) {
         this.type=e.type;
