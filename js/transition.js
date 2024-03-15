@@ -12,7 +12,7 @@ const p1=new Coord(0,0), p2=new Coord(0,0);
 class Transition extends Object {
     constructor(x,y,alpha=Math.PI/2) {
         super(x,y);
-        this.type=TRANSITION;
+        this.type="TRANSITION";
         this.id="T"+nextId(this.type);
         this.x=x;
         this.y=y;
@@ -63,7 +63,7 @@ class Transition extends Object {
         this.label.dragTo(dx,dy);
     }
 
-    cursored(cursor) {
+    hovered(cursor) {
         this.adjust_p1p2();
         if (distancePointAndSection(cursor,p1,p2) <= tw/2+1)
             return true;
@@ -80,7 +80,7 @@ class Transition extends Object {
         if (Math.abs(this.alpha-3*Math.PI/4)<Math.PI/80) this.alpha=3*Math.PI/4;
         if (Math.abs(this.alpha)<Math.PI/80) this.alpha=0;
         this.adjust_p1p2();
-        if (!this.cursored(cursor)) pn.highlighted=null;
+        if (!this.hovered(cursor)) pn.highlighted=null;
     }
 
     delete() {

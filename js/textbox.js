@@ -150,7 +150,7 @@ class TextboxForm extends Form {
 	}
     confirm() {
         if (this.text=="") this.text="-";
-        if (state.DEBUG) log("confirm: "+this.text);
+        if (state.DEBUG) log(here(), "confirm: "+this.text);
         this.referencedLabel.label=this.text;
         this.referencedLabel.visible=true;
         state.set("IDLE");
@@ -160,7 +160,7 @@ class TextboxForm extends Form {
         pn.newUndo();
     }
     cancel() {
-        if (state.DEBUG) log("cancel: "+this.text);
+        if (state.DEBUG) log(here(), "cancel: "+this.text);
         state.set("IDLE");
         this.referencedLabel.visible=true;
         this.visible=false;
@@ -170,12 +170,12 @@ class TextboxForm extends Form {
     attachToObject(o) {
         var a=this.referencedLabel.getAttached();
         if (a) {
-            if (state.DEBUG) log("detach: "+this.text+" from object: "+a.id);
+            if (state.DEBUG) log(here(), "detach: "+this.text+" from object: "+a.id);
             this.referencedLabel.setAttached(null);
             a.detach(this.referencedLabel);
         }
         if (o.id!=this.referencedLabel.id) {
-            if (state.DEBUG) log("attach: "+this.text+" to object: "+o.id);
+            if (state.DEBUG) log(here(), "attach: "+this.text+" to object: "+o.id);
             this.referencedLabel.setAttached(o);
             o.attach(this.referencedLabel);
         }
@@ -196,7 +196,7 @@ class TextboxForm extends Form {
             this.cancel();
         }
         else if (evt.keyCode == 86 && evt.ctrlKey) { // paste
-            paste( this, this.text.substr(0,this.ptrCursor), this.text.substr(this.ptrCursor,this.text.length-this.ptrCursor) );
+            paste( this, this.text.substring(0,this.ptrCursor), this.text.substring(this.ptrCursor,this.text.length) );
         }
         else if ( (evt.keyCode >= 48 && evt.keyCode <= 57)   || // number keys
         evt.keyCode == 32 || evt.keyCode == 13   || // space, carriage return
@@ -204,15 +204,15 @@ class TextboxForm extends Form {
         (evt.keyCode > 95 && evt.keyCode < 112)  || // numpad keys
         (evt.keyCode > 185 && evt.keyCode < 193) || // ;=,-./` (in order)
         (evt.keyCode > 218 && evt.keyCode < 223) ) {   // [\]' (in order)
-            this.text = this.text.substr(0,this.ptrCursor)+evt.key+this.text.substr(this.ptrCursor,this.text.length-this.ptrCursor);
+            this.text = this.text.substring(0,this.ptrCursor)+evt.key+this.text.substring(this.ptrCursor,this.text.length);
             this.ptrCursor++;
         }
         else if (evt.keyCode == 8 && this.ptrCursor > 0) { // backspace
-            this.text = this.text.substr(0,this.ptrCursor-1)+this.text.substr(this.ptrCursor,this.text.length-this.ptrCursor);
+            this.text = this.text.substring(0,this.ptrCursor-1)+this.text.substring(this.ptrCursor,this.text.length);
             this.ptrCursor--;
         }
         else if (evt.keyCode == 46) { // delete
-            this.text = this.text.substr(0,this.ptrCursor)+this.text.substr(this.ptrCursor+1,this.text.length-this.ptrCursor);
+            this.text = this.text.substring(0,this.ptrCursor)+this.text.substring(this.ptrCursor+1,this.text.length);
         }
     }
 }

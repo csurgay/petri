@@ -83,7 +83,7 @@ class Petrinet {
     }
 
     addFlows(o1,o2) {
-        if (o1.type==PLACE && o2.type==PLACE) {
+        if (o1.type=="PLACE" && o2.type=="PLACE") {
             const newTrans=new Transition(
                 snap((o1.x+o2.x)/2),
                 snap((o1.y+o2.y)/2),
@@ -94,7 +94,7 @@ class Petrinet {
             this.addFlow(new Flow(o1,newTrans));
             this.addFlow(new Flow(newTrans,o2));
         }
-        else if (o1.type==TRANSITION && o2.type==TRANSITION) {
+        else if (o1.type=="TRANSITION" && o2.type=="TRANSITION") {
             const newPlace=new Place(
                 snap((o1.x+o2.x)/2),
                 snap((o1.y+o2.y)/2)
@@ -109,14 +109,14 @@ class Petrinet {
     }
 
     togglePlaceTransition(o) {
-        if (o.type==PLACE) {
+        if (o.type=="PLACE") {
             o.delete();
             const newTrans=new Transition(o.x,o.y);
             this.addTransition(newTrans);
             this.highlighted=newTrans;
         }
         // Toggle Transition to Place
-        else if (o.type==TRANSITION) {
+        else if (o.type=="TRANSITION") {
             o.delete();
             const newPlace=new Place(o.x,o.y);
             this.addPlace(newPlace);
@@ -141,24 +141,24 @@ class Petrinet {
         var ret = null;
         if (scope=="VIEWPORT") {
             if (ret==null)
-                this.l.forEach(item => { if (item.cursored(cursor)) ret=item; });
+                this.l.forEach(item => { if (item.hovered(cursor)) ret=item; });
             if (ret==null)
-                this.p.forEach(item => { if (item.cursored(cursor)) ret=item; });
+                this.p.forEach(item => { if (item.hovered(cursor)) ret=item; });
             if (ret==null)
-                this.t.forEach(item => { if (item.cursored(cursor)) ret=item; });
+                this.t.forEach(item => { if (item.hovered(cursor)) ret=item; });
             if (ret==null)
                 this.f.forEach(item => {
                     const aux=item.cursoredMidPoint(cursor);
                     if (aux) ret=aux; 
                 });
             if (ret==null)
-                this.f.forEach(item => { if (item.cursored(cursor)) ret=item; });
+                this.f.forEach(item => { if (item.hovered(cursor)) ret=item; });
         }
         else if (scope=="CANVAS") {
             if (ret==null)
-                this.b.forEach(item => { if (item.cursored(cursor)) ret=item; });
+                this.b.forEach(item => { if (item.hovered(cursor)) ret=item; });
             if (ret==null)
-                this.s.forEach(item => { if (item.cursored(cursor)) ret=item; });
+                this.s.forEach(item => { if (item.hovered(cursor)) ret=item; });
         }
         return ret;
     }

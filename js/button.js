@@ -3,8 +3,8 @@ const bh=20,br=10,bdw=17,bdh=12,bdo=3;
 class Button extends Object {
     constructor(button,label,x,y,w,enabled) {
         super(x,y);
+        this.type="BUTTON";
         this.id=button;
-        this.type=BUTTON;
         this.button=button;
         this.w=w;
         pn.addButton(this);
@@ -172,7 +172,7 @@ class Button extends Object {
 
     dragTo() {}
 
-    cursored(cursor) {
+    hovered(cursor) {
         return (
             Math.abs(this.x-cursor.x)<=this.w/2 && 
             Math.abs(this.y-cursor.y)<=bh/2
@@ -181,7 +181,7 @@ class Button extends Object {
 
     clicked(evt) {
         if (!this.enabled()) return;
-        if (state.DEBUG) log("Button: "+this.button);
+        if (state.DEBUG) log(here(), "Button: "+this.button);
         if (this.button=="PLAY") {
             if (!state.is("PLAY")) state.set("PLAY");
             else state.set("IDLE");
@@ -216,6 +216,7 @@ class Button extends Object {
 //            window.open("help.html", "_blank");
         }
         else if (this.button=="PREF") {
+            log(here(),"My log message");
             fb.active=false;
             fp.visible=true;
             fp.active=true;

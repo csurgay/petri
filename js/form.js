@@ -80,8 +80,8 @@ class FileForm extends Form {
     mouseup(evt) {
         if (selectedFile!=-1) {
             if (state.DEBUG) { 
-                log(selectedFile);
-                log(files[selectedFile]);
+                log(here(), selectedFile);
+                log(here(), files[selectedFile]);
             }
             if (files[selectedFile]!="CANCEL") {
                 pn.load(directory+"/"+files[selectedFile]);
@@ -98,7 +98,7 @@ class FileForm extends Form {
         request.open('POST','php/scandir.php',true);
         request.onreadystatechange=function() {
             if (request.readyState==4 && request.status==200) {
-                if (state.DEBUG) log(request.responseText);
+                if (state.DEBUG) log(here(), request.responseText);
                 files.length=0;
                 files.push(...request.responseText.split('\n'));
                 files.pop();

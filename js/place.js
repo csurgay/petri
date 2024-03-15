@@ -13,7 +13,7 @@ const placeConnectors=[];
 class Place extends Object {
     constructor(x,y) {
         super(x,y);
-        this.type=PLACE;
+        this.type="PLACE";
         this.id="P"+nextId(this.type);
         this.tokens=0;
         this.label=new Label(this.id,this.x-30,this.y-30);
@@ -70,7 +70,7 @@ class Place extends Object {
         this.label.dragTo(dx,dy);
     }
 
-    cursored(cursor) {
+    hovered(cursor) {
         return (Math.hypot(this.x-cursor.x,this.y-cursor.y) < PLACE_R);
     }
 

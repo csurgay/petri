@@ -10,7 +10,7 @@ function mousedown(evt) {
     getCoord(evt);
     o=pn.getCursoredObject(ccursor,"CANVAS");
     if (o) {
-        if (o.type==BUTTON && evt.button==LEFTBUTTON) {
+        if (o.type=="BUTTON" && evt.button==LEFTBUTTON) {
             state.set("BUTTONCLICK");
         }
     }
@@ -27,7 +27,7 @@ function mousedown(evt) {
             }
             else if (o) {
                 // Object click, Drag
-                if (o.type!=FLOW && SCA(evt,"sc.")) { // ALTNONE
+                if (o.type!="FLOW" && SCA(evt,"sc.")) { // ALTNONE
                     state.set("LEFTDOWN");
                     pn.dragged=o;
                 }
@@ -38,11 +38,11 @@ function mousedown(evt) {
                     pn.getConnectedAll(o);
                 }
                 // New potential Flow
-                else if (o && (o.type==PLACE || o.type==TRANSITION) && SCA(evt,"sCa")) { // CTRL
+                else if (o && (o.type=="PLACE" || o.type=="TRANSITION") && SCA(evt,"sCa")) { // CTRL
                     state.set("DRAWARROW");
                 }
                 // Multisegment Flow or Flow Toggle
-                else if (o.type==FLOW && SCA(evt,"sca")) { // NONE
+                else if (o.type=="FLOW" && SCA(evt,"sca")) { // NONE
                     state.set("MULTISEGMENT");
                     pn.dragged=o;
                 }
@@ -78,7 +78,7 @@ function mouseup(evt) {
         o=pn.getCursoredObject(cursor,"VIEWPORT");
         // New Flow
         if (state.is("DRAWARROW") && o && o!=pn.highlighted &&
-            (o.type==PLACE || o.type==TRANSITION)) {
+            (o.type=="PLACE" || o.type=="TRANSITION")) {
             pn.addFlows(pn.highlighted,o);
             pn.highlighted=o;
             pn.newUndo();
@@ -89,7 +89,7 @@ function mouseup(evt) {
         }
         else if (state.is("LEFTDOWN") && o && o==pn.highlighted && 
             closeEnough(pn.mouseDownCoord,cursor) &&
-            (o.type==PLACE || o.type==TRANSITION)) {
+            (o.type=="PLACE" || o.type=="TRANSITION")) {
             // Toggles
             if (pn.noFlowFromHere(o)) {
                 // Toggle Place to Transition
@@ -97,17 +97,17 @@ function mouseup(evt) {
                 pn.newUndo();
             }
             // Fire a Transition
-            else if(o.type==TRANSITION) {
+            else if(o.type=="TRANSITION") {
                 if (o.enabled()) pn.fireOne(o);
             }
         }
         // Label enter edit click
-        else if (state.is("LEFTDOWN") && o && o.type==LABEL && 
+        else if (state.is("LEFTDOWN") && o && o.type=="LABEL" && 
             closeEnough(pn.mouseDownCoord,cursor)) {
             o.clicked(evt);
         }
         // Toggle Flow Enabler/Inhiboitor
-        else if(state.is("MULTISEGMENT") && o && o.type==FLOW && o.o1.type==PLACE) {
+        else if(state.is("MULTISEGMENT") && o && o.type=="FLOW" && o.o1.type=="PLACE") {
             if (o.subtype=="ENABLER") o.subtype="INHIBITOR";
             else if (o.subtype=="INHIBITOR") o.subtype="ENABLER";
             pn.newUndo();
@@ -142,7 +142,7 @@ function mouseup(evt) {
         // Copy subnet
         else if (state.is("SHIFTCLICK") && o && SCA(evt,"Sca") && closeEnough(pn.mouseDownCoord,this.cursor)) {
             pn.connected.forEach(o=>{
-                if (o.type==PLACE) {
+                if (o.type=="PLACE") {
                     const newObject=new Place(o.x+20,o.y+20);
                     newObject.label.label=o.label.label;
                     newObject.label.x=o.label.x+20;
@@ -151,7 +151,7 @@ function mouseup(evt) {
                     newObject.tokens=o.tokens;
                     pn.addPlace(newObject);
                 }
-                else if (o.type==TRANSITION) {
+                else if (o.type=="TRANSITION") {
                     const newObject=new Transition(o.x+20,o.y+20,o.alpha);
                     newObject.label.label=o.label.label;
                     newObject.label.x=o.label.x+20;
@@ -184,7 +184,7 @@ function mouseup(evt) {
             pn.newUndo();
         }
         // Clear Place Tokens
-        else if (state.is("MIDDLE") && o && o.type==PLACE) {
+        else if (state.is("MIDDLE") && o && o.type=="PLACE") {
             o.changeTokens(-o.tokens);
             pn.newUndo();
         }
@@ -283,23 +283,23 @@ function mousewheel(evt) {
     }
     else if (o && SCA(evt,"sca")) {
         // Tokens add/remove
-        if (o.type==PLACE) {
+        if (o.type=="PLACE") {
             o.changeTokens(delta);
             pn.needTimedUndo=true;
         }
         // Rotate Transition
-        else if (o.type==TRANSITION) {
+        else if (o.type=="TRANSITION") {
             o.rotate(delta);
             pn.needTimedUndo=true;
         }
         // Adjust Flow weight
-        else if (o.type==FLOW) {
+        else if (o.type=="FLOW") {
             o.weight+=delta;
             if (o.weight<1) o.weight=1;
             pn.needTimedUndo=true;
         }
         // Adjust Label size
-        else if (o.type==LABEL) {
+        else if (o.type=="LABEL") {
             o.size+=2*delta;
             if (o.size<8) o.size=8;
             pn.needTimedUndo=true;
@@ -332,7 +332,7 @@ function mousewheel(evt) {
         pn.connected.forEach(r=>{
             rot=rotate(o.x,o.y,r.x,r.y,delta*Math.PI/32);
             r.x=rot[0]; r.y=rot[1];
-            if (r.type==TRANSITION) {
+            if (r.type=="TRANSITION") {
                 r.alpha+=delta*Math.PI/32;
             }
             if (r.label) {

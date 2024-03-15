@@ -1,7 +1,7 @@
 class Flow extends Object {
     constructor(o1,o2) {
         super(0,0);
-        this.type=FLOW;
+        this.type="FLOW";
         this.id="F"+nextId(this.type);
         this.subtype="ENABLER"; // "INHIBITOR"
         this.o1=o1;
@@ -17,7 +17,7 @@ class Flow extends Object {
         const lastPoint=this.path[this.path.length-2];
         // Calc end connector for this Flow
         var distance, minDistance=1000000;
-        if (this.o2.type==PLACE) {
+        if (this.o2.type=="PLACE") {
             placeConnectors.forEach(c=>{
                 distance=Math.hypot(
                     this.o2.x+c.x-lastPoint.x,
@@ -29,7 +29,7 @@ class Flow extends Object {
                 }
             });
         }
-        else if (this.o2.type==TRANSITION) {
+        else if (this.o2.type=="TRANSITION") {
             if (!this.stickyHead) {
                 for (var i=0; i<transConnectors.length; i++) {
                     const c=transConnectors[i];
@@ -88,7 +88,7 @@ class Flow extends Object {
         if (state.DEBUG) super.draw();
     }
 
-    cursored(cursor) {
+    hovered(cursor) {
         for (var i=0; i<this.path.length-2; i++) {
             if (distancePointAndSection(cursor,this.path[i],this.path[i+1]) <= 3)
                 return true;
@@ -100,7 +100,7 @@ class Flow extends Object {
 
     cursoredMidPoint(cursor) {
         for (var i=1; i<this.path.length-1; i++) {
-            if (this.path[i].cursored(cursor)) {
+            if (this.path[i].hovered(cursor)) {
                 return this.path[i];
             }
         }
@@ -130,7 +130,7 @@ class Flow extends Object {
 class MidPoint extends Object {
     constructor(x,y) {
         super(x,y);
-        this.type=MIDPOINT;
+        this.type="MIDPOINT";
         this.id="M"+nextId(this.type);
     }
     
@@ -145,7 +145,7 @@ class MidPoint extends Object {
         }
     }
 
-    cursored(cursor) {
+    hovered(cursor) {
         return Math.hypot(this.x-cursor.x,this.y-cursor.y)<=7;
     }
 

@@ -1,8 +1,15 @@
-const           PLACE=0,TRANSITION=1,FLOW=2,MIDPOINT=3,LABEL=4,BUTTON=5;
-const objects=["PLACE","TRANSITION","FLOW","MIDPOINT","LABEL","BUTTON"];
-
-function log(str) {
-    console.log(str);
+function here() {
+  const e = new Error();
+  const regex = /\((.*):(\d+):(\d+)\)$/
+  const match = regex.exec(e.stack.split("\n")[2]);
+  var filepath = match[1];
+  var line = match[2];
+  var column = match[3];
+  var filename = filepath.replace(/^.*[\\/]/, '')
+  return filename+"("+line+"): "
+}
+function log(here="js: ", str) {
+    console.log(here+str);
 }
 function error(str) {
     console.log("Error: "+str);
@@ -10,11 +17,12 @@ function error(str) {
 
 var idPlace=0, idTrans=0, idFlow=0, idLabel=0, idMidpoint=0;
 function nextId(type) {
-    if (type==PLACE) return ++idPlace;
-    else if (type==TRANSITION) return ++idTrans;
-    else if (type==FLOW) return ++idFlow;
-    else if (type==LABEL) return ++idLabel;
-    else if (type==MIDPOINT) return ++idMidpoint;
+    if (type=="PLACE") return ++idPlace;
+    else if (type=="TRANSITION") return ++idTrans;
+    else if (type=="FLOW") return ++idFlow;
+    else if (type=="LABEL") return ++idLabel;
+    else if (type=="MIDPOINT") return ++idMidpoint;
+    else error("Unknown oject type: "+type);
 }
 function rotate(cx,cy,x,y,alpha) {
     var tx=x-cx,ty=y-cy;
@@ -79,7 +87,7 @@ function getFormattedDate(millisec="none") {
       zeroPad(d.getMinutes())+":"+
       zeroPad(d.getSeconds());
   if (millisec=='millisec')
-      str+="."+("00"+d.getMilliseconds()).substr(-3);
+      str+="."+("00"+d.getMilliseconds()).slice(-3);
   return str;
 }
 function zeroPad(v) {

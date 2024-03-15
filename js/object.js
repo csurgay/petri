@@ -1,6 +1,9 @@
+const objects=["PLACE","TRANSITION","FLOW","MIDPOINT","LABEL","BUTTON"];
+
 class Object extends Coord {
     constructor(x,y) {
         super(x,y);
+        this.type="OBJECT";
         this.id;
         this.label=null;
         this.color=COLOR_INK;
@@ -35,7 +38,7 @@ class Object extends Coord {
         }
         if (COLOR_HIGHLIGHT!="black") pn.highlighted=null;
     }
-    cursored() {
+    hovered() {
     }
     clicked() {
     }

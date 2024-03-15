@@ -42,7 +42,7 @@ function rawLoad(str) {
     while(str[ptr]!="Places:") ptr++; ptr++;
     // Places
     while(str[ptr]!="Transitions:") {
-        if (state.DEBUG) log(str[ptr]);
+        if (state.DEBUG) log(here(), str[ptr]);
         l=[]; tokenize(str[ptr],l);
         const o=new Place(+l[1],+l[2]); o.id=l[0]; o.color=l[3];
         o.tokens=+l[4];
@@ -53,7 +53,7 @@ function rawLoad(str) {
     ptr++;
     // Transitions
     while(str[ptr]!="Flows:") {
-        if (state.DEBUG) log(str[ptr]);
+        if (state.DEBUG) log(here(), str[ptr]);
         l=[]; tokenize(str[ptr],l);
         const o=new Transition(+l[1],+l[2]); o.id=l[0]; o.color=l[3];
         o.alpha=+l[4];
@@ -64,7 +64,7 @@ function rawLoad(str) {
     ptr++;
     // Flows
     while(str[ptr]!="Labels:") {
-        if (state.DEBUG) log(str[ptr]);
+        if (state.DEBUG) log(here(), str[ptr]);
         l=[]; tokenize(str[ptr],l);
         const o=new Flow(pn.locate(l[4]),pn.locate(l[5])); 
         o.id=l[0]; o.color=l[1]; o.subtype=l[2]; o.weight=+l[3];
@@ -81,9 +81,9 @@ function rawLoad(str) {
     ptr++;
     // Labels
     while(str[ptr]!="Config:") {
-        if (state.DEBUG) log(str[ptr]);
+        if (state.DEBUG) log(here(), str[ptr]);
         l=[]; tokenize(str[ptr],l);
-        if (state.DEBUG) console.log(l);
+        if (state.DEBUG) console.log(here(), l);
         const o=new Label(l[3],+l[4],+l[5]); 
         o.id=l[0]; o.color=l[1]; o.size=+l[2];
         if (l[6][0]=='P') { pn.p.forEach(i=>{ if (l[6]==i.id) { o.attached=i; i.attachedLabels.push(o); }}) }

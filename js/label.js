@@ -3,7 +3,7 @@ const sizes=[8,14,20,32,48,72];
 class Label extends Object {
     constructor(label,x,y) {
         super(x,y);
-        this.type=LABEL;
+        this.type="LABEL";
         this.id="L"+nextId(this.type);
         this.label=label;
         this.width;
@@ -37,7 +37,7 @@ class Label extends Object {
             }
         }
     }
-    cursored(cursor) {
+    hovered(cursor) {
         if (Math.abs(this.x-cursor.x)<this.width/2+2 && Math.abs(this.y-cursor.y)<this.size/2+2)
             return true;
         else 

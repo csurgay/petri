@@ -58,7 +58,7 @@ class BaseForm extends Form {
         }
         else if (myevt.key=='s') {
             // Toggle sticky Flow heads of this Transition
-            if (o && o.type==TRANSITION) {
+            if (o && o.type=="TRANSITION") {
                 pn.f.forEach(f=>{
                     if (f.o2==o) {
                         f.stickyHead=!f.stickyHead;
@@ -68,7 +68,7 @@ class BaseForm extends Form {
         }
         // Label size number key
         else if (myevt.key>='0' && myevt.key<='5') {
-            if (o && o.type==LABEL) {
+            if (o && o.type=="LABEL") {
                 o.size=sizes[myevt.keyCode-48];
             }
         }
