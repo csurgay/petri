@@ -12,11 +12,11 @@ class State {
         ];
     }
     is(oldState) {
-        if (!this.states.includes(oldState)) { error("unknown state '"+oldState+"'"); }
+        if (!this.states.includes(oldState)) { error(here(), "unknown state '"+oldState+"'"); }
         return this.s==oldState;
     }
     set(newState) {
-        if (!this.states.includes(newState)) { error("unknown state '"+newState+"'"); }
+        if (!this.states.includes(newState)) { error(here(), "unknown state '"+newState+"'"); }
         if (state.DEBUG) if (!this.is(newState)) log(here(), this.s+" -> "+newState);
         this.s=newState;
     }

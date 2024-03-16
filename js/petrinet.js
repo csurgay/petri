@@ -201,7 +201,7 @@ class Petrinet {
         const e = this.getEnabled();
         if (trans) {
             if (!e.includes(trans)) {
-                error("trans not enabled, cannot fire");
+                error(here(), "trans not enabled, cannot fire");
             }
         }
         else {

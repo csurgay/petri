@@ -11,8 +11,8 @@ function here() {
 function log(here="js: ", str) {
     console.log(here+str);
 }
-function error(str) {
-    console.log("Error: "+str);
+function error(here="js: ", str) {
+    console.log("Error in "+here+": "+str);
 }
 
 var idPlace=0, idTrans=0, idFlow=0, idLabel=0, idMidpoint=0;
@@ -22,7 +22,7 @@ function nextId(type) {
     else if (type=="FLOW") return ++idFlow;
     else if (type=="LABEL") return ++idLabel;
     else if (type=="MIDPOINT") return ++idMidpoint;
-    else error("Unknown oject type: "+type);
+    else error(here(), "Unknown oject type: "+type);
 }
 function rotate(cx,cy,x,y,alpha) {
     var tx=x-cx,ty=y-cy;
