@@ -9,6 +9,7 @@ class Button extends Object {
         this.w=w;
         pn.addButton(this);
         this.label=new Label(label,x,y+bh);
+        this.label.size=13;
         pn.l.pop();
         this.enabled=enabled;
     }
@@ -167,7 +168,7 @@ class Button extends Object {
             g.arc(cx, cy, radiusH, 0,2*Math.PI);
             g.fill("evenodd");
         }
-        if (this.label) this.label.draw(12);
+        if (this.label) this.label.draw();
     }
 
     dragTo() {}
