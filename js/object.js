@@ -11,7 +11,9 @@ class Object extends Coord {
         this.attachedLabels=[]; // the Labels attached this Object
     }
     draw() {
-        if (this.label) {
+    }
+    drawLineToLabel() {
+        if (state.DEBUG && this.label) {
             g.beginPath();
             g.strokeStyle(COLOR_INK);
             g.dashed(1,1);
@@ -21,13 +23,9 @@ class Object extends Coord {
         }
     }
     setColor() {
-        if (COLOR_HIGHLIGHT=="black") {
-            g.strokeStyle(this.color);
-            pn.highlighted==this?g.dashed():g.solid();
-        }
-        else {
-            g.strokeStyle(pn.highlighted==this?COLOR_HIGHLIGHT:this.color);
-        }
+        g.strokeStyle(this.color);
+        pn.highlighted==this?g.dashed():g.solid();
+        g.strokeStyle(pn.highlighted==this?COLOR_HIGHLIGHT:this.color);
     }
     nextColor(delta) {
         if (delta>0) {
@@ -38,7 +36,7 @@ class Object extends Coord {
         }
         if (COLOR_HIGHLIGHT!="black") pn.highlighted=null;
     }
-    hovered() {
+    hover() {
     }
     clicked() {
     }

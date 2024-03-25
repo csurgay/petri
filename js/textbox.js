@@ -113,18 +113,18 @@ class TextboxForm extends Form {
 	}
     mouseup(evt) {
         getCoord(evt); // sets cursor (translated canvas) and ccursor (orig canvas)
-        o=pn.getCursoredObject(cursor,"VIEWPORT");
+        this.hovered=pn.getCursoredObject(cursor,"VIEWPORT");
             // Textbox text cursor click
         if (this.cursorIn(cursor) && SCA(evt,"sca")) {
             this.clicked(cursor);
         }
         // Textbox cancel click
-        else if (!o || o!=this && SCA(evt,"sca")) {
+        else if (!this.hovered || this.hovered!=this && SCA(evt,"sca")) {
             this.cancel();
         }
         // Textbox attach to Object
-        else if (o && SCA(evt,"scA")) { // ALT
-            this.attachToObject(o);
+        else if (this.hovered && SCA(evt,"scA")) { // ALT
+            this.attachToObject(this.hovered);
             this.referencedLabel.visible=true;
             this.active=false;
             this.visible=false;
@@ -133,7 +133,7 @@ class TextboxForm extends Form {
     }
     mousemove(evt) {
         getCoord(evt); // sets cursor (translated canvas) and ccursor (orig canvas)
-        o=pn.getCursoredObject(cursor,"VIEWPORT");
+        this.hovered=pn.getCursoredObject(cursor,"VIEWPORT");
     }
 	clicked(cursor) {
         var mx=cursor.x, my=cursor.y;
@@ -150,7 +150,7 @@ class TextboxForm extends Form {
 	}
     confirm() {
         if (this.text=="") this.text="-";
-        if (state.DEBUG) log(here(), "confirm: "+this.text);
+        log(here(), "confirm: "+this.text);
         this.referencedLabel.label=this.text;
         this.referencedLabel.visible=true;
         state.set("IDLE");
@@ -160,7 +160,7 @@ class TextboxForm extends Form {
         pn.newUndo();
     }
     cancel() {
-        if (state.DEBUG) log(here(), "cancel: "+this.text);
+        log(here(), "cancel: "+this.text);
         state.set("IDLE");
         this.referencedLabel.visible=true;
         this.visible=false;
@@ -170,12 +170,12 @@ class TextboxForm extends Form {
     attachToObject(o) {
         var a=this.referencedLabel.getAttached();
         if (a) {
-            if (state.DEBUG) log(here(), "detach: "+this.text+" from object: "+a.id);
+            log(here(), "detach: "+this.text+" from object: "+a.id);
             this.referencedLabel.setAttached(null);
             a.detach(this.referencedLabel);
         }
         if (o.id!=this.referencedLabel.id) {
-            if (state.DEBUG) log(here(), "attach: "+this.text+" to object: "+o.id);
+            log(here(), "attach: "+this.text+" to object: "+o.id);
             this.referencedLabel.setAttached(o);
             o.attach(this.referencedLabel);
         }

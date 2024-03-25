@@ -173,7 +173,7 @@ class Button extends Object {
 
     dragTo() {}
 
-    hovered(cursor) {
+    hover(cursor) {
         return (
             Math.abs(this.x-cursor.x)<=this.w/2 && 
             Math.abs(this.y-cursor.y)<=bh/2
@@ -182,7 +182,7 @@ class Button extends Object {
 
     clicked(evt) {
         if (!this.enabled()) return;
-        if (state.DEBUG) log(here(), "Button: "+this.button);
+        log(here(), "Button: "+this.button);
         if (this.button=="PLAY") {
             if (!state.is("PLAY")) state.set("PLAY");
             else state.set("IDLE");
@@ -280,27 +280,4 @@ function curvedArrow(x,y,r=1) { // r for reverse
     if (r==1) g.arc(x,y+1,bdh/2,5*Math.PI/4,Math.PI/4);
     else if (r==-1) g.arc(x,y+1,bdh/2,3*Math.PI/4,7*Math.PI/4);
     g.stroke();
-}
-
-var x,y=15,w,dx,ddw=5,dw=20;
-function setupButton() {
-    x=dw+ddw+25,w=35,x+=w/2,dx=0;
-    new Button("CLEAR","NEW",x+dx++*(w+ddw),y,w,()=>{return true});
-    new Button("OPEN","OPEN",x+dx++*(w+ddw),y,w,()=>{return true});
-    new Button("SAVE","SAVE",x+dx++*(w+ddw),y,w,()=>{return true});
-    new Button("UNDO","UNDO",x+dx++*(w+ddw),y,w,()=>{return undoPtr>0});
-    new Button("REDO","REDO",x+dx++*(w+ddw),y,w,()=>{return undoPtr<undo.length-1});
-
-    x+=dx*(w+ddw)-w/2,w=50,x+=w/2+dw,dx=0;
-    new Button("REWIND","m0",x+dx++*(w+ddw),y,w,()=>{return pn.mptr>0});
-    new Button("STEP_BWD","STEP-",x+dx++*(w+ddw),y,w,()=>{return pn.mptr>0});
-    new Button("STEP_FWD","STEP+",x+dx++*(w+ddw),y,w,()=>{return pn.mptr<pn.markings.length-1||pn.getEnabled().length>0});
-    new Button("PLAY","PLAY",x+dx++*(w+ddw),y,w,()=>{return true});
-    new Button("STOP","STOP",x+dx++*(w+ddw),y,w,()=>{return state.is("RUN")||state.is("PLAY")||state.is("FLY")});
-    new Button("RUN","RUN",x+dx++*(w+ddw),y,w,()=>{return true});
-    new Button("FLY","FLY",x+dx++*(w+ddw),y,w,()=>{return true});
-
-    x+=dx*(w+ddw)-w/2,w=35,x+=w/2+dw,dx=0;
-    new Button("PREF","PREF",x+dx++*(w+ddw),y,w,()=>{return true});
-    new Button("HELP","HELP",x+dx++*(w+ddw),y,w,()=>{return true});
 }

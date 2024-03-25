@@ -43,7 +43,7 @@ class Transition extends Object {
         g.stroke();
         g.restore();
         this.adjust_p1p2();
-        // state.DEBUG indicators of connectors
+        // show connectors
         if (state.DEBUG) {
             g.beginPath();
             g.strokeStyle(COLOR_HIGHLIGHT);
@@ -51,11 +51,11 @@ class Transition extends Object {
             transConnectors.forEach(c=>{
                 var rot=rotate(0,0,c[0],c[1],this.alpha);
                 g.moveTo(this.x+rot[0],this.y+rot[1]);
-                g.arc(this.x+rot[0],this.y+rot[1],2,0,2*Math.PI);
+                g.arc(this.x+rot[0],this.y+rot[1],1,0,2*Math.PI);
             });
             g.stroke();
         }
-        if (state.DEBUG) super.draw();
+        this.drawLineToLabel();
     }
 
     dragTo(dx,dy) {
@@ -63,7 +63,7 @@ class Transition extends Object {
         this.label.dragTo(dx,dy);
     }
 
-    hovered(cursor) {
+    hover(cursor) {
         this.adjust_p1p2();
         if (distancePointAndSection(cursor,p1,p2) <= tw/2+1)
             return true;
@@ -80,7 +80,7 @@ class Transition extends Object {
         if (Math.abs(this.alpha-3*Math.PI/4)<Math.PI/80) this.alpha=3*Math.PI/4;
         if (Math.abs(this.alpha)<Math.PI/80) this.alpha=0;
         this.adjust_p1p2();
-        if (!this.hovered(cursor)) pn.highlighted=null;
+        if (!this.hover(cursor)) pn.highlighted=null;
     }
 
     delete() {

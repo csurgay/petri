@@ -11,8 +11,9 @@ class Forms {
         this.f.forEach(f=>{if (f.visible) f.draw();})
     }
     processFormsEvent(evt) {
+        storedEvt.store(evt.type,getFormattedDate('millisec'),evt);
         this.f.forEach(item=>{
-            if (item.active) {
+            if (item.active && item.hover(evt)) {
                 item.processFormEvent(evt);
             }
         });
@@ -23,26 +24,29 @@ class Form extends Frame {
     constructor(id,title,x,y,w,h) {
         super(title,x,y,w,h);
         this.id=id;
+        this.hovered=null;
+        this.dragged=null;
         this.visible=false; // shows up
         this.active=false; // reacts to events
         forms.addForm(this);
+        this.mouseDownCoord=new Coord(0,0);
     }
     draw() {
         super.draw();
     }
-    hovered(cursor) {
+    hover(evt) {
+        var cursor={x:evt.clientX, y:evt.clientY}
         return cursor.x>=this.x && cursor.x<=this.x+this.w &&
         cursor.y>=this.y && cursor.y<=this.y+this.h
     }
-    processFormEvent(myEvent) {
-        getCoord(myEvent); // sets cursor (translated canvas) and ccursor (orig canvas)
-        o=pn.getCursoredObject(cursor,"VIEWPORT");
-        if (myEvent.type=="md") { this.mousedown(myEvent); }
-        else if (myEvent.type=="mu") { this.mouseup(myEvent); }
-        else if (myEvent.type=="mm") { this.mousemove(myEvent); }
-        else if (myEvent.type=="mw") { this.mousewheel(myEvent); }
-        else if (myEvent.type=="ku") { this.keyup(myEvent); }
-        else if (myEvent.type=="kd") { this.keydown(myEvent); }
+    processFormEvent(evt) {
+        getCoord(evt); // sets cursor (translated canvas) and ccursor (orig canvas)
+        if (state.is("BUTTONCLICK") && !bar.hover(evt)) state.set("IDLE");
+        this.hovered=pn.getCursoredObject(cursor,"VIEWPORT");
+        if (evt.type=="md") {
+            this.mouseDownCoord.x=cursor.x;
+            this.mouseDownCoord.y=cursor.y;
+        }
     }
     mousedown(evt) {}
     mouseup(evt) {}
@@ -79,10 +83,7 @@ class FileForm extends Form {
     }
     mouseup(evt) {
         if (selectedFile!=-1) {
-            if (state.DEBUG) { 
-                log(here(), selectedFile);
-                log(here(), files[selectedFile]);
-            }
+            log(here(), files[selectedFile]);
             if (files[selectedFile]!="CANCEL") {
                 pn.load(directory+"/"+files[selectedFile]);
             }
@@ -98,7 +99,7 @@ class FileForm extends Form {
         request.open('POST','php/scandir.php',true);
         request.onreadystatechange=function() {
             if (request.readyState==4 && request.status==200) {
-                if (state.DEBUG) log(here(), request.responseText);
+                log(here(), request.responseText);
                 files.length=0;
                 files.push(...request.responseText.split('\n'));
                 files.pop();

@@ -86,8 +86,9 @@ class Events {
     }
     mousewheelevent(evt) { myEvent.store("mw",getFormattedDate('millisec'),evt); events.e.push(myEvent.toString()); }
     keyupevent(evt) {
-        if (!state.RUNNING && evt.key==".") { state.RUNNING=true; animate(); }
+        if (evt.key==".") { state.RUNNING=!state.RUNNING; animate(); }
         else { myEvent.store("ku",getFormattedDate('millisec'),evt); events.e.push(myEvent.toString()); }
+        log(here(), myEvent.toString());
     }
     keydownevent(evt) { myEvent.store("kd",getFormattedDate('millisec'),evt); events.e.push(myEvent.toString()); }
 

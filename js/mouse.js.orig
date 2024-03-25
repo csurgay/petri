@@ -5,9 +5,50 @@ var scursor=new Coord(0,0); // Snapped viewport (translated) cursor
 var ccursor=new Coord(0,0); // Canvas cursor (for toolbar, not translated)
 
 function mousedown(evt) {
-    {
+    storedEvt.store("mousedown",getFormattedDate('millisec'),evt);
+    getCoord(evt);
+    this.hovered=pn.getCursoredObject(ccursor,"CANVAS");
+    if (this.hovered) {
+        if (this.hovered.type=="BUTTON" && evt.button==LEFTBUTTON) {
+            state.set("BUTTONCLICK");
+        }
+    }
+    else {
+        pn.mouseDownCoord.x=cursor.x; 
+        pn.mouseDownCoord.y=cursor.y;
+        this.hovered=pn.getCursoredObject(cursor,"VIEWPORT");
+        if (evt.button==LEFTBUTTON) {
+            if (this.hovered==null) {
+                // New Object, Pan
+                if (state.is("IDLE") && SCA(evt,"s..")) { // CTRLALTNONE
+                    state.set("LEFTDOWN");
+                }
+            }
+            else if (this.hovered) {
+                // Object click, Drag
+                if (this.hovered.type!="FLOW" && SCA(evt,"sc.")) { // ALTNONE
+                    state.set("LEFTDOWN");
+                    pn.dragged=this.hovered;
+                }
+                // Subnet drag
+                else if (SCA(evt,"Sc.")) { // SHIFT or ALTSHIFT
+                    state.set("SHIFTCLICK");
+                    pn.connected.length=0;
+                    pn.getConnectedAll(this.hovered);
+                }
+                // New potential Flow
+                else if (this.hovered && (this.hovered.type=="PLACE" || this.hovered.type=="TRANSITION") && SCA(evt,"sCa")) { // CTRL
+                    state.set("DRAWARROW");
+                }
+                // Multisegment Flow or Flow Toggle
+                else if (this.hovered.type=="FLOW" && SCA(evt,"sca")) { // NONE
+                    state.set("MULTISEGMENT");
+                    pn.dragged=this.hovered;
+                }
+            }
+        }
         // Right mouse button click
-        if (evt.button==RIGHTBUTTON && SCA(evt,"sca")) { // NONE
+        else if (evt.button==RIGHTBUTTON && SCA(evt,"sca")) { // NONE
             if (this.hovered==null) {
                 // Running mode
                 if (state.is("IDLE")) state.set("RUN");
@@ -25,10 +66,27 @@ function mousedown(evt) {
     }
 }
 function mouseup(evt) {
+    storedEvt.store("mouseup",getFormattedDate('millisec'),evt);
+    getCoord(evt); // sets cursor (translated canvas) and ccursor (orig canvas)
+    this.hovered=pn.getCursoredObject(ccursor,"CANVAS");
+    if (this.hovered) {
+        if (state.is("BUTTONCLICK")) this.hovered.clicked(evt);
+    }
     // CLicked object (Place, Trans, Midpoint, Label, Button)
-    {
+    else {
         this.hovered=pn.getCursoredObject(cursor,"VIEWPORT");
-        if (state.is("LEFTDOWN") && this.hovered && this.hovered==pn.highlighted && 
+        // New Flow
+        if (state.is("DRAWARROW") && this.hovered && this.hovered!=pn.highlighted &&
+            (this.hovered.type=="PLACE" || this.hovered.type=="TRANSITION")) {
+            pn.addFlows(pn.highlighted,this.hovered);
+            pn.highlighted=this.hovered;
+            pn.newUndo();
+        }
+        // No New Flow
+        else if (state.is("DRAWARROW") && this.hovered==null) {
+            pn.highlighted=null;
+        }
+        else if (state.is("LEFTDOWN") && this.hovered && this.hovered==pn.highlighted && 
             closeEnough(pn.mouseDownCoord,cursor) &&
             (this.hovered.type=="PLACE" || this.hovered.type=="TRANSITION")) {
             // Toggles
@@ -46,6 +104,12 @@ function mouseup(evt) {
         else if (state.is("LEFTDOWN") && this.hovered && this.hovered.type=="LABEL" && 
             closeEnough(pn.mouseDownCoord,cursor)) {
             this.hovered.clicked(evt);
+        }
+        // Toggle Flow Enabler/Inhiboitor
+        else if(state.is("MULTISEGMENT") && this.hovered && this.hoveredhis.hovered.type=="FLOW" && this.hovered.o1.type=="PLACE") {
+            if (this.hovered.subtype=="ENABLER") this.hovered.subtype="INHIBITOR";
+            else if (this.hovered.subtype=="INHIBITOR") this.hovered.subtype="ENABLER";
+            pn.newUndo();
         }
         // New Place
         else if (state.is("LEFTDOWN") && this.hovered==null && SCA(evt,"sca") && closeEnough(pn.mouseDownCoord,this.cursor)) {
@@ -144,6 +208,57 @@ function mousemove(evt) {
     if (state.is("IDLE") && this.hovered) pn.highlighted=this.hovered;
     if (this.hovered) {
 
+    }
+    else {
+        this.hovered=pn.getCursoredObject(cursor,"VIEWPORT");
+        // Init Drag
+        if (state.is("LEFTDOWN") && !closeEnough(pn.mouseDownCoord,cursor)) {
+            state.set("DRAG");
+        }
+        // Do Drag
+        if (state.is("DRAG") && pn.dragged) {
+            pn.dragged.dragTo(scursor.x-pn.mouseDownCoord.x,scursor.y-pn.mouseDownCoord.y);
+            pn.mouseDownCoord.moveTo(scursor);
+            pn.needUndo=true;
+        }
+        // Do DragAll (SubNet)
+        else if (state.is("SHIFTCLICK") || state.is("DRAGALL")) {
+            state.set("DRAGALL");
+            pn.connected.forEach(da => { 
+                da.dragTo(scursor.x-pn.mouseDownCoord.x,scursor.y-pn.mouseDownCoord.y); 
+            });
+            pn.mouseDownCoord.moveTo(scursor);
+            pn.needUndo=true;
+        }
+        // Draw potetntial new Flow
+        else if (state.is("DRAWARROW")) {
+            fb.paleArrow=[pn.highlighted, cursor];
+        }
+        // Do Pan
+        else if (state.is("DRAG") || state.is("PAN")) {
+            if (!closeEnough(pn.mouseDownCoord,cursor))
+            {
+                state.set("PAN");
+                pn.vpx+=snap(cursor.x-pn.mouseDownCoord.x);
+                pn.vpy+=snap(cursor.y-pn.mouseDownCoord.y);
+            }
+        }
+        // Multisegment Flow
+        else if (state.is("MULTISEGMENT")) {
+            pn.highlighted=pn.dragged.addSegment(pn.mouseDownCoord);
+            pn.dragged=pn.highlighted;
+            state.set("DRAG");
+            pn.newUndo();
+        }
+        // Highlight mouseovered object
+        else {
+            if (this.hovered) pn.highlighted = this.hovered;
+            else pn.highlighted = null;
+            if (pn.needTimedUndo) {
+                pn.newUndo();
+                pn.needTimedUndo=false;
+            }
+        }
     }
 }
 function mousewheel(evt) {

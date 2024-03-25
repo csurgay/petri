@@ -30,14 +30,14 @@ class Label extends Object {
             if (state.DEBUG) if (this.attached) {
                 g.beginPath();
                 g.dashed(1,1);
-                g.strokeStyle(COLOR_INK);
+                g.strokeStyle(COLOR_HIGHLIGHT);
                 g.moveTo(this.x,this.y);
                 g.lineTo(this.attached.x,this.attached.y);
                 g.stroke();
             }
         }
     }
-    hovered(cursor) {
+    hover(cursor) {
         if (Math.abs(this.x-cursor.x)<this.width/2+2 && Math.abs(this.y-cursor.y)<this.size/2+2)
             return true;
         else 

@@ -62,7 +62,7 @@ class Place extends Object {
             g.fillText(t1000,this.x,this.y-7);
             g.fillText(t,this.x,this.y+8);
         }
-        if (state.DEBUG) super.draw();
+        this.drawLineToLabel();
     }
 
     dragTo(dx,dy) {
@@ -70,7 +70,7 @@ class Place extends Object {
         this.label.dragTo(dx,dy);
     }
 
-    hovered(cursor) {
+    hover(cursor) {
         return (Math.hypot(this.x-cursor.x,this.y-cursor.y) < PLACE_R);
     }
 

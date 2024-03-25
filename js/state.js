@@ -2,7 +2,7 @@ class State {
     constructor(startState) {
         this.s=startState;
         this.RUNNING=true;
-        this.DEBUG=0;
+        this.DEBUG=1;
         this.RECORD=0;
         this.PLAYBACK=0;
         this.states=[
@@ -17,7 +17,7 @@ class State {
     }
     set(newState) {
         if (!this.states.includes(newState)) { error(here(), "unknown state '"+newState+"'"); }
-        if (state.DEBUG) if (!this.is(newState)) log(here(), this.s+" -> "+newState);
+        if (!this.is(newState)) log(here(), this.s+" -> "+newState);
         this.s=newState;
     }
 }

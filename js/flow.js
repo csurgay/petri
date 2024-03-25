@@ -85,10 +85,10 @@ class Flow extends Object {
             if (pn.highlighted==this) this.path[i].draw("black");
             else this.path[i].draw("highlighted");
         }
-        if (state.DEBUG) super.draw();
+        this.drawLineToLabel();
     }
 
-    hovered(cursor) {
+    hover(cursor) {
         for (var i=0; i<this.path.length-2; i++) {
             if (distancePointAndSection(cursor,this.path[i],this.path[i+1]) <= 3)
                 return true;
@@ -100,7 +100,7 @@ class Flow extends Object {
 
     cursoredMidPoint(cursor) {
         for (var i=1; i<this.path.length-1; i++) {
-            if (this.path[i].hovered(cursor)) {
+            if (this.path[i].hover(cursor)) {
                 return this.path[i];
             }
         }
@@ -145,7 +145,7 @@ class MidPoint extends Object {
         }
     }
 
-    hovered(cursor) {
+    hover(cursor) {
         return Math.hypot(this.x-cursor.x,this.y-cursor.y)<=7;
     }
 

@@ -33,11 +33,11 @@ function setupStatus() {
     new Status("cur",sx,sy+i++*dy,function(){return cursor.x.toFixed()+" "+cursor.y.toFixed();});
     new Status("ccur",sx,sy+i++*dy,function(){return ccursor.x.toFixed()+" "+ccursor.y.toFixed();});
     new Status("s",sx,sy+i++*dy,function(){return state.s;});
-    new Status("o",sx,sy+i++*dy,function(){return o?o.type:"";});
-    new Status("id",sx,sy+i++*dy,function(){return o?o.id:"";});
+    new Status("hov",sx,sy+i++*dy,function(){return fb.hovered?fb.hovered.type:bar.hovered?bar.hovered.type:"";});
+    new Status("id",sx,sy+i++*dy,function(){return fb.hovered?fb.hovered.id:bar.hovered?bar.hovered.id:"";});
     new Status("hl",sx,sy+i++*dy,function(){return pn.highlighted?pn.highlighted.type:"";});
-    new Status("size",sx,sy+i++*dy,function(){return o?(o.type=="LABEL"?o.size:""):"";});
-    new Status("rec",sx,sy+i++*dy,function(){return state.PLAYBACK?"state.PLAYBACK":state.RECORD?"REC":"";});
+    new Status("size",sx,sy+i++*dy,function(){return fb.hovered?(fb.hovered.type=="LABEL"?fb.hovered.size:""):"";});
+    new Status("rec",sx,sy+i++*dy,function(){return state.PLAYBACK?"PLAYBACK":state.RECORD?"REC":"";});
     new Status("recs",sx,sy+i++*dy,function(){return events.rec.length;});
     new Status("shifts",sx,sy+i++*dy,function(){return storedEvt.sca;});
     new Status("key",sx,sy+i++*dy,function(){return storedEvt.key+"("+storedEvt.keyCode+")";});

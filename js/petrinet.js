@@ -10,14 +10,12 @@ class Petrinet {
         this.m=[]; // MidPoints - this array only for loading attachedLabels
         this.s=[]; // Status
         this.b=[]; // Buttons
-        this.highlighted = null;
-        this.dragged=null;
-        this.mouseDownCoord=new Coord(0,0);
         this.zoom=1;
         this.cx=200; // Center of zooming (Should be mouse location)
         this.cy=200;
         this.vpx=0; // Viewport
         this.vpy=0;
+        this.highlighted=null;
         this.connected=[]; // Subnet connected to an object
         this.markings=[]; // Markings sequence
         this.mptr=-1; // marking pointer
@@ -141,24 +139,18 @@ class Petrinet {
         var ret = null;
         if (scope=="VIEWPORT") {
             if (ret==null)
-                this.l.forEach(item => { if (item.hovered(cursor)) ret=item; });
+                this.l.forEach(item => { if (item.hover(cursor)) ret=item; });
             if (ret==null)
-                this.p.forEach(item => { if (item.hovered(cursor)) ret=item; });
+                this.p.forEach(item => { if (item.hover(cursor)) ret=item; });
             if (ret==null)
-                this.t.forEach(item => { if (item.hovered(cursor)) ret=item; });
+                this.t.forEach(item => { if (item.hover(cursor)) ret=item; });
             if (ret==null)
                 this.f.forEach(item => {
                     const aux=item.cursoredMidPoint(cursor);
                     if (aux) ret=aux; 
                 });
             if (ret==null)
-                this.f.forEach(item => { if (item.hovered(cursor)) ret=item; });
-        }
-        else if (scope=="CANVAS") {
-            if (ret==null)
-                this.b.forEach(item => { if (item.hovered(cursor)) ret=item; });
-            if (ret==null)
-                this.s.forEach(item => { if (item.hovered(cursor)) ret=item; });
+                this.f.forEach(item => { if (item.hover(cursor)) ret=item; });
         }
         return ret;
     }

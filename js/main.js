@@ -16,7 +16,7 @@ const pn=new Petrinet();
 const forms=new Forms();
 const fb=new BaseForm("notitle",0,40,ww,wh-40);
 setupStatus();
-setupButton();
+const bar=new Buttonbar("noframe",0,0,ww,40);
 
 var m=16; // margin for help frame
 const fh=new Form("HELP","Help", ww/m, 20+wh/m, (m-2)*ww/m, (m-2)*wh/m);
@@ -32,14 +32,14 @@ var ms,msSlowrun=0;
 
 function animate() {
     ww=window.innerWidth, wh=window.innerHeight;
-    fb.w=ww; fb.h=wh-40;
+    fb.w=ww; fb.h=wh-40; bar.w=ww;
     events.processEvent();
     ms=Date.now();
     g.clearCanvas(canvas);
     g.translate(0.5, 0.5);
     // Forms
     forms.draw();
-    if (state.DEBUG || true) drawRotatingPacman();    
+    drawRotatingPacman();    
     // Running mode
     if (state.is("FLY")) { pn.fireOne(); }
     else if (state.is("RUN")) { 
