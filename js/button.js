@@ -3,7 +3,7 @@ const bh=20,br=10,bdw=17,bdh=12,bdo=3;
 class Button extends Object {
     constructor(button,label,x,y,w,enabled) {
         super(x,y);
-        this.type="BUTTON";
+        this.type="BAR.BUTTON";
         this.id=button;
         this.button=button;
         this.w=w;

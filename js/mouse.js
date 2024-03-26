@@ -6,76 +6,13 @@ var ccursor=new Coord(0,0); // Canvas cursor (for toolbar, not translated)
 
 function mousedown(evt) {
     {
-        // Right mouse button click
-        if (evt.button==RIGHTBUTTON && SCA(evt,"sca")) { // NONE
-            if (this.hovered==null) {
-                // Running mode
-                if (state.is("IDLE")) state.set("RUN");
-                else if (state.is("RUN")) state.set("IDLE");
-            }
-            // Delete Objets
-            else {
-                state.set("DELETE");
-            }
-        }
-        // Zoom
-        else if (evt.button==MIDDLEBUTTON && SCA(evt,"sca")) { // NONE
-            state.set("MIDDLE");
-        }
     }
 }
 function mouseup(evt) {
     // CLicked object (Place, Trans, Midpoint, Label, Button)
     {
-        this.hovered=pn.getCursoredObject(tcursor,"VIEWPORT");
-        if (state.is("LEFTDOWN") && this.hovered && this.hovered==pn.highlighted && 
-            closeEnough(pn.mouseDownCoord,tcursor) &&
-            (this.hovered.type=="PLACE" || this.hovered.type=="TRANSITION")) {
-            // Toggles
-            if (pn.noFlowFromHere(this.hovered)) {
-                // Toggle Place to Transition
-                pn.togglePlaceTransition(this.hovered);
-                pn.newUndo();
-            }
-            // Fire a Transition
-            else if(this.hovered.type=="TRANSITION") {
-                if (this.hovered.enabled()) pn.fireOne(this.hovered);
-            }
-        }
-        // Label enter edit click
-        else if (state.is("LEFTDOWN") && this.hovered && this.hovered.type=="LABEL" && 
-            closeEnough(pn.mouseDownCoord,tcursor)) {
-            this.hovered.clicked(evt);
-        }
-        // New Place
-        else if (state.is("LEFTDOWN") && this.hovered==null && SCA(evt,"sca") && closeEnough(pn.mouseDownCoord,this.tcursor)) {
-            const newPlace = new Place(scursor.x,scursor.y);
-            pn.addPlace(newPlace);
-            pn.highlighted=newPlace;
-            pn.newUndo();
-        }
-        // New Transition
-        else if (state.is("LEFTDOWN") && this.hovered==null && SCA(evt,"sCa") && closeEnough(pn.mouseDownCoord,this.tcursor)) {
-            const newTrans = new Transition(scursor.x,scursor.y);
-            pn.addTransition(newTrans);
-            pn.highlighted=newTrans;
-            pn.newUndo();
-        }
-        // New Label
-        else if (state.is("LEFTDOWN") && this.hovered==null && SCA(evt,"scA") && closeEnough(pn.mouseDownCoord,this.tcursor)) {
-            const newLabel = new Label("-",scursor.x,scursor.y);
-            pn.highlighted=newLabel;
-            pn.newUndo();
-        }
-        // Delete Object
-        else if (state.is("DELETE") && this.hovered && closeEnough(pn.mouseDownCoord,tcursor)) {
-            this.hovered.delete();
-            delete this.hovered;
-            pn.highlighted=null;
-            pn.newUndo();
-        }
         // Copy subnet
-        else if (state.is("SHIFTCLICK") && this.hovered && SCA(evt,"Sca") && closeEnough(pn.mouseDownCoord,this.tcursor)) {
+        if (state.is("SHIFTCLICK") && this.hovered && SCA(evt,"Sca") && closeEnough(pn.mouseDownCoord,this.tcursor)) {
             pn.connected.forEach(o=>{
                 if (o.type=="PLACE") {
                     const newObject=new Place(o.x+20,o.y+20);

@@ -52,6 +52,7 @@ class Label extends Object {
         textbox.defaulText=this.label;
         textbox.text=this.label;
         textbox.w = this.width+30;
+        textbox.h = this.size;
 //        textbox.ptrCursor=this.label.length;
         textbox.visible=true;
         textbox.active=true;
@@ -69,6 +70,7 @@ class Label extends Object {
     }
     delete() {
         if (!this.objectsLabel()) pn.l.splice(pn.l.indexOf(this),1);
+        else (this.label = "-");
     }
     setAttached(o) {
         this.attached=o;

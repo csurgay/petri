@@ -13,7 +13,7 @@ class Forms {
     processFormsEvent(evt) {
         storedEvt.store(evt.type,getFormattedDate('millisec'),evt);
         this.f.forEach(item=>{
-            if (item.active && item.hover(evt)) {
+            if (item.active && (item.hover(evt) || item==textbox)) {
                 item.processFormEvent(evt);
             }
         });
@@ -34,14 +34,15 @@ class Form extends Frame {
     draw() {
         super.draw();
     }
-    hover(evt) {
-        var cursor={x:evt.clientX, y:evt.clientY}
-        return cursor.x>=this.x && cursor.x<=this.x+this.w &&
-        cursor.y>=this.y && cursor.y<=this.y+this.h
+    hover() {
+        return tcursor.x>=this.x && tcursor.x<=this.x+this.w &&
+        tcursor.y>=this.y && tcursor.y<=this.y+this.h
     }
     processFormEvent(evt) {
+        log(here(), this.id);
         getCoord(evt); // sets tcursor (translated canvas) and ccursor (orig canvas)
-        if (state.is("BUTTONCLICK") && !bar.hover(evt)) state.set("IDLE");
+        if (state.is("BAR.CLICK") && !bar.hover(evt)) state.set("IDLE");
+        // default is tcursor, ccursor can override in inherited ProcessFormEvent
         this.hovered=pn.getCursoredObject(tcursor,"VIEWPORT");
         if (evt.type=="md") {
             this.mouseDownCoord.x=tcursor.x;

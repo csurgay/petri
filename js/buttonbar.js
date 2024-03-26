@@ -28,19 +28,23 @@ class Buttonbar extends Form {
         this.b.push(new Button("PREF","PREF",x+dx++*(w+ddw),y,w,()=>{return true}));
         this.b.push(new Button("HELP","HELP",x+dx++*(w+ddw),y,w,()=>{return true}));
     }
+    hover() {
+        return ccursor.x>=this.x && ccursor.x<=this.x+this.w &&
+        ccursor.y>=this.y && ccursor.y<=this.y+this.h
+    }
     draw() {
         super.draw();
         this.b.forEach(item=>item.draw());
     }
     processFormEvent(evt) {
-        getCoord(evt);
-        this.hovered=this.getCursoredObject(ccursor,"CANVAS");
+        super.processFormEvent(evt);
+        this.hovered=this.getCursoredObject(ccursor);
         if (state.is("IDLE")) {
             if (evt.type=="md" && evt.button==LEFTBUTTON) {
-                state.set("BUTTONCLICK");
+                state.set("BAR.CLICK");
             }
         }
-        else if (state.is("BUTTONCLICK")) {
+        else if (state.is("BAR.CLICK")) {
             if (evt.type=="mu") {
                 this.hovered.clicked(evt);
             }

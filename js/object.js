@@ -1,4 +1,4 @@
-const objects=["PLACE","TRANSITION","FLOW","MIDPOINT","LABEL","BUTTON"];
+const objects=["PLACE","TRANSITION","FLOW","MIDPOINT","LABEL","BAR.BUTTON"];
 
 class Object extends Coord {
     constructor(x,y) {

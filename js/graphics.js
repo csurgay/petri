@@ -1,4 +1,4 @@
-var grid=15;
+var grid=10;
 
 const LINEWIDTH=2;
 const DASHED=[5,3];

@@ -34,8 +34,15 @@ class BaseForm extends Form {
     leftClick(evt) {
         return evt.type=="md" && evt.button==LEFTBUTTON;
     }
+    rightClick(evt) {
+        return evt.type=="md" && evt.button==RIGHTBUTTON;
+    }
+    middleClick(evt) {
+        return evt.type=="md" && evt.button==MIDDLEBUTTON;
+    }
     processFormEvent(evt) {
         super.processFormEvent(evt);
+        // IDLE STATE
         if (state.is("IDLE")) {
             if (evt.type == "ku") {
                 // Debug mode
@@ -116,7 +123,24 @@ class BaseForm extends Form {
                 this.dragged = this.hovered;
                 state.set("MULTISEGMENT");
             }
+            // RUNNING mode
+            else if (this.rightClick(evt) && SCA(evt,"sca") &&
+                !this.hovered) 
+            {
+                state.set("RUN");
+            }
+            // Delete objects
+            else if (this.rightClick(evt) && SCA(evt,"sca") &&
+                this.hovered) 
+            {
+                state.set("DELETE");
+            }
+            // Zoom
+            else if (this.middleClick(evt) && SCA(evt,"sca")) {
+                state.set("MIDDLE");
+            }
         }
+        // LEFTDOWN STATE
         else if (state.is("LEFTDOWN")) {
             // New Place
             if (evt.type == "mu" && !this.hovered && SCA(evt, "sca")
@@ -125,6 +149,16 @@ class BaseForm extends Form {
                 const newPlace = new Place(scursor.x, scursor.y);
                 pn.addPlace(newPlace);
                 pn.highlighted = newPlace;
+                pn.newUndo();
+                state.set("IDLE");
+            }
+            // New Transition
+            else if (evt.type == "mu" && !this.hovered && SCA(evt,"sCa") 
+                && closeEnough(this.mouseDownCoord, tcursor)) 
+            {
+                const newTrans = new Transition(scursor.x, scursor.y);
+                pn.addTransition(newTrans);
+                pn.highlighted = newTrans;
                 pn.newUndo();
                 state.set("IDLE");
             }
@@ -141,6 +175,26 @@ class BaseForm extends Form {
                 }
                 state.set("IDLE");
             }
+            // New Label
+            else if (evt.type == "mu" && SCA(evt,"scA") 
+                && !this.hovered && 
+                closeEnough(this.mouseDownCoord, tcursor)) 
+            {
+                const newLabel = new Label("-",scursor.x,scursor.y);
+                pn.highlighted=newLabel;
+                pn.newUndo();
+                state.set("IDLE");
+            }
+            // Fire a Transition
+            else if (evt.type == "mu" && this.hovered
+                && this.hovered == pn.highlighted &&
+                closeEnough(this.mouseDownCoord, tcursor) &&
+                this.hovered.type == "TRANSITION" &&
+                this.hovered.enabled())
+            {
+                pn.fireOne(this.hovered);
+                state.set("IDLE");
+            }
             // Init Drag
             else if (evt.type == "mm" && pn.highlighted &&
                 !closeEnough(this.mouseDownCoord, tcursor)) 
@@ -153,7 +207,15 @@ class BaseForm extends Form {
             {
                 state.set("PAN");
             }
+            // Label edit
+            else if (evt.type == "mu" && this.hovered && 
+                this.hovered.type=="LABEL" && 
+                closeEnough(this.mouseDownCoord, tcursor)) 
+            {
+                this.hovered.clicked(evt);
+            }
         }
+        // DRAG STATE
         else if (state.is("DRAG")) {
             // Do Drag
             if (evt.type == "mm" && this.dragged) {
@@ -166,6 +228,7 @@ class BaseForm extends Form {
                 state.set("IDLE");
             }
         }
+        // PAN STATE
         else if (state.is("PAN")) {
             // Do Pan
             if (evt.type == "mm" && !closeEnough(this.mouseDownCoord, tcursor)) {
@@ -176,6 +239,7 @@ class BaseForm extends Form {
                 state.set("IDLE");
             }
         }
+        // DRAWARROW STATE
         else if (state.is("DRAWARROW")) {
             // Draw potetntial new Flow
             if (evt.type == "mm") {
@@ -200,6 +264,7 @@ class BaseForm extends Form {
                 state.set("IDLE");
             }
         }
+        // MULTISEGMENT STATE
         else if (state.is("MULTISEGMENT")) {
             // Toggle Flow Enabler/Inhiboitor
             if (evt.type == "mu") {
@@ -219,6 +284,7 @@ class BaseForm extends Form {
                 pn.newUndo();
             }
         }
+        // DRAGALL STATE
         else if (state.is("SHIFTCLICK") || state.is("DRAGALL")) {
             // Do DragAll (SubNet)
             if (evt.type == "mm") {
@@ -238,6 +304,34 @@ class BaseForm extends Form {
                     pn.newUndo();
                     pn.needTimedUndo=false;
                 }
+            }
+        }
+        // RUN state
+        else if (state.is("RUN")) {
+            // RUNNING mode
+            if (this.rightClick(evt) && SCA(evt,"sca") &&
+                !this.hovered) 
+            {
+                state.set("IDLE");
+            }
+        }
+        // DELETE state
+        else if (state.is("DELETE")) {
+            // Delete Object
+            if (evt.type == "mu" && this.hovered &&
+                closeEnough(this.mouseDownCoord, tcursor)) 
+            {
+                this.hovered.delete();
+                delete this.hovered;
+                pn.highlighted=null;
+                pn.newUndo();
+                state.set("IDLE");
+            }
+            // Cancel Delete
+            if (evt.type == "mu" && 
+            !closeEnough(this.mouseDownCoord, tcursor))
+            {
+                state.set("IDLE");
             }
         }
     }

@@ -9,8 +9,8 @@ function mousedown(evt) {
     getCoord(evt);
     this.hovered=pn.getCursoredObject(ccursor,"CANVAS");
     if (this.hovered) {
-        if (this.hovered.type=="BUTTON" && evt.button==LEFTBUTTON) {
-            state.set("BUTTONCLICK");
+        if (this.hovered.type=="BAR.BUTTON" && evt.button==LEFTBUTTON) {
+            state.set("BAR.CLICK");
         }
     }
     else {
@@ -70,7 +70,7 @@ function mouseup(evt) {
     getCoord(evt); // sets tcursor (translated canvas) and ccursor (orig canvas)
     this.hovered=pn.getCursoredObject(ccursor,"CANVAS");
     if (this.hovered) {
-        if (state.is("BUTTONCLICK")) this.hovered.clicked(evt);
+        if (state.is("BAR.CLICK")) this.hovered.clicked(evt);
     }
     // CLicked object (Place, Trans, Midpoint, Label, Button)
     else {

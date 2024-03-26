@@ -48,6 +48,7 @@ function getCoord(myevt) {
     scursor.y = snap(myevt.clientY/pn.zoom-rect.top-pn.cy/pn.zoom-pn.vpy);
     ccursor.x = myevt.clientX-rect.left;
     ccursor.y = myevt.clientY-rect.top;
+    log(here(), tcursor.x+":"+tcursor.y);
 }
 function closeEnough(c1,c2) {
   return Math.hypot(c2.x-c1.x,c2.y-c1.y) <= 2;

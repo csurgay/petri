@@ -31,10 +31,6 @@ class TextboxForm extends Form {
 		this.color = COLOR.TEXTBOX.COLOR;
         this.referencedLabel = null; // shall have a .label datamember
 	}
-	cursorIn(cursor) {
-		return cursor.x>this.x-this.w && cursor.x<this.x+this.w && 
-            cursor.y>this.y-this.h && cursor.y<this.y+this.h;
-	}
 	clear() {
 		this.text = '';
 		this.ptrCursor = 0;
@@ -111,11 +107,15 @@ class TextboxForm extends Form {
             g.restore();
         }
 	}
+    processFormEvent(evt) {
+        super.processFormEvent(evt);
+        if (evt.type == "mu") this.mouseup(evt);
+        else if (evt.type == "mm") this.mousemove(evt);
+        else if (evt.type == "ku") this.keyup(evt);
+    }
     mouseup(evt) {
-        getCoord(evt); // sets tcursor (translated canvas) and ccursor (orig canvas)
-        this.hovered=pn.getCursoredObject(tcursor,"VIEWPORT");
-            // Textbox text tcursor click
-        if (this.cursorIn(tcursor) && SCA(evt,"sca")) {
+        // Textbox text tcursor click
+        if (this.hovered && SCA(evt,"sca")) {
             this.clicked(tcursor);
         }
         // Textbox cancel click
@@ -132,8 +132,6 @@ class TextboxForm extends Form {
         }
     }
     mousemove(evt) {
-        getCoord(evt); // sets tcursor (translated canvas) and ccursor (orig canvas)
-        this.hovered=pn.getCursoredObject(tcursor,"VIEWPORT");
     }
 	clicked(cursor) {
         var mx=cursor.x, my=cursor.y;

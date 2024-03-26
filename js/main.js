@@ -26,6 +26,15 @@ m=12; // margin for file frame
 const ff=new FileForm("Open Files", ww/m, 20+wh/m, (m-2)*ww/m, (m-2)*wh/m);
 const textbox=new TextboxForm("Textbox",100,0,100,20,'frame',"default text");
 
+new MouseEvent(
+    "mousemove",
+    {
+        clientX: 210,
+        clientY: 210,
+        bubbles: true
+    }
+)
+
 animate();
 
 var ms,msSlowrun=0;

@@ -135,23 +135,22 @@ class Petrinet {
         return ret;
     }
 
-    getCursoredObject(cursor,scope) {
+    getCursoredObject(cursor) {
         var ret = null;
-        if (scope=="VIEWPORT") {
-            if (ret==null)
-                this.l.forEach(item => { if (item.hover(cursor)) ret=item; });
-            if (ret==null)
-                this.p.forEach(item => { if (item.hover(cursor)) ret=item; });
-            if (ret==null)
-                this.t.forEach(item => { if (item.hover(cursor)) ret=item; });
-            if (ret==null)
-                this.f.forEach(item => {
-                    const aux=item.cursoredMidPoint(cursor);
-                    if (aux) ret=aux; 
-                });
-            if (ret==null)
-                this.f.forEach(item => { if (item.hover(cursor)) ret=item; });
-        }
+        if (ret==null)
+            this.l.forEach(item => { if (item.hover(cursor)) ret=item; });
+        if (ret==null)
+            this.p.forEach(item => { if (item.hover(cursor)) ret=item; });
+        if (ret==null)
+            this.t.forEach(item => { if (item.hover(cursor)) ret=item; });
+        if (ret==null)
+            this.f.forEach(item => {
+                const aux=item.cursoredMidPoint(cursor);
+                if (aux) ret=aux; 
+            });
+        if (ret==null)
+            this.f.forEach(item => { if (item.hover(cursor)) ret=item; });
+        if (ret) log(here(), "cursored: "+ret.id);
         return ret;
     }
 

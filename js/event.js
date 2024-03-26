@@ -20,6 +20,7 @@ class MyEvent { // Data structure for an Event (mouse and keys)
         this.clientY=e.clientY;
     }
     store(type,tstamp,e) {
+        this.firstEventHappened=true;
         this.type=type;
         this.tstamp=tstamp;
         this.key=this.undefined(e.key);
@@ -46,7 +47,8 @@ class MyEvent { // Data structure for an Event (mouse and keys)
             this.sca;
     }
     parse(str) {
-        var arrayResult=[]; tokenize(str,arrayResult); str=arrayResult;
+        var arrayResult=[]; 
+        tokenize(str,arrayResult); str=arrayResult;
         this.type=str[0];
         this.tstamp=str[1];
         this.clientX=+str[2];
