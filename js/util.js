@@ -42,8 +42,8 @@ class Coord {
 }
 function getCoord(myevt) {
     const rect = canvas.getBoundingClientRect();
-    cursor.x = myevt.clientX/pn.zoom-rect.left-pn.cx/pn.zoom-pn.vpx;
-    cursor.y = myevt.clientY/pn.zoom-rect.top-pn.cy/pn.zoom-pn.vpy;
+    tcursor.x = myevt.clientX/pn.zoom-rect.left-pn.cx/pn.zoom-pn.vpx;
+    tcursor.y = myevt.clientY/pn.zoom-rect.top-pn.cy/pn.zoom-pn.vpy;
     scursor.x = snap(myevt.clientX/pn.zoom-rect.left-pn.cx/pn.zoom-pn.vpx);
     scursor.y = snap(myevt.clientY/pn.zoom-rect.top-pn.cy/pn.zoom-pn.vpy);
     ccursor.x = myevt.clientX-rect.left;

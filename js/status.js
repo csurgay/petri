@@ -30,7 +30,7 @@ function setupStatus() {
     new Status("zoom",sx,sy+i++*dy,function(){return pn.zoom;});
     new Status("cxy",sx,sy+i++*dy,function(){return pn.cx.toFixed()+" "+pn.cy.toFixed();});
     new Status("vpxy",sx,sy+i++*dy,function(){return pn.vpx.toFixed()+" "+pn.vpy.toFixed();});
-    new Status("cur",sx,sy+i++*dy,function(){return cursor.x.toFixed()+" "+cursor.y.toFixed();});
+    new Status("cur",sx,sy+i++*dy,function(){return tcursor.x.toFixed()+" "+tcursor.y.toFixed();});
     new Status("ccur",sx,sy+i++*dy,function(){return ccursor.x.toFixed()+" "+ccursor.y.toFixed();});
     new Status("s",sx,sy+i++*dy,function(){return state.s;});
     new Status("hov",sx,sy+i++*dy,function(){return fb.hovered?fb.hovered.type:bar.hovered?bar.hovered.type:"";});

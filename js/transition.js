@@ -80,7 +80,7 @@ class Transition extends Object {
         if (Math.abs(this.alpha-3*Math.PI/4)<Math.PI/80) this.alpha=3*Math.PI/4;
         if (Math.abs(this.alpha)<Math.PI/80) this.alpha=0;
         this.adjust_p1p2();
-        if (!this.hover(cursor)) pn.highlighted=null;
+        if (!this.hover(tcursor)) pn.highlighted=null;
     }
 
     delete() {

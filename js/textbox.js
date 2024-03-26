@@ -112,11 +112,11 @@ class TextboxForm extends Form {
         }
 	}
     mouseup(evt) {
-        getCoord(evt); // sets cursor (translated canvas) and ccursor (orig canvas)
-        this.hovered=pn.getCursoredObject(cursor,"VIEWPORT");
-            // Textbox text cursor click
-        if (this.cursorIn(cursor) && SCA(evt,"sca")) {
-            this.clicked(cursor);
+        getCoord(evt); // sets tcursor (translated canvas) and ccursor (orig canvas)
+        this.hovered=pn.getCursoredObject(tcursor,"VIEWPORT");
+            // Textbox text tcursor click
+        if (this.cursorIn(tcursor) && SCA(evt,"sca")) {
+            this.clicked(tcursor);
         }
         // Textbox cancel click
         else if (!this.hovered || this.hovered!=this && SCA(evt,"sca")) {
@@ -132,8 +132,8 @@ class TextboxForm extends Form {
         }
     }
     mousemove(evt) {
-        getCoord(evt); // sets cursor (translated canvas) and ccursor (orig canvas)
-        this.hovered=pn.getCursoredObject(cursor,"VIEWPORT");
+        getCoord(evt); // sets tcursor (translated canvas) and ccursor (orig canvas)
+        this.hovered=pn.getCursoredObject(tcursor,"VIEWPORT");
     }
 	clicked(cursor) {
         var mx=cursor.x, my=cursor.y;

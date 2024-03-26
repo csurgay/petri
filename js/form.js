@@ -40,12 +40,12 @@ class Form extends Frame {
         cursor.y>=this.y && cursor.y<=this.y+this.h
     }
     processFormEvent(evt) {
-        getCoord(evt); // sets cursor (translated canvas) and ccursor (orig canvas)
+        getCoord(evt); // sets tcursor (translated canvas) and ccursor (orig canvas)
         if (state.is("BUTTONCLICK") && !bar.hover(evt)) state.set("IDLE");
-        this.hovered=pn.getCursoredObject(cursor,"VIEWPORT");
+        this.hovered=pn.getCursoredObject(tcursor,"VIEWPORT");
         if (evt.type=="md") {
-            this.mouseDownCoord.x=cursor.x;
-            this.mouseDownCoord.y=cursor.y;
+            this.mouseDownCoord.x=tcursor.x;
+            this.mouseDownCoord.y=tcursor.y;
         }
     }
     mousedown(evt) {}

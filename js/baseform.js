@@ -120,7 +120,7 @@ class BaseForm extends Form {
         else if (state.is("LEFTDOWN")) {
             // New Place
             if (evt.type == "mu" && !this.hovered && SCA(evt, "sca")
-                && closeEnough(this.mouseDownCoord, cursor)) 
+                && closeEnough(this.mouseDownCoord, tcursor)) 
             {
                 const newPlace = new Place(scursor.x, scursor.y);
                 pn.addPlace(newPlace);
@@ -131,7 +131,7 @@ class BaseForm extends Form {
             // Toggle Place <=> Transition
             else if (evt.type == "mu" && this.hovered
                 && this.hovered == pn.highlighted
-                && closeEnough(this.mouseDownCoord, cursor) &&
+                && closeEnough(this.mouseDownCoord, tcursor) &&
                 (this.hovered.type == "PLACE" ||
                 this.hovered.type == "TRANSITION")) 
             {
@@ -143,13 +143,13 @@ class BaseForm extends Form {
             }
             // Init Drag
             else if (evt.type == "mm" && pn.highlighted &&
-                !closeEnough(this.mouseDownCoord, cursor)) 
+                !closeEnough(this.mouseDownCoord, tcursor)) 
             {
                 state.set("DRAG");
             }
             // Init Pan
             else if (evt.type == "mm" && !pn.highlighted &&
-                !closeEnough(this.mouseDownCoord, cursor)) 
+                !closeEnough(this.mouseDownCoord, tcursor)) 
             {
                 state.set("PAN");
             }
@@ -168,9 +168,9 @@ class BaseForm extends Form {
         }
         else if (state.is("PAN")) {
             // Do Pan
-            if (evt.type == "mm" && !closeEnough(this.mouseDownCoord, cursor)) {
-                pn.vpx += snap(cursor.x - this.mouseDownCoord.x);
-                pn.vpy += snap(cursor.y - this.mouseDownCoord.y);
+            if (evt.type == "mm" && !closeEnough(this.mouseDownCoord, tcursor)) {
+                pn.vpx += snap(tcursor.x - this.mouseDownCoord.x);
+                pn.vpy += snap(tcursor.y - this.mouseDownCoord.y);
             }
             else if (evt.type == "mu") {
                 state.set("IDLE");
@@ -179,7 +179,7 @@ class BaseForm extends Form {
         else if (state.is("DRAWARROW")) {
             // Draw potetntial new Flow
             if (evt.type == "mm") {
-                fb.paleArrow = [pn.highlighted, cursor];
+                fb.paleArrow = [pn.highlighted, tcursor];
             }
             // No new Flow
             else if (evt.type == "mu" && (!this.hovered ||
