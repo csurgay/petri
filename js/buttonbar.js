@@ -2,7 +2,6 @@ class Buttonbar extends Form {
     constructor(title, x, y, w, h) {
         super("BUTTONBAR", title, x, y, w, h);
         this.b=[];
-        this.active = true;
         this.visible = true;
         this.closable = false;
         this.init();

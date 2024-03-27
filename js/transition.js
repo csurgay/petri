@@ -71,8 +71,8 @@ class Transition extends Object {
             return false;
     }
 
-    rotate(delta) {
-        this.alpha+=delta*Math.PI/64;
+    rotate(delta, course=false) {
+        this.alpha+=course?delta*Math.PI/8:delta*Math.PI/64;
         if (this.alpha>2*Math.PI) this.alpha-=2*Math.PI;
         if (this.alpha<0) this.alpha+=2*Math.PI;
         if (Math.abs(this.alpha-1*Math.PI/4)<Math.PI/80) this.alpha=1*Math.PI/4;

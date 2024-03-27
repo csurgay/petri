@@ -50,7 +50,8 @@ class Form extends Frame {
         if (pMyEvent.type == "ku" && pMyEvent.key == "Escape") {
             if (this.closable) {
                 this.active=this.visible=false;
-                fb.active=true;
+                fb.active=bar.active=true;
+                state.set("IDLE");
             }
         }
     }

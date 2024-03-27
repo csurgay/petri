@@ -11,7 +11,7 @@ addEventListener('keyup', events.keyupevent.bind(events));
 addEventListener('keydown', events.keydownevent.bind(events));
 addEventListener('contextmenu', sysEvent=>{sysEvent.preventDefault();});
 
-const state=new State("IDLE");
+const state=new State("SPLASH");
 const pn=new Petrinet();
 const forms=new Forms();
 const fb=new BaseForm("notitle",0,40,ww,wh-40);
@@ -25,7 +25,8 @@ const fp=new Form("PREFS","Preferences", ww/m, 20+wh/m, (m-2)*ww/m, (m-2)*wh/m);
 m=12; // margin for file frame
 const ff=new FileForm("Open Files", ww/m, 20+wh/m, (m-2)*ww/m, (m-2)*wh/m);
 const textbox=new TextboxForm("Textbox",100,0,100,20,'frame',"default text");
-
+m=3;
+const splash = new SplashForm("PetriNet Simulator", ww/m, 20+wh/m, (m-2)*ww/m, (m-2)*wh/m);
 new MouseEvent(
     "mousemove",
     {

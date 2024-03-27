@@ -18,9 +18,9 @@ class Frame {
             if (this.title!="notitle") {
                 g.setupText("16px Arial","center","middle");
                 const w = g.measureText(this.title).width+30;
-                g.fillRect(this.x+this.tx-w/2, this.y, w, 20);
+                g.fillRect(this.x+this.tx-w/2, this.y+this.m-5, w, 20);
                 g.fillStyle(COLOR_INK);
-                g.fillText(this.title, this.x+this.tx, this.y+10);
+                g.fillText(this.title, this.x+this.tx, this.y+this.m+2);
             }
         }
     }

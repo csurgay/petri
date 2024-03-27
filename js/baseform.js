@@ -1,7 +1,6 @@
 class BaseForm extends Form {
     constructor(title, x, y, w, h) {
         super("BASEFORM", title, x, y, w, h);
-        this.active = true;
         this.visible = true;
         this.closable = false;
         this.paleArrow = null; // Potential new dashed Flow arrow
@@ -99,7 +98,7 @@ class BaseForm extends Form {
                 pn.highlighted = this.hovered;
             }
             // New Object, Pan
-            else if (this.leftClick(evt) && SCA(evt, "s..") && 
+            else if (this.leftClick(evt) && SCA(evt, "...") && 
                 !this.hovered) 
             {
                 state.set("LEFTDOWN");
@@ -148,11 +147,18 @@ class BaseForm extends Form {
             {
                 state.set("DELETE");
             }
-            // Rotate Transition
+            // Rotate Transition - fine
             else if (evt.type == "mw" && SCA(evt, "sca") && 
                 this.hovered && this.hovered.type=="TRANSITION") 
             {
                 this.hovered.rotate(delta);
+                pn.needTimedUndo=true;
+            }
+            // Rotate Transition - course
+            else if (evt.type == "mw" && SCA(evt, "Sca") && 
+                this.hovered && this.hovered.type=="TRANSITION") 
+            {
+                this.hovered.rotate(delta, true);
                 pn.needTimedUndo=true;
             }
             // Adjust Flow weight
@@ -236,11 +242,21 @@ class BaseForm extends Form {
                 pn.newUndo();
                 state.set("IDLE");
             }
-            // New Transition
+            // New Transition - horizontal
             else if (evt.type == "mu" && !this.hovered && SCA(evt,"sCa") 
                 && closeEnough(this.mouseDownCoord, tcursor)) 
             {
                 const newTrans = new Transition(scursor.x, scursor.y);
+                pn.addTransition(newTrans);
+                pn.highlighted = newTrans;
+                pn.newUndo();
+                state.set("IDLE");
+            }
+            // New Transition - vertical
+            else if (evt.type == "mu" && !this.hovered && SCA(evt,"SCa") 
+                && closeEnough(this.mouseDownCoord, tcursor)) 
+            {
+                const newTrans = new Transition(scursor.x, scursor.y, 0);
                 pn.addTransition(newTrans);
                 pn.highlighted = newTrans;
                 pn.newUndo();
@@ -438,8 +454,8 @@ class BaseForm extends Form {
                 state.set("IDLE");
             }
         }
-        // RUN state
-        else if (state.is("RUN")) {
+        // RUNNING states
+        else if (bar.running()) {
             // RUNNING mode
             if (this.rightClick(evt) && SCA(evt,"sca") &&
                 !this.hovered) 
