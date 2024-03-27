@@ -1,11 +1,13 @@
 class MyEvent { // Data structure for an Event (mouse and keys)
     constructor() {
-        this.clientX;
-        this.clientY;
-        this.button;
-        this.deltaY;
-        this.key;
-        this.keyCode;
+        this.type="xx";
+        this.tstamp=".....";
+        this.clientX=0;
+        this.clientY=0;
+        this.button=3;
+        this.deltaY=0;
+        this.key='';
+        this.keyCode=-1;
         this.sca="sca";
     }
     copy(e) {
@@ -20,7 +22,6 @@ class MyEvent { // Data structure for an Event (mouse and keys)
         this.clientY=e.clientY;
     }
     store(type,tstamp,e) {
-        this.firstEventHappened=true;
         this.type=type;
         this.tstamp=tstamp;
         this.key=this.undefined(e.key);
@@ -63,43 +64,50 @@ class MyEvent { // Data structure for an Event (mouse and keys)
 
 const myEvent=new MyEvent(), storedEvt=new MyEvent(), 
     e1=new MyEvent(), e2=new MyEvent();
-var evt, msEvent=0, l;
+var strEvent="", msEvent=0, l;
 
 class Events {
     constructor() {
         this.e=[];
         this.rec=[];
     }
+    // sysEvent => myEvent, e.push(strEvent)
+    rcvEvent(type, pSysEvent) {
+        myEvent.store(type, getFormattedDate('millisec'), pSysEvent);
+        this.e.push(myEvent.toString());
+    }
 
-    mousedownevent(evt) { myEvent.store("md",getFormattedDate('millisec'),evt); events.e.push(myEvent.toString()); }
-    mouseupevent(evt)   { myEvent.store("mu",getFormattedDate('millisec'),evt); events.e.push(myEvent.toString()); }
-    mousemoveevent(evt) {
-        l=events.e.length;
+    mousedownevent(sysEvent) { this.rcvEvent("md", sysEvent); }
+    mouseupevent(sysEvent)   { this.rcvEvent("mu", sysEvent); }
+    mousemoveevent(sysEvent) {
+        l=this.e.length;
         if (l>0) {
-            myEvent.parse(events.e[l-1]);
+            myEvent.parse(this.e[l-1]);
             if (myEvent.type=="mm") {
-                if (Math.hypot(myEvent.clientX-evt.clientX,
-                    myEvent.clientY-evt.clientY)<50) {
-                    events.e.pop();
+                if (Math.hypot(myEvent.clientX-sysEvent.clientX,
+                    myEvent.clientY-sysEvent.clientY)<50) {
+                    this.e.pop();
                 }
             }
         }
-        myEvent.store("mm",getFormattedDate('millisec'),evt); events.e.push(myEvent.toString());
+        this.rcvEvent("mm", sysEvent);
     }
-    mousewheelevent(evt) { myEvent.store("mw",getFormattedDate('millisec'),evt); events.e.push(myEvent.toString()); }
-    keyupevent(evt) {
-        if (evt.key==".") { state.RUNNING=!state.RUNNING; animate(); }
-        else { myEvent.store("ku",getFormattedDate('millisec'),evt); events.e.push(myEvent.toString()); }
-        log(here(), myEvent.toString());
+    mousewheelevent(sysEvent) { this.rcvEvent("mw", sysEvent); }
+    keyupevent(sysEvent) {
+        if (sysEvent.key==".") { 
+            state.RUNNING=!state.RUNNING; 
+            if (state.RUNNING) animate(); 
+        }
+        else { this.rcvEvent("ku", sysEvent); }
     }
-    keydownevent(evt) { myEvent.store("kd",getFormattedDate('millisec'),evt); events.e.push(myEvent.toString()); }
+    keydownevent(sysEvent) { this.rcvEvent("kd", sysEvent); }
 
     processEvent() {
         if (Date.now()-msEvent>1) {
             msEvent=Date.now();
             if (this.e.length>0) {
-                evt=this.e.shift();
-                myEvent.parse(evt);
+                strEvent=this.e.shift();
+                myEvent.parse(strEvent);
                 storedEvt.copy(myEvent);
                 if (myEvent.type=="mm") {
                     l=this.rec.length;
@@ -111,15 +119,15 @@ class Events {
                         }
                     }
                 }
-                if (state.RECORD) this.rec.push(evt);
+                if (state.RECORD) this.rec.push(strEvent);
                 // dispatch Event to the Forms
                 forms.processFormsEvent(myEvent);
             }
         }
     }
 }
-function SCA(evt,s) {
-    return (s[0]=='.'?true:s[0]==evt.sca[0]) &&
-        (s[1]=='.'?true:s[1]==evt.sca[1]) &&
-        (s[2]=='.'?true:s[2]==evt.sca[2]);
+function SCA(pMyEvent,s) {
+    return (s[0]=='.'?true:s[0]==pMyEvent.sca[0]) &&
+        (s[1]=='.'?true:s[1]==pMyEvent.sca[1]) &&
+        (s[2]=='.'?true:s[2]==pMyEvent.sca[2]);
 }

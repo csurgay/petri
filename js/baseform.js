@@ -3,6 +3,7 @@ class BaseForm extends Form {
         super("BASEFORM", title, x, y, w, h);
         this.active = true;
         this.visible = true;
+        this.closable = false;
         this.paleArrow = null; // Potential new dashed Flow arrow
     }
     draw() {
@@ -41,7 +42,19 @@ class BaseForm extends Form {
         return evt.type=="md" && evt.button==MIDDLEBUTTON;
     }
     processFormEvent(evt) {
+        if (!this.hover()) return;
         super.processFormEvent(evt);
+        const delta=-Math.sign(evt.deltaY);
+        // IDLE or running state (PLAY/RUN/FLY)
+        if (state.is("IDLE") || bar.running()) {
+            // Add/remove Tokens
+            if (evt.type == "mw" && SCA(evt, "sca") && 
+                this.hovered && this.hovered.type=="PLACE") 
+            {
+                this.hovered.changeTokens(delta);
+                pn.needTimedUndo=true;
+            }
+        }
         // IDLE STATE
         if (state.is("IDLE")) {
             if (evt.type == "ku") {
@@ -135,9 +148,80 @@ class BaseForm extends Form {
             {
                 state.set("DELETE");
             }
+            // Rotate Transition
+            else if (evt.type == "mw" && SCA(evt, "sca") && 
+                this.hovered && this.hovered.type=="TRANSITION") 
+            {
+                this.hovered.rotate(delta);
+                pn.needTimedUndo=true;
+            }
+            // Adjust Flow weight
+            else if (evt.type == "mw" && SCA(evt, "sca") &&
+                this.hovered && this.hovered.type=="FLOW") 
+            {
+                this.hovered.weight+=delta;
+                if (this.hovered.weight<1) this.hovered.weight=1;
+                pn.needTimedUndo=true;
+            }
+            // Adjust Label size
+            else if (evt.type == "mw" && SCA(evt, "sca") &&
+                this.hovered && this.hovered.type=="LABEL") 
+            {
+                this.hovered.size+=2*delta;
+                if (this.hovered.size<8) this.hovered.size=8;
+                pn.needTimedUndo=true;
+            }
             // Zoom
             else if (this.middleClick(evt) && SCA(evt,"sca")) {
                 state.set("MIDDLE");
+            }
+            // Color change on Object
+            else if (evt.type == "mw" && SCA(evt,"scA") &&
+                this.hovered) 
+            {
+                if (!evt.shiftKey) {
+                    this.hovered.nextColor(delta);
+                    pn.needTimedUndo=true;
+                }
+            }
+            // Color change Shubnet
+            else if (evt.type == "mw" && SCA(evt,"ScA") &&
+                this.hovered) 
+            {
+                this.hovered.nextColor(delta);
+                pn.connected.length=0;
+                pn.getConnected(this.hovered);
+                pn.connected.forEach(o=>o.color=this.hovered.color);
+                pn.needTimedUndo=true;
+            }
+            // Rewind and Forward
+            else if (evt.type == "mw" && SCA(evt,"sca") &&
+                !this.hovered) 
+            {
+                if (delta<0) pn.stepBackward();
+                if (delta>0) pn.stepForward();
+            }
+            // Rotate subnet
+            else if (evt.type == "mw" && SCA(evt,"Sca") &&
+                this.hovered) 
+            {
+                pn.connected.length=0;
+                pn.getConnectedAll(this.hovered);
+                pn.connected.forEach(r=>{
+                    const rot=rotate(this.hovered.x,this.hovered.y,r.x,r.y,delta*Math.PI/32);
+                    r.x=rot[0]; r.y=rot[1];
+                    if (r.type=="TRANSITION") {
+                        r.alpha+=delta*Math.PI/32;
+                    }
+                    if (r.label) {
+                        const rot=rotate(this.hovered.x,this.hovered.y,r.label.x,r.label.y,delta*Math.PI/32);
+                        r.label.x=rot[0]; r.label.y=rot[1];
+                    }
+                    r.attachedLabels.forEach(l=>{
+                        l.rotate(this.hovered.x,this.hovered.y,delta*Math.PI/32);
+                    })
+                });
+                pn.needTimedUndo=true;
             }
         }
         // LEFTDOWN STATE
@@ -284,8 +368,63 @@ class BaseForm extends Form {
                 pn.newUndo();
             }
         }
-        // DRAGALL STATE
-        else if (state.is("SHIFTCLICK") || state.is("DRAGALL")) {
+        // SHIFTCLICK state
+        else if (state.is("SHIFTCLICK")) {
+            // Init DragAll
+            if (evt.type == "mm") {
+                state.set("DRAGALL");
+            }
+            // Copy Subnet
+            else if (evt.type == "mu" && SCA(evt, "Sca") && 
+                this.hovered && 
+                closeEnough(this.mouseDownCoord, tcursor))
+            {
+                pn.connected.forEach(o=>{
+                    if (o.type=="PLACE") {
+                        const newObject=new Place(o.x+20,o.y+20);
+                        newObject.label.label=o.label.label;
+                        newObject.label.x=o.label.x+20;
+                        newObject.label.y=o.label.y+20;
+                        newObject.color=o.color;
+                        newObject.tokens=o.tokens;
+                        pn.addPlace(newObject);
+                    }
+                    else if (o.type=="TRANSITION") {
+                        const newObject=new Transition(o.x+20,o.y+20,o.alpha);
+                        newObject.label.label=o.label.label;
+                        newObject.label.x=o.label.x+20;
+                        newObject.label.y=o.label.y+20;
+                        newObject.color=o.color;
+                        pn.addTransition(newObject);
+                    }
+                })
+                pn.f.forEach(o=>{
+                    var o1=null,o2=null;
+                    pn.p.forEach(p=>{
+                        if (p.x==o.o1.x+20 && p.y==o.o1.y+20) o1=p;
+                        if (p.x==o.o2.x+20 && p.y==o.o2.y+20) o2=p;
+                    });
+                    pn.t.forEach(t=>{
+                        if (t.x==o.o1.x+20 && t.y==o.o1.y+20) o1=t;
+                        if (t.x==o.o2.x+20 && t.y==o.o2.y+20) o2=t;
+                    });
+                    if (o1!=null && o2!=null) {
+                        const newObject=new Flow(o1,o2);
+                        newObject.color=o.color;
+                        newObject.subtype=o.subtype;
+                        newObject.weight=o.weight;
+                        for (var i=1; i<o.path.length-1; i++) {
+                            newObject.path.splice(i,0,new MidPoint(o.path[i].x+20,o.path[i].y+20));
+                        }
+                        pn.addFlow(newObject);
+                    }
+                })
+                pn.newUndo();
+                state.set("IDLE");
+            }
+        }
+        // DRAGALL state
+        else if (state.is("DRAGALL")) {
             // Do DragAll (SubNet)
             if (evt.type == "mm") {
                 pn.connected.forEach(da => { 
@@ -298,12 +437,6 @@ class BaseForm extends Form {
             }
             else if (evt.type == "mu") {
                 state.set("IDLE");
-            }
-            else {
-                if (pn.needTimedUndo) {
-                    pn.newUndo();
-                    pn.needTimedUndo=false;
-                }
             }
         }
         // RUN state
@@ -333,6 +466,63 @@ class BaseForm extends Form {
             {
                 state.set("IDLE");
             }
+        }
+        else if (state.is("MIDDLE")) {
+            // Init Zoom
+            if (evt.type == "mw") {
+                var curDeltaX=ccursor.x-pn.cx;
+                var curDeltaY=ccursor.y-pn.cy;
+                pn.cx=ccursor.x; pn.cy=ccursor.y;
+                pn.vpx-=curDeltaX/pn.zoom; pn.vpy-=curDeltaY/pn.zoom;
+                state.set("ZOOM");
+            }
+            // Clear Place Tokens
+            else if (evt.type == "mu" && this.hovered && 
+                this.hovered.type=="PLACE") 
+            {
+                this.hovered.changeTokens(-this.hovered.tokens);
+                pn.newUndo();
+                state.set("IDLE");
+            }
+            // Clear All Tokens
+            else if (evt.type == "mu" && !this.hovered) {
+                pn.p.forEach(p => p.changeTokens(-p.tokens));
+                pn.newUndo();
+                state.set("IDLE");
+            }
+        }
+        // ZOOM state
+        else if (state.is("ZOOM")) {
+            // Do Zoom
+            if (evt.type == "mw") {
+                pn.zoom+=delta/10;
+                pn.zoom=Math.round(10*pn.zoom)/10;
+                if (pn.zoom<0.3) pn.zoom=0.3;
+                if (pn.zoom>3) pn.zoom=3;
+            }
+            else if (evt.type == "mu") {
+                state.set("IDLE");
+            }
+        }
+        // Mouse-up administration
+        if (evt.type == "mu") {
+            // Undo after mouse-up (for multi-wheel events)
+            if (pn.needTimedUndo) {
+                pn.newUndo();
+                pn.needTimedUndo=false;
+            }
+            pn.dragged=null;
+            fb.paleArrow=null;
+            if (state.is("PLAY")||state.is("RUN")||state.is("FLY")) {
+            }
+            else {
+                state.set("IDLE");
+            }
+        }
+        // Single undo after all events processed
+        if (pn.needUndo) {
+            pn.needUndo=false;
+            pn.newUndo();
         }
     }
 }

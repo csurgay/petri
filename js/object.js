@@ -38,7 +38,7 @@ class Object extends Coord {
     }
     hover() {
     }
-    clicked() {
+    clicked(pMyEvent) {
     }
     dragTo(dx,dy) {
         this.x=snap(this.x+dx);

@@ -88,19 +88,19 @@ class Flow extends Object {
         this.drawLineToLabel();
     }
 
-    hover(cursor) {
+    hover() {
         for (var i=0; i<this.path.length-2; i++) {
-            if (distancePointAndSection(cursor,this.path[i],this.path[i+1]) <= 3)
+            if (distancePointAndSection(tcursor,this.path[i],this.path[i+1]) <= 3)
                 return true;
         }
-        if (distancePointAndSection(cursor,this.path[this.path.length-2],this.conn) <= 3)
+        if (distancePointAndSection(tcursor,this.path[this.path.length-2],this.conn) <= 3)
             return true;
         return false;
     }
 
-    cursoredMidPoint(cursor) {
+    cursoredMidPoint(pMyEvent) {
         for (var i=1; i<this.path.length-1; i++) {
-            if (this.path[i].hover(cursor)) {
+            if (this.path[i].hover()) {
                 return this.path[i];
             }
         }
@@ -145,8 +145,8 @@ class MidPoint extends Object {
         }
     }
 
-    hover(cursor) {
-        return Math.hypot(this.x-cursor.x,this.y-cursor.y)<=7;
+    hover() {
+        return Math.hypot(this.x-tcursor.x,this.y-tcursor.y)<=7;
     }
 
     delete() {

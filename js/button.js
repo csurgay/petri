@@ -173,10 +173,10 @@ class Button extends Object {
 
     dragTo() {}
 
-    hover(cursor) {
+    hover() {
         return (
-            Math.abs(this.x-cursor.x)<=this.w/2 && 
-            Math.abs(this.y-cursor.y)<=bh/2
+            Math.abs(this.x-ccursor.x)<=this.w/2 && 
+            Math.abs(this.y-ccursor.y)<=bh/2
         );
     }
 
@@ -217,7 +217,6 @@ class Button extends Object {
 //            window.open("help.html", "_blank");
         }
         else if (this.button=="PREF") {
-            log(here(),"My log message");
             fb.active=false;
             fp.visible=true;
             fp.active=true;

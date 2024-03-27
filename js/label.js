@@ -37,14 +37,14 @@ class Label extends Object {
             }
         }
     }
-    hover(cursor) {
-        if (Math.abs(this.x-cursor.x)<this.width/2+2 && Math.abs(this.y-cursor.y)<this.size/2+2)
+    hover() {
+        if (Math.abs(this.x-tcursor.x)<this.width/2+2 && Math.abs(this.y-tcursor.y)<this.size/2+2)
             return true;
         else 
             return false;
     }
     // gives focus to the one Textbox referencing this Label
-    clicked(evt) {
+    clicked(pMyEvent) {
         textbox.referencedLabel=this;
         textbox.x=this.x-this.width/2-7;
         textbox.y=this.y-this.size/2-5;
@@ -79,7 +79,7 @@ class Label extends Object {
         return this.attached;
     }
     rotate(x,y,delta) {
-        rot=rotate(x,y,this.x,this.y,delta);
+        const rot=rotate(x,y,this.x,this.y,delta);
         this.x=rot[0]; this.y=rot[1];
         this.attachedLabels.forEach(l=>l.rotate(x,y,delta));
     }

@@ -70,8 +70,8 @@ class Place extends Object {
         this.label.dragTo(dx,dy);
     }
 
-    hover(cursor) {
-        return (Math.hypot(this.x-cursor.x,this.y-cursor.y) < PLACE_R);
+    hover() {
+        return (Math.hypot(this.x-tcursor.x,this.y-tcursor.y) < PLACE_R);
     }
 
     delete() {

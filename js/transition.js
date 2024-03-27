@@ -49,7 +49,7 @@ class Transition extends Object {
             g.strokeStyle(COLOR_HIGHLIGHT);
             g.solid();
             transConnectors.forEach(c=>{
-                var rot=rotate(0,0,c[0],c[1],this.alpha);
+                const rot=rotate(0,0,c[0],c[1],this.alpha);
                 g.moveTo(this.x+rot[0],this.y+rot[1]);
                 g.arc(this.x+rot[0],this.y+rot[1],1,0,2*Math.PI);
             });
@@ -63,9 +63,9 @@ class Transition extends Object {
         this.label.dragTo(dx,dy);
     }
 
-    hover(cursor) {
+    hover() {
         this.adjust_p1p2();
-        if (distancePointAndSection(cursor,p1,p2) <= tw/2+1)
+        if (distancePointAndSection(tcursor,p1,p2) <= tw/2+1)
             return true;
         else 
             return false;
@@ -80,7 +80,7 @@ class Transition extends Object {
         if (Math.abs(this.alpha-3*Math.PI/4)<Math.PI/80) this.alpha=3*Math.PI/4;
         if (Math.abs(this.alpha)<Math.PI/80) this.alpha=0;
         this.adjust_p1p2();
-        if (!this.hover(tcursor)) pn.highlighted=null;
+        if (!this.hover()) pn.highlighted=null;
     }
 
     delete() {

@@ -10,11 +10,11 @@ class Forms {
     draw() {
         this.f.forEach(f=>{if (f.visible) f.draw();})
     }
-    processFormsEvent(evt) {
-        storedEvt.store(evt.type,getFormattedDate('millisec'),evt);
+    processFormsEvent(pMyEvent) {
+        getCoord(pMyEvent); // sets tcursor (translated canvas) and ccursor (orig canvas)
         this.f.forEach(item=>{
-            if (item.active && (item.hover(evt) || item==textbox)) {
-                item.processFormEvent(evt);
+            if (item.active) {
+                item.processFormEvent(pMyEvent);
             }
         });
     }
@@ -28,6 +28,7 @@ class Form extends Frame {
         this.dragged=null;
         this.visible=false; // shows up
         this.active=false; // reacts to events
+        this.closable=true; // can be closed with Escape
         forms.addForm(this);
         this.mouseDownCoord=new Coord(0,0);
     }
@@ -35,31 +36,29 @@ class Form extends Frame {
         super.draw();
     }
     hover() {
-        return tcursor.x>=this.x && tcursor.x<=this.x+this.w &&
-        tcursor.y>=this.y && tcursor.y<=this.y+this.h
+        return ccursor.x > this.x && ccursor.x < this.x+this.w &&
+        ccursor.y > this.y && ccursor.y < this.y+this.h
     }
-    processFormEvent(evt) {
-        log(here(), this.id);
-        getCoord(evt); // sets tcursor (translated canvas) and ccursor (orig canvas)
-        if (state.is("BAR.CLICK") && !bar.hover(evt)) state.set("IDLE");
-        // default is tcursor, ccursor can override in inherited ProcessFormEvent
-        this.hovered=pn.getCursoredObject(tcursor,"VIEWPORT");
-        if (evt.type=="md") {
+    // This one is called as super from descendant processFormEvents
+    processFormEvent(pMyEvent) {
+        this.hovered=pn.getCursoredObject(pMyEvent);
+        if (pMyEvent.type=="md") {
             this.mouseDownCoord.x=tcursor.x;
             this.mouseDownCoord.y=tcursor.y;
         }
-    }
-    mousedown(evt) {}
-    mouseup(evt) {}
-    mousemove(evt) {}
-    mousewheel(evt) {}
-    keyup(evt) {
-        if (evt.key=="Escape") {
-            this.active=this.visible=false;
-            fb.active=true;
+        if (pMyEvent.type == "ku" && pMyEvent.key == "Escape") {
+            if (this.closable) {
+                this.active=this.visible=false;
+                fb.active=true;
+            }
         }
     }
-    keydown(evt) {}
+    mousedown(pMyEvent) {}
+    mouseup(pMyEvent) {}
+    mousemove(pMyEvent) {}
+    mousewheel(pMyEvent) {}
+    keyup(pMyEvent) {}
+    keydown(pMyEvent) {}
 }
 
 var files=[], directory="", selectedFile=-1;
@@ -82,8 +81,8 @@ class FileForm extends Form {
             g.fillText(files[i],200,this.y+100+20*i);
         }
     }
-    mouseup(evt) {
-        if (selectedFile!=-1) {
+    processFormEvent(pMyEvent) {
+        if (pMyEvent.type == "mu" && selectedFile!=-1) {
             log(here(), files[selectedFile]);
             if (files[selectedFile]!="CANCEL") {
                 pn.load(directory+"/"+files[selectedFile]);
