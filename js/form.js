@@ -43,6 +43,7 @@ class Form extends Frame {
     processFormEvent(pMyEvent) {
         this.hovered=pn.getCursoredObject(pMyEvent);
         if (pMyEvent.type=="md") {
+            // ALWAYS TCURSOR !!!
             this.mouseDownCoord.x=tcursor.x;
             this.mouseDownCoord.y=tcursor.y;
         }

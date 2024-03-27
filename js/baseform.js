@@ -251,16 +251,15 @@ class BaseForm extends Form {
                 && this.hovered == pn.highlighted
                 && closeEnough(this.mouseDownCoord, tcursor) &&
                 (this.hovered.type == "PLACE" ||
-                this.hovered.type == "TRANSITION")) 
+                this.hovered.type == "TRANSITION") &&
+                pn.noFlowFromHere(this.hovered)) 
             {
-                if (pn.noFlowFromHere(this.hovered)) {
-                    pn.togglePlaceTransition(this.hovered);
-                    pn.newUndo();
-                }
+                pn.togglePlaceTransition(this.hovered);
+                pn.newUndo();
                 state.set("IDLE");
             }
             // New Label
-            else if (evt.type == "mu" && SCA(evt,"scA") 
+            else if (evt.type == "mu" && SCA(evt, "scA") 
                 && !this.hovered && 
                 closeEnough(this.mouseDownCoord, tcursor)) 
             {
@@ -270,7 +269,7 @@ class BaseForm extends Form {
                 state.set("IDLE");
             }
             // Fire a Transition
-            else if (evt.type == "mu" && this.hovered
+            else if (evt.type == "mu" && SCA(evt, "sca") && this.hovered
                 && this.hovered == pn.highlighted &&
                 closeEnough(this.mouseDownCoord, tcursor) &&
                 this.hovered.type == "TRANSITION" &&
