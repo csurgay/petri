@@ -36,6 +36,8 @@ new MouseEvent(
     }
 )
 
+fb.active=bar.active=true;
+state.set("IDLE");
 animate();
 
 var ms,msSlowrun=0;
