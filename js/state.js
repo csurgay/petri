@@ -2,7 +2,7 @@ class State {
     constructor(startState) {
         this.s=startState;
         this.RUNNING=true;
-        this.DEBUG=1;
+        this.DEBUG=0;
         this.RECORD=0;
         this.PLAYBACK=0;
         this.states=[
