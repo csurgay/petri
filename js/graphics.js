@@ -10,7 +10,8 @@ const COLOR_WILLFIRE="rgb(110, 110, 110)";
 const COLOR_INK="black";
 const COLOR_HIGHLIGHT="blue";
 
-const COLORS=["black","red","green","blue"];
+/// IV9VBS More Colors
+const COLORS=["black","red","green","blue", "purple", "brown", "Chartreuse", "DeepPink", "OrangeRed"];
 
 class graphics {
     constructor(ctx) {
