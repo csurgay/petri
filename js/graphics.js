@@ -4,13 +4,13 @@ const LINEWIDTH=2;
 const DASHED=[5,3];
 const PLACE_R=20;
 
-const COLOR_CANVAS="rgb(250, 240, 230)";
+const COLOR_CANVAS="rgb(255, 245, 235)";
 const COLOR_ENABLED="black";
 const COLOR_WILLFIRE="rgb(110, 110, 110)";
 const COLOR_INK="black";
 const COLOR_HIGHLIGHT="blue";
 
-const COLORS=["black","red","green","blue"];
+const COLORS=["black","red","green","blue","#dddd00","purple", "brown", "Chartreuse", "DeepPink"];
 
 class graphics {
     constructor(ctx) {
