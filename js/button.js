@@ -82,6 +82,13 @@ class Button extends Object {
             g.fillText("?",this.x-1,this.y+1);
             g.fillText("?",this.x+1,this.y+1);
         }
+        else if (this.button=="Add") {
+                g.beginPath();
+                g.font("bold 18px arial");
+                g.fillText("+",this.x,this.y+1);
+                g.fillText("+",this.x-1,this.y+1);
+                g.fillText("+",this.x+1,this.y+1);
+        }
         else if (this.button=="UNDO") {
             curvedArrow(this.x,this.y);
         }
@@ -215,6 +222,10 @@ class Button extends Object {
             //fb.active=false;
             //fh.visible=true;
             //fh.active=true;
+        }
+        else if (this.button=="Add") {
+            console.log("Add Button Pressed!")
+            // TODO implement here Dropdown Menu or show extra Buttons!
         }
         else if (this.button=="PREF") {
             fb.active=false;
