@@ -31,6 +31,9 @@ Done:
 - state handling in its own class
 
 Todo:
+- PacMan only in running state
+- multiline Labels
+- alt sometimes fails coloring
 - error: undo MidPoints
 - rec mousemove filter by deltaXY
 - Settings (grid size (0=off), enabled color, debug mode, fired indicated)

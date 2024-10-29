@@ -51,9 +51,11 @@ function animate() {
     g.translate(0.5, 0.5);
     // Forms
     forms.draw();
-    drawRotatingPacman();    
     // Running mode
-    if (state.is("FLY")) { pn.fireOne(); }
+    drawRotatingPacman();
+    if (state.is("FLY")) { 
+        pn.fireOne(); 
+    }
     else if (state.is("RUN")) { 
         if (ms-msSlowrun>100) {
             pn.fireOne();

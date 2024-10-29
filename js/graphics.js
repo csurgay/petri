@@ -89,10 +89,15 @@ function snap(v) {
     if (grid==0||SCA(storedEvt,".cA")) return v // ALT or SHIFTALT
     else return Math.round(v/grid)*grid;
 }
+var alpha=0.0;
 function drawRotatingPacman() {
+    var speed=0;
+    if (state.is("PLAY")) speed=1;
+    else if (state.is("RUN")) speed=4;
+    else if (state.is("FLY")) speed=20;
     g.beginPath();
     g.standard(1);
-    const alpha=(ms%(628*1000/628))/(100*1000/628)-Math.PI/2;
+    alpha += speed*2*Math.PI/60/4;
     const z=pn.zoom==1?7:6;
     g.arc(25,20,15,alpha,alpha+z*Math.PI/4)
     g.lineTo(25,20)
