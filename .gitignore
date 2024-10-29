@@ -1,2 +1,4 @@
+.gitignore
 upload/*
-
+doc/*
+nets/*
