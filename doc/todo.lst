@@ -29,9 +29,9 @@ Done:
 - cursor xy also for key events!
 - label edit: nothing else should be active!
 - state handling in its own class
+- PacMan only in running state
 
 Todo:
-- PacMan only in running state
 - multiline Labels
 - alt sometimes fails coloring
 - error: undo MidPoints
@@ -41,3 +41,5 @@ Todo:
 - Reachability
 - Select (and copy, rotate...?) subnet
 - Firing animation with "flames"
+- Assertions as stop conditions when violated
+- induljon az url get parameterben megadott netet betöltve

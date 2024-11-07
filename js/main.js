@@ -35,7 +35,13 @@ new MouseEvent(
         bubbles: true
     }
 )
-
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+if (urlParams.has('net')) {
+    const net=urlParams.get('net');
+    log(here(),net);
+    pn.load('nets/'+net);
+}
 fb.active=bar.active=true;
 state.set("IDLE");
 animate();
