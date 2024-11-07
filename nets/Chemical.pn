@@ -1,10 +1,10 @@
 2024-02-24 11:29:51
 Places:
-P1 -80.0 -40.0 black 0 "C" -80.0 -70.0 black
-P2 0.0 -40.0 black 0 "O2" 0.0 -70.0 black
-P6 150.0 -40.0 black 0 "NaOH" 200.0 -50.0 black
+P1 -80.0 -40.0 black 5 "C" -80.0 -70.0 black
+P2 0.0 -40.0 black 6 "O2" 0.0 -70.0 black
+P6 150.0 -40.0 black 4 "NaOH" 200.0 -50.0 black
 P7 320.0 60.0 black 0 "NaHCO3" 330.0 90.0 black
-P9 340.0 -40.0 black 0 "HCl" 380.0 -50.0 black
+P9 340.0 -40.0 black 3 "HCl" 380.0 -50.0 black
 P10 550.0 100.0 black 0 "H2O" 550.0 70.0 black
 P11 550.0 170.0 black 0 "NaCl" 590.0 160.0 black
 P12 550.0 250.0 black 0 "CO2" 550.0 220.0 black
