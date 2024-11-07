@@ -121,6 +121,9 @@ class Transition extends Object {
                     if (flow.o1==place && flow.o2==this) sumIn+=flow.weight;
                     if (flow.o2==place && flow.o1==this) sumOut+=flow.weight;
                 }
+                if (flow.subtype=="RESET") {
+                    if (flow.o2==place && flow.o1==this) sumOut-=place.tokens;
+                }
             });
             place.tokens+=sumOut;
             place.tokens-=sumIn;

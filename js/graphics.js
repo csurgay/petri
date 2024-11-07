@@ -126,6 +126,15 @@ function drawArrow(fromx,fromy,tox,toy,lineWidth=1,color=COLOR_INK,subtype="ENAB
         ctx.closePath();
         g.fill();
     } 
+    else if (subtype=="RESET") {
+        g.lineWidth(1);
+        g.moveTo(tox,toy);
+        g.lineTo(tox-2*headlen/3*Math.cos(angle-2*alpha*Math.PI/180),toy-2*headlen/3*Math.sin(angle-2*alpha*Math.PI/180));
+        g.lineTo(tox-3*headlen/3*Math.cos(angle),toy-3*headlen/3*Math.sin(angle));
+        g.lineTo(tox-2*headlen/3*Math.cos(angle+2*alpha*Math.PI/180),toy-2*headlen/3*Math.sin(angle+2*alpha*Math.PI/180));
+        ctx.closePath();
+        g.fill();
+    } 
     else if (subtype=="INHIBITOR") {
         ctx.fillStyle=COLOR_CANVAS;
         g.arc(tox,toy,7,0,2*Math.PI);

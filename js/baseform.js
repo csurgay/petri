@@ -163,7 +163,8 @@ class BaseForm extends Form {
             }
             // Adjust Flow weight
             else if (evt.type == "mw" && SCA(evt, "sca") &&
-                this.hovered && this.hovered.type=="FLOW") 
+                this.hovered && this.hovered.type=="FLOW" &&
+                this.hovered.subtype!="RESET") 
             {
                 this.hovered.weight+=delta;
                 if (this.hovered.weight<1) this.hovered.weight=1;
@@ -367,11 +368,17 @@ class BaseForm extends Form {
         else if (state.is("MULTISEGMENT")) {
             // Toggle Flow Enabler/Inhiboitor
             if (evt.type == "mu") {
-                if (this.hovered && this.hovered.type == "FLOW" && 
-                    this.hovered.o1.type == "PLACE") {
-                    this.hovered.subtype = this.hovered.subtype == "INHIBITOR" ?
+                if (this.hovered && this.hovered.type == "FLOW") { 
+                    if (this.hovered.o1.type == "PLACE") {
+                        this.hovered.subtype = this.hovered.subtype == "INHIBITOR" ?
                         "ENABLER" : "INHIBITOR";
-                    pn.newUndo();
+                        pn.newUndo();
+                    }
+                    else if (this.hovered.o1.type == "TRANSITION") {
+                        this.hovered.subtype = this.hovered.subtype == "RESET" ?
+                        "ENABLER" : "RESET";
+                        pn.newUndo();
+                    }
                 }
                 state.set("IDLE");
             }

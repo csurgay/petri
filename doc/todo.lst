@@ -31,6 +31,7 @@ Done:
 - state handling in its own class
 - PacMan only in running state
 - induljon az url get parameterben megadott netet betöltve
+- reset arc (click flow, -=place.tokens, help, no weight)
 
 Todo:
 - multiline Labels
@@ -43,5 +44,4 @@ Todo:
 - Select (and copy, rotate...?) subnet
 - Firing animation with "flames"
 - Assertions as stop conditions when violated
-- reset arc
 - test arc (arrow on both ends in symmetry)
