@@ -44,3 +44,4 @@ Todo:
 - Firing animation with "flames"
 - Assertions as stop conditions when violated
 - reset arc
+- test arc (arrow on both ends in symmetry)
