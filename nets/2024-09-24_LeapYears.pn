@@ -1,0 +1,39 @@
+2024-10-15 17:34:59
+Seasons Calendar with Leap Year Counter, Bácsi Máté
+Places:
+P1 -100.0 -140.0 black 1 "Spring rolls" -100.0 -170.0 black
+P2 80.0 -140.0 black 0 "Summ-er/-ary" 80.0 -170.0 black
+P3 80.0 40.0 black 0 "Fall down the stairs" 80.0 70.0 black
+P4 -100.0 40.0 black 0 "Winter is coming" -100.0 70.0 black
+P5 -200.0 -10.0 black 12 "Year count" -200.0 20.0 black
+P10 -200.0 -80.0 black 0 "P10" -240.0 -80.0 black
+P11 -200.0 -220.0 black 3 "Leap year count" -200.0 -250.0 black
+Transitions:
+T1 -10.0 -140.0 black 0.000 "T1" -10.0 -100.0 black
+T2 80.0 -50.0 black 1.571 "T2" 40.0 -50.0 black
+T3 -10.0 40.0 black 6.277 "T3" -10.0 0.0 black
+T4 -100.0 -50.0 black 1.571 "T4" -60.0 -50.0 black
+T8 -200.0 -160.0 black 1.571 "T8" -240.0 -160.0 black
+Flows:
+F1 black ENABLER 1 P1 T1 false 2 0
+F2 black ENABLER 1 T1 P2 false -1 0
+F3 black ENABLER 1 P2 T2 false 2 0
+F4 black ENABLER 1 T2 P3 false -1 0
+F5 black ENABLER 1 P3 T3 false 3 0
+F6 black ENABLER 1 T3 P4 false -1 0
+F7 black ENABLER 1 P4 T4 false 3 0
+F8 black ENABLER 1 T4 P1 false -1 0
+F9 black ENABLER 1 T4 P5 false -1 0
+F17 black ENABLER 1 T4 P10 false -1 1 M2 -150.0 -80.0
+F18 black ENABLER 4 P10 T8 false 3 0
+F19 black ENABLER 1 T8 P11 false -1 0
+F21 black INHIBITOR 4 P10 T4 false 1 1 M4 -170.0 -50.0
+Labels:
+L13 black 26 "Bácsi Máté 2024-09-24" 20.0 -250.0 none
+Config:
+zoom: 1.0
+cx: 200.0
+cy: 200.0
+vpx: 120.0
+vpy: 150.0
+End

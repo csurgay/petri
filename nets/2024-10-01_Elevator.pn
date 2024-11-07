@@ -1,0 +1,29 @@
+2024-10-15 17:44:03
+Elevator, Bácsi Máté
+Places:
+P2 390.0 90.0 black 0 "LEVEL" 360.0 60.0 black
+P4 10.0 0.0 black 10 "HEIGHT" 10.0 -30.0 black
+P5 10.0 150.0 black 0 "LEVEL" 10.0 180.0 black
+Transitions:
+T1 250.0 90.0 black 6.283 "UP" 220.0 60.0 black
+T2 520.0 90.0 black 0.000 "DOWN" 490.0 60.0 black
+T3 70.0 80.0 black 4.691 "DOWN" 130.0 80.0 black
+T4 -50.0 80.0 black 4.691 "UP" -90.0 80.0 black
+Flows:
+F3 black ENABLER 1 P2 T2 false 2 0
+F6 black ENABLER 1 P5 T3 false 14 0
+F7 black ENABLER 1 T3 P4 false -1 0
+F8 black ENABLER 1 P4 T4 false 13 0
+F9 black ENABLER 1 T4 P5 false -1 0
+F10 black ENABLER 1 T1 P2 false -1 2 M7 270.0 100.0 M8 350.0 100.0
+F12 black INHIBITOR 10 P2 T1 false 11 1 M428 350.0 80.0
+Labels:
+L8 black 64 "Elevator" 190.0 -90.0 none
+L10 black 18 "Bácsi Máté 2024-10-01" 190.0 -50.0 none
+Config:
+zoom: 1.0
+cx: 200.0
+cy: 200.0
+vpx: 0.0
+vpy: -10.0
+End

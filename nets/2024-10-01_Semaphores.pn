@@ -1,0 +1,73 @@
+2024-10-15 17:42:33
+Traffic Lights Semaphores, Bácsi Máté
+Places:
+P19 300.0 280.0 red 1 "R1" 320.0 250.0 black
+P22 140.0 360.0 black 0 "Y1" 120.0 390.0 black
+P23 300.0 440.0 green 0 "G1" 300.0 470.0 black
+P25 490.0 280.0 red 1 "R2" 460.0 250.0 black
+P26 490.0 430.0 green 0 "G2" 490.0 460.0 black
+P27 660.0 340.0 black 0 "Y2" 690.0 330.0 black
+P36 380.0 160.0 black 1 "Semaphor" 380.0 130.0 black
+P52 960.0 200.0 red 1 "R1" 960.0 170.0 black
+P53 1170.0 200.0 red 1 "R2" 1170.0 170.0 black
+P54 1170.0 320.0 black 0 "Y2" 1210.0 320.0 black
+P55 960.0 320.0 black 0 "Y1" 920.0 320.0 black
+P56 960.0 440.0 green 0 "G1" 960.0 480.0 black
+P57 1170.0 440.0 green 0 "G2" 1170.0 480.0 black
+Transitions:
+T16 490.0 350.0 black 4.715 "t6" 440.0 350.0 black
+T17 570.0 300.0 black 0.393 "t2" 580.0 260.0 black
+T18 570.0 390.0 black 5.792 "t4" 580.0 430.0 black
+T22 300.0 360.0 black 1.571 "t5" 350.0 360.0 black
+T23 210.0 310.0 black 5.721 "t1" 180.0 280.0 black
+T24 220.0 400.0 black 0.464 "t3" 200.0 440.0 black
+T32 1170.0 260.0 black 1.571 "t2" 1210.0 260.0 black
+T33 1170.0 380.0 black 1.571 "t4" 1210.0 380.0 black
+T34 960.0 260.0 black 1.571 "t1" 920.0 260.0 black
+T35 960.0 380.0 black 4.697 "t3" 920.0 380.0 black
+T36 840.0 320.0 black 1.571 "t5" 880.0 320.0 black
+T37 1290.0 320.0 black 1.571 "t6" 1250.0 320.0 black
+Flows:
+F23 black ENABLER 1 P26 T16 false 2 0
+F24 black ENABLER 1 T16 P25 false -1 0
+F25 black ENABLER 1 P25 T17 false 8 0
+F26 black ENABLER 1 T17 P27 false -1 0
+F27 black ENABLER 1 P27 T18 false 3 0
+F28 black ENABLER 1 T18 P26 false -1 0
+F44 black ENABLER 1 T16 P36 false -1 2 M14 480.0 350.0 M15 480.0 350.0
+F46 black ENABLER 1 P36 T17 false 14 0
+F49 black ENABLER 1 P23 T22 false 3 0
+F50 black ENABLER 1 T22 P19 false -1 0
+F51 black ENABLER 1 P19 T23 false 13 0
+F52 black ENABLER 1 T23 P22 false -1 0
+F53 black ENABLER 1 P22 T24 false 2 0
+F54 black ENABLER 1 T24 P23 false -1 0
+F55 black ENABLER 1 P36 T23 false 7 1 M12 230.0 290.0
+F56 black ENABLER 1 T22 P36 false -1 1 M13 310.0 350.0
+F79 black ENABLER 1 P53 T32 false 2 0
+F80 black ENABLER 1 T32 P54 false -1 0
+F81 black ENABLER 1 P54 T33 false 2 0
+F82 black ENABLER 1 T33 P57 false -1 0
+F83 black ENABLER 1 P52 T34 false 2 0
+F84 black ENABLER 1 T34 P55 false -1 0
+F85 black ENABLER 1 P55 T35 false 3 0
+F86 black ENABLER 1 T35 P56 false -1 0
+F87 black ENABLER 1 P56 T36 false 3 1 M16 840.0 440.0
+F88 black ENABLER 1 T36 P52 false -1 2 M34 850.0 310.0 M17 850.0 200.0
+F89 black ENABLER 1 P57 T37 false 3 1 M18 1290.0 440.0
+F90 black ENABLER 1 T37 P53 false -1 1 M19 1290.0 200.0
+F91 black ENABLER 1 P52 T32 false 1 0
+F92 black ENABLER 1 P53 T34 false 0 0
+F93 black ENABLER 1 T36 P53 false -1 3 M22 830.0 320.0 M20 830.0 140.0 M21 1000.0 140.0
+F94 black ENABLER 1 T37 P52 false -1 3 M25 1300.0 320.0 M23 1300.0 140.0 M24 1130.0 140.0
+Labels:
+L29 black 14 "Same but without semaphor" 1066.0 105.0 none
+L31 black 48 "TRAFFIC LIGHTS" 710.0 50.0 none
+L33 black 22 "Bácsi Máté 2024-10-01" 700.0 90.0 none
+Config:
+zoom: 1.0
+cx: 200.0
+cy: 200.0
+vpx: -250.0
+vpy: -160.0
+End

@@ -1,0 +1,42 @@
+2024-10-10 09:51:25
+Traffic Lights Semaphore
+Places:
+P2 -110.0 -150.0 red 1 "PIROS" -60.0 -150.0 red
+P3 -110.0 -10.0 #dddd00 0 "SARGA" -60.0 -10.0 #dddd00
+P4 -110.0 130.0 green 0 "ZOLD" -60.0 130.0 green
+P5 130.0 -150.0 red 1 "PIROS" 80.0 -150.0 red
+P6 130.0 -10.0 #dddd00 0 "SARGA" 80.0 -10.0 #dddd00
+P7 130.0 130.0 green 0 "ZOLD" 80.0 130.0 green
+P9 10.0 -200.0 blue 1 "SZEMAFOR" 10.0 -260.0 blue
+Transitions:
+T2 -110.0 -80.0 black 1.571 "T2" -150.0 -80.0 black
+T3 -110.0 60.0 black 1.571 "T3" -150.0 60.0 black
+T4 130.0 -80.0 black 1.571 "T4" 170.0 -80.0 black
+T6 270.0 -10.0 black 1.571 "T6" 230.0 -10.0 black
+T7 -250.0 -10.0 black 1.571 "T7" -210.0 -10.0 black
+T8 130.0 60.0 black 1.571 "T8" 170.0 60.0 black
+Flows:
+F1 black ENABLER 1 P2 T2 false 2 0
+F2 black ENABLER 1 T2 P3 false -1 0
+F3 black ENABLER 1 P3 T3 false 2 0
+F4 black ENABLER 1 T3 P4 false -1 0
+F5 black ENABLER 1 P5 T4 false 2 0
+F6 black ENABLER 1 T4 P6 false -1 0
+F9 black ENABLER 1 P7 T6 true 3 1 M14 220.0 130.0
+F10 black ENABLER 1 T6 P5 false -1 1 M261 230.0 -150.0
+F11 black ENABLER 1 P4 T7 true 3 1 M16 -200.0 130.0
+F12 black ENABLER 1 T7 P2 false -1 1 M15 -210.0 -150.0
+F13 blue ENABLER 1 T7 P9 false -1 3 M374 -250.0 -180.0 M17 -160.0 -250.0 M23 -50.0 -250.0
+F14 blue ENABLER 1 T6 P9 false -1 3 M373 270.0 -170.0 M18 180.0 -250.0 M358 70.0 -250.0
+F15 blue ENABLER 1 P9 T4 false 1 1 M372 50.0 -120.0
+F16 blue ENABLER 1 P9 T2 false 0 1 M371 -30.0 -120.0
+F17 black ENABLER 1 P6 T8 false 2 0
+F18 black ENABLER 1 T8 P7 false -1 0
+Labels:
+Config:
+zoom: 1.0
+cx: 308.0
+cy: 294.0
+vpx: 290.0
+vpy: 110.0
+End

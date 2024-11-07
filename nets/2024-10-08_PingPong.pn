@@ -1,0 +1,51 @@
+2024-10-10 09:20:17
+Places:
+P1 -140.0 -90.0 green 1 "READY TO SEND" -220.0 -110.0 green
+P2 -140.0 50.0 green 0 "WFA" -180.0 50.0 green
+P3 -140.0 190.0 green 0 "PRODUCING" -210.0 180.0 green
+P4 90.0 190.0 green 0 "PROCESSING" 160.0 180.0 green
+P5 90.0 50.0 green 0 "CHECK MSG" 160.0 50.0 green
+P6 90.0 -90.0 green 1 "READY TO RECEIVE" 180.0 -110.0 green
+P8 -20.0 -20.0 green 0 "MSG" -20.0 -50.0 green
+P9 -20.0 120.0 green 0 "ACK" -20.0 90.0 green
+Transitions:
+T2 -140.0 120.0 blue 1.571 "RCV ACK" -200.0 120.0 blue
+T3 90.0 120.0 blue 1.571 "OK" 130.0 120.0 blue
+T4 90.0 -20.0 blue 1.571 "RCV" 140.0 -20.0 blue
+T5 240.0 40.0 blue 1.571 "PROCESSED" 290.0 20.0 blue
+T7 -290.0 40.0 blue 1.571 "PRODUCED" -340.0 20.0 blue
+T17 -140.0 -20.0 blue 1.571 "SEND" -190.0 -20.0 blue
+Flows:
+F3 black ENABLER 1 P2 T2 true 2 0
+F4 black ENABLER 1 T2 P3 false -1 0
+F5 black ENABLER 1 P5 T3 false 2 0
+F6 black ENABLER 1 T3 P4 false -1 0
+F7 black ENABLER 1 P6 T4 false 2 0
+F8 black ENABLER 1 T4 P5 false -1 0
+F9 black ENABLER 1 P4 T5 false 3 1 M3 240.0 190.0
+F10 black ENABLER 1 T5 P6 false -1 1 M4 240.0 -90.0
+F11 black ENABLER 1 P3 T7 false 3 1 M2 -290.0 190.0
+F12 black ENABLER 1 T7 P1 false -1 1 M1 -290.0 -90.0
+F33 black ENABLER 1 T3 P9 false -1 0
+F34 black ENABLER 1 P9 T2 true 0 0
+F35 black ENABLER 1 P8 T4 false 1 0
+F36 black ENABLER 1 P1 T17 false 2 0
+F37 black ENABLER 1 T17 P2 false -1 0
+F38 black ENABLER 1 T17 P8 false -1 0
+Labels:
+L70 black 26 "PING PONG PROTOCOL" -20.0 -170.0 none
+L73 red 14 "R1" -100.0 -90.0 P1
+L76 red 14 "M" -20.0 10.0 P8
+L78 red 14 "A" -20.0 150.0 P9
+L80 red 14 "R2" 50.0 -90.0 P6
+L82 red 14 "W1" -100.0 50.0 P2
+L84 red 14 "W2" 50.0 50.0 P5
+L86 red 14 "P2" 50.0 190.0 P4
+L89 red 14 "P1" -100.0 190.0 P3
+Config:
+zoom: 1.0
+cx: 200.0
+cy: 200.0
+vpx: 210.0
+vpy: 102.0
+End

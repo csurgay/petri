@@ -1,0 +1,117 @@
+2024-10-29 17:08:52
+Clayton Tunnel full analysis
+(c) Peter Csurgay csurgay@gmail.com
+Places:
+P1 -130.0 320.0 black 1 "Approaching" -130.0 290.0 black
+P2 50.0 320.0 black 0 " " 40.0 350.0 black
+P3 170.0 320.0 black 0 "Entered" 190.0 290.0 black
+P4 290.0 320.0 black 0 " " 290.0 350.0 black
+P5 410.0 320.0 black 0 " " 410.0 350.0 black
+P6 530.0 320.0 black 0 " " 530.0 350.0 black
+P7 650.0 320.0 green 0 "Exited" 650.0 350.0 green
+P8 770.0 320.0 black 0 " " 770.0 350.0 black
+P9 890.0 320.0 black 0 " " 890.0 290.0 black
+P13 50.0 180.0 red 0 "Semaphore" 50.0 150.0 red
+P18 630.0 400.0 blue 0 "IS-TUNNEL-CLEAR" 630.0 430.0 blue
+P19 290.0 180.0 blue 0 "TUNNEL-CLEAR" 360.0 160.0 blue
+P22 -130.0 560.0 black 1 " " -160.0 560.0 black
+P25 50.0 460.0 black 0 "Bell" 90.0 460.0 black
+P27 50.0 600.0 red 0 "Red Flag" 110.0 600.0 red
+P30 -130.0 440.0 black 1 " " -160.0 440.0 black
+P31 -130.0 680.0 black 0 " " -160.0 680.0 black
+P32 110.0 320.0 DeepPink 0 "Failure" 110.0 290.0 DeepPink
+P36 620.0 240.0 blue 0 "TRAIN-IN-TUNNEL" 620.0 210.0 blue
+Transitions:
+T1 -10.0 320.0 red 0.000 "Home" -40.0 290.0 black
+T2 110.0 230.0 purple 0.000 "Works" 80.0 230.0 purple
+T3 230.0 350.0 blue 6.283 "Signalling" 230.0 250.0 blue
+T4 350.0 320.0 black 0.000 " " 350.0 350.0 black
+T5 470.0 320.0 black 0.000 " " 470.0 350.0 black
+T6 590.0 320.0 green 0.000 "Exits" 590.0 360.0 green
+T7 710.0 280.0 blue 6.283 "Ack" 740.0 270.0 black
+T8 830.0 320.0 black 0.000 " " 830.0 350.0 black
+T10 480.0 680.0 black 6.283 "Loop for testing" 480.0 640.0 black
+T14 160.0 180.0 green 6.283 "Resets" 160.0 140.0 green
+T15 110.0 410.0 purple 6.283 "Fails" 80.0 410.0 purple
+T16 -130.0 380.0 black 1.571 " " -160.0 380.0 black
+T19 50.0 530.0 black 6.283 "Fetches Flag" 110.0 530.0 black
+T20 -40.0 620.0 green 6.283 "White Flag" -40.0 660.0 green
+T21 -130.0 500.0 black 1.571 " " -160.0 500.0 black
+T22 -130.0 620.0 black 1.571 " " -160.0 620.0 black
+T23 40.0 380.0 black 2.454 "Slips" 20.0 400.0 black
+T24 230.0 290.0 blue 6.283 "Redundancy" 230.0 390.0 blue
+T25 710.0 360.0 blue 3.142 "Ack" 740.0 380.0 black
+Flows:
+F1 black ENABLER 1 P1 T1 false 2 0
+F2 black ENABLER 1 T1 P2 false -1 0
+F3 purple ENABLER 1 P2 T2 false 12 1 M277 70.0 270.0
+F4 black ENABLER 1 T2 P3 false -1 0
+F5 black ENABLER 1 P3 T3 false 14 0
+F6 black ENABLER 1 T3 P4 false -1 0
+F7 black ENABLER 1 P4 T4 false 2 0
+F8 black ENABLER 1 T4 P5 false -1 0
+F9 black ENABLER 1 P5 T5 false 2 0
+F10 black ENABLER 1 T5 P6 false -1 0
+F11 black ENABLER 1 P6 T6 false 2 0
+F12 green ENABLER 1 T6 P7 false -1 0
+F13 green ENABLER 1 P7 T7 false 12 0
+F14 black ENABLER 1 T7 P8 false -1 0
+F15 black ENABLER 1 P8 T8 false 2 0
+F16 black ENABLER 1 T8 P9 false -1 0
+F21 purple ENABLER 1 T2 P13 false -1 0
+F29 blue ENABLER 1 T7 P19 false -1 1 M5 710.0 180.0
+F32 blue ENABLER 1 P19 T14 false 3 0
+F33 green ENABLER 1 P13 T14 false 2 0
+F34 black ENABLER 1 P9 T10 false 3 1 M8 890.0 680.0
+F35 purple ENABLER 1 P2 T15 false 14 1 M276 70.0 370.0
+F36 red INHIBITOR 1 P13 T1 false 0 1 M279 -10.0 230.0
+F38 black ENABLER 1 T16 P1 false -1 0
+F44 black ENABLER 1 T15 P3 false -1 0
+F45 blue ENABLER 1 T3 P18 false -1 1 M8 320.0 400.0
+F46 purple ENABLER 1 T15 P25 false -1 0
+F47 black ENABLER 1 P25 T19 false 0 0
+F48 black ENABLER 1 T19 P27 false -1 0
+F49 red INHIBITOR 1 P27 T1 false 1 1 M278 -10.0 520.0
+F51 blue ENABLER 1 P19 T20 false 9 1 M9 290.0 630.0
+F52 black INHIBITOR 1 P2 T1 false 3 0
+F54 black ENABLER 1 P22 T21 false 3 0
+F55 black ENABLER 1 T21 P30 false -1 0
+F57 black INHIBITOR 1 P1 T16 false 2 0
+F59 black INHIBITOR 1 P30 T21 false 2 0
+F61 black INHIBITOR 1 P9 T8 false 3 0
+F63 black ENABLER 1 P30 T16 false 3 0
+F64 black ENABLER 1 P31 T22 false 3 0
+F65 black ENABLER 1 T22 P22 false -1 0
+F66 black INHIBITOR 1 P22 T22 false 2 0
+F67 black ENABLER 1 T10 P31 false -1 0
+F68 black INHIBITOR 1 P31 T10 false 2 0
+F69 DeepPink ENABLER 1 T15 P32 false -1 0
+F70 DeepPink INHIBITOR 1 P32 T2 false 1 0
+F71 black ENABLER 1 P1 T20 false 0 1 M271 -40.0 410.0
+F72 black ENABLER 1 T20 P3 false -1 1 M275 170.0 400.0
+F73 black ENABLER 1 P27 T20 false 3 1 M274 10.0 620.0
+F74 black ENABLER 1 T20 P27 false -1 1 M272 0.0 600.0
+F75 DeepPink INHIBITOR 1 P32 T15 false 0 0
+F76 black ENABLER 1 T23 P32 false -1 0
+F77 black ENABLER 1 P32 T23 false 2 0
+F78 black ENABLER 1 P2 T23 false 12 0
+F79 black ENABLER 1 T23 P3 false -1 1 M280 130.0 360.0
+F80 black ENABLER 1 P3 T24 false 12 0
+F81 black ENABLER 1 T24 P4 false -1 0
+F82 blue ENABLER 1 T24 P36 false -1 1 M281 320.0 240.0
+F83 blue ENABLER 1 P36 T7 false 14 0
+F84 black ENABLER 1 P18 T25 false 15 0
+F85 green ENABLER 1 P7 T25 false 13 0
+F86 black ENABLER 1 T25 P8 false -1 0
+F87 blue ENABLER 1 T25 P19 false -1 1 M283 710.0 180.0
+Labels:
+L71 black 36 "Clayton Tunnel" 720.0 560.0 none
+L96 black 18 "August 25 Sunday, 1861" 730.0 590.0 none
+L102 black 18 "23 died, 176 injured" 730.0 610.0 none
+Config:
+zoom: 1.0
+cx: 200.0
+cy: 200.0
+vpx: 50.0
+vpy: -260.0
+End
