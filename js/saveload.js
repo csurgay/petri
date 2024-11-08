@@ -79,7 +79,8 @@ function rawLoad(str) {
     // Labels
     while(str[ptr]!="Config:") {
         l=[]; tokenize(str[ptr],l);
-        const o=new Label(l[3],+l[4],+l[5]); 
+        const o=new Label(l[3],+l[4],+l[5]);
+        pn.addLabel(o);
         o.id=l[0]; o.color=l[1]; o.size=+l[2];
         if (l[6][0]=='P') { pn.p.forEach(i=>{ if (l[6]==i.id) { o.attached=i; i.attachedLabels.push(o); }}) }
         if (l[6][0]=='T') { pn.t.forEach(i=>{ if (l[6]==i.id) { o.attached=i; i.attachedLabels.push(o); }}) }

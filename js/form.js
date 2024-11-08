@@ -31,9 +31,11 @@ class Form extends Frame {
         this.closable=true; // can be closed with Escape
         forms.addForm(this);
         this.mouseDownCoord=new Coord(0,0);
+        this.children=[];
     }
     draw() {
         super.draw();
+        this.children.forEach(child=>child.draw());
     }
     hover() {
         return ccursor.x > this.x && ccursor.x < this.x+this.w &&

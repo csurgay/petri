@@ -18,6 +18,7 @@ class Transition extends Object {
         this.y=y;
         this.alpha=alpha;
         this.label=new Label(this.id,this.x-30,this.y-30);
+        pn.addLabel(this.label);
         this.adjust_p1p2();
     }
 

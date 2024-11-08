@@ -29,7 +29,9 @@ class BaseForm extends Form {
         pn.l.forEach(item => { item.draw(); })
         g.restore();
         // Static Status and Buttons
-        pn.s.forEach(item => item.draw());
+        if (state.DEBUG) {
+            pn.s.forEach(item => item.draw());
+        }
     }
     leftClick(evt) {
         return evt.type=="md" && evt.button==LEFTBUTTON;
@@ -281,6 +283,7 @@ class BaseForm extends Form {
                 closeEnough(this.mouseDownCoord, tcursor)) 
             {
                 const newLabel = new Label("-",scursor.x,scursor.y);
+                pn.addLabel(newLabel);
                 pn.highlighted=newLabel;
                 pn.newUndo();
                 state.set("IDLE");

@@ -10,7 +10,6 @@ class Button extends Object {
         pn.addButton(this);
         this.label=new Label(label,x,y+bh);
         this.label.size=13;
-        pn.l.pop();
         this.enabled=enabled;
     }
 

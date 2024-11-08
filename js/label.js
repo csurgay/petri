@@ -9,7 +9,6 @@ class Label extends Object {
         this.width;
         this.size=14;
         this.attached=null; // the Object that this Label is attached to
-        pn.addLabel(this);
     }
     draw() {
         if (this.visible) {

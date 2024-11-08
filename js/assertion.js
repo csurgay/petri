@@ -10,7 +10,7 @@
 // <number>   ::= <DIGIT> <numrest>
 // <numrest>  ::= "" | <DIGIT> <numrest>
 
-function convertAssert(assert="(P1>1||P2>1)|| P3 > 1") {
+function convertAssert(assert) {
     let result="";
     let ptr=0;
     let c="";

@@ -17,6 +17,7 @@ class Place extends Object {
         this.id="P"+nextId(this.type);
         this.tokens=0;
         this.label=new Label(this.id,this.x-30,this.y-30);
+        pn.addLabel(this.label);
         this.adjustConnectors();
     }
 
