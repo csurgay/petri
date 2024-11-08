@@ -74,7 +74,6 @@ function animate() {
             msSlowrun=ms;
         } 
     }
-    // Assertions
     if (state.is("PLAY")||state.is("RUN")||state.is("FLY")) {
         pn.p.forEach(place => {
             if (place.tokens>1) {

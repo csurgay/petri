@@ -182,7 +182,7 @@ class Button extends Object {
 
     clicked(evt) {
         if (!this.enabled()) return;
-        log(here(), "Button: "+this.button);
+        if (state.DEBUG) log(here(), "Button: "+this.button);
         if (this.button=="PLAY") {
             if (!state.is("PLAY")) state.set("PLAY");
             else state.set("IDLE");
