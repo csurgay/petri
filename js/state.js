@@ -17,7 +17,7 @@ class State {
     }
     set(newState) {
         if (!this.states.includes(newState)) { error(here(), "unknown state '"+newState+"'"); }
-        if (!this.is(newState)) log(here(), this.s+" -> "+newState);
+        if (state.DEBUG && !this.is(newState)) log(here(), this.s+" -> "+newState);
         this.s=newState;
     }
 }

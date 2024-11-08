@@ -5,7 +5,7 @@ Done:
 - Coloring Objects and subnet
 - Compressed rawSave/rawLoad
 - Status info lines
-- Sticy Flow heads for transConnectors
+- Sticky Flow heads for transConnectors
 - Play-Stop-Speed control
 - Undo edit
 - Help screen
@@ -13,13 +13,13 @@ Done:
 - How to indicate if STEP+ goes history or fires?
 - Rotate subnets
 - Mouse location as center of zooming
-- Also load file from upload
-- Snap to grid and free drag too
+- Also load file from upload (ctrl-shift Load)
+- Snap to grid and free-drag
 - Mouse must not snap for move over arrow to highlight
 - Labels input and placement
 - Events and Macros
 - events.rec load
-- Play Run Fly pressed indicator red bg
+- Play Run Fly pressed indicator bold frame
 - Labels to attach to Places/Transitions/MidPoints
 - attached Labels save/load
 - label attached to label: rotate
@@ -45,3 +45,4 @@ Todo:
 - Firing animation with "flames"
 - Assertions as stop conditions when violated
 - test arc (arrow on both ends in symmetry)
+- Capacity Place: t enabled if m'(p)<=cap(p)
