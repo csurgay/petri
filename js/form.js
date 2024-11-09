@@ -86,6 +86,7 @@ class FileForm extends Form {
         }
     }
     processFormEvent(pMyEvent) {
+        if (!this.hover()) return;
         super.processFormEvent(pMyEvent);
         if (pMyEvent.type == "mu" && selectedFile!=-1) {
             log(here(), files[selectedFile]);
@@ -104,7 +105,7 @@ class FileForm extends Form {
         request.open('POST','php/scandir.php',true);
         request.onreadystatechange=function() {
             if (request.readyState==4 && request.status==200) {
-                log(here(), request.responseText);
+                if (state.DEBUG) log(here(), request.responseText);
                 files.length=0;
                 files.push(...request.responseText.split('\n'));
                 files.pop();
