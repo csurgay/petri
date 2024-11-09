@@ -86,6 +86,7 @@ class FileForm extends Form {
         }
     }
     processFormEvent(pMyEvent) {
+        super.processFormEvent(pMyEvent);
         if (pMyEvent.type == "mu" && selectedFile!=-1) {
             log(here(), files[selectedFile]);
             if (files[selectedFile]!="CANCEL") {

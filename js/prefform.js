@@ -1,8 +1,6 @@
 class PrefForm extends Form {
     constructor(title, x, y, w, h) {
         super("PREFFORM", title, x, y, w, h);
-        this.visible = false;
-        this.closable = true;
     }
     draw() {
         // Title line
