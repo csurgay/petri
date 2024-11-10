@@ -22,7 +22,7 @@ var m=16; // margin for help frame
 const fh=new Form("HELP","Help", ww/m, 20+wh/m, (m-2)*ww/m, (m-2)*wh/m);
 m=10; // margin for prefs frame
 const fp=new PrefForm("Preferences", ww/m, 20+wh/m, (m-2)*ww/m, (m-2)*wh/m);
-const assertbox=new TextboxForm("Assertbox",50,50,400,30,'frame');
+//fp.addChild();
 m=12; // margin for file frame
 const ff=new FileForm("Open Files", ww/m, 20+wh/m, (m-2)*ww/m, (m-2)*wh/m);
 const textbox=new TextboxForm("Textbox",100,0,100,20,'frame',"default text");

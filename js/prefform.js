@@ -3,14 +3,9 @@ class PrefForm extends Form {
         super("PREFFORM", title, x, y, w, h);
     }
     draw() {
-        // Title line
-        g.standard(1);
-        g.setupText("16px arial", "right", "middle");
-        g.fillStyle(COLOR_INK);
-        g.fillText(getFormattedDate(), this.w - 25, 30);
         // Draw PetriNet
         super.draw();
-        pn.l.forEach(item => { item.draw(); })
+        this.children.forEach(child => { child.draw(); })
     }
     leftClick(evt) {
         return evt.type=="md" && evt.button==LEFTBUTTON;

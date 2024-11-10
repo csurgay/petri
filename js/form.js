@@ -33,6 +33,9 @@ class Form extends Frame {
         this.mouseDownCoord=new Coord(0,0);
         this.children=[];
     }
+    addChild(child) {
+        this.children.push(child);
+    }
     draw() {
         super.draw();
         this.children.forEach(child=>child.draw());

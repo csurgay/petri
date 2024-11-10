@@ -6,11 +6,6 @@ class BaseForm extends Form {
         this.paleArrow = null; // Potential new dashed Flow arrow
     }
     draw() {
-        // Title line
-        g.standard(1);
-        g.setupText("16px arial", "right", "middle");
-        g.fillStyle(COLOR_INK);
-        g.fillText(getFormattedDate(), this.w - 25, 30);
         // Draw PetriNet
         g.save();
         super.draw();
