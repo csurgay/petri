@@ -7,15 +7,13 @@ class Status extends Label {
         super.draw();
         g.fillText(this.callback(),this.x+50,this.y);
     }
-    
-    dragTo() {}
 }
 
 const sx=40,sy=80,dy=15;
 var i=0;
 
 function setupStatus() {
-    pn.addStatus(new Status("marking",sx,sy+i++*dy,function(){return pn.markings.length;}));
+    pn.addStatus(new Status("markings",sx,sy+i++*dy,function(){return pn.markings.length;}));
     pn.addStatus(new Status("mptr",sx,sy+i++*dy,function(){return pn.mptr;}));
     pn.addStatus(new Status("undo",sx,sy+i++*dy,function(){return undo.length;}));
     pn.addStatus(new Status("uptr",sx,sy+i++*dy,function(){return undoPtr;}));

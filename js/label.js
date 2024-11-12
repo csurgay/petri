@@ -9,6 +9,7 @@ class Label extends Object {
         this.width;
         this.size=14;
         this.attached=null; // the Object that this Label is attached to
+        this.align="center";
     }
     draw() {
         if (this.visible) {
@@ -16,7 +17,7 @@ class Label extends Object {
             g.fillStyle(this.color);
             if (pn.highlighted==this && COLOR_HIGHLIGHT!="black")
                 g.fillStyle(COLOR_HIGHLIGHT);
-            g.setupText(""+this.size+"px arial","center","middle"); 
+            g.setupText(""+this.size+"px arial",this.align,"middle"); 
             this.width=g.measureText(this.label).width;
             g.fillText(this.label,this.x,this.y);
             if (pn.highlighted==this) {

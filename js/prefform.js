@@ -1,6 +1,9 @@
 class PrefForm extends Form {
     constructor(title, x, y, w, h) {
         super("PREFFORM", title, x, y, w, h);
+        this.assertString="P1>1 || P2>1 || P3>1";
+        this.addChild(new Control("Assert On/Off",x+100,y+100,function(){return "semmi";}));
+        this.addChild(new Control("Assert String",x+100,y+120,function(){return fp.assertString;}));
     }
     draw() {
         // Draw PetriNet
