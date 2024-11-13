@@ -28,15 +28,6 @@ class BaseForm extends Form {
             pn.s.forEach(item => item.draw());
         }
     }
-    leftClick(evt) {
-        return evt.type=="md" && evt.button==LEFTBUTTON;
-    }
-    rightClick(evt) {
-        return evt.type=="md" && evt.button==RIGHTBUTTON;
-    }
-    middleClick(evt) {
-        return evt.type=="md" && evt.button==MIDDLEBUTTON;
-    }
     processFormEvent(evt) {
         if (!this.hover()) return;
         super.processFormEvent(evt);

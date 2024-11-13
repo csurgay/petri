@@ -216,9 +216,16 @@ class Button extends Object {
             //fh.active=true;
         }
         else if (this.button=="PREF") {
-            fb.active=false;
-            fp.visible=true;
-            fp.active=true;
+            if (!fp.visible) {
+                fb.active=false;
+                fp.visible=true;
+                fp.active=true;
+            }
+            else {
+                fb.active=true;
+                fp.visible=false;
+                fp.active=false;
+            }
         }
         else if (this.button=="UNDO") {
             if (undoPtr>0) rawLoad(undo[--undoPtr]);

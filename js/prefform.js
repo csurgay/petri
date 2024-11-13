@@ -10,11 +10,8 @@ class PrefForm extends Form {
         super.draw();
         this.children.forEach(child => { child.draw(); })
     }
-    leftClick(evt) {
-        return evt.type=="md" && evt.button==LEFTBUTTON;
-    }
     processFormEvent(evt) {
-        if (!this.hover()) return;
+        if (!this.hover() && evt.type!="ku") return;
         super.processFormEvent(evt);
         const delta=-Math.sign(evt.deltaY);
         // IDLE or running state (PLAY/RUN/FLY)

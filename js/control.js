@@ -9,5 +9,3 @@ class Control extends Label {
         g.fillText(this.callback(),this.x+200,this.y);
     }
 }
-
-//pn.addStatus(new Status("markings",sx,sy+i++*dy,function(){return pn.markings.length;}));

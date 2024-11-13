@@ -44,6 +44,15 @@ class Form extends Frame {
         return ccursor.x > this.x && ccursor.x < this.x+this.w &&
         ccursor.y > this.y && ccursor.y < this.y+this.h
     }
+    leftClick(evt) {
+        return evt.type=="md" && evt.button==LEFTBUTTON;
+    }
+    rightClick(evt) {
+        return evt.type=="md" && evt.button==RIGHTBUTTON;
+    }
+    middleClick(evt) {
+        return evt.type=="md" && evt.button==MIDDLEBUTTON;
+    }
     // This one is called as super from descendant processFormEvents
     processFormEvent(pMyEvent) {
         this.hovered=pn.getCursoredObject(pMyEvent);
