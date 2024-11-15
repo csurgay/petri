@@ -1,11 +1,11 @@
 const sizes=[8,14,20,32,48,72];
 
 class Label extends Object {
-    constructor(label,x,y) {
+    constructor(text,x,y) {
         super(x,y);
         this.type="LABEL";
         this.id="L"+nextId(this.type);
-        this.label=label;
+        this.text=text;
         this.width;
         this.size=14;
         this.attached=null; // the Object that this Label is attached to
@@ -18,8 +18,8 @@ class Label extends Object {
             if (pn.highlighted==this && COLOR_HIGHLIGHT!="black")
                 g.fillStyle(COLOR_HIGHLIGHT);
             g.setupText(""+this.size+"px arial",this.align,"middle"); 
-            this.width=g.measureText(this.label).width;
-            g.fillText(this.label,this.x,this.y);
+            this.width=g.measureText(this.text).width;
+            g.fillText(this.text,this.x,this.y);
             if (pn.highlighted==this) {
                 g.beginPath();
                 g.standard(1);
@@ -70,7 +70,7 @@ class Label extends Object {
     }
     delete() {
         if (!this.objectsLabel()) pn.l.splice(pn.l.indexOf(this),1);
-        else (this.label = "-");
+        else (this.text = "-");
     }
     setAttached(o) {
         this.attached=o;

@@ -138,17 +138,22 @@ class Petrinet {
     getCursoredObject(pMyEvent) {
         var ret = null;
         if (ret==null)
+            // Labels
             this.l.forEach(item => { if (item.hover()) ret=item; });
         if (ret==null)
+            // Places
             this.p.forEach(item => { if (item.hover()) ret=item; });
         if (ret==null)
+            // Transitions
             this.t.forEach(item => { if (item.hover()) ret=item; });
         if (ret==null)
+            // Flow midpoints
             this.f.forEach(item => {
                 const aux=item.cursoredMidPoint();
                 if (aux) ret=aux; 
             });
         if (ret==null)
+            // Flows
             this.f.forEach(item => { if (item.hover()) ret=item; });
         return ret;
     }

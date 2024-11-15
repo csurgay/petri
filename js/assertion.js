@@ -27,7 +27,7 @@ function convertAssert(assert) {
             c=assert.charAt(++ptr);
         }
         pn.p.forEach(place => {
-            if (place.label.label==placeName) {
+            if (place.label.text==placeName) {
                 result = result + place.tokens;
             }
         });

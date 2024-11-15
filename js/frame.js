@@ -1,7 +1,8 @@
-class Frame {
+class Frame extends Coord {
     constructor(title,x,y,w,h) {
-        this.x=x;
-        this.y=y;
+        super(x,y);
+//        this.x=x;
+//        this.y=y;
         this.w=w;
         this.h=h;
         this.title=title;
@@ -22,6 +23,12 @@ class Frame {
                 g.fillStyle(COLOR_INK);
                 g.fillText(this.title, this.x+this.tx, this.y+this.m+2);
             }
+        }
+        if (state.DEBUG) {
+            g.beginPath();
+            g.strokeStyle(COLOR_RED);
+            g.rect(this.x+this.m, this.y+this.m, this.w-2*this.m, this.h-2*this.m);
+            g.stroke();
         }
     }
 }

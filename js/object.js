@@ -1,8 +1,8 @@
 const objects=["PLACE","TRANSITION","FLOW","MIDPOINT","LABEL","BAR.BUTTON"];
 
-class Object extends Coord {
+class Object extends Frame {
     constructor(x,y) {
-        super(x,y);
+        super("ObjectFrame",x,y,10,10);
         this.type="OBJECT";
         this.id;
         this.label=null;

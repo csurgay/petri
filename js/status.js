@@ -27,7 +27,8 @@ function setupStatus() {
     pn.addStatus(new Status("tcur",sx,sy+i++*dy,function(){return tcursor.x.toFixed()+" "+tcursor.y.toFixed();}));
     pn.addStatus(new Status("ccur",sx,sy+i++*dy,function(){return ccursor.x.toFixed()+" "+ccursor.y.toFixed();}));
     pn.addStatus(new Status("s",sx,sy+i++*dy,function(){return state.s;}));
-    pn.addStatus(new Status("hov",sx,sy+i++*dy,function(){return fb.hovered?fb.hovered.type:bar.hovered?bar.hovered.type:"";}));
+    pn.addStatus(new Status("bhov",sx,sy+i++*dy,function(){return fb.hovered?fb.hovered.type:bar.hovered?bar.hovered.type:"";}));
+    pn.addStatus(new Status("phov",sx,sy+i++*dy,function(){return fp.hovered?fp.hovered.type:"";}));
     pn.addStatus(new Status("id",sx,sy+i++*dy,function(){return fb.hovered?fb.hovered.id:bar.hovered?bar.hovered.id:"";}));
     pn.addStatus(new Status("hl",sx,sy+i++*dy,function(){return pn.highlighted?pn.highlighted.type:"";}));
     pn.addStatus(new Status("size",sx,sy+i++*dy,function(){return fb.hovered?(fb.hovered.type=="LABEL"?fb.hovered.size:""):"";}));

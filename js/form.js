@@ -53,6 +53,13 @@ class Form extends Frame {
     middleClick(evt) {
         return evt.type=="md" && evt.button==MIDDLEBUTTON;
     }
+    getCursoredObject(pMyEvent) {
+        var ret=null;
+        if (ret==null) {
+            this.children.forEach(child=>{ret=ret||child.hover();})
+        }
+        return ret;
+    }
     // This one is called as super from descendant processFormEvents
     processFormEvent(pMyEvent) {
         this.hovered=pn.getCursoredObject(pMyEvent);

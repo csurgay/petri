@@ -8,6 +8,7 @@ const COLOR_CANVAS="rgb(255, 245, 235)";
 const COLOR_ENABLED="black";
 const COLOR_WILLFIRE="rgb(110, 110, 110)";
 const COLOR_INK="black";
+const COLOR_RED="red";
 const COLOR_HIGHLIGHT="blue";
 
 const COLORS=["black","red","green","blue","#dddd00","purple", "brown", "Chartreuse", "DeepPink"];

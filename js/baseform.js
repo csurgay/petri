@@ -142,13 +142,13 @@ class BaseForm extends Form {
                 this.hovered.rotate(delta);
                 pn.needTimedUndo=true;
             }
-            // Rotate Transition - course
-            else if (evt.type == "mw" && SCA(evt, "Sca") && 
-                this.hovered && this.hovered.type=="TRANSITION") 
-            {
-                this.hovered.rotate(delta, true);
-                pn.needTimedUndo=true;
-            }
+//            // Rotate Transition - course
+//            else if (evt.type == "mw" && SCA(evt, "Sca") && 
+//                this.hovered && this.hovered.type=="TRANSITION") 
+//            {
+//                this.hovered.rotate(delta, true);
+//                pn.needTimedUndo=true;
+//            }
             // Adjust Flow weight
             else if (evt.type == "mw" && SCA(evt, "sca") &&
                 this.hovered && this.hovered.type=="FLOW" &&
@@ -201,7 +201,8 @@ class BaseForm extends Form {
                 this.hovered) 
             {
                 pn.connected.length=0;
-                pn.getConnectedAll(this.hovered);
+                if (["PLACE","TRANSITION"].includes(this.hovered.type))
+                    pn.getConnectedAll(this.hovered);
                 pn.connected.forEach(r=>{
                     const rot=rotate(this.hovered.x,this.hovered.y,r.x,r.y,delta*Math.PI/32);
                     r.x=rot[0]; r.y=rot[1];
