@@ -69,7 +69,7 @@ class Flow extends Object {
         drawArrow(lastPoint.x,lastPoint.y,lastPoint.x+l*x,lastPoint.y+l*y,2,
             g.getStrokeStyle(),this.subtype);
         // Flow weight circle
-        if (this.weight!=1) {
+        if (this.subtype!="RESET" && this.weight!=1) {
             g.beginPath();
             g.strokeStyle(this.color);
             g.lineWidth(1);
