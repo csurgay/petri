@@ -27,7 +27,7 @@ class Frame extends Coord {
         if (state.DEBUG) {
             g.beginPath();
             g.strokeStyle(COLOR_RED);
-            g.rect(this.x+this.m, this.y+this.m, this.w-2*this.m, this.h-2*this.m);
+            g.rect(this.x, this.y, this.w, this.h);
             g.stroke();
         }
     }
