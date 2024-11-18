@@ -46,3 +46,20 @@ function rotate(cx,cy,x,y,alpha) {
     return [tx*Math.cos(alpha)-ty*Math.sin(alpha)+cx,
             tx*Math.sin(alpha)+ty*Math.cos(alpha)+cy];
 }
+function getFormattedDate(millisec="none") {
+  if (millisec=='millisec') return Date.now();
+  const d=new Date();
+  var str=d.getFullYear()+"-"+
+      zeroPad(d.getMonth()+1)+"-"+
+      zeroPad(d.getDate())+" "+
+      zeroPad(d.getHours())+":"+
+      zeroPad(d.getMinutes())+":"+
+      zeroPad(d.getSeconds());
+  if (millisec=='millisec')
+      str+="."+("00"+d.getMilliseconds()).slice(-3);
+  return str;
+}
+function zeroPad(v) {
+  if (v<10) return "0"+v;
+  else return ""+v;
+}
