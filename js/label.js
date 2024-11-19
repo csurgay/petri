@@ -11,6 +11,13 @@ class Label extends Object {
         this.attached=null; // the Object that this Label is attached to
         this.align="center";
     }
+    drawFrame() {
+        g.beginPath();
+        g.standard(1);
+        g.strokeStyle(COLOR_RED);
+        g.rect(this.x-1,this.y-this.size/2-1,this.width+2,this.size);
+        g.stroke();
+    }
     draw() {
         if (this.visible) {
             g.beginPath();

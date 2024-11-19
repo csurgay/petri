@@ -140,7 +140,7 @@ class TextboxForm extends Form {
 		}
 		else for(var i=0; i<this.posChars.length; i++) {
 			var p = this.posChars[i];
-			if (mx>=p[0] && mx<=p[0]+p[2] && my>=p[1] && my<=p[1]+p[3]) {
+			if (mx>=p[0]-5 && mx<=p[0]+p[2]-5 && my>=p[1] && my<=p[1]+p[3]) {
 				this.ptrCursor = i;
 				i = this.posChars.length;
 			}

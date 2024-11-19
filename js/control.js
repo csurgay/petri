@@ -9,6 +9,7 @@ class Control extends Label {
     draw() {
         super.draw();
         g.fillText(this.value,this.x+200,this.y);
+        if (state.DEBUG) super.drawFrame();
     }
     increment() {
         if (this.controlType=="INTEGER") {
