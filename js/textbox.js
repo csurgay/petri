@@ -149,7 +149,7 @@ class TextboxForm extends Form {
     confirm() {
         if (this.text=="") this.text="-";
         log(here(), "confirm: "+this.text);
-        this.referencedLabel.label=this.text;
+        this.referencedLabel.text=this.text;
         this.referencedLabel.visible=true;
         state.set("IDLE");
         this.visible=false;

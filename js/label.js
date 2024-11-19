@@ -49,8 +49,8 @@ class Label extends Object {
         textbox.x=this.x-this.width/2-7;
         textbox.y=this.y-this.size/2-5;
         textbox.size=this.size;
-        textbox.defaulText=this.label;
-        textbox.text=this.label;
+        textbox.defaulText=this.text;
+        textbox.text=this.text;
         textbox.w = this.width+30;
         textbox.h = this.size;
 //        textbox.ptrCursor=this.label.length;
