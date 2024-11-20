@@ -5,6 +5,7 @@ class Status extends Label {
     }
     draw() {
         super.draw();
+        g.fillStyle(COLOR_INK);
         g.fillText(this.callback(),this.x+50,this.y);
     }
 }

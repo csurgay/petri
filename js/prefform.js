@@ -7,7 +7,6 @@ class PrefForm extends Form {
         this.addChild(this.assertString);
     }
     draw() {
-        // Draw PetriNet
         super.draw();
         this.children.forEach(child => { child.draw(); })
     }

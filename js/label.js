@@ -1,22 +1,22 @@
 const sizes=[8,14,20,32,48,72];
 
 class Label extends Object {
-    constructor(text,x,y) {
+    constructor(text,x,y,align="center") {
         super(x,y);
         this.type="LABEL";
         this.id="L"+nextId(this.type);
         this.text=text;
-        this.width;
         this.size=14;
+        g.setupText(""+this.size+"px arial",this.align,"middle");
+        this.width=g.measureText(this.text).width;
         this.attached=null; // the Object that this Label is attached to
-        this.align="center";
-    }
-    drawFrame() {
-        g.beginPath();
-        g.standard(1);
-        g.strokeStyle(COLOR_RED);
-        g.rect(this.x-1,this.y-this.size/2-1,this.width+2,this.size);
-        g.stroke();
+        this.align=align;
+        if (this.align=="center") {
+            this.rect=[this.x-this.width/2-1,this.y-this.size/2-2,this.width+2,this.size];
+        }
+        else if(this.align=="left") {
+            this.rect=[this.x-1,this.y-this.size/2-2,this.width+2,this.size];
+        }
     }
     draw() {
         if (this.visible) {
@@ -24,14 +24,14 @@ class Label extends Object {
             g.fillStyle(this.color);
             if (pn.highlighted==this && COLOR_HIGHLIGHT!="black")
                 g.fillStyle(COLOR_HIGHLIGHT);
-            g.setupText(""+this.size+"px arial",this.align,"middle"); 
+            g.setupText(""+this.size+"px arial",this.align,"middle");
             this.width=g.measureText(this.text).width;
             g.fillText(this.text,this.x,this.y);
             if (pn.highlighted==this) {
                 g.beginPath();
                 g.standard(1);
                 g.dashed();
-                g.rect(this.x-this.width/2-1,this.y-this.size/2-2,this.width+2,this.size);
+                g.rect(this.rect[0],this.rect[1],this.rect[2],this.rect[3]);
                 g.stroke();
             }
             if (state.DEBUG) if (this.attached) {
@@ -40,6 +40,13 @@ class Label extends Object {
                 g.strokeStyle(COLOR_HIGHLIGHT);
                 g.moveTo(this.x,this.y);
                 g.lineTo(this.attached.x,this.attached.y);
+                g.stroke();
+            }
+            if (state.DEBUG) {
+                g.beginPath();
+                g.standard(1);
+                g.strokeStyle(COLOR_RED);
+                g.rect(this.rect[0],this.rect[1],this.rect[2],this.rect[3]);
                 g.stroke();
             }
         }

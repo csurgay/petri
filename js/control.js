@@ -1,15 +1,19 @@
 class Control extends Label {
     constructor(label,x,y,controlType,value) {
-        super(label,x,y);
+        super(label,x,y,"left");
         this.type="CONTROL";
-        this.align="left";
         this.controlType=controlType; // "INTEGER", "STRING", "BOOLEAN"
         this.value=value;
+        this.valueLabel=new Label(value.toString(),x+120,y,"left");
+    }
+    newValue() {
+        this.valueLabel.text=this.value.toString();
     }
     draw() {
-        super.draw();
-        g.fillText(this.value,this.x+200,this.y);
-        if (state.DEBUG) super.drawFrame();
+        if (this.visible) {
+            super.draw();
+            this.valueLabel.draw();
+        }
     }
     increment() {
         if (this.controlType=="INTEGER") {
@@ -18,6 +22,7 @@ class Control extends Label {
         else if (this.controlType=="BOOLEAN") {
             this.value=true;
         }
+        this.newValue();
     }
     decrement() {
         if (this.controlType=="INTEGER") {
@@ -26,5 +31,6 @@ class Control extends Label {
         else if (this.controlType=="BOOLEAN") {
             this.value=false;
         }
+        this.newValue();
     }
 }

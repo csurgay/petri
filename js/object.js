@@ -10,8 +10,6 @@ class Object extends Frame {
         this.visible=true;
         this.attachedLabels=[]; // the Labels attached this Object
     }
-    draw() {
-    }
     drawLineToLabel() {
         if (state.DEBUG && this.label) {
             g.beginPath();
