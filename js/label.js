@@ -11,12 +11,6 @@ class Label extends Object {
         this.width=g.measureText(this.text).width;
         this.attached=null; // the Object that this Label is attached to
         this.align=align;
-        if (this.align=="center") {
-            this.rect=[this.x-this.width/2-1,this.y-this.size/2-2,this.width+2,this.size];
-        }
-        else if(this.align=="left") {
-            this.rect=[this.x-1,this.y-this.size/2-2,this.width+2,this.size];
-        }
     }
     draw() {
         if (this.visible) {
@@ -31,7 +25,7 @@ class Label extends Object {
                 g.beginPath();
                 g.standard(1);
                 g.dashed();
-                g.rect(this.rect[0],this.rect[1],this.rect[2],this.rect[3]);
+                g.rect(this.x-1-(this.align=="center"?this.width/2:0),this.y-this.size/2-2,this.width+2,this.size);
                 g.stroke();
             }
             if (state.DEBUG) if (this.attached) {
@@ -46,14 +40,15 @@ class Label extends Object {
                 g.beginPath();
                 g.standard(1);
                 g.strokeStyle(COLOR_RED);
-                g.rect(this.rect[0],this.rect[1],this.rect[2],this.rect[3]);
+                g.rect(this.x-1-(this.align=="center"?this.width/2:0),this.y-this.size/2-2,this.width+2,this.size);
                 g.stroke();
             }
         }
     }
     hover() {
-        if (Math.abs(this.x-tcursor.x)<this.width/2+2 && Math.abs(this.y-tcursor.y)<this.size/2+2)
+        if (Math.abs(this.x-tcursor.x)<this.width/2+2 && Math.abs(this.y-tcursor.y)<this.size/2+2) {
             return true;
+        }
         else 
             return false;
     }

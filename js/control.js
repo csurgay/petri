@@ -9,6 +9,17 @@ class Control extends Label {
     newValue() {
         this.valueLabel.text=this.value.toString();
     }
+    hover() {
+        var ret = 
+            ccursor.x>this.x &&
+            ccursor.x<this.x+this.width &&
+            ccursor.y>this.y &&
+            ccursor.y<this.y+this.size;
+        if (ret) { 
+            return this;
+        }
+        else return false;
+    }
     draw() {
         if (this.visible) {
             super.draw();

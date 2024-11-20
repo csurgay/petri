@@ -54,6 +54,7 @@ class Form extends Frame {
         return evt.type=="md" && evt.button==MIDDLEBUTTON;
     }
     getCursoredObject(pMyEvent) {
+        if (!this.active) return null;
         var ret=null;
         if (ret==null) {
             this.children.forEach(child=>{ret=ret||child.hover();})
@@ -62,7 +63,6 @@ class Form extends Frame {
     }
     // This one is called as super from descendant processFormEvents
     processFormEvent(pMyEvent) {
-        this.hovered=pn.getCursoredObject(pMyEvent);
         if (pMyEvent.type=="md") {
             // ALWAYS TCURSOR !!!
             this.mouseDownCoord.x=tcursor.x;

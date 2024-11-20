@@ -77,11 +77,11 @@ function animate() {
     }
     if (state.is("PLAY")||state.is("RUN")||state.is("FLY")) {
         if (fp.assertOnOff.value) {
-            pn.p.forEach(place => {
-                if (place.tokens>1) {
-                    state.set("IDLE");
-                }
-            })
+            const assertion=convertAssert(fp.assertString.value);
+            if (eval(assertion)) {
+                state.set("IDLE");
+                log(here(), "Assertion fired: "+assertion);
+            }
         }
     }
     if (state.RUNNING) requestAnimationFrame(animate);

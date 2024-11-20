@@ -15,7 +15,7 @@ function convertAssert(assert) {
     let ptr=0;
     let c="";
     let placeName="";
-    while (ptr<assert.length) {
+    while (ptr<assert.length-1) {
         c=assert.charAt(ptr);
         while (c!="" && !isLetter(c)) {
             result+=c;
@@ -26,11 +26,19 @@ function convertAssert(assert) {
             placeName+=c;
             c=assert.charAt(++ptr);
         }
-        pn.p.forEach(place => {
-            if (place.label.text==placeName) {
-                result = result + place.tokens;
+        if (placeName!="") {
+            let foundPlace=false;
+            pn.p.forEach(place => {
+                if (place.label.text==placeName) {
+                    foundPlace=true;
+                    result = result + place.tokens;
+                }
+            });
+            if (!foundPlace) {
+                result = result + "0";
+                error(here(), "Place not found in AssertString: "+placeName);
             }
-        });
+        }
     }
     return result;
 }

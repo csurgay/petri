@@ -31,6 +31,7 @@ class BaseForm extends Form {
     processFormEvent(evt) {
         if (!this.hover()) return;
         super.processFormEvent(evt);
+        this.hovered=pn.getCursoredObject(evt);
         const delta=-Math.sign(evt.deltaY);
         // IDLE or running state (PLAY/RUN/FLY)
         if (state.is("IDLE") || bar.running()) {
