@@ -52,6 +52,7 @@ var ms,msSlowrun=0;
 function animate() {
     ww=window.innerWidth, wh=window.innerHeight;
     fb.w=ww; fb.h=wh-40; bar.w=ww;
+    grid=fp.gridSize.value;
     events.processEvent();
     ms=Date.now();
     g.clearCanvas(canvas);

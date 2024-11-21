@@ -1,4 +1,4 @@
-var grid=10;
+var grid=20; // this is only default value, updated in animateFrame from Prefs
 
 const LINEWIDTH=2;
 const DASHED=[5,3];
@@ -10,6 +10,7 @@ const COLOR_WILLFIRE="rgb(110, 110, 110)";
 const COLOR_INK="black";
 const COLOR_RED="red";
 const COLOR_HIGHLIGHT="blue";
+const COLOR_GRAY="lightgray";
 
 const COLORS=["black","red","green","blue","#dddd00","purple", "brown", "Chartreuse", "DeepPink"];
 
@@ -87,7 +88,7 @@ class graphics {
     clip() { this.ctx.clip(); }
 }
 function snap(v) {
-    if (grid==0||SCA(storedEvt,".cA")) return v // ALT or SHIFTALT
+    if (grid==0||SCA(storedEvt,".cA")||!fp.snapToGrid.value) return v // ALT or SHIFTALT
     else return Math.round(v/grid)*grid;
 }
 var alpha=0.0;

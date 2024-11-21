@@ -32,6 +32,7 @@ Done:
 - PacMan only in running state
 - induljon az url get parameterben megadott netet betöltve
 - reset arc (click flow, -=place.tokens, help, no weight)
+- Grid and Snap from Prefs
 
 Todo:
 - multiline Labels
@@ -46,3 +47,4 @@ Todo:
 - Assertions as stop conditions when violated
 - test arc (arrow on both ends in symmetry)
 - Capacity Place: t enabled if m'(p)<=cap(p)
+- ANY and ALL in assertions

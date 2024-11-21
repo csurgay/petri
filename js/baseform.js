@@ -13,6 +13,19 @@ class BaseForm extends Form {
         g.translate(pn.cx, pn.cy);
         g.scale(pn.zoom, pn.zoom);
         g.translate(pn.vpx, pn.vpy);
+        // Grid
+        let grid=fp.gridSize.value;
+        if (fp.gridShown.value && grid>3) {
+            g.beginPath();
+            g.strokeStyle(COLOR_GRAY);
+            for(var i=-10000; i<10000; i+=grid) {
+                g.moveTo(i,-10000);
+                g.lineTo(i,10000);
+                g.moveTo(-10000,i);
+                g.lineTo(10000,i);
+            }
+            g.stroke();
+        }
         // Draw potential new Flow
         if (this.paleArrow && state.is("DRAWARROW")) {
             drawArrow(this.paleArrow[0].x, this.paleArrow[0].y,
