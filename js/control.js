@@ -1,10 +1,11 @@
 class Control extends Label {
-    constructor(label,x,y,controlType,value) {
+    constructor(parent,label,x,y,controlType,value) {
         super(label,x,y,"left");
         this.type="CONTROL";
         this.controlType=controlType; // "INTEGER", "STRING", "BOOLEAN"
         this.value=value;
         this.valueLabel=new Label(value.toString(),x+120,y,"left");
+        parent.addChild(this);
     }
     newValue() {
         this.valueLabel.text=this.value.toString();
@@ -13,17 +14,17 @@ class Control extends Label {
         var ret = 
             ccursor.x>this.x &&
             ccursor.x<this.x+this.width &&
-            ccursor.y>this.y &&
-            ccursor.y<this.y+this.size;
+            ccursor.y>this.y-this.size/2 &&
+            ccursor.y<this.y+this.size/2;
         if (ret) { 
             return this;
         }
         else return false;
     }
-    draw() {
+    draw(hovered=false) {
         if (this.visible) {
-            super.draw();
-            this.valueLabel.draw();
+            super.draw(hovered);
+            this.valueLabel.draw(hovered);
         }
     }
     increment() {

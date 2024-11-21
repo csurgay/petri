@@ -38,7 +38,7 @@ class Form extends Frame {
     }
     draw() {
         super.draw();
-        this.children.forEach(child=>child.draw());
+        this.children.forEach(child=>child.draw(child.hover()));
     }
     hover() {
         return ccursor.x > this.x && ccursor.x < this.x+this.w &&

@@ -1,14 +1,15 @@
+let pd=20, pi=0;
 class PrefForm extends Form {
     constructor(title, x, y, w, h) {
         super("PREFFORM", title, x, y, w, h);
-        this.assertOnOff=new Control("Assert On/Off",x+100,y+100,"BOOLEAN",false);
-        this.assertString=new Control("Assert String",x+100,y+120,"STRING","P1>1 || P2>1 || P3>1");
-        this.addChild(this.assertOnOff);
-        this.addChild(this.assertString);
+        this.gridSize=new Control(this,"Grid Size",x+100,y+100+pd*pi++,"INTEGER",10);
+        this.gridShowm=new Control(this,"Grid Shown",x+100,y+100+pd*pi++,"BOOLEAN",false);
+        this.snapToGrid=new Control(this,"Snap to Grid",x+100,y+100+pd*pi++,"BOOLEAN",true);
+        this.assertOnOff=new Control(this,"Breakpoint",x+100,y+100+pd*pi++,"BOOLEAN",false);
+        this.assertString=new Control(this,"Assert String",x+100,y+100+pd*pi++,"STRING","P1>1 || P2>1 || P3>1");
     }
     draw() {
         super.draw();
-        this.children.forEach(child => { child.draw(); })
     }
     processFormEvent(evt) {
         if (!this.hover() && evt.type!="ku") return;
