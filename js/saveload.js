@@ -4,13 +4,13 @@ function rawSave() {
     pn.p.forEach(o=>{
         str+="\n"+o.id+" "+o.x.toFixed(1)+" "+o.y.toFixed(1)+" "+o.color+" "+
         o.tokens+' "'+
-        o.label.label+ '" '+o.label.x.toFixed(1)+" "+o.label.y.toFixed(1)+" "+o.label.color;
+        o.label.text+ '" '+o.label.x.toFixed(1)+" "+o.label.y.toFixed(1)+" "+o.label.color;
     });
     str+="\nTransitions:";
     pn.t.forEach(o=>{
         str+="\n"+o.id+" "+o.x.toFixed(1)+" "+o.y.toFixed(1)+" "+o.color+" "+
         o.alpha.toFixed(3)+' "'+
-        o.label.label+'" '+o.label.x.toFixed(1)+" "+o.label.y.toFixed(1)+" "+o.label.color;
+        o.label.text+'" '+o.label.x.toFixed(1)+" "+o.label.y.toFixed(1)+" "+o.label.color;
     });
     str+="\nFlows:";
     pn.f.forEach(o=>{
@@ -24,7 +24,7 @@ function rawSave() {
     pn.l.forEach(o=>{
         if (!o.objectsLabel()) {
             str+="\n"+o.id+" "+o.color+" "+o.size+' "'+
-            o.label+'" '+o.x.toFixed(1)+" "+o.y.toFixed(1)+" "+
+            o.text+'" '+o.x.toFixed(1)+" "+o.y.toFixed(1)+" "+
             (o.attached==null?"none":o.attached.id);
         }
     });
@@ -45,7 +45,7 @@ function rawLoad(str) {
         l=[]; tokenize(str[ptr],l);
         const o=new Place(+l[1],+l[2]); o.id=l[0]; o.color=l[3];
         o.tokens=+l[4];
-        o.label.label=l[5]; o.label.x=+l[6]; o.label.y=+l[7]; o.label.color=l[8];
+        o.label.text=l[5]; o.label.x=+l[6]; o.label.y=+l[7]; o.label.color=l[8];
         pn.addPlace(o);
         ptr++;
     }
@@ -55,7 +55,7 @@ function rawLoad(str) {
         l=[]; tokenize(str[ptr],l);
         const o=new Transition(+l[1],+l[2]); o.id=l[0]; o.color=l[3];
         o.alpha=+l[4];
-        o.label.label=l[5]; o.label.x=+l[6]; o.label.y=+l[7]; o.label.color=l[8];
+        o.label.text=l[5]; o.label.x=+l[6]; o.label.y=+l[7]; o.label.color=l[8];
         pn.addTransition(o);
         ptr++;
     }
