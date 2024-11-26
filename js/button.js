@@ -42,10 +42,10 @@ class Button extends Object {
         }
         else if (this.button=="STEP_FWD") {
             if (pn.mptr==pn.markings.length-1&&pn.getEnabled().length>0) {
-                this.label.label="FIRE";
+                this.label.text="FIRE";
             }
             else {
-                this.label.label="STEP+";
+                this.label.text="STEP+";
             }
             triangle(this.x,this.y,2*bdw/3,bdh,-1);
             g.beginPath();

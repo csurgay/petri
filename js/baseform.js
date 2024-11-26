@@ -408,7 +408,7 @@ class BaseForm extends Form {
                 pn.connected.forEach(o=>{
                     if (o.type=="PLACE") {
                         const newObject=new Place(o.x+20,o.y+20);
-                        newObject.label.label=o.label.label;
+                        newObject.label.text=o.label.text;
                         newObject.label.x=o.label.x+20;
                         newObject.label.y=o.label.y+20;
                         newObject.color=o.color;
@@ -417,7 +417,7 @@ class BaseForm extends Form {
                     }
                     else if (o.type=="TRANSITION") {
                         const newObject=new Transition(o.x+20,o.y+20,o.alpha);
-                        newObject.label.label=o.label.label;
+                        newObject.label.text=o.label.text;
                         newObject.label.x=o.label.x+20;
                         newObject.label.y=o.label.y+20;
                         newObject.color=o.color;
