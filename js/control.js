@@ -21,10 +21,10 @@ class Control extends Label {
         }
         else return false;
     }
-    draw(hovered=false) {
+    draw(hoveredHighlighted=false) {
         if (this.visible) {
-            super.draw(hovered);
-            this.valueLabel.draw(hovered);
+            super.draw(hoveredHighlighted);
+            this.valueLabel.draw(hoveredHighlighted);
         }
     }
     increment() {

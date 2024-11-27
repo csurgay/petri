@@ -49,3 +49,4 @@ Todo:
 - Capacity Place: t enabled if m'(p)<=cap(p)
 - ANY and ALL in assertions
 - Pref Control string edit textbox
+- Reset Arc saveload

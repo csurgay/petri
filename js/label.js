@@ -12,13 +12,13 @@ class Label extends Object {
         this.attached=null; // the Object that this Label is attached to
         this.align=align;
     }
-    draw(hovered=false) {
+    draw(hoveredHighlighted=false) {
         if (this.visible) {
             g.beginPath();
             g.fillStyle(this.color);
             if (pn.highlighted==this && COLOR_HIGHLIGHT!="black")
                 g.fillStyle(COLOR_HIGHLIGHT);
-            if (hovered) g.setupText("bold "+this.size+"px arial",this.align,"middle");
+            if (hoveredHighlighted) g.setupText("bold "+this.size+"px arial",this.align,"middle");
             else g.setupText(""+this.size+"px arial",this.align,"middle");
             this.width=g.measureText(this.text).width;
             g.fillText(this.text,this.x,this.y);
