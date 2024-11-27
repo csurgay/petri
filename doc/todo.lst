@@ -32,8 +32,10 @@ Done:
 - PacMan only in running state
 - induljon az url get parameterben megadott netet betöltve
 - reset arc (click flow, -=place.tokens, help, no weight)
+- reset Arc saveload testing
 - Grid and Snap from Prefs
 - Settings (grid size (0=off), enabled color, debug mode, fired indicated)
+- Assertions as stop conditions when violated
 
 Todo:
 - multiline Labels
@@ -44,9 +46,7 @@ Todo:
 - Reachability
 - Select (and copy, rotate...?) subnet
 - Firing animation with "flames"
-- Assertions as stop conditions when violated
 - test arc (arrow on both ends in symmetry)
 - Capacity Place: t enabled if m'(p)<=cap(p)
 - ANY and ALL in assertions
 - Pref Control string edit textbox
-- Reset Arc saveload
