@@ -12,6 +12,7 @@ const COLOR_RED="red";
 const COLOR_HIGHLIGHT="blue";
 const COLOR_GRAY="lightgray";
 
+/// IV9VBS More Colors
 const COLORS=["black","red","green","blue","#dddd00","purple", "brown", "Chartreuse", "DeepPink"];
 
 class graphics {

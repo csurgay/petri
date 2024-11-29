@@ -6,8 +6,22 @@ class Buttonbar extends Form {
         this.closable = false;
         this.init();
     }
+    // Detecting Device Type
+    detectDevice() {
+        const width = window.innerWidth;
+        const userAgent = navigator.userAgent;
+
+        if (width < 768 || /Mobi|Android|iPhone|iPad|iPod/i.test(userAgent)) {
+            return "Phone";
+        } else {
+            return "Laptop/Desktop";
+        }
+    }
+
     init() {
         var x,y=15,w,dx,ddw=5,dw=20;
+        const deviceType = this.detectDevice();
+
         x=dw+ddw+25,w=35,x+=w/2,dx=0;
         this.b.push(new Button("CLEAR","NEW",x+dx++*(w+ddw),y,w,()=>{return !this.running()&&!fp.active}));
         this.b.push(new Button("OPEN","OPEN",x+dx++*(w+ddw),y,w,()=>{return !this.running()&&!fp.active}));
@@ -27,6 +41,15 @@ class Buttonbar extends Form {
         x+=dx*(w+ddw)-w/2,w=35,x+=w/2+dw,dx=0;
         this.b.push(new Button("PREF","PREF",x+dx++*(w+ddw),y,w,()=>{return !this.running()}));
         this.b.push(new Button("HELP","HELP",x+dx++*(w+ddw),y,w,()=>{return !this.running()}));
+
+        /// Log Out Device Type + Add extra button!
+        if (deviceType == "Phone") {
+            console.log("Phone Type Detected")
+            x+=dx*(w+ddw)-w/2,w=35,x+=w/2+dw,dx=0;
+            this.b.push(new Button("Add","Add",x+dx++*(w+ddw),y,w,()=>{return !this.running()}));
+        } else {
+            console.log("You are From Desktop/Notebook")
+        }
     }
     running() {
         return state.is("PLAY") || state.is("RUN") || state.is("FLY");
