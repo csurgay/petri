@@ -1,15 +1,5 @@
-// Assertions
-// <logical>  ::= <simple> <operator> <simple>
-// <simple>   ::= "(" <simple> ")" | <value> <relation> <value>
-// <operator> ::= "||" | "&&"
-// <value>    ::= <name> | <number>
-// <relation> ::= "<" | "=" | ">"
-// <name>     ::= "ANY" | "ALL" | <LETTER> <string>
-// <string>   ::= "" | <char> <string>
-// <char>     ::= <LETTER> | <DIGIT> | <SYMBOL>
-// <number>   ::= <DIGIT> <numrest>
-// <numrest>  ::= "" | <DIGIT> <numrest>
-
+let anyAllOp="";
+let anyAllRest=""
 function convertAssert(assert) {
     let result="";
     let ptr=0;
@@ -27,36 +17,45 @@ function convertAssert(assert) {
             c=assert.charAt(++ptr);
         }
         if (placeName!="") {
-            let foundPlace=false;
-            pn.p.forEach(place => {
-                if (place.label.text==placeName) {
-                    foundPlace=true;
-                    result = result + place.tokens;
+            if (placeName=="ANY" || placeName=="ALL") {
+                anyAllRest="";
+                while (isSpace(c)) {
+                    c=assert.charAt(++ptr);
                 }
-            });
-            if (!foundPlace) {
-                result = result + "0";
-                error(here(), "Place not found in AssertString: "+placeName);
+                while (isOperator(c)||isDigit(c)) {
+                    anyAllRest+=c;
+                    c=assert.charAt(++ptr);
+                }
+                result += "(";
+                anyAllOp = (placeName=="ANY" ? " || " : " && ");
+                for (let i=0; i<pn.p.length; i++) {
+                    result=result+pn.p[i].tokens+anyAllRest;
+                    if (i<pn.p.length-1) result+=anyAllOp;
+                }
+                result += ")";
+            }
+            else {
+                let foundPlace=false;
+                pn.p.forEach(place => {
+                    if (place.label.text==placeName) {
+                        foundPlace=true;
+                        result = result + place.tokens;
+                    }
+                });
+                if (!foundPlace) {
+                    result = result + "0";
+                    error(here(), "Place not found in AssertString: "+placeName);
+                }
             }
         }
     }
     return result;
 }
-
-function token(lookahead=false) {
-    while(assert.charAt(0)==" ") {
-        assert=assert.substring(1);
-    }
-    if (assert.length==0) return "";
-    let ret=assert.charAt(0);
-    console.log(ret);
-    if (!lookahead) {
-        assert=assert.substring(1);
-    }
-    return ret;
-}
 function isEmpty(s) {
     return s=="";
+}
+function isSpace(s) {
+    return s==" ";
 }
 function isDigit(s) {
     return s>="0"&&s<="9";
@@ -68,82 +67,7 @@ function isSymbol(s) {
     if (s=="") return false;
     return "-_.".includes(s);
 }
-
-function parse_logical() {
-    parse_simple();
-    parse_operator();
-    parse_simple();
-}
-function parse_simple() {
-    if (token()=="(") {
-        parse_simple();
-        if (token()!=")") error("Parser simple: "+assert);
-    }
-    else {
-        parse_value();
-        parse_relation();
-        parse_value();
-    }
-}
-function parse_operator() {
-    if (token()=="|") {
-
-    }
-    else if (token()=="&") {
-
-    }
-    else error("Parser operator: "+assert);
-}
-function parse_value() {
-    if (isDigit(token(true))) {
-        parse_number();
-    }
-    else if (isLetter(token(true))) {
-        parse_name();
-    }
-}
-function parse_relation() {
-    if (token()=="<") {
-
-    }
-    else if (token()=="=") {
-        
-    }
-    else if (token()==">") {
-        
-    }
-    else error("Parser relation: "+assert);
-}
-function parse_name() {
-    if (isLetter(token(true))) {
-        token();
-        parse_string();
-    }
-}
-function parse_string() {
-    if (isEmpty(token())) {
-
-    }
-    else {
-        parse_char();
-        parse_string();
-    }
-}
-function parse_char() {
-    let c=token(true);
-    if (isLetter(c)||isDigit(c)||isSymbol(c)) {
-        token();
-    }
-}
-function parse_number() {
-    if (isDigit(token(true))) {
-        token();
-        parse_numrest();
-    }
-}
-function parse_numrest() {
-    if (isDigit(token(true))) {
-        token();
-        parse_numrest();
-    }
+function isOperator(s) {
+    if (s=="") return false;
+    return "<=>".includes(s);
 }

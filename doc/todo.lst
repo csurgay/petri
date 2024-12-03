@@ -36,6 +36,7 @@ Done:
 - Grid and Snap from Prefs
 - Settings (grid size (0=off), enabled color, debug mode, fired indicated)
 - Assertions as stop conditions when violated
+- ANY and ALL in assertions
 
 Todo:
 - multiline Labels
@@ -48,5 +49,4 @@ Todo:
 - Firing animation with "flames"
 - test arc (arrow on both ends in symmetry)
 - Capacity Place: t enabled if m'(p)<=cap(p)
-- ANY and ALL in assertions
 - Pref Control string edit textbox

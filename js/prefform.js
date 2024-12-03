@@ -6,7 +6,7 @@ class PrefForm extends Form {
         this.gridShown=new Control(this,"Grid Shown",x+100,y+100+pd*pi++,"BOOLEAN",true);
         this.snapToGrid=new Control(this,"Snap to Grid",x+100,y+100+pd*pi++,"BOOLEAN",true);
         this.assertOnOff=new Control(this,"Breakpoint",x+100,y+100+pd*pi++,"BOOLEAN",false);
-        this.assertString=new Control(this,"Assert String",x+100,y+100+pd*pi++,"STRING","P1>1 || P2>1 || P3>1");
+        this.assertString=new Control(this,"Assert String",x+100,y+100+pd*pi++,"STRING","ANY>1 || ALL>1 || P3>1");
     }
     draw() {
         super.draw();
