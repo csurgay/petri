@@ -63,6 +63,7 @@ class Form extends Frame {
     }
     // This one is called as super from descendant processFormEvents
     processFormEvent(pMyEvent) {
+        this.hovered=pn.getCursoredObject(pMyEvent);
         if (pMyEvent.type=="md") {
             // ALWAYS TCURSOR !!!
             this.mouseDownCoord.x=tcursor.x;
