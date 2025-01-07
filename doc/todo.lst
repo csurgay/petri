@@ -50,3 +50,6 @@ Todo:
 - test arc (arrow on both ends in symmetry)
 - Capacity Place: t enabled if m'(p)<=cap(p)
 - Pref Control string edit textbox
+- Show name of file (saved or not)
+- Multi column file logistics
+- Delete by ctrl-leftclick for all Object types

@@ -27,6 +27,8 @@ class Buttonbar extends Form {
         x+=dx*(w+ddw)-w/2,w=35,x+=w/2+dw,dx=0;
         this.b.push(new Button("PREF","PREF",x+dx++*(w+ddw),y,w,()=>{return !this.running()}));
         this.b.push(new Button("HELP","HELP",x+dx++*(w+ddw),y,w,()=>{return !this.running()}));
+
+        this.addChild(new Label( "filename", x+dx++*(w+ddw),y, "left" ));
     }
     running() {
         return state.is("PLAY") || state.is("RUN") || state.is("FLY");

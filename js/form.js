@@ -63,6 +63,7 @@ class Form extends Frame {
     }
     // This one is called as super from descendant processFormEvents
     processFormEvent(pMyEvent) {
+        this.hovered=pn.getCursoredObject(pMyEvent);
         if (pMyEvent.type=="md") {
             // ALWAYS TCURSOR !!!
             this.mouseDownCoord.x=tcursor.x;
@@ -110,6 +111,7 @@ class FileForm extends Form {
         if (pMyEvent.type == "mu" && selectedFile!=-1) {
             log(here(), files[selectedFile]);
             if (files[selectedFile]!="CANCEL") {
+                bar.children[0].title=files[selectedFile];
                 pn.load(directory+"/"+files[selectedFile]);
             }
             ff.active=false;
