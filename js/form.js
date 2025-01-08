@@ -111,7 +111,7 @@ class FileForm extends Form {
         if (pMyEvent.type == "mu" && selectedFile!=-1) {
             log(here(), files[selectedFile]);
             if (files[selectedFile]!="CANCEL") {
-                bar.children[0].title=files[selectedFile];
+                bar.children[0].text=files[selectedFile];
                 pn.load(directory+"/"+files[selectedFile]);
             }
             ff.active=false;
