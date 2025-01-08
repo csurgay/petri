@@ -235,7 +235,11 @@ class Button extends Object {
         }
         else if (this.button=="CLEAR") {
             if (confirm("Sure want to clear workspace?")) {
+<<<<<<< HEAD
                 bar.children[0].text="File: noname.pn";
+=======
+                bar.children[0].text="filename";
+>>>>>>> bbb75cca702060a2a84725a898d0a9efc51704cf
                 pn.clear();
                 undo.length=0;
                 undoPtr=-1;
