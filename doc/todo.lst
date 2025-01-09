@@ -37,6 +37,8 @@ Done:
 - Settings (grid size (0=off), enabled color, debug mode, fired indicated)
 - Assertions as stop conditions when violated
 - ANY and ALL in assertions
+- Show filename on buttonbar after open
+- Delete by Del keyup for all Object types instead of rightclick
 
 Todo:
 - multiline Labels
@@ -50,6 +52,5 @@ Todo:
 - test arc (arrow on both ends in symmetry)
 - Capacity Place: t enabled if m'(p)<=cap(p)
 - Pref Control string edit textbox
-- Show name of file (saved or not)
 - Multi column file logistics
-- Delete by ctrl-leftclick for all Object types
+- Preview small petrinet in files open dialog

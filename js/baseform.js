@@ -63,6 +63,14 @@ class BaseForm extends Form {
                 if (evt.key == "d") {
                     state.DEBUG = 1 - state.DEBUG;
                 }
+                // Delete hovered highlighted object
+                else if (evt.key == 'Delete' && SCA(evt,"sca") && this.hovered)
+                {
+                    this.hovered.delete();
+                    delete this.hovered;
+                    pn.highlighted=null;
+                    pn.newUndo();
+                }
                 // Record mode
                 else if (evt.key == 'r' && state.PLAYBACK == 0) {
                     state.RECORD = 1 - state.RECORD;
@@ -143,27 +151,27 @@ class BaseForm extends Form {
             {
                 state.set("RUN");
             }
-            // Delete objects
+/*             // Delete objects
             else if (this.rightClick(evt) && SCA(evt,"sca") &&
                 this.hovered) 
             {
                 state.set("DELETE");
             }
-            // Rotate Transition - fine
+ */            // Rotate Transition - fine
             else if (evt.type == "mw" && SCA(evt, "sca") && 
                 this.hovered && this.hovered.type=="TRANSITION") 
             {
                 this.hovered.rotate(delta);
                 pn.needTimedUndo=true;
             }
-//            // Rotate Transition - course
-//            else if (evt.type == "mw" && SCA(evt, "Sca") && 
-//                this.hovered && this.hovered.type=="TRANSITION") 
-//            {
-//                this.hovered.rotate(delta, true);
-//                pn.needTimedUndo=true;
-//            }
-            // Adjust Flow weight
+/*            // Rotate Transition - course
+           else if (evt.type == "mw" && SCA(evt, "Sca") && 
+               this.hovered && this.hovered.type=="TRANSITION") 
+           {
+               this.hovered.rotate(delta, true);
+               pn.needTimedUndo=true;
+           }
+ */            // Adjust Flow weight
             else if (evt.type == "mw" && SCA(evt, "sca") &&
                 this.hovered && this.hovered.type=="FLOW" &&
                 this.hovered.subtype!="RESET") 
@@ -474,7 +482,7 @@ class BaseForm extends Form {
                 state.set("IDLE");
             }
         }
-        // DELETE state
+/*         // DELETE state
         else if (state.is("DELETE")) {
             // Delete Object
             if (evt.type == "mu" && this.hovered &&
@@ -493,7 +501,7 @@ class BaseForm extends Form {
                 state.set("IDLE");
             }
         }
-        else if (state.is("MIDDLE")) {
+ */        else if (state.is("MIDDLE")) {
             // Init Zoom
             if (evt.type == "mw") {
                 var curDeltaX=ccursor.x-pn.cx;
