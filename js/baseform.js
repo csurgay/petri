@@ -53,7 +53,7 @@ class BaseForm extends Form {
                 this.hovered && this.hovered.type=="PLACE") 
             {
                 this.hovered.changeTokens(delta);
-                pn.needTimedUndo=true;
+                pn.needTimedUndo="AFTER_IDLETIME";
             }
         }
         // IDLE STATE
@@ -151,18 +151,12 @@ class BaseForm extends Form {
             {
                 state.set("RUN");
             }
-/*             // Delete objects
-            else if (this.rightClick(evt) && SCA(evt,"sca") &&
-                this.hovered) 
-            {
-                state.set("DELETE");
-            }
- */            // Rotate Transition - fine
+            // Rotate Transition - fine
             else if (evt.type == "mw" && SCA(evt, "sca") && 
                 this.hovered && this.hovered.type=="TRANSITION") 
             {
                 this.hovered.rotate(delta);
-                pn.needTimedUndo=true;
+                pn.needTimedUndo="AFTER_IDLETIME";
             }
 /*            // Rotate Transition - course
            else if (evt.type == "mw" && SCA(evt, "Sca") && 
@@ -178,7 +172,7 @@ class BaseForm extends Form {
             {
                 this.hovered.weight+=delta;
                 if (this.hovered.weight<1) this.hovered.weight=1;
-                pn.needTimedUndo=true;
+                pn.needTimedUndo="AFTER_IDLETIME";
             }
             // Adjust Label size
             else if (evt.type == "mw" && SCA(evt, "sca") &&
@@ -186,7 +180,7 @@ class BaseForm extends Form {
             {
                 this.hovered.size+=2*delta;
                 if (this.hovered.size<8) this.hovered.size=8;
-                pn.needTimedUndo=true;
+                pn.needTimedUndo="AFTER_IDLETIME";
             }
             // Zoom
             else if (this.middleClick(evt) && SCA(evt,"sca")) {
@@ -198,7 +192,7 @@ class BaseForm extends Form {
             {
                 if (!evt.shiftKey) {
                     this.hovered.nextColor(delta);
-                    pn.needTimedUndo=true;
+                    pn.needTimedUndo="AFTER_WHEEL";
                 }
             }
             // Color change Shubnet
@@ -209,7 +203,7 @@ class BaseForm extends Form {
                 pn.connected.length=0;
                 pn.getConnected(this.hovered);
                 pn.connected.forEach(o=>o.color=this.hovered.color);
-                pn.needTimedUndo=true;
+                pn.needTimedUndo="AFTER_WHEEL";
             }
             // Rewind and Forward
             else if (evt.type == "mw" && SCA(evt,"sca") &&
@@ -239,7 +233,7 @@ class BaseForm extends Form {
                         l.rotate(this.hovered.x,this.hovered.y,delta*Math.PI/32);
                     })
                 });
-                pn.needTimedUndo=true;
+                pn.needTimedUndo="AFTER_WHEEL";
             }
         }
         // LEFTDOWN STATE
@@ -482,26 +476,7 @@ class BaseForm extends Form {
                 state.set("IDLE");
             }
         }
-/*         // DELETE state
-        else if (state.is("DELETE")) {
-            // Delete Object
-            if (evt.type == "mu" && this.hovered &&
-                closeEnough(this.mouseDownCoord, tcursor)) 
-            {
-                this.hovered.delete();
-                delete this.hovered;
-                pn.highlighted=null;
-                pn.newUndo();
-                state.set("IDLE");
-            }
-            // Cancel Delete
-            if (evt.type == "mu" && 
-            !closeEnough(this.mouseDownCoord, tcursor))
-            {
-                state.set("IDLE");
-            }
-        }
- */        else if (state.is("MIDDLE")) {
+        else if (state.is("MIDDLE")) {
             // Init Zoom
             if (evt.type == "mw") {
                 var curDeltaX=ccursor.x-pn.cx;
@@ -540,10 +515,10 @@ class BaseForm extends Form {
         }
         // Mouse-up administration
         if (evt.type == "mu") {
-            // Undo after mouse-up (for multi-wheel events)
-            if (pn.needTimedUndo) {
+            // Undo after Mouse-up (for drag/dragall events)
+            if (pn.needTimedUndo=="AFTER_DRAG") {
                 pn.newUndo();
-                pn.needTimedUndo=false;
+                pn.needTimedUndo="NO_NEED";
             }
             pn.dragged=null;
             fb.paleArrow=null;
@@ -553,8 +528,24 @@ class BaseForm extends Form {
                 state.set("IDLE");
             }
         }
+        // Wheel timeout administration
+        if (SCA(evt,"sca")) {
+            // Undo after idle time (for multi-wheel events)
+            if (pn.needTimedUndo=="AFTER_IDLETIME") {
+                pn.newUndo();
+                pn.needTimedUndo="NO_NEED";
+            }
+        }
+        // Shift-up administration
+        if (SCA(evt,"sca")) {
+            // Undo after Shift-up (for shifted multi-wheel events)
+            if (pn.needTimedUndo=="AFTER_WHEEL") {
+                pn.newUndo();
+                pn.needTimedUndo="NO_NEED";
+            }
+        }
         // Single undo after all events processed
-        if (pn.needUndo) {
+        if (pn.needUndo && !state.is("DRAG") && !state.is("DRAGALL")) {
             pn.needUndo=false;
             pn.newUndo();
         }

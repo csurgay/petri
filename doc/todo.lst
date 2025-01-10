@@ -43,7 +43,7 @@ Done:
 Todo:
 - multiline Labels
 - alt sometimes fails coloring
-- error: undo MidPoints
+- error: undo MidPoints and moves
 - rec mousemove filter by deltaXY
 - Create logistics sample petrinet
 - Reachability

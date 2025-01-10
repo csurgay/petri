@@ -21,7 +21,7 @@ class Petrinet {
         this.mptr=-1; // marking pointer
         this.transeq=[]; // Transition sequence
         this.needUndo=false; // need newUndo after move but not during
-        this.needTimedUndo=false; // need timed newUndo after wheel
+        this.needTimedUndo=""; // need timed newUndo AFTER_WHEEL / AFTER_DRAG / AFTER_IDLETIME
     }
     snap() {
         this.f.forEach(item => { item.x=snap(item.x); item.y=snap(item.y); })
