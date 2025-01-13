@@ -39,9 +39,10 @@ class BaseForm extends Form {
         g.beginPath();
         g.lineWidth(1);
         g.dashed();
+        g.strokeStyle(COLOR_INK);
         if (state.is("SELECT")) {
             g.rect(this.mouseDownCoord.x,this.mouseDownCoord.y,
-                tcursor.x,tcursor.y);
+                tcursor.x-this.mouseDownCoord.x,tcursor.y-this.mouseDownCoord.y);
         }
         g.stroke();
         g.restore();
