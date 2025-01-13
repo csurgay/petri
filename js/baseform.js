@@ -35,6 +35,15 @@ class BaseForm extends Form {
         pn.t.forEach(item => { item.draw(); })
         pn.p.forEach(item => { item.draw(); })
         pn.l.forEach(item => { item.draw(); })
+        // Select frame
+        g.beginPath();
+        g.lineWidth(1);
+        g.dashed();
+        if (state.is("SELECT")) {
+            g.rect(this.mouseDownCoord.x,this.mouseDownCoord.y,
+                tcursor.x,tcursor.y);
+        }
+        g.stroke();
         g.restore();
         // Static Status and Buttons
         if (state.DEBUG) {
@@ -302,16 +311,22 @@ class BaseForm extends Form {
                 state.set("IDLE");
             }
             // Init Drag
-            else if (evt.type == "mm" && pn.highlighted &&
+            else if (evt.type == "mm" && SCA(evt, "sca") && pn.highlighted &&
                 !closeEnough(this.mouseDownCoord, tcursor)) 
             {
                 state.set("DRAG");
             }
             // Init Pan
-            else if (evt.type == "mm" && !pn.highlighted &&
+            else if (evt.type == "mm" && SCA(evt, "sca") && !pn.highlighted &&
                 !closeEnough(this.mouseDownCoord, tcursor)) 
             {
                 state.set("PAN");
+            }
+            // Init Select
+            else if (evt.type == "mm" && SCA(evt, "sCa") && !pn.highlighted &&
+                !closeEnough(this.mouseDownCoord, tcursor)) 
+            {
+                state.set("SELECT");
             }
             // Label edit
             else if (evt.type == "mu" && this.hovered && 

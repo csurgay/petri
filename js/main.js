@@ -6,7 +6,7 @@ const events=new Events();
 addEventListener('mousedown', events.mousedownevent.bind(events));
 addEventListener('mouseup', events.mouseupevent.bind(events));
 addEventListener('mousemove', events.mousemoveevent.bind(events));
-addEventListener('mousewheel', events.mousewheelevent.bind(events));
+addEventListener('wheel', events.mousewheelevent.bind(events));
 addEventListener('keyup', events.keyupevent.bind(events));
 addEventListener('keydown', events.keydownevent.bind(events));
 addEventListener('contextmenu', sysEvent=>{sysEvent.preventDefault();});

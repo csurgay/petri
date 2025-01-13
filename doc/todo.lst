@@ -39,11 +39,11 @@ Done:
 - ANY and ALL in assertions
 - Show filename on buttonbar after open
 - Delete by Del keyup for all Object types instead of rightclick
+- error: undo MidPoints and moves
 
 Todo:
 - multiline Labels
 - alt sometimes fails coloring
-- error: undo MidPoints and moves
 - rec mousemove filter by deltaXY
 - Create logistics sample petrinet
 - Reachability

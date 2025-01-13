@@ -8,7 +8,7 @@ class State {
         this.states=[
             "IDLE", "SELECT", "DRAG", "DRAWARROW", "LEFTDOWN", "DELETE",
             "MIDDLE", "PAN", "RUN", "SHIFTCLICK", "ZOOM", "MULTISEGMENT", 
-            "PLAY", "FLY", "DRAGALL", "SPLASH"
+            "PLAY", "FLY", "DRAGALL", "SPLASH", "SELECT"
         ];
     }
     is(oldState) {
