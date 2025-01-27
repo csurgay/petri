@@ -39,6 +39,7 @@ function setupStatus() {
     pn.addStatus(new Status("key",sx,sy+i++*dy,function(){return storedEvt.key+"("+storedEvt.keyCode+")";}));
     pn.addStatus(new Status("events",sx,sy+i++*dy,function(){return events.e.length;}));
     pn.addStatus(new Status("e",sx,sy+i++*dy,function(){return storedEvt.type;}));
+    pn.addStatus(new Status("button",sx,sy+i++*dy,function(){return (storedEvt.button==0?"left":storedEvt.button==1?"middle":storedEvt.button==2?"right":"-17");}));
     pn.addStatus(new Status("",sx,sy+i++*dy,function(){return storedEvt.tstamp;}));
     pn.addStatus(new Status("",sx,sy+i++*dy,function(){return ms;}));
 }

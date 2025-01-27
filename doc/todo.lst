@@ -40,6 +40,7 @@ Done:
 - Show filename on buttonbar after open
 - Delete by Del keyup for all Object types instead of rightclick
 - error: undo MidPoints and moves
+- Fix for Chroumium extra mousemove event for mousedown 
 
 Todo:
 - multiline Labels

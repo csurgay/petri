@@ -39,7 +39,7 @@ class MyEvent { // Data structure for an Event (mouse and keys)
         }
     }
     undefined(value) {
-        return value===undefined?"-":value;
+        return value===undefined?-17:value;
     }
     toString() {
         return ""+this.type+' "'+this.tstamp+'" '+
@@ -70,11 +70,19 @@ class Events {
     constructor() {
         this.e=[];
         this.rec=[];
+        this.lastX=-17000;
+        this.lastY=-17000;
     }
     // sysEvent => myEvent, e.push(strEvent)
     rcvEvent(type, pSysEvent) {
         myEvent.store(type, getFormattedDate('millisec'), pSysEvent);
-        this.e.push(myEvent.toString());
+        if (myEvent.type!="mm" || 
+            this.lastX!=myEvent.clientX || this.lastY!=myEvent.clientY) 
+        {
+            this.e.push(myEvent.toString());
+            this.lastX=myEvent.clientX;
+            this.lastY=myEvent.clientY;
+        }
     }
 
     mousedownevent(sysEvent) { this.rcvEvent("md", sysEvent); }
