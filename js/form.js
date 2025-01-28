@@ -109,7 +109,7 @@ class FileForm extends Form {
         if (!this.hover()) return;
         super.processFormEvent(pMyEvent);
         if (pMyEvent.type == "mu" && selectedFile!=-1) {
-            log(here(), files[selectedFile]);
+            if (state.DEBUG) log(here(), files[selectedFile]);
             if (files[selectedFile]!="CANCEL") {
                 bar.children[0].text="FIle: "+files[selectedFile];
                 pn.load(directory+"/"+files[selectedFile]);
