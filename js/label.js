@@ -1,5 +1,9 @@
 const sizes=[8,14,20,32,48,72];
 
+var nullParent = {
+    x:0, y:0
+}
+
 class Label extends Object {
     constructor(text,x,y,align="center") {
         super(x,y);
@@ -12,7 +16,9 @@ class Label extends Object {
         this.attached=null; // the Object that this Label is attached to
         this.align=align;
     }
-    draw(hoveredHighlighted=false) {
+    draw(hoveredHighlighted=false, parent=nullParent) {
+        let x=parent.x+this.x;
+        let y=parent.y+this.y;
         if (this.visible) {
             g.beginPath();
             g.fillStyle(this.color);
@@ -21,19 +27,19 @@ class Label extends Object {
             if (hoveredHighlighted) g.setupText("bold "+this.size+"px arial",this.align,"middle");
             else g.setupText(""+this.size+"px arial",this.align,"middle");
             this.width=g.measureText(this.text).width;
-            g.fillText(this.text,this.x,this.y);
+            g.fillText(this.text,x,y);
             if (pn.highlighted==this) {
                 g.beginPath();
                 g.standard(1);
                 g.dashed();
-                g.rect(this.x-1-(this.align=="center"?this.width/2:0),this.y-this.size/2-2,this.width+2,this.size);
+                g.rect(x-1-(this.align=="center"?this.width/2:0),y-this.size/2-2,this.width+2,this.size);
                 g.stroke();
             }
             if (state.DEBUG) if (this.attached) {
                 g.beginPath();
                 g.dashed(1,1);
                 g.strokeStyle(COLOR_HIGHLIGHT);
-                g.moveTo(this.x,this.y);
+                g.moveTo(x,y);
                 g.lineTo(this.attached.x,this.attached.y);
                 g.stroke();
             }
@@ -41,7 +47,7 @@ class Label extends Object {
                 g.beginPath();
                 g.standard(1);
                 g.strokeStyle(COLOR_RED);
-                g.rect(this.x-1-(this.align=="center"?this.width/2:0),this.y-this.size/2-2,this.width+2,this.size);
+                g.rect(x-1-(this.align=="center"?this.width/2:0),y-this.size/2-2,this.width+2,this.size);
                 g.stroke();
             }
         }

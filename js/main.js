@@ -18,16 +18,11 @@ const fb=new BaseForm("notitle",0,40,ww,wh-40);
 setupStatus();
 const bar=new Buttonbar("noframe",0,0,ww,40);
 
-var m=16; // margin for help frame
-const fh=new Form("HELP","Help", ww/m, 20+wh/m, (m-2)*ww/m, (m-2)*wh/m);
-m=10; // margin for prefs frame
-const fp=new PrefForm("Preferences", ww/m, 20+wh/m, (m-2)*ww/m, (m-2)*wh/m);
-//fp.addChild();
-m=12; // margin for file frame
-const ff=new FileForm("Open Files", ww/m, 20+wh/m, (m-2)*ww/m, (m-2)*wh/m);
+const fh=new Form("HELP","Help", 16);
+const fp=new PrefForm("Preferences", 10);
+const ff=new FileForm("Open Files", 12);
 const textbox=new TextboxForm("Textbox",100,0,100,20,'frame',"default text");
-m=3;
-const splash = new SplashForm("PetriNet Simulator", ww/m, 20+wh/m, (m-2)*ww/m, (m-2)*wh/m);
+const splash = new SplashForm("PetriNet Simulator", 3);
 new MouseEvent(
     "mousemove",
     {
@@ -52,6 +47,9 @@ var ms,msSlowrun=0;
 function animate() {
     ww=window.innerWidth, wh=window.innerHeight;
     fb.w=ww; fb.h=wh-40; bar.w=ww;
+    ff.initSize();
+    fp.initSize();
+    splash.initSize();
     grid=fp.gridSize.value;
     events.processEvent();
     ms=Date.now();

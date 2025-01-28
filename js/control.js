@@ -6,6 +6,7 @@ class Control extends Label {
         this.value=value;
         this.valueLabel=new Label(value.toString(),x+120,y,"left");
         parent.addChild(this);
+        this.parent=parent;
     }
     newValue() {
         this.valueLabel.text=this.value.toString();
@@ -23,8 +24,8 @@ class Control extends Label {
     }
     draw(hoveredHighlighted=false) {
         if (this.visible) {
-            super.draw(hoveredHighlighted);
-            this.valueLabel.draw(hoveredHighlighted);
+            super.draw(hoveredHighlighted, this.parent);
+            this.valueLabel.draw(hoveredHighlighted, this.parent);
         }
     }
     increment() {

@@ -1,6 +1,6 @@
 class SplashForm extends Form {
-    constructor(title,x,y,w,h) {
-        super("SPLASHFORM",title,x,y,w,h);
+    constructor(title, margin) { // m=margin
+        super("SPLASHFORM", title, 20, 10, 200, 100, margin);
 //        this.visible=true;
 //        this.active=true;
         this.visible=false;

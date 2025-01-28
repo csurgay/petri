@@ -21,8 +21,9 @@ class Forms {
 }
 
 class Form extends Frame {
-    constructor(id,title,x,y,w,h) {
+    constructor(id,title,x,y,w,h,margin) {
         super(title,x,y,w,h);
+        this.margin=margin;
         this.id=id;
         this.hovered=null;
         this.dragged=null;
@@ -32,6 +33,12 @@ class Form extends Frame {
         forms.addForm(this);
         this.mouseDownCoord=new Coord(0,0);
         this.children=[];
+    }
+    initSize() {
+        this.x=ww/this.margin;
+        this.y=20+wh/this.margin;
+        this.w=(this.margin-2)*ww/this.margin;
+        this.h=(this.margin-2)*wh/this.margin;
     }
     addChild(child) {
         this.children.push(child);
@@ -88,8 +95,8 @@ class Form extends Frame {
 var files=[], directory="", selectedFile=-1;
 
 class FileForm extends Form {
-    constructor(title,x,y,w,h) {
-        super("FILEFORM",title,x,y,w,h);        
+    constructor(title, margin) { // m=margin
+        super("FILEFORM", title, 20, 10, 200, 100, margin);
     }
     draw() {
         super.draw();
