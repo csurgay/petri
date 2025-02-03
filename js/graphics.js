@@ -95,8 +95,8 @@ var alpha=0.0;
 function drawRotatingPacman() {
     var speed=0;
     if (state.is("PLAY")) speed=1;
-    else if (state.is("RUN")) speed=4;
-    else if (state.is("FLY")) speed=20;
+    else if (state.is("RUN")) speed=3;
+    else if (state.is("FLY")) speed=10;
     g.beginPath();
     g.standard(1);
     alpha += speed*2*Math.PI/60/4;

@@ -57,22 +57,14 @@ function animate() {
     g.translate(0.5, 0.5);
     // Forms
     forms.draw();
-    // Running mode
     drawRotatingPacman();
-    if (state.is("FLY")) { 
-        pn.fireOne(); 
-    }
-    else if (state.is("RUN")) { 
-        if (ms-msSlowrun>100) {
-            pn.fireOne();
+    // Running mode
+    const delays= { "PLAY":1000, "RUN":100, "FLY":0 };
+    if (state.s in delays) {
+        if (ms-msSlowrun>delays[state.s]) {
+            pn.fireOne(); 
             msSlowrun=ms;
-        } 
-    }
-    else if (state.is("PLAY")) { 
-        if (ms-msSlowrun>1000) {
-            pn.fireOne();
-            msSlowrun=ms;
-        } 
+        }
     }
     if (state.is("PLAY")||state.is("RUN")||state.is("FLY")) {
         if (fp.assertOnOff.value) {
