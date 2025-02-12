@@ -55,3 +55,5 @@ Todo:
 - Pref Control string edit textbox
 - Multi column file logistics
 - Preview small petrinet in files open dialog
+- Save/Load also from LocalStorage
+- Preview nets in small in files window
