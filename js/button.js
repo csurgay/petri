@@ -23,8 +23,8 @@ class Button extends Object {
         if (state.is("RUN") && this.button=="RUN" ||
             state.is("PLAY") && this.button=="PLAY" ||
             state.is("FLY") && this.button=="FLY") {
-                g.fillStyle(COLOR_CANVAS);
-                g.standard(5);
+            g.fillStyle(COLOR_CANVAS);
+            g.standard(5);
         }
         ovalPatch(this.x,this.y,this.w,bh,br);
         g.fill();
@@ -141,12 +141,12 @@ class Button extends Object {
         else if (this.button=="PREF") {
             g.beginPath();
             var cx=this.x,cy=this.y,notches=8,
-            radiusO=bh/2-2,radiusI=bh/3-1,radiusH=bh/7,
-            taperO=50,taperI=35, // outer/inner taper %
-            angle=2*Math.PI/(notches*2), // angle between notches
-            taperAI=angle*taperI*0.005, // inner taper offset (100% = half notch)
-            taperAO=angle*taperO*0.005, // outer taper offset
-            toggle=false; // notch radius level (i/o)
+                radiusO=bh/2-2,radiusI=bh/3-1,radiusH=bh/7,
+                taperO=50,taperI=35, // outer/inner taper %
+                angle=2*Math.PI/(notches*2), // angle between notches
+                taperAI=angle*taperI*0.005, // inner taper offset (100% = half notch)
+                taperAO=angle*taperO*0.005, // outer taper offset
+                toggle=false; // notch radius level (i/o)
             g.moveTo(cx+radiusO*Math.cos(taperAO),cy+radiusO*Math.sin(taperAO));
             for (var a=angle;a<=2*Math.PI;a+=angle) {
                 // draw inner to outer line
@@ -167,6 +167,22 @@ class Button extends Object {
             g.arc(cx, cy, radiusH, 0,2*Math.PI);
             g.fill("evenodd");
         }
+
+        // BFS Buttons
+        if (this.button == "STEPS+") {
+            drawPlusMinus(this.x, this.y, 6, "+");
+        }
+        if (this.button == "STEPS-") {
+            drawPlusMinus(this.x, this.y, 6, "-");
+        }
+        if (this.button == "SEARCH") {
+            drawBFSIcon(this.x, this.y, 2, 5);
+        }
+        if (this.button == "STEPS") {
+            g.setupText("15px Arial", "center", "center");
+            g.fillText(bfsSteps, this.x, this.y+1);
+        }
+
         if (this.label) this.label.draw();
     }
 
@@ -174,7 +190,7 @@ class Button extends Object {
 
     hover() {
         return (
-            Math.abs(this.x-ccursor.x)<=this.w/2 && 
+            Math.abs(this.x-ccursor.x)<=this.w/2 &&
             Math.abs(this.y-ccursor.y)<=bh/2
         );
     }
@@ -252,6 +268,36 @@ class Button extends Object {
             pn.save(""+ms+".pn");
             alert("PetriNet uploaded for review.");
         }
+
+        // BFS Buttons Eventhandling
+        else if (this.button === "SEARCH") {
+            if (!fbfs.visible) {
+                fb.active = false;
+                fbfs.visible = true;
+                fbfs.active = true;
+                state.set("IDLE");
+
+                if (pn.p.length > 0) {
+                    fbfs.runFrom(pn.p[0]);
+                }
+            } else {
+                fb.active = true;
+                fbfs.visible = false;
+                fbfs.active = false;
+            }
+        }
+        else if (this.button === "STEPS+") {
+            bfsSteps++;
+            if (fbfs.visible)
+                if (pn.p.length > 0)
+                    fbfs.runFrom(pn.p[0]);
+        }
+        else if (this.button === "STEPS-") {
+            if (bfsSteps > 1) bfsSteps--;
+            if (fbfs.visible)
+                if (pn.p.length > 0)
+                    fbfs.runFrom(pn.p[0]);
+        }
     }
 }
 
@@ -272,6 +318,47 @@ function triangle(x,y,w,h,o,r=1) { // r for reverse
     g.lineTo(x-r*w/2+o,y-h/2);
     g.fill();
 }
+
+// New icons for the BFS buttons
+function drawPlusMinus(x, y, size = 8, mode = "+") {
+    g.beginPath();
+    g.lineWidth(2);
+    g.moveTo(x - size, y);
+    g.lineTo(x + size, y);
+    g.stroke();
+
+    if (mode === "+") {
+        g.beginPath();
+        g.moveTo(x, y - size);
+        g.lineTo(x, y + size);
+        g.stroke();
+    }
+}
+
+function drawBFSIcon(x, y, r = 3, size = 10) {
+    const nodes = [
+        { x: x, y: y - size },
+        { x: x - size, y: y + size },
+        { x: x + size, y: y + size }
+    ];
+
+    g.beginPath();
+    g.lineWidth(2);
+
+    g.moveTo(nodes[0].x, nodes[0].y);
+    g.lineTo(nodes[1].x, nodes[1].y);
+    g.moveTo(nodes[0].x, nodes[0].y);
+    g.lineTo(nodes[2].x, nodes[2].y);
+    g.moveTo(nodes[1].x, nodes[1].y);
+    g.stroke();
+
+    nodes.forEach(n => {
+        g.beginPath();
+        g.arc(n.x, n.y, r, 0, 2 * Math.PI);
+        g.fill();
+    });
+}
+
 
 function curvedArrow(x,y,r=1) { // r for reverse
     g.beginPath();

@@ -21,6 +21,9 @@ const bar=new Buttonbar("noframe",0,0,ww,40);
 const fh=new Form("HELP","Help", 16);
 const fp=new PrefForm("Preferences", 10);
 const ff=new FileForm("Open Files", 12);
+// BFS Form
+const fbfs =new BFSForm("BFS", 10);
+
 const textbox=new TextboxForm("Textbox",100,0,100,20,'frame',"default text");
 const splash = new SplashForm("PetriNet Simulator", 3);
 new MouseEvent(
@@ -49,6 +52,8 @@ function animate() {
     fb.w=ww; fb.h=wh-40; bar.w=ww;
     ff.initSize();
     fp.initSize();
+    // Taken from the live site, this wasn't pushed to git yet
+    fbfs.initSize(); fbfs.x+=300; fbfs.w-=300;
     splash.initSize();
     grid=fp.gridSize.value;
     events.processEvent();
@@ -62,7 +67,7 @@ function animate() {
     const delays= { "PLAY":1000, "RUN":100, "FLY":0 };
     if (state.s in delays) {
         if (ms-msSlowrun>delays[state.s]) {
-            pn.fireOne(); 
+            pn.fireOne();
             msSlowrun=ms;
         }
     }
