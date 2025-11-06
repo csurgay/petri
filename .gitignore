@@ -1,5 +1,0 @@
-.gitignore
-upload/*
-node_modules
-package.json
-package-lock.json
