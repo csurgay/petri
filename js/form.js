@@ -41,8 +41,8 @@ class Form extends Frame {
         this.w=(this.margin-2)*ww/this.margin;
         this.h=(this.margin-2)*wh/this.margin;
 	if (this.halfScreen) {
-		this.x += ww / 2;
-		this.w -= ww / 2;
+		this.x += (ww / 2 - ww/this.margin);
+		this.w -= (ww / 2 - ww/this.margin);
 	}
     }
     addChild(child) {
