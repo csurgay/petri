@@ -27,12 +27,12 @@ const fbfs =new BFSForm("BFS", 10);
 const textbox=new TextboxForm("Textbox",100,0,100,20,'frame',"default text");
 const splash = new SplashForm("PetriNet Simulator", 3);
 new MouseEvent(
-  "mousemove",
-  {
-      clientX: 210,
-      clientY: 210,
-      bubbles: true
-  }
+    "mousemove",
+    {
+        clientX: 210,
+        clientY: 210,
+        bubbles: true
+    }
 )
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);

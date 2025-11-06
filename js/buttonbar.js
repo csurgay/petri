@@ -15,7 +15,7 @@ class Buttonbar extends Form {
         this.b.push(new Button("SAVE","SAVE",x+dx++*(w+ddw),y,w,()=>{return !this.running()&&!fp.active && !fbfs.active}));
         this.b.push(new Button("UNDO","UNDO",x+dx++*(w+ddw),y,w,()=>{return undoPtr>0 && !this.running()&&!fp.active && !fbfs.active}));
         this.b.push(new Button("REDO","REDO",x+dx++*(w+ddw),y,w,()=>{return undoPtr<undo.length-1 && !this.running()&&!fp.active && !fbfs.active}));
-    
+
         x+=dx*(w+ddw)-w/2,w=50,x+=w/2+dw,dx=0;
         this.b.push(new Button("REWIND","m0",x+dx++*(w+ddw),y,w,()=>{return pn.mptr>0 && !this.running()&&!fp.active && !fbfs.active}));
         this.b.push(new Button("STEP_BWD","STEP-",x+dx++*(w+ddw),y,w,()=>{return pn.mptr>0 && !this.running()&&!fp.active && !fbfs.active}));
@@ -50,7 +50,7 @@ class Buttonbar extends Form {
         this.hovered=this.getCursoredObject(pMyEvent);
         if (state.is("IDLE") || this.running()) {
             if (pMyEvent.type=="mu" && pMyEvent.button==LEFTBUTTON &&
-                this.hovered) 
+                this.hovered)
             {
                 this.hovered.clicked(pMyEvent);
             }
@@ -59,7 +59,7 @@ class Buttonbar extends Form {
     getCursoredObject(pMyEvent) {
         var ret=null;
         if (ret==null)
-            this.b.forEach(item => { 
+            this.b.forEach(item => {
                 if (item.hover()) ret=item;
             });
         return ret;

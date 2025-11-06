@@ -21,8 +21,8 @@ class Button extends Object {
             g.standard(3);
         }
         if (state.is("RUN") && this.button=="RUN" ||
-          state.is("PLAY") && this.button=="PLAY" ||
-          state.is("FLY") && this.button=="FLY") {
+            state.is("PLAY") && this.button=="PLAY" ||
+            state.is("FLY") && this.button=="FLY") {
             g.fillStyle(COLOR_CANVAS);
             g.standard(5);
         }
@@ -141,12 +141,12 @@ class Button extends Object {
         else if (this.button=="PREF") {
             g.beginPath();
             var cx=this.x,cy=this.y,notches=8,
-              radiusO=bh/2-2,radiusI=bh/3-1,radiusH=bh/7,
-              taperO=50,taperI=35, // outer/inner taper %
-              angle=2*Math.PI/(notches*2), // angle between notches
-              taperAI=angle*taperI*0.005, // inner taper offset (100% = half notch)
-              taperAO=angle*taperO*0.005, // outer taper offset
-              toggle=false; // notch radius level (i/o)
+                radiusO=bh/2-2,radiusI=bh/3-1,radiusH=bh/7,
+                taperO=50,taperI=35, // outer/inner taper %
+                angle=2*Math.PI/(notches*2), // angle between notches
+                taperAI=angle*taperI*0.005, // inner taper offset (100% = half notch)
+                taperAO=angle*taperO*0.005, // outer taper offset
+                toggle=false; // notch radius level (i/o)
             g.moveTo(cx+radiusO*Math.cos(taperAO),cy+radiusO*Math.sin(taperAO));
             for (var a=angle;a<=2*Math.PI;a+=angle) {
                 // draw inner to outer line
@@ -190,8 +190,8 @@ class Button extends Object {
 
     hover() {
         return (
-          Math.abs(this.x-ccursor.x)<=this.w/2 &&
-          Math.abs(this.y-ccursor.y)<=bh/2
+            Math.abs(this.x-ccursor.x)<=this.w/2 &&
+            Math.abs(this.y-ccursor.y)<=bh/2
         );
     }
 
