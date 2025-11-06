@@ -22,7 +22,7 @@ const fh=new Form("HELP","Help", 16);
 const fp=new PrefForm("Preferences", 10);
 const ff=new FileForm("Open Files", 12);
 // BFS Form
-const fbfs =new BFSForm("BFS", 10);
+const fbfs =new BFSForm("BFS", 20);
 
 const textbox=new TextboxForm("Textbox",100,0,100,20,'frame',"default text");
 const splash = new SplashForm("PetriNet Simulator", 3);
