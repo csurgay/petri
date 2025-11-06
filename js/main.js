@@ -53,7 +53,7 @@ function animate() {
     ff.initSize();
     fp.initSize();
     // Taken from the live site, this wasn't pushed to git yet
-    fbfs.initSize(); fbfs.x+=300; fbfs.w-=300;
+    fbfs.initSize();
     splash.initSize();
     grid=fp.gridSize.value;
     events.processEvent();

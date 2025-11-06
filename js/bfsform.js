@@ -257,6 +257,10 @@ class BFSForm extends Form {
             if (k === "s" && this.levelHeight > 70) this.levelHeight -= 10;
             if (k === "a") this.spacingX += 10;
             if (k === "d" && this.spacingX > 80) this.spacingX -= 10;
+	    // switch to full screen
+	    if (k === " ") {
+                this.halfScreen = !this.halfScreen;
+	    }
         }
 
         super.processFormEvent(evt);

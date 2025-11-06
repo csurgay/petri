@@ -33,12 +33,17 @@ class Form extends Frame {
         forms.addForm(this);
         this.mouseDownCoord=new Coord(0,0);
         this.children=[];
+	this.halfScreen = false;
     }
     initSize() {
         this.x=ww/this.margin;
         this.y=20+wh/this.margin;
         this.w=(this.margin-2)*ww/this.margin;
         this.h=(this.margin-2)*wh/this.margin;
+	if (this.halfScreen) {
+		this.x += ww / 2;
+		this.w -= ww / 2;
+	}
     }
     addChild(child) {
         this.children.push(child);
