@@ -65,6 +65,16 @@ class BaseForm extends Form {
                 this.hovered.changeTokens(delta);
                 pn.needTimedUndo="AFTER_IDLETIME";
             }
+            // Add/remove tokens with arrows
+            if (evt.type === "kd" && SCA(evt, "sca") &&
+                this.hovered && this.hovered.type=="PLACE")
+            {
+                const k = evt.key;
+                if (k === "ArrowUp") this.hovered.changeTokens(1);
+                if (k === "ArrowDown") this.hovered.changeTokens(-1);
+
+                pn.needTimedUndo="AFTER_IDLETIME";
+            }
         }
         // IDLE STATE
         if (state.is("IDLE")) {
