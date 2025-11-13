@@ -48,7 +48,8 @@ class BFSForm extends Form {
         });
 
         // Position for every node
-        // Even Spacing and doesn't look good on big graphs but that is fixed by panning/dragging and centering + cutoff
+        // Even Spacing
+	// doesn't look good on big graphs but that is fixed by panning/dragging and centering + cutoff
         const positions = new Map();
 
         let maxWidth = 0;
@@ -228,7 +229,6 @@ class BFSForm extends Form {
         g.setupText("14px Arial", "left", "top");
         g.fillText(`BFS depth: ${bfsSteps}`, this.x + 20, this.y + 30);
         g.fillText(`Nodes: ${this.nodes.size}`, this.x + 20, this.y + 50);
-        g.fillText(`Use the Arrow keys to pan, W and S to change level height, A and D to change horizontal spacing`, this.x + 20, this.y + 70);
 
         // Will finish integrating steps buttons into the form later.
         //this.b.push(new Button("STEPS-", "STEPS-", this.x+40, this.y+100, 50, ()=>{return true}));
