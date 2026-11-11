@@ -1,0 +1,39 @@
+2025-10-08 08:42:50
+Places:
+P1 180.0 -80.0 red 1 "piros" 240.0 -100.0 red
+P2 180.0 40.0 #dddd00 0 "sárga" 240.0 40.0 #dddd00
+P3 180.0 160.0 green 0 "zöld" 240.0 160.0 green
+P4 620.0 -80.0 red 2 "piros" 560.0 -100.0 red
+P5 620.0 40.0 #dddd00 0 "sárga" 560.0 40.0 #dddd00
+P6 620.0 160.0 green 0 "zöld" 560.0 160.0 green
+Transitions:
+T1 180.0 -20.0 black 1.571 "T1" 140.0 -20.0 black
+T2 180.0 100.0 black 1.571 "T2" 140.0 60.0 black
+T3 20.0 40.0 black 1.571 "T3" 0.0 20.0 black
+T4 760.0 40.0 black 1.571 "T3" 740.0 20.0 black
+T5 620.0 -20.0 black 1.571 "T1" 660.0 -20.0 black
+T6 620.0 100.0 black 1.571 "T2" 660.0 100.0 black
+Flows:
+F7 black ENABLER 1 P3 T2 false 3 0
+F8 black ENABLER 1 T2 P2 false -1 0
+F9 black ENABLER 1 P2 T1 false 3 0
+F10 black ENABLER 1 T1 P1 false -1 0
+F11 black ENABLER 2 P1 T3 false 2 2 M9 180.0 -120.0 M7 20.0 -120.0
+F12 black ENABLER 1 T3 P3 false -1 1 M13 20.0 160.0
+F13 black ENABLER 1 P6 T6 false 3 0
+F14 black ENABLER 1 T6 P5 false -1 0
+F15 black ENABLER 1 P5 T5 false 3 0
+F16 black ENABLER 1 T5 P4 false -1 0
+F17 black ENABLER 2 P4 T4 false 2 2 M26 620.0 -120.0 M27 760.0 -120.0
+F18 black ENABLER 1 T4 P6 false -1 1 M28 760.0 160.0
+F19 black ENABLER 1 T5 P1 false -1 2 M108 440.0 -20.0 M109 380.0 -80.0
+F20 black ENABLER 1 T1 P4 false -1 2 M106 380.0 -20.0 M111 440.0 -80.0
+Labels:
+L13 black 24 "Sziráki Vilmos - 2025-10-07" 400.0 240.0 none
+Config:
+zoom: 1.0
+cx: 200.0
+cy: 200.0
+vpx: -180.0
+vpy: 60.0
+End

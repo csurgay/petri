@@ -1,0 +1,63 @@
+2025-02-03 11:19:05
+Places:
+P28 700.0 60.0 black 9 "Hours" 700.0 20.0 black
+P30 500.0 60.0 black 12 "Days" 500.0 20.0 black
+P31 300.0 60.0 black 0 "Months" 300.0 20.0 black
+P32 80.0 60.0 black 2 "Years" 80.0 20.0 black
+P33 200.0 200.0 black 2 "P33" 163.0 203.0 black
+P34 200.0 340.0 black 0 "Leap Years" 200.0 380.0 black
+P36 420.0 220.0 black 1 "P36" 384.0 220.0 black
+P37 880.0 60.0 black 39 "Minutes" 860.0 20.0 black
+P38 480.0 340.0 black 31 "JAN" 480.0 380.0 black
+P39 540.0 340.0 black 28 "FEB" 540.0 380.0 black
+P40 600.0 340.0 black 31 "MAR" 600.0 380.0 black
+P41 660.0 340.0 black 30 "APR" 660.0 380.0 black
+P42 720.0 340.0 black 31 "MAY" 720.0 380.0 black
+P43 780.0 340.0 black 30 "JUN" 780.0 380.0 black
+P44 840.0 340.0 black 31 "JUL" 840.0 380.0 black
+P45 900.0 340.0 black 31 "AUG" 900.0 380.0 black
+P46 960.0 340.0 black 30 "SEP" 960.0 380.0 black
+P47 1020.0 340.0 black 31 "OCT" 1020.0 380.0 black
+P48 1080.0 340.0 black 30 "NOV" 1080.0 380.0 black
+P49 1140.0 340.0 black 31 "DEC" 1140.0 380.0 black
+Transitions:
+T25 780.0 60.0 black -3.142 "T25" 780.0 100.0 black
+T26 600.0 60.0 black 0.000 "T26" 600.0 100.0 black
+T27 400.0 60.0 black -3.142 "T27" 376.0 67.0 black
+T28 200.0 60.0 black -3.142 "T28" 178.0 70.0 black
+T29 200.0 280.0 black -1.571 "T29" 159.0 280.0 black
+T31 460.0 140.0 black 2.073 "T31" 440.0 152.0 black
+T32 980.0 60.0 black 6.283 "T32" 1000.0 100.0 black
+Flows:
+F51 black ENABLER 1 T25 P28 false -1 1 M5 760.0 40.0
+F53 black ENABLER 24 P28 T26 false 3 0
+F54 black ENABLER 1 T26 P30 false -1 1 M14 560.0 40.0
+F55 black ENABLER 31 P30 T27 false 2 0
+F56 black ENABLER 1 T27 P31 false -1 1 M15 360.0 40.0
+F57 black ENABLER 12 P31 T28 false 2 0
+F58 black ENABLER 1 T28 P32 false -1 0
+F60 black ENABLER 1 T28 P33 false -1 1 M16 240.0 120.0
+F61 black ENABLER 4 P33 T29 false 3 0
+F62 black ENABLER 1 T29 P34 false -1 0
+F63 black ENABLER 1 T27 P36 false -1 1 M17 380.0 160.0
+F64 black ENABLER 2 P36 T31 false 7 0
+F65 black ENABLER 31 T31 P30 false -1 1 M17 500.0 120.0
+F66 black INHIBITOR 24 P28 T25 false 15 1 M13 720.0 80.0
+F67 black INHIBITOR 2 P36 T27 false 0 1 M14 420.0 160.0
+F68 black INHIBITOR 4 P33 T28 false 0 1 M15 160.0 140.0
+F69 black INHIBITOR 31 P30 T26 false 12 1 M16 540.0 80.0
+F70 black ENABLER 30 P30 T31 false 12 1 M18 460.0 80.0
+F72 black ENABLER 60 P37 T25 false 2 0
+F73 black ENABLER 1 T32 P37 false -1 1 M20 960.0 20.0
+F74 black INHIBITOR 60 P37 T32 false 12 1 M21 920.0 80.0
+F75 black INHIBITOR 24 P28 T32 false 12 1 M69 740.0 160.0
+F76 black INHIBITOR 31 P30 T32 false 12 1 M70 680.0 180.0
+F77 black INHIBITOR 12 P31 T32 false 12 1 M72 400.0 300.0
+Labels:
+Config:
+zoom: 1.0
+cx: 200.0
+cy: 200.0
+vpx: -40.0
+vpy: -100.0
+End

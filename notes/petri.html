@@ -1,0 +1,1510 @@
+<title>Petri-háló tulajdonságok</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: egyhasábos tankönyv-oldal; minden tulajdonság egy „lap": magyarázat → formula → szóról szóra → élő háló */
+:root{
+  --bg:#f3f5f8; --surface:#ffffff; --soft:#e9edf3; --ink:#1a2130; --muted:#5b6577; --line:#d3d9e3;
+  --accent:#2c56c9; --accent-soft:#e3eafb; --token:#1a2130; --ok:#23804f; --bad:#c13a25; --fire:#e09a10;
+  --f-display:"Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Inter", "Segoe UI", system-ui, sans-serif;
+  --f-math:"STIX Two Text", "Cambria Math", "Times New Roman", serif;
+  --f-mono:"JetBrains Mono", ui-monospace, "Consolas", monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#10141b; --surface:#171d27; --soft:#1f2733; --ink:#e4e8ef; --muted:#9aa4b4; --line:#2c3543;
+    --accent:#86a6ff; --accent-soft:#1f2b49; --token:#e4e8ef; --ok:#5ac48a; --bad:#ff7b64; --fire:#f4bf45; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#10141b; --surface:#171d27; --soft:#1f2733; --ink:#e4e8ef; --muted:#9aa4b4; --line:#2c3543;
+  --accent:#86a6ff; --accent-soft:#1f2b49; --token:#e4e8ef; --ok:#5ac48a; --bad:#ff7b64; --fire:#f4bf45; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.6;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:32px 64px}
+.wrap{max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;line-height:1.15;margin:0}
+h1{font-size:clamp(2rem,5vw,3rem);font-weight:700;letter-spacing:-.02em}
+h2{font-size:1.6rem;font-weight:700}
+h3{font-size:1.05rem;font-weight:700}
+p{margin:0;max-width:68ch}
+a{color:var(--accent)}
+.eyebrow{font-family:var(--f-mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+header{display:flex;flex-direction:column;gap:14px;padding-top:8px}
+.lead{font-size:1.1rem;color:var(--muted)}
+.toc{display:flex;flex-wrap:wrap;gap:8px}
+.toc a{font-family:var(--f-mono);font-size:.82rem;text-decoration:none;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px 12px}
+.toc a:hover,.toc a:focus-visible{border-color:var(--accent);color:var(--accent)}
+
+/* lenyíló dobozok */
+details.box{background:var(--surface);border:1px solid var(--line);border-radius:10px}
+details.box>summary{cursor:pointer;list-style:none;padding:14px 18px;display:flex;align-items:center;gap:12px;font-family:var(--f-display);font-weight:700;font-size:1.05rem}
+details.box>summary::-webkit-details-marker{display:none}
+details.box>summary::before{content:"+";font-family:var(--f-mono);width:24px;height:24px;flex:none;display:grid;place-items:center;border-radius:6px;background:var(--accent-soft);color:var(--accent)}
+details.box[open]>summary::before{content:"−"}
+details.box>summary small{font-family:var(--f-body);font-weight:400;color:var(--muted);font-size:.85rem}
+details.box .inner{padding:0 18px 18px;display:flex;flex-direction:column;gap:14px}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{text-align:left;vertical-align:top;padding:8px 10px;border-top:1px solid var(--line)}
+th{font-family:var(--f-mono);font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500;border-top:none}
+td.sym{font-family:var(--f-math);font-size:1.12rem;white-space:nowrap}
+td.say{font-style:italic;color:var(--muted);white-space:nowrap}
+tr.grp td{font-family:var(--f-display);font-weight:700;background:var(--soft);font-size:.85rem}
+
+/* matek */
+.m{font-family:var(--f-math);font-size:1.08em;white-space:nowrap}
+.v{font-style:italic}
+.q{color:var(--accent);font-weight:600}
+.formula{font-family:var(--f-math);font-size:clamp(1.15rem,3.2vw,1.5rem);background:var(--accent-soft);border-radius:8px;padding:16px 20px;overflow-x:auto;white-space:nowrap;line-height:1.5}
+.formula .lbl{display:block;font-family:var(--f-mono);font-size:.72rem;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);white-space:normal;margin-bottom:4px}
+.formula + .formula{margin-top:-6px}
+ol.read{list-style:none;counter-reset:r;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+ol.read li{counter-increment:r;display:grid;grid-template-columns:28px minmax(0,11.5rem) minmax(0,1fr);gap:4px 12px;align-items:baseline}
+ol.read li::before{content:counter(r);font-family:var(--f-mono);font-size:.78rem;color:var(--accent);background:var(--accent-soft);border-radius:50%;width:22px;height:22px;display:grid;place-items:center}
+ol.read .m{white-space:nowrap;overflow-x:auto}
+@media (max-width:560px){ ol.read li{grid-template-columns:28px minmax(0,1fr)} ol.read li span:last-child{grid-column:2} }
+
+/* tulajdonság-lapok */
+section.prop{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:24px clamp(16px,4vw,32px);display:flex;flex-direction:column;gap:16px;scroll-margin-top:16px}
+.prop-head{display:flex;flex-direction:column;gap:4px}
+.prop-head .eyebrow{color:var(--accent)}
+.note{border-left:3px solid var(--fire);padding:6px 0 6px 14px;color:var(--ink);font-size:.95rem}
+.note b{font-family:var(--f-display)}
+
+/* animált háló */
+figure.demo{margin:0;display:flex;flex-direction:column;gap:10px;border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--bg)}
+.demo canvas{width:100%;height:auto;display:block;border-radius:6px;background:var(--surface)}
+.ctrl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.seg[hidden]{display:none}
+.seg{display:flex;flex-wrap:wrap;gap:4px;background:var(--soft);border-radius:8px;padding:3px}
+.seg button,.btns button{font:500 .85rem var(--f-body);border:0;border-radius:6px;padding:6px 12px;cursor:pointer;color:var(--ink);background:transparent}
+.seg button[aria-pressed="true"]{background:var(--surface);box-shadow:0 1px 2px rgba(0,0,0,.12);color:var(--accent)}
+.btns{display:flex;gap:6px}
+.btns button{background:var(--surface);border:1px solid var(--line)}
+.btns button:hover,.seg button:hover{color:var(--accent)}
+button:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.status{font-family:var(--f-mono);font-size:.82rem;line-height:1.55;color:var(--muted);min-height:3.2em}
+.status b{color:var(--ink);font-weight:500}
+.status .ok{color:var(--ok)} .status .bad{color:var(--bad)}
+figcaption{font-size:.88rem;color:var(--muted)}
+
+.cheat td.sym{white-space:nowrap}
+.sumop{font-size:1.15em}
+.minex{border-left:3px solid var(--accent);padding:4px 0 4px 14px;display:flex;flex-direction:column;gap:6px}
+.minex p{max-width:none}
+.proofs{display:flex;flex-direction:column;gap:14px}
+.pair{border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;background:var(--bg)}
+.pair h4{margin:0;font-family:var(--f-display);font-size:1rem}
+.claim{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;align-items:baseline}
+.verdict{font-family:var(--f-mono);font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;border-radius:4px;padding:2px 7px;white-space:nowrap}
+.verdict.yes{color:var(--ok);background:color-mix(in srgb, var(--ok) 14%, transparent)}
+.verdict.no{color:var(--bad);background:color-mix(in srgb, var(--bad) 14%, transparent)}
+.claim p{max-width:none}
+.claim .stmt{font-family:var(--f-math);font-size:1.08rem}
+table.wide{min-width:640px}
+ul.impl{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px}
+footer{color:var(--muted);font-size:.85rem}
+@media (prefers-reduced-motion: reduce){ *{scroll-behavior:auto} }
+.langsw{position:fixed;top:calc(env(safe-area-inset-top, 0px) + 10px);right:max(12px, calc(env(safe-area-inset-right, 0px) + 12px));z-index:20;display:flex;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px;box-shadow:0 2px 10px rgba(0,0,0,.14)}
+.langsw button{font:600 .78rem var(--f-mono);letter-spacing:.06em;border:0;border-radius:999px;padding:5px 11px;cursor:pointer;background:transparent;color:var(--muted)}
+.langsw button:hover{color:var(--accent)}
+.langsw button[aria-pressed="true"]{background:var(--accent);color:var(--surface)}
+header .eyebrow{padding-right:96px}
+</style>
+
+<div class="langsw" role="group" aria-label="Nyelv / Language"><button type="button" data-set="hu" aria-pressed="true" title="Magyar">HU</button><button type="button" data-set="en" aria-pressed="false" title="English">EN</button></div>
+
+<div class="wrap" data-lang="hu" lang="hu">
+
+<header>
+  <span class="eyebrow">Protokolltervezés · Petri-hálók</span>
+  <h1>Petri-hálók viselkedési tulajdonságai, kvantorokkal</h1>
+  <p class="lead">Hat tulajdonság, mindegyik egy formulával, a formula szóról szóra kiolvasva, és egy élő hálóval, amelyen látszik, mikor teljesül és mikor nem. A hálók véletlenszerűen tüzelnek: ha több tranzíció is engedélyezett, egyet véletlenül választanak.</p>
+  <nav class="toc" aria-label="Tartalom">
+    <a href="#alapok">Alapok</a><a href="#safe">1-safe</a><a href="#bounded">Bounded</a><a href="#terminating">Terminating</a><a href="#deadlock">Deadlock</a><a href="#reversible">Reversible</a><a href="#live">Live</a><a href="#puska">Puska</a><a href="#bizonyitasok">Bizonyítások</a><a href="#tilto">Tiltó él</a>
+  </nav>
+</header>
+
+<details class="box" id="jelolesek">
+  <summary>Jelölések és rövidítések <small>mit jelent a P, T, F, w, M₀, E(M), R(M₀), OS(M)…</small></summary>
+  <div class="inner">
+    <p>Az oldal csak a definícióban szereplő jelöléseket használja: <span class="m"><i>N</i> = (<i>P</i>, <i>T</i>, <i>F</i>, <i>w</i>, <i>M</i>₀)</span>, a jelölés <span class="m"><i>M</i></span>, az engedélyezett tranzíciók halmaza <span class="m"><i>E</i>(<i>M</i>)</span>, az elérhető jelölések halmaza <span class="m"><i>R</i>(<i>M</i>₀)</span> és a maximális tüzelési sorozat <span class="m"><i>OS</i>(<i>M</i>)</span>. Minden mást ezekkel írunk ki.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Jel</th><th>Kiolvasva</th><th>Jelentése</th></tr></thead>
+      <tbody>
+        <tr class="grp"><td colspan="3">A háló szerkezete</td></tr>
+        <tr><td class="sym"><i>N</i> = (<i>P</i>, <i>T</i>, <i>F</i>, <i>w</i>, <i>M</i>₀)</td><td class="say">„az N háló"</td><td>A Petri-háló öt alkotórésze: helyek, tranzíciók, élek, élsúlyok és a kezdő jelölés. M₀ azért része a hálónak, mert más kezdő jelölésből teljesen más állapottér (R(M₀)) adódik.</td></tr>
+        <tr><td class="sym">(<i>P</i>, <i>T</i>, <i>F</i>, <i>w</i>)</td><td class="say">a háló struktúrája</td><td>A háló M₀ nélkül: csak a „rajz", tokenek nélkül. A strukturális tulajdonságok erre vonatkoznak.</td></tr>
+        <tr><td class="sym"><i>P</i></td><td class="say">places, helyek</td><td>A helyek halmaza. Rajzon <b>körök</b>. Egy hely egy állapot-összetevő, pl. „az erőforrás szabad", „üzenet a csatornában".</td></tr>
+        <tr><td class="sym"><i>p</i></td><td class="say">„p hely"</td><td>Egy tetszőleges hely, <i>p</i> ∈ <i>P</i>. Az ábrákon p₁, p₂, … a nevük.</td></tr>
+        <tr><td class="sym"><i>T</i></td><td class="say">transitions</td><td>A tranzíciók halmaza. Rajzon <b>téglalapok</b>. Egy tranzíció egy esemény, pl. „üzenet elküldése".</td></tr>
+        <tr><td class="sym"><i>t</i></td><td class="say">„t tranzíció"</td><td>Egy tetszőleges tranzíció, <i>t</i> ∈ <i>T</i>.</td></tr>
+        <tr><td class="sym"><i>F</i> ⊆ (<i>P</i>×<i>T</i>) ∪ (<i>T</i>×<i>P</i>)</td><td class="say">flow relation, élek</td><td>A nyilak halmaza. <span class="m">(p,t) ∈ F</span>: nyíl megy p-ből t-be (t <b>bemeneti</b> helye p). <span class="m">(t,p) ∈ F</span>: nyíl megy t-ből p-be (t <b>kimeneti</b> helye p). Két hely vagy két tranzíció között nincs nyíl.</td></tr>
+        <tr><td class="sym"><i>w</i> : <i>F</i> → ℕ⁺</td><td class="say">„az él súlya"</td><td>Hány token megy át egyszerre az adott nyílon. Ha a nyílra nincs szám írva, a súly 1. A tüzelési képletben <span class="m">w(x,y) = 0</span>, ha <span class="m">(x,y) ∉ F</span>, vagyis ahol nincs nyíl, ott nem mozog token.</td></tr>
+        <tr class="grp"><td colspan="3">Állapot: a jelölés</td></tr>
+        <tr><td class="sym">token</td><td class="say">„pötty"</td><td>Fekete pont a helyen. A tokenek elosztása a háló pillanatnyi állapota.</td></tr>
+        <tr><td class="sym"><i>M</i> : <i>P</i> → ℕ</td><td class="say">marking, jelölés</td><td>Függvény, amely minden helyhez megmondja, hány token van rajta. Vektorként is írjuk: <span class="m">M = (1, 0, 2)</span>, ha p₁-en 1, p₂-n 0, p₃-on 2 token van.</td></tr>
+        <tr><td class="sym"><i>M</i>(<i>p</i>)</td><td class="say">„M p-nél"</td><td>A <i>p</i> hely tokenszáma az <i>M</i> jelölésben. Pl. <span class="m">M(p₃) = 2</span>.</td></tr>
+        <tr><td class="sym"><i>M</i>₀</td><td class="say">„M nulla"</td><td>A kezdő jelölés: így indul a háló. A háló definíciójának része.</td></tr>
+        <tr><td class="sym"><i>I</i> ⊆ <i>P</i> × <i>T</i></td><td class="say">tiltó élek (kiterjesztés)</td><td>Csak a <a href="#tilto">Tiltó élek</a> fejezetben: <span class="m">(p,t) ∈ I</span> esetén t csak akkor tüzelhet, ha <span class="m">M(p) = 0</span>.</td></tr>
+        <tr><td class="sym"><i>M</i>′</td><td class="say">„M vessző"</td><td>Egy másik jelölés, jellemzően az, amelyik egy tüzelés után jön.</td></tr>
+        <tr><td class="sym"><i>M</i><sub><i>i</i></sub></td><td class="say">„M i"</td><td>Egy jelöléssorozat <i>i</i>-edik tagja: M₀, M₁, M₂, …</td></tr>
+        <tr class="grp"><td colspan="3">Mozgás: engedélyezettség, tüzelés, elérhetőség</td></tr>
+        <tr><td class="sym"><i>E</i>(<i>M</i>)</td><td class="say">„az M-ben engedélyezett tranzíciók"</td><td><span class="m">t ∈ E(M) ⟺ ∀p ∈ P : (p,t) ∈ F ⇒ M(p) ≥ w(p,t)</span>. Minden bemeneti helyen van legalább annyi token, amennyi a nyíl súlya. Az ábrákon az engedélyezett tranzíció kék. E függ a jelöléstől, ezért írjuk <i>E</i>(<i>M</i>)-nek.</td></tr>
+        <tr><td class="sym">tüzelés</td><td class="say">„t tüzel M-ben"</td><td>Ha <span class="m">t ∈ E(M)</span>, akkor t tüzelhet, és az új jelölés <span class="m">M′</span>, ahol <span class="m">∀p ∈ P : M′(p) = M(p) − w(p,t) + w(t,p)</span>.</td></tr>
+        <tr><td class="sym">futás</td><td class="say">tüzelési sorozat</td><td>Tranzíciók <span class="m">t₁, t₂, …</span> és jelölések <span class="m">M₁, M₂, …</span> (M₀-ból indulva), ahol minden lépésben <span class="m">t<sub>i+1</sub> ∈ E(M<sub>i</sub>)</span>, és <span class="m">M<sub>i+1</sub></span> a <span class="m">t<sub>i+1</sub></span> tüzelésének eredménye. Lehet véges vagy végtelen.</td></tr>
+        <tr><td class="sym"><i>OS</i>(<i>M</i>)</td><td class="say">occurrence sequence</td><td>M-ből induló <b>maximális</b> tüzelési sorozat: <span class="m">M t₁ M₁ t₂ M₂ …</span>, amely vagy végtelen, vagy olyan jelölésben ér véget, ahol E = ∅. ∀OS(M): bármelyik ilyen; ∃OS(M): van ilyen.</td></tr>
+        <tr><td class="sym">|<i>OS</i>(<i>M</i>)|</td><td class="say">„a sorozat hossza"</td><td>A tüzelések száma, végtelen sorozatnál ∞.</td></tr>
+        <tr><td class="sym"><i>M</i>′ ∈ <i>OS</i>(<i>M</i>), <i>t</i> ∈ <i>OS</i>(<i>M</i>)</td><td class="say">„előfordul benne"</td><td>M′ a sorozat egyik jelölése; t a sorozatban valahol tüzel.</td></tr>
+        <tr><td class="sym">C(<i>n</i>, <i>k</i>)</td><td class="say">„n alatt a k"</td><td>Binomiális együttható: n elemből k-t hányféleképpen lehet kiválasztani.</td></tr>
+        <tr><td class="sym"><i>R</i>(<i>M</i>₀)</td><td class="say">reachability set</td><td>Az <i>M</i>₀-ból elérhető jelölések halmaza: azok a jelölések, amelyek egy M₀-ból induló véges futás végén előállnak. Maga <i>M</i>₀ is benne van (0 lépéses futás).</td></tr>
+        <tr><td class="sym"><i>R</i>(<i>M</i>)</td><td class="say">„M-ből elérhetők"</td><td>Ugyanez, csak egy tetszőleges <i>M</i> jelölésből indulva.</td></tr>
+        <tr class="grp"><td colspan="3">A tulajdonságok nevei</td></tr>
+        <tr><td class="sym">viselkedési / strukturális</td><td class="say">behavioral / structural</td><td>Viselkedési: az adott M₀-tól függ (az oldal hat tulajdonsága ilyen). Strukturális: csak (P, T, F, w)-től függ, minden vagy valamilyen M₀-ra szól.</td></tr>
+        <tr><td class="sym">1-safe</td><td class="say">biztonságos</td><td>Itt: minden elérhető jelölésben összesen pontosan 1 token van. (Gyakori helyenkénti változat: sehol sincs 1-nél több token.)</td></tr>
+        <tr><td class="sym"><i>k</i>-bounded</td><td class="say">k-korlátos</td><td>Itt: minden elérhető jelölésben összesen legfeljebb <i>k</i> token van. Bounded: van ilyen <i>k</i>. (Helyenkénti változat: sehol sincs <i>k</i>-nál több token; véges P mellett ekvivalens.)</td></tr>
+        <tr><td class="sym">terminating</td><td class="say">termináló</td><td>Minden futás véges sok lépés után megáll.</td></tr>
+        <tr><td class="sym">deadlock / dead marking</td><td class="say">holtpont</td><td>Elérhető jelölés, ahol egyetlen tranzíció sem tüzelhet: <span class="m">E(M) = ∅</span>. Deadlock-free: holtpontmentes.</td></tr>
+        <tr><td class="sym">reversible</td><td class="say">reverzibilis</td><td>Bárhonnan vissza lehet jutni a kezdő jelölésbe.</td></tr>
+        <tr><td class="sym">home state</td><td class="say">„otthoni állapot"</td><td>Olyan jelölés, ahová bárhonnan vissza lehet jutni. Reverzibilis = <i>M</i>₀ home state.</td></tr>
+        <tr><td class="sym">live, L0…L4</td><td class="say">élő, élőségi szintek</td><td>L0: t soha nem tüzelhet (halott). L1: legalább egyszer tüzelhet. L2: bármely k-ra van futás, ahol legalább k-szor tüzel. L3: van végtelen futás, ahol végtelen sokszor tüzel. L4: bárhonnan még tüzeltethető. „Live" = minden tranzíció L4.</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</details>
+
+<details class="box" id="matek">
+  <summary>Matematikai alapfogalmak <small>kvantorok, logikai jelek, halmazok, sorozatok</small></summary>
+  <div class="inner">
+    <div class="tbl"><table>
+      <thead><tr><th>Jel</th><th>Kiolvasva</th><th>Jelentése, példa</th></tr></thead>
+      <tbody>
+        <tr class="grp"><td colspan="3">Kvantorok</td></tr>
+        <tr><td class="sym"><span class="q">∀</span><i>x</i> ∈ <i>A</i></td><td class="say">„minden x-re A-ból"</td><td>Univerzális kvantor (fordított A: <b>A</b>ll). Az utána jövő állítás <b>minden</b> A-beli x-re igaz kell legyen. Egyetlen ellenpélda elég a cáfolathoz.</td></tr>
+        <tr><td class="sym"><span class="q">∃</span><i>x</i> ∈ <i>A</i></td><td class="say">„létezik x A-ban"</td><td>Egzisztenciális kvantor (fordított E: <b>E</b>xists). Elég, ha <b>legalább egy</b> A-beli x-re igaz. Egyetlen példa elég a bizonyításhoz.</td></tr>
+        <tr><td class="sym">:</td><td class="say">„teljesül, hogy" / „amelyre"</td><td>A kvantorok és az állítás közötti elválasztó.</td></tr>
+        <tr><td class="sym">sorrend</td><td class="say"></td><td>A kvantorok sorrendje számít! <span class="m">∀ember ∃anya</span>: mindenkinek van anyja (igaz). <span class="m">∃anya ∀ember</span>: van egy nő, aki mindenkinek az anyja (hamis). Ugyanez dönt a <a href="#bounded">Bounded</a> formulánál.</td></tr>
+        <tr><td class="sym">¬<span class="q">∀</span><i>x</i> : φ ⟺ <span class="q">∃</span><i>x</i> : ¬φ</td><td class="say">tagadás átvitele</td><td>„Nem igaz, hogy mindenkire igaz" = „van, akire nem igaz". És fordítva: <span class="m">¬∃x : φ ⟺ ∀x : ¬φ</span>. Tagadáskor ∀ és ∃ helyet cserél, a tagadás befelé vándorol. Így kapjuk a holtpontmentességet a holtpontból.</td></tr>
+        <tr><td class="sym"><span class="q">∀</span><i>x</i> ∈ <i>A</i> : φ ⇒ ψ</td><td class="say">„minden x-re, amire φ, ψ is"</td><td>Így írjuk, ha csak bizonyos x-ekre szól az állítás. Pl. <span class="m">∀p ∈ P : (p,t) ∈ F ⇒ M(p) ≥ w(p,t)</span>: „minden p-re, amelyből nyíl megy t-be, …". Ahol nincs nyíl, ott az implikáció automatikusan igaz.</td></tr>
+        <tr class="grp"><td colspan="3">Logikai műveletek</td></tr>
+        <tr><td class="sym">¬φ</td><td class="say">„nem φ"</td><td>Tagadás.</td></tr>
+        <tr><td class="sym">φ ∧ ψ</td><td class="say">„φ és ψ"</td><td>Mindkettő igaz.</td></tr>
+        <tr><td class="sym">φ ∨ ψ</td><td class="say">„φ vagy ψ"</td><td>Legalább az egyik igaz.</td></tr>
+        <tr><td class="sym">φ ⇒ ψ</td><td class="say">„ha φ, akkor ψ"</td><td>Implikáció. Csak akkor hamis, ha φ igaz és ψ hamis.</td></tr>
+        <tr><td class="sym">φ ⟺ ψ</td><td class="say">„akkor és csak akkor"</td><td>Ekvivalencia: a kettő pontosan egyszerre igaz.</td></tr>
+        <tr class="grp"><td colspan="3">Halmazok és számok</td></tr>
+        <tr><td class="sym"><i>x</i> ∈ <i>A</i>, <i>x</i> ∉ <i>A</i></td><td class="say">„x eleme A-nak"</td><td>Tartalmazás; áthúzva: nem eleme.</td></tr>
+        <tr><td class="sym"><i>A</i> ⊆ <i>B</i></td><td class="say">„A részhalmaza B-nek"</td><td>A minden eleme B-ben is benne van.</td></tr>
+        <tr><td class="sym"><i>A</i> ∪ <i>B</i>, <i>A</i> × <i>B</i></td><td class="say">unió, Descartes-szorzat</td><td>Unió: mindkettő elemei együtt. A × B: az összes (a, b) pár.</td></tr>
+        <tr><td class="sym">∅</td><td class="say">üres halmaz</td><td>Nincs eleme. <span class="m">E(M) = ∅</span>: M-ben egyetlen tranzíció sem engedélyezett.</td></tr>
+        <tr><td class="sym"><span class="sumop">Σ</span><sub><i>p</i>∈<i>P</i></sub> <i>M</i>(<i>p</i>)</td><td class="say">„szumma M(p), p befutja P-t"</td><td>Összegzés: az összes hely tokenszáma összeadva, vagyis a hálóban lévő tokenek száma. Pl. <span class="m">M = (1, 0, 2)</span> esetén 1 + 0 + 2 = 3.</td></tr>
+        <tr><td class="sym">|<i>P</i>|</td><td class="say">„P elemszáma"</td><td>Hány hely van a hálóban.</td></tr>
+        <tr><td class="sym">ℕ, ℕ⁺</td><td class="say">természetes számok</td><td>ℕ = {0, 1, 2, …}, ℕ⁺ = {1, 2, 3, …}. Tokenszám ℕ-beli (lehet 0), élsúly ℕ⁺-beli.</td></tr>
+        <tr><td class="sym"><i>f</i> : <i>A</i> → <i>B</i></td><td class="say">„f A-ból B-be"</td><td>Függvény: minden A-belihez pontosan egy B-belit rendel. A jelölés <i>M</i> : <i>P</i> → ℕ és a súly <i>w</i> : <i>F</i> → ℕ⁺ ilyen.</td></tr>
+        <tr class="grp"><td colspan="3">Sorozatok</td></tr>
+        <tr><td class="sym"><i>a</i>₁, <i>a</i>₂, <i>a</i>₃, …</td><td class="say">végtelen sorozat</td><td>Minden <i>i</i> ≥ 1 indexhez tartozik egy tag <i>a</i><sub><i>i</i></sub>. Véges sorozat: <i>a</i>₁, …, <i>a</i><sub><i>n</i></sub>, ennek hossza <i>n</i>.</td></tr>
+        <tr><td class="sym">König-lemma</td><td class="say"></td><td>Ha egy fa minden csúcsának véges sok gyereke van, és a fa végtelen, akkor van benne végtelen hosszú ág. Ezért ekvivalens a két Terminating formula, mert <i>T</i> véges.</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</details>
+
+<!-- ALAPOK -->
+<section class="prop" id="alapok">
+  <div class="prop-head"><span class="eyebrow">0 · Definíció és tüzelési szabály</span><h2>Alapok: a háló, és mikor tüzel egy tranzíció?</h2></div>
+  <div class="formula"><span class="lbl">Petri-háló</span><i>N</i> = (<i>P</i>, <i>T</i>, <i>F</i>, <i>w</i>, <i>M</i>₀), &emsp; <i>F</i> ⊆ (<i>P</i>×<i>T</i>) ∪ (<i>T</i>×<i>P</i>), &emsp; <i>w</i> : <i>F</i> → ℕ⁺, &emsp; <i>M</i>₀ : <i>P</i> → ℕ</div>
+  <p>A kezdő jelölés a háló része. Ugyanaz a rajz más M₀-ból teljesen más állapotteret ad. Az <a href="#safe">1-safe</a> fejezet két hálója ugyanaz a (P, T, F, w) struktúra: 1 tokennel 1-safe, 2 tokennel nem. Ha ugyanezt a kört <span class="m">M₀ = (0, 0, 0)</span>-ból indítjuk, azonnal holtpontban van. Ezért az oldal hat tulajdonsága <b>viselkedési</b> tulajdonság: mindig a teljes (P, T, F, w, M₀) hálóra vonatkozik.</p>
+  <p class="note"><b>Strukturális tulajdonságok.</b> Ha M₀-t elhagyjuk, a (P, T, F, w) struktúráról is mondhatunk állításokat, ha M₀-ra kvantálunk. Például <b>strukturálisan korlátos</b>: <span class="m">∀M₀ : P → ℕ</span> esetén (P, T, F, w, M₀) korlátos. <b>Strukturálisan élő</b>: <span class="m">∃M₀ : P → ℕ</span>, amelyre (P, T, F, w, M₀) élő. A kvantor itt is számít: korlátosnak minden kezdő jelölésre kell lennie, élőnek elég egyre.</p>
+  <h3>Tüzelési szabály</h3>
+  <p>Minden tulajdonság erre épül. Egy tranzíció akkor <b>engedélyezett</b>, ha minden olyan helyen, ahonnan nyíl megy bele, legalább annyi token van, amekkora a nyíl súlya. Tüzeléskor elveszi ezeket a tokeneket, és a kimenő nyilai mentén újakat tesz le.</p>
+  <div class="formula"><span class="lbl">Engedélyezettség</span><i>t</i> ∈ <i>E</i>(<i>M</i>) &nbsp;⟺&nbsp; <span class="q">∀</span><i>p</i> ∈ <i>P</i> : &nbsp;(<i>p</i>,<i>t</i>) ∈ <i>F</i> ⇒ <i>M</i>(<i>p</i>) ≥ <i>w</i>(<i>p</i>,<i>t</i>)</div>
+  <ol class="read">
+    <li><span class="m"><i>t</i> ∈ <i>E</i>(<i>M</i>) ⟺</span><span>„t eleme az M-ben engedélyezett tranzíciók halmazának pontosan akkor, ha…</span></li>
+    <li><span class="m"><span class="q">∀</span><i>p</i> ∈ <i>P</i> : (<i>p</i>,<i>t</i>) ∈ <i>F</i> ⇒</span><span>…minden olyan p helyre, amelyből nyíl megy t-be, igaz, hogy…</span></li>
+    <li><span class="m"><i>M</i>(<i>p</i>) ≥ <i>w</i>(<i>p</i>,<i>t</i>)</span><span>…azon a helyen legalább annyi token van, amennyit a nyíl elvisz."</span></li>
+  </ol>
+  <div class="formula"><span class="lbl">Tüzelés: ha t ∈ E(M), az új jelölés M′</span><span class="q">∀</span><i>p</i> ∈ <i>P</i> : &nbsp;<i>M</i>′(<i>p</i>) = <i>M</i>(<i>p</i>) − <i>w</i>(<i>p</i>,<i>t</i>) + <i>w</i>(<i>t</i>,<i>p</i>)</div>
+  <p>Ahol nincs nyíl, ott <span class="m">w = 0</span>, tehát a hely tokenszáma nem változik.</p>
+  <div class="formula"><span class="lbl">Elérhető jelölések, lépésenként felépítve</span>(1) &nbsp;<i>M</i>₀ ∈ <i>R</i>(<i>M</i>₀)<br>(2) &nbsp;<span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) &nbsp;<span class="q">∀</span><i>t</i> ∈ <i>E</i>(<i>M</i>) : &nbsp;<i>M</i>′ ∈ <i>R</i>(<i>M</i>₀), &nbsp;ahol <i>M</i>′ a <i>t</i> tüzelésének eredménye</div>
+  <ol class="read">
+    <li><span class="m"><i>M</i>₀ ∈ <i>R</i>(<i>M</i>₀)</span><span>„A kezdő jelölés elérhető (0 lépésben).</span></li>
+    <li><span class="m"><span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) <span class="q">∀</span><i>t</i> ∈ <i>E</i>(<i>M</i>)</span><span>Ha egy jelölés elérhető, és benne t engedélyezett,…</span></li>
+    <li><span class="m"><i>M</i>′ ∈ <i>R</i>(<i>M</i>₀)</span><span>…akkor a tüzelés utáni jelölés is elérhető." Más elérhető jelölés nincs.</span></li>
+  </ol>
+  <figure class="demo" data-demo="alapok">
+    <canvas></canvas>
+    <div class="ctrl"><div class="seg"></div><div class="btns"></div></div>
+    <div class="status"></div>
+    <figcaption>A t tranzícióhoz 2 token kell p₁-ből (a nyílon a „2") és 1 p₂-ből. Az „engedélyezett" változatban t egyszer tüzel, utána p₁ és p₂ üres, így t ∉ E(M). A „nem engedélyezett" változatban p₁-en csak 1 token van, ezért t már az elején sem tüzelhet.</figcaption>
+  </figure>
+  <h3>Tüzelési sorozat: OS(M)</h3>
+  <div class="formula"><span class="lbl">Maximális tüzelési sorozat (occurrence sequence) M-ből</span><i>OS</i>(<i>M</i>) = <i>M</i> &nbsp;<i>t</i>₁&nbsp; <i>M</i>₁ &nbsp;<i>t</i>₂&nbsp; <i>M</i>₂ &nbsp;…, &emsp; ahol <span class="q">∀</span><i>i</i> : <i>t</i><sub><i>i</i>+1</sub> ∈ <i>E</i>(<i>M</i><sub><i>i</i></sub>) és <i>M</i><sub><i>i</i>+1</sub> a <i>t</i><sub><i>i</i>+1</sub> tüzelésének eredménye</div>
+  <p>A sorozat <b>maximális</b>: vagy végtelen, vagy olyan <span class="m">M<sub>n</sub></span> jelölésben ér véget, ahol <span class="m">E(M<sub>n</sub>) = ∅</span>, tehát nem lehet tovább folytatni. Egy M-ből általában sok ilyen sorozat indul (minden választásnál elágazik). A <span class="m">∀OS(M)</span> „bármelyik ilyen sorozatra", a <span class="m">∃OS(M)</span> „van ilyen sorozat" jelentésű.</p>
+  <ol class="read">
+    <li><span class="m">|<i>OS</i>(<i>M</i>)|</span><span>a sorozat hossza: hány tranzíció tüzel benne. Végtelen sorozatnál ∞, ami egyetlen b ∈ ℕ-nél sem ≤.</span></li>
+    <li><span class="m"><i>M</i>′ ∈ <i>OS</i>(<i>M</i>)</span><span>M′ előfordul a sorozat jelölései között.</span></li>
+    <li><span class="m"><i>t</i> ∈ <i>OS</i>(<i>M</i>)</span><span>t valahol tüzel a sorozatban.</span></li>
+  </ol>
+  <p class="note"><b>Miért kell a maximalitás?</b> Ha bármilyen (bővíthető) sorozatot megengednénk, az üres sorozat is OS(M₀) lenne, 0 hosszal. Ekkor a Deadlock formulája (lent) minden hálóra igaz, a Deadlock-free formulája minden hálóra hamis lenne. A Terminating, Reversible és Live formulákra a maximalitás nem hat, mert egy véges sorozat mindig kiegészíthető maximálissá.</p>
+</section>
+
+<!-- 1-SAFE -->
+<section class="prop" id="safe">
+  <div class="prop-head"><span class="eyebrow">1 · 1-safe</span><h2>Biztonságos (1-safe)</h2></div>
+  <p>Bármeddig futtatjuk a hálót, a hálóban összesen mindig <b>pontosan egy</b> token van. Ilyenkor a háló úgy viselkedik, mint egy állapotgép: a token helye mutatja, melyik állapotban van a rendszer.</p>
+  <div class="formula"><span class="lbl">Az oldalon ezt használjuk</span><span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) : &nbsp;<span class="sumop">Σ</span><sub><i>p</i>∈<i>P</i></sub> <i>M</i>(<i>p</i>) = 1</div>
+  <ol class="read">
+    <li><span class="m"><span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀)</span><span>„Vegyük bármelyik jelölést, amely a kezdő jelölésből elérhető…</span></li>
+    <li><span class="m"><span class="sumop">Σ</span><sub><i>p</i>∈<i>P</i></sub> <i>M</i>(<i>p</i>)</span><span>…és adjuk össze az összes hely tokenszámát…</span></li>
+    <li><span class="m">= 1</span><span>…az összeg pontosan 1."</span></li>
+  </ol>
+  <div class="formula"><span class="lbl">A szakirodalomban gyakori, helyenkénti definíció</span><span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) &nbsp;<span class="q">∀</span><i>p</i> ∈ <i>P</i> : &nbsp;<i>M</i>(<i>p</i>) ≤ 1</div>
+  <p class="note"><b>A kettő nem ugyanaz.</b> A helyenkénti változat csak azt kéri, hogy egyik helyen se legyen 1-nél több token. Az összeges változatból ez következik: ha az összeg 1, egyik tag sem lehet 1-nél nagyobb. Fordítva nem igaz: két token két különböző helyen, vagy egyetlen token sem, helyenként ≤ 1, de az összeg nem 1. Az összeges definíció tehát erősebb. Lásd a <a href="#bizonyitasok">bizonyításokat</a>.</p>
+  <figure class="demo" data-demo="safe">
+    <canvas></canvas>
+    <div class="ctrl"><div class="seg"></div><div class="btns"></div></div>
+    <div class="status"></div>
+    <figcaption>Ugyanaz a körbe kötött háló, egyszer 1, egyszer 2 tokennel. Két tokennél az összeg már M₀-ban 2, így az összeges definíció azonnal sérül. A helyenkénti definíció csak akkor sérül, amikor az egyik token utoléri a másikat, és egy helyen 2 token lesz (a hely pirosra vált).</figcaption>
+  </figure>
+</section>
+
+<!-- BOUNDED -->
+<section class="prop" id="bounded">
+  <div class="prop-head"><span class="eyebrow">2 · Bounded</span><h2>Korlátos (bounded)</h2></div>
+  <p>Létezik egy rögzített szám, <i>k</i>, amelynél több token soha nincs a hálóban összesen. A gyakorlatban: a pufferek véges méretűek, a rendszer nem „fut túl".</p>
+  <div class="formula"><span class="lbl">Az oldalon ezt használjuk</span><span class="q">∃</span><i>k</i> ∈ ℕ &nbsp;<span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) : &nbsp;<span class="sumop">Σ</span><sub><i>p</i>∈<i>P</i></sub> <i>M</i>(<i>p</i>) ≤ <i>k</i></div>
+  <ol class="read">
+    <li><span class="m"><span class="q">∃</span><i>k</i> ∈ ℕ</span><span>„Van egy természetes szám, k, úgy, hogy…</span></li>
+    <li><span class="m"><span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀)</span><span>…bármelyik elérhető jelölést nézzük…</span></li>
+    <li><span class="m"><span class="sumop">Σ</span><sub><i>p</i>∈<i>P</i></sub> <i>M</i>(<i>p</i>) ≤ <i>k</i></span><span>…abban összesen legfeljebb k token van."</span></li>
+  </ol>
+  <div class="formula"><span class="lbl">A szakirodalomban gyakori, helyenkénti definíció</span><span class="q">∃</span><i>k</i> ∈ ℕ &nbsp;<span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) &nbsp;<span class="q">∀</span><i>p</i> ∈ <i>P</i> : &nbsp;<i>M</i>(<i>p</i>) ≤ <i>k</i></div>
+  <p class="note"><b>Itt a kettő ekvivalens</b>, mert <i>P</i> véges. Ha az összeg legfeljebb k, akkor minden tag is legfeljebb k. Ha minden helyen legfeljebb k token van, akkor az összeg legfeljebb k·|P| (|P| a helyek száma). A korlát értéke más lehet, de korlát mindkét értelemben pontosan egyszerre van.</p>
+  <p class="note"><b>A sorrend a lényeg.</b> A <i>k</i>-t <b>előre</b> kell kiválasztani, egyetlen közös korlátként, és utána kell működnie minden jelölésre. Ha fordítva írnánk, <span class="m">∀M ∈ R(M₀) ∃k ∈ ℕ : Σ<sub>p∈P</sub> M(p) ≤ k</span>, az mindig igaz volna: minden egyes jelölésben véges sok token van, tehát mindegyikhez találunk saját <i>k</i>-t. A korlátlan változatban épp ez történik: minden lépésben van korlát, de az egyre nő.</p>
+  <div class="pair">
+    <div class="claim"><span class="verdict yes">tétel</span><p class="stmt">korlátos ⟺ R(M₀) véges (véges állapottér)</p></div>
+    <p><b>Bizonyítás.</b> (⇒) Legyen <span class="m">m = |P|</span>. Ha minden elérhető jelölésben <span class="m">Σ<sub>p∈P</sub> M(p) ≤ b</span>, akkor R(M₀) elemei azon jelölések közül kerülnek ki, amelyek legfeljebb b tokent osztanak szét m helyre. Pontosan j tokent <span class="m">C(j+m−1, m−1)</span>-féleképpen lehet szétosztani (golyók és válaszfalak: j golyó és m−1 válaszfal sorrendje). Legfeljebb b tokent <span class="m">C(b+m, m)</span>-féleképpen (egy plusz „maradék" hellyel). Ez véges szám, tehát R(M₀) véges. (⇐) Ha R(M₀) véges, legyen <span class="m">b = max<sub>M∈R(M₀)</sub> Σ<sub>p∈P</sub> M(p)</span>. Ez jó korlát. ∎</p>
+    <p>Példa: m = 4 hely, b = 6 token, pontosan 6 token esetén <span class="m">C(9, 3) = 84</span> jelölés lehetséges.</p>
+  </div>
+  <figure class="demo" data-demo="bounded">
+    <canvas></canvas>
+    <div class="ctrl"><div class="seg"></div><div class="btns"></div></div>
+    <div class="status"></div>
+    <figcaption>Korlátos: a 2 tokenes kör. Minden tüzelés 1 tokent vesz el és 1-et tesz le, ezért az összeg mindig 2, k = 2 jó korlát. Korlátlan: t₁ 1 tokent vesz el és 2-t tesz le (vissza p₁-be és p₂-be), így az összeg minden tüzeléssel eggyel nő.</figcaption>
+  </figure>
+</section>
+
+<!-- TERMINATING -->
+<section class="prop" id="terminating">
+  <div class="prop-head"><span class="eyebrow">3 · Terminating</span><h2>Termináló (terminating)</h2></div>
+  <p>Akárhogy választjuk a tüzelő tranzíciókat, a háló véges sok lépés után megáll. Nincs végtelen futás.</p>
+  <div class="formula"><span class="lbl">Definíció</span><span class="q">∃</span><i>b</i> ∈ ℕ &nbsp;<span class="q">∀</span><i>OS</i>(<i>M</i>₀) : &nbsp;|<i>OS</i>(<i>M</i>₀)| ≤ <i>b</i></div>
+  <ol class="read">
+    <li><span class="m"><span class="q">∃</span><i>b</i> ∈ ℕ</span><span>„Van egy b szám, hogy…</span></li>
+    <li><span class="m"><span class="q">∀</span><i>OS</i>(<i>M</i>₀)</span><span>…bármelyik M₀-ból induló maximális tüzelési sorozatot nézzük,…</span></li>
+    <li><span class="m">|<i>OS</i>(<i>M</i>₀)| ≤ <i>b</i></span><span>…az legfeljebb b lépés hosszú."</span></li>
+  </ol>
+  <p>Egy végtelen sorozat hossza ∞, ez egyetlen b-nél sem ≤, így a formula a végtelen futásokat is kizárja.</p>
+  <div class="formula"><span class="lbl">Kifejtve E-vel: nincs végtelen futás</span>¬ <span class="q">∃</span><i>t</i>₁, <i>t</i>₂, … ∈ <i>T</i> &nbsp;<span class="q">∃</span><i>M</i>₁, <i>M</i>₂, … &nbsp;<span class="q">∀</span><i>i</i> ∈ ℕ :<br>&emsp;<i>t</i><sub><i>i</i>+1</sub> ∈ <i>E</i>(<i>M</i><sub><i>i</i></sub>) &nbsp;∧&nbsp; <span class="q">∀</span><i>p</i> ∈ <i>P</i> : <i>M</i><sub><i>i</i>+1</sub>(<i>p</i>) = <i>M</i><sub><i>i</i></sub>(<i>p</i>) − <i>w</i>(<i>p</i>,<i>t</i><sub><i>i</i>+1</sub>) + <i>w</i>(<i>t</i><sub><i>i</i>+1</sub>,<i>p</i>)</div>
+  <ol class="read">
+    <li><span class="m">¬ <span class="q">∃</span><i>t</i>₁, <i>t</i>₂, … ∈ <i>T</i></span><span>„Nem létezik olyan végtelen tranzíció-sorozat…</span></li>
+    <li><span class="m"><span class="q">∃</span><i>M</i>₁, <i>M</i>₂, …</span><span>…és hozzá olyan végtelen jelöléssorozat (M₀-ból indulva)…</span></li>
+    <li><span class="m"><span class="q">∀</span><i>i</i> ∈ ℕ</span><span>…hogy minden i-edik lépésre igaz:</span></li>
+    <li><span class="m"><i>t</i><sub><i>i</i>+1</sub> ∈ <i>E</i>(<i>M</i><sub><i>i</i></sub>)</span><span>a soron következő tranzíció engedélyezett az aktuális jelölésben,…</span></li>
+    <li><span class="m"><span class="q">∀</span><i>p</i> ∈ <i>P</i> : <i>M</i><sub><i>i</i>+1</sub>(<i>p</i>) = …</span><span>…és a következő jelölés pontosan a tüzelés eredménye."</span></li>
+  </ol>
+  <p class="note"><b>Miért ugyanaz a kettő?</b> A definíció azt mondja, hogy a futások hossza korlátos, a kifejtett alak azt, hogy nincs végtelen futás. A futásokat egy fába rendezhetjük: gyökér M₀, minden jelölés gyerekei a belőle egy tüzeléssel elérhetők. Mivel <i>T</i> véges, minden csúcsnak véges sok gyereke van. A König-lemma szerint ha nincs végtelen ág, akkor a fa véges, tehát az ágak hossza korlátos.</p>
+  <figure class="demo" data-demo="terminating">
+    <canvas></canvas>
+    <div class="ctrl"><div class="seg"></div><div class="btns"></div></div>
+    <div class="status"></div>
+    <figcaption>Termináló: 3 token halad p₁-ből p₃-ba, pontosan 6 tüzelés után mind p₃-ban van, és E(M) = ∅. Nem termináló: a kör sosem áll meg.</figcaption>
+  </figure>
+</section>
+
+<!-- DEADLOCK -->
+<section class="prop" id="deadlock">
+  <div class="prop-head"><span class="eyebrow">4 · Deadlock</span><h2>Holtpont (deadlock) és holtpontmentesség</h2></div>
+  <p>Holtpont az az elérhető jelölés, ahol <b>egyetlen tranzíció sem</b> engedélyezett: a rendszer megakadt. A klasszikus példa: két folyamat két erőforrást fordított sorrendben foglal le, és mindkettő a másik által fogott erőforrásra vár.</p>
+  <div class="formula"><span class="lbl">M holtpont-jelölés</span><span class="q">∀</span><i>t</i> ∈ <i>T</i> : &nbsp;<i>t</i> ∉ <i>E</i>(<i>M</i>) &emsp;<span style="color:var(--muted)">(röviden: <i>E</i>(<i>M</i>) = ∅)</span></div>
+  <div class="formula"><span class="lbl">A hálóban van holtpont</span><span class="q">∃</span><i>b</i> ∈ ℕ &nbsp;<span class="q">∃</span><i>OS</i>(<i>M</i>₀) : &nbsp;|<i>OS</i>(<i>M</i>₀)| ≤ <i>b</i></div>
+  <ol class="read">
+    <li><span class="m"><span class="q">∃</span><i>b</i> ∈ ℕ</span><span>„Van egy b szám…</span></li>
+    <li><span class="m"><span class="q">∃</span><i>OS</i>(<i>M</i>₀)</span><span>…és van egy M₀-ból induló maximális tüzelési sorozat,…</span></li>
+    <li><span class="m">|<i>OS</i>(<i>M</i>₀)| ≤ <i>b</i></span><span>…amely legfeljebb b hosszú", vagyis véges.</span></li>
+  </ol>
+  <p>Egy véges maximális sorozat azért ér véget, mert az utolsó jelölésében <span class="m">E(M) = ∅</span>. Ez a jelölés a holtpont. A b itt el is hagyható (elég: van véges maximális sorozat), de vele jól látszik a párhuzam: a Terminating <span class="m">∃b ∀OS</span>, a Deadlock <span class="m">∃b ∃OS</span>.</p>
+  <div class="formula"><span class="lbl">Kifejtve E-vel</span><span class="q">∃</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) &nbsp;<span class="q">∀</span><i>t</i> ∈ <i>T</i> : &nbsp;<i>t</i> ∉ <i>E</i>(<i>M</i>)</div>
+  <div class="formula"><span class="lbl">Holtpontmentes (deadlock-free): az előző tagadása</span><span class="q">∀</span><i>b</i> ∈ ℕ &nbsp;<span class="q">∀</span><i>OS</i>(<i>M</i>₀) : &nbsp;|<i>OS</i>(<i>M</i>₀)| &gt; <i>b</i></div>
+  <ol class="read">
+    <li><span class="m"><span class="q">∀</span><i>b</i> ∈ ℕ</span><span>„Akármekkora b számot választunk,…</span></li>
+    <li><span class="m"><span class="q">∀</span><i>OS</i>(<i>M</i>₀)</span><span>…bármelyik M₀-ból induló maximális tüzelési sorozat…</span></li>
+    <li><span class="m">|<i>OS</i>(<i>M</i>₀)| &gt; <i>b</i></span><span>…hosszabb b-nél", vagyis minden maximális futás végtelen.</span></li>
+  </ol>
+  <div class="formula"><span class="lbl">Kifejtve E-vel</span><span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) &nbsp;<span class="q">∃</span><i>t</i> ∈ <i>T</i> : &nbsp;<i>t</i> ∈ <i>E</i>(<i>M</i>)</div>
+  <p class="note"><b>A tagadás lépései:</b> ¬∃b ∃OS : |OS| ≤ b &nbsp;→&nbsp; ∀b ¬∃OS : |OS| ≤ b &nbsp;→&nbsp; ∀b ∀OS : ¬(|OS| ≤ b) &nbsp;→&nbsp; ∀b ∀OS : |OS| &gt; b. Minden lépésben a ¬ egy kvantorral beljebb lép, és az a kvantor átfordul.</p>
+  <figure class="demo" data-demo="deadlock">
+    <canvas></canvas>
+    <div class="ctrl"><div class="seg"></div><div class="btns"></div></div>
+    <div class="status"></div>
+    <figcaption>Felül az A, alul a B folyamat, középen az r₁ és r₂ erőforrás. „Fordított sorrend": A előbb r₁-et, B előbb r₂-t kéri, így előbb-utóbb mindkettő a másikra vár. „Azonos sorrend": mindketten r₁-gyel kezdenek, holtpont nem alakulhat ki.</figcaption>
+  </figure>
+</section>
+
+<!-- REVERSIBLE -->
+<section class="prop" id="reversible">
+  <div class="prop-head"><span class="eyebrow">5 · Reversible</span><h2>Reverzibilis (reversible)</h2></div>
+  <p>Bármilyen állapotba is jutott a háló, onnan mindig van út vissza a kezdő jelölésbe. A gyakorlatban: a rendszer bármikor „alaphelyzetbe" tud állni, pl. egy protokoll minden üzenetváltás után visszaér a nyugalmi állapotába.</p>
+  <div class="formula"><span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) &nbsp;<span class="q">∃</span><i>OS</i>(<i>M</i>) : &nbsp;<i>M</i>₀ ∈ <i>OS</i>(<i>M</i>)</div>
+  <ol class="read">
+    <li><span class="m"><span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀)</span><span>„Bármelyik elérhető jelölésre igaz, hogy…</span></li>
+    <li><span class="m"><span class="q">∃</span><i>OS</i>(<i>M</i>)</span><span>…van belőle induló maximális tüzelési sorozat,…</span></li>
+    <li><span class="m"><i>M</i>₀ ∈ <i>OS</i>(<i>M</i>)</span><span>…amelyben a kezdő jelölés újra előfordul."</span></li>
+  </ol>
+  <div class="formula"><span class="lbl">Kifejtve</span><span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) : &nbsp;<i>M</i>₀ ∈ <i>R</i>(<i>M</i>)</div>
+  <div class="formula"><span class="lbl">Általánosítás: létezik home state</span><span class="q">∃</span><i>M</i>′ ∈ <i>R</i>(<i>M</i>₀) &nbsp;<span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) : &nbsp;<i>M</i>′ ∈ <i>R</i>(<i>M</i>)</div>
+  <p>Ez gyengébb: van <b>valamilyen</b> elérhető „otthon" jelölés, ahová mindig vissza lehet térni, de ez nem feltétlenül a kezdő jelölés.</p>
+  <figure class="demo" data-demo="reversible">
+    <canvas></canvas>
+    <div class="ctrl"><div class="seg"></div><div class="btns"></div></div>
+    <div class="status"></div>
+    <figcaption>Reverzibilis: a kör minden harmadik lépésben visszaér M₀-ba. Nem reverzibilis: t₁ egyszer kiviszi a tokent p₁-ből, és p₁-be semmi sem tesz vissza tokent. A p₂–p₃ kör itt home state-et ad, de M₀ elveszett.</figcaption>
+  </figure>
+</section>
+
+<!-- LIVE -->
+<section class="prop" id="live">
+  <div class="prop-head"><span class="eyebrow">6 · Live</span><h2>Élő (live, L4-élő)</h2></div>
+  <p>Bármelyik tranzíciót nézzük, és bármilyen állapotba jutott is a háló, onnan mindig van folytatás, amelyben ez a tranzíció újra tüzelhet. Egyetlen tranzíció sem „hal el" véglegesen. Ez erősebb, mint a holtpontmentesség, ahol csak annyit kérünk, hogy <b>valami</b> mindig tüzelhessen.</p>
+  <div class="formula"><span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) &nbsp;<span class="q">∀</span><i>t</i> ∈ <i>T</i> &nbsp;<span class="q">∃</span><i>OS</i>(<i>M</i>) : &nbsp;<i>t</i> ∈ <i>OS</i>(<i>M</i>)</div>
+  <ol class="read">
+    <li><span class="m"><span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀)</span><span>„Bármelyik elérhető jelölésre…</span></li>
+    <li><span class="m"><span class="q">∀</span><i>t</i> ∈ <i>T</i></span><span>…és bármelyik tranzícióra…</span></li>
+    <li><span class="m"><span class="q">∃</span><i>OS</i>(<i>M</i>)</span><span>…van M-ből induló maximális tüzelési sorozat,…</span></li>
+    <li><span class="m"><i>t</i> ∈ <i>OS</i>(<i>M</i>)</span><span>…amelyben t tüzel."</span></li>
+  </ol>
+  <p>A két ∀ sorrendje felcserélhető, mert azonos típusú kvantorok.</p>
+  <div class="formula"><span class="lbl">Kifejtve E-vel</span><span class="q">∀</span><i>t</i> ∈ <i>T</i> &nbsp;<span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) &nbsp;<span class="q">∃</span><i>M</i>′ ∈ <i>R</i>(<i>M</i>) : &nbsp;<i>t</i> ∈ <i>E</i>(<i>M</i>′)</div>
+  <div class="tbl"><table class="wide">
+    <thead><tr><th>Szint</th><th>Formula egy adott t-re</th><th>Szavakkal</th></tr></thead>
+    <tbody>
+      <tr><td>L0 (halott)</td><td class="sym"><span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) : <i>t</i> ∉ <i>E</i>(<i>M</i>)</td><td>t soha, semmilyen elérhető jelölésben nem tüzelhet.</td></tr>
+      <tr><td>L1</td><td class="sym"><span class="q">∃</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) : <i>t</i> ∈ <i>E</i>(<i>M</i>)</td><td>t legalább egyszer tüzelhet (az L0 tagadása).</td></tr>
+      <tr><td>L4 (élő)</td><td class="sym"><span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) <span class="q">∃</span><i>M</i>′ ∈ <i>R</i>(<i>M</i>) : <i>t</i> ∈ <i>E</i>(<i>M</i>′)</td><td>bárhonnan újra tüzeltethető.</td></tr>
+    </tbody>
+  </table></div>
+  <figure class="demo" data-demo="live">
+    <canvas></canvas>
+    <div class="ctrl"><div class="seg"></div><div class="btns"></div></div>
+    <div class="status"></div>
+    <figcaption>A tranzíciók alatti szám: hányszor tüzelt eddig. Élő: mindhárom számláló folyamatosan nő. Nem élő: t₀ egyszer tüzel, utána soha többé, mert p₀-ba semmi sem tesz tokent. A háló közben holtpontmentes, a t₁–t₂ kör örökké fut.</figcaption>
+  </figure>
+</section>
+
+<!-- PUSKA -->
+<section class="prop" id="puska">
+  <div class="prop-head"><span class="eyebrow">Összefoglaló</span><h2>Puska, összefüggések, bizonyítások</h2></div>
+  <div class="tbl"><table class="cheat">
+    <thead><tr><th>Tulajdonság</th><th>Formula (OS(M): maximális tüzelési sorozat)</th></tr></thead>
+    <tbody>
+      <tr><td>Engedélyezett</td><td class="sym"><i>t</i> ∈ <i>E</i>(<i>M</i>) ⟺ <span class="q">∀</span><i>p</i> ∈ <i>P</i> : (<i>p</i>,<i>t</i>) ∈ <i>F</i> ⇒ <i>M</i>(<i>p</i>) ≥ <i>w</i>(<i>p</i>,<i>t</i>)</td></tr>
+      <tr><td>1-safe</td><td class="sym"><span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) : <span class="sumop">Σ</span><sub><i>p</i>∈<i>P</i></sub> <i>M</i>(<i>p</i>) = 1</td></tr>
+      <tr><td>Bounded</td><td class="sym"><span class="q">∃</span><i>k</i> ∈ ℕ <span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) : <span class="sumop">Σ</span><sub><i>p</i>∈<i>P</i></sub> <i>M</i>(<i>p</i>) ≤ <i>k</i></td></tr>
+      <tr><td>Terminating</td><td class="sym"><span class="q">∃</span><i>b</i> ∈ ℕ <span class="q">∀</span><i>OS</i>(<i>M</i>₀) : |<i>OS</i>(<i>M</i>₀)| ≤ <i>b</i></td></tr>
+      <tr><td>Van deadlock</td><td class="sym"><span class="q">∃</span><i>b</i> ∈ ℕ <span class="q">∃</span><i>OS</i>(<i>M</i>₀) : |<i>OS</i>(<i>M</i>₀)| ≤ <i>b</i></td></tr>
+      <tr><td>Deadlock-free</td><td class="sym"><span class="q">∀</span><i>b</i> ∈ ℕ <span class="q">∀</span><i>OS</i>(<i>M</i>₀) : |<i>OS</i>(<i>M</i>₀)| &gt; <i>b</i></td></tr>
+      <tr><td>Reversible</td><td class="sym"><span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) <span class="q">∃</span><i>OS</i>(<i>M</i>) : <i>M</i>₀ ∈ <i>OS</i>(<i>M</i>)</td></tr>
+      <tr><td>Live</td><td class="sym"><span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) <span class="q">∀</span><i>t</i> ∈ <i>T</i> <span class="q">∃</span><i>OS</i>(<i>M</i>) : <i>t</i> ∈ <i>OS</i>(<i>M</i>)</td></tr>
+    </tbody>
+  </table></div>
+  <h3 id="bizonyitasok" style="scroll-margin-top:16px">Bizonyítások: implikációk és ellenpéldák</h3>
+  <p>Az A ⇒ B állítás bizonyításához megmutatjuk, hogy minden hálóban, amelyben A teljesül, B is teljesül. Ahhoz, hogy az implikáció <b>nem</b> igaz, elég egyetlen háló (ellenpélda), amelyben A teljesül, B nem. Minden ellenpélda hálója itt helyben is fut. A helyeket a jelölésvektorban p₁, p₂, … sorrendben írjuk.</p>
+  <p>Minden ellenpélda mellett megadjuk a <b>minimálisat</b> is: azt, amelyben a helyek és tranzíciók együttes száma, <span class="m">|P| + |T|</span>, a lehető legkisebb. Feltesszük, hogy <span class="m">P ∪ T ≠ ∅</span>, különben nincs háló. Az ábrákon a „Minimális” gombbal lehet átváltani rá.</p>
+  <div class="proofs">
+
+    <div class="pair">
+      <h4>1. 1-safe és bounded</h4>
+      <div class="claim"><span class="verdict yes">igaz</span><p class="stmt">1-safe ⇒ bounded</p></div>
+      <p><b>Bizonyítás.</b> Tegyük fel, hogy <span class="m">∀M ∈ R(M₀) : Σ<sub>p∈P</sub> M(p) = 1</span>. Válasszuk a <span class="m">k = 1</span> értéket. Ekkor minden <span class="m">M ∈ R(M₀)</span>-ra <span class="m">Σ<sub>p∈P</sub> M(p) = 1 ≤ k</span>. Tehát <span class="m">∃k ∈ ℕ ∀M ∈ R(M₀) : Σ<sub>p∈P</sub> M(p) ≤ k</span>. ∎</p>
+      <div class="claim"><span class="verdict no">nem igaz</span><p class="stmt">bounded ⇒ 1-safe</p></div>
+      <p><b>Ellenpélda:</b> a 2 tokenes kör (<a href="#bounded">Bounded</a>, „Korlátos"), <span class="m">M₀ = (1, 0, 1)</span>. Minden tranzíciónak egy bemeneti és egy kimeneti helye van, mindkét nyíl súlya 1. Így minden tüzelés 1 tokent vesz el és 1-et tesz le, tehát <span class="m">∀M ∈ R(M₀) : Σ<sub>p∈P</sub> M(p) = 2</span>. A háló korlátos (k = 2), de már <span class="m">M₀</span>-ban <span class="m">Σ<sub>p∈P</sub> M₀(p) = 2 ≠ 1</span>, tehát nem 1-safe. ∎</p>
+      <figure class="demo" data-demo="cx_bounded">
+        <canvas></canvas>
+        <div class="ctrl"><div class="seg"></div><div class="btns"></div></div>
+        <div class="status"></div>
+        <figcaption>Ellenpélda: korlátos (Σ = 2 mindig), de nem 1-safe.</figcaption>
+      </figure>
+      <div class="minex">
+        <p><b>Minimális ellenpélda (|P| + |T| = 1):</b> <span class="m">P = {p₁}</span>, <span class="m">T = ∅</span>, <span class="m">M₀ = (2)</span>. Semmi sem tüzelhet, ezért <span class="m">R(M₀) = {M₀}</span>. <span class="m">Σ<sub>p∈P</sub> M₀(p) = 2</span>: korlátos k = 2-vel, de nem 1-safe.</p>
+        <p><b>Miért nem lehet kisebb?</b> Mérete 1, és 0 méretű háló nincs. Ha a definíció <span class="m">T ≠ ∅</span>-t is megköveteli, egy élek nélküli t hozzáadásával (méret 2) ugyanez működik: t mindig tüzelhet, de a jelölést nem változtatja.</p>
+      </div>
+    </div>
+
+    <div class="pair">
+      <h4>2. Összeges és helyenkénti definíció</h4>
+      <div class="claim"><span class="verdict yes">igaz</span><p class="stmt">Σ<sub>p∈P</sub> M(p) = 1 ⇒ ∀p ∈ P : M(p) ≤ 1</p></div>
+      <p><b>Bizonyítás.</b> Minden tag nemnegatív, ezért bármely <span class="m">p ∈ P</span>-re <span class="m">M(p) ≤ Σ<sub>q∈P</sub> M(q) = 1</span>. Ez minden <span class="m">M ∈ R(M₀)</span>-ra igaz, tehát az összeges 1-safe-ből következik a helyenkénti. ∎</p>
+      <div class="claim"><span class="verdict no">nem igaz</span><p class="stmt">∀p ∈ P : M(p) ≤ 1 ⇒ Σ<sub>p∈P</sub> M(p) = 1</p></div>
+      <p><b>Ellenpélda:</b> két független, egytokenes kör egy hálóban. <span class="m">P = {p₁, p₂, p₃, p₄}</span>, <span class="m">M₀ = (1, 0, 1, 0)</span>; t₁ és t₂ p₁ és p₂ között, t₃ és t₄ p₃ és p₄ között viszi körbe a tokent. A két kör nem ér össze, ezért mindkettőben mindig pontosan 1 token van. Így <span class="m">∀M ∈ R(M₀) ∀p ∈ P : M(p) ≤ 1</span> (helyenként 1-safe), de <span class="m">Σ<sub>p∈P</sub> M(p) = 2 ≠ 1</span>. ∎</p>
+      <figure class="demo" data-demo="cx_place">
+        <canvas></canvas>
+        <div class="ctrl"><div class="seg"></div><div class="btns"></div></div>
+        <div class="status"></div>
+        <figcaption>Ellenpélda: egyik helyen sincs soha 1-nél több token, de összesen mindig 2 token van.</figcaption>
+      </figure>
+      <div class="minex">
+        <p><b>Minimális ellenpélda (|P| + |T| = 1):</b> <span class="m">P = {p₁}</span>, <span class="m">T = ∅</span>, <span class="m">M₀ = (0)</span>. <span class="m">R(M₀) = {M₀}</span>, és <span class="m">M₀(p₁) = 0 ≤ 1</span>, tehát helyenként 1-safe, de <span class="m">Σ<sub>p∈P</sub> M₀(p) = 0 ≠ 1</span>.</p>
+        <p><b>Miért nem lehet kisebb?</b> Mérete 1, és 0 méretű háló nincs. (T ≠ ∅ megkövetelése esetén itt is elég egy élek nélküli tranzíció.)</p>
+      </div>
+
+      <div class="claim"><span class="verdict yes">ekvivalens</span><p class="stmt">bounded összeggel ⟺ bounded helyenként</p></div>
+      <p><b>Bizonyítás.</b> (⇒) Ha <span class="m">∀M ∈ R(M₀) : Σ<sub>p∈P</sub> M(p) ≤ k</span>, akkor minden tag is legfeljebb k: <span class="m">M(p) ≤ k</span>. (⇐) Ha <span class="m">∀M ∈ R(M₀) ∀p ∈ P : M(p) ≤ k</span>, akkor <span class="m">Σ<sub>p∈P</sub> M(p) ≤ k · |P|</span>, és ez véges szám, mert P véges. Tehát <span class="m">k · |P|</span> jó korlát. ∎</p>
+    </div>
+
+    <div class="pair">
+      <h4>3. Live és deadlock-free (feltéve, hogy T ≠ ∅)</h4>
+      <div class="claim"><span class="verdict yes">igaz</span><p class="stmt">live ⇒ deadlock-free</p></div>
+      <p><b>Bizonyítás.</b> Legyen <span class="m">M ∈ R(M₀)</span> tetszőleges. Be kell látni, hogy <span class="m">∃t ∈ T : t ∈ E(M)</span>. Mivel <span class="m">T ≠ ∅</span>, vehetünk egy <span class="m">t ∈ T</span>-t. Az élőség miatt <span class="m">∃M′ ∈ R(M) : t ∈ E(M′)</span>. Tekintsük az M-ből M′-be vezető véges futást. Ha 0 lépéses, akkor <span class="m">M′ = M</span>, és <span class="m">t ∈ E(M)</span>. Ha legalább 1 lépéses, akkor az első tüzelő tranzíciója, <span class="m">t₁</span>, az M-ben tüzelt, tehát <span class="m">t₁ ∈ E(M)</span>. Mindkét esetben <span class="m">E(M) ≠ ∅</span>. ∎</p>
+      <p>A <span class="m">T ≠ ∅</span> feltétel kell: ha nincs tranzíció, a „live" formula üres <span class="m">∀t</span> miatt igaz, de <span class="m">E(M₀) = ∅</span>, tehát van holtpont.</p>
+      <div class="claim"><span class="verdict no">nem igaz</span><p class="stmt">deadlock-free ⇒ live</p></div>
+      <p><b>Ellenpélda:</b> a „Nem élő" háló (<a href="#live">Live</a>), helyek p₀, p₁, p₂, <span class="m">M₀ = (1, 0, 0)</span>. <span class="m">R(M₀) = {(1,0,0), (0,1,0), (0,0,1)}</span>, és ezekben rendre <span class="m">t₀</span>, <span class="m">t₁</span>, <span class="m">t₂</span> engedélyezett, tehát holtpontmentes. De <span class="m">M = (0,1,0)</span>-ra <span class="m">R(M) = {(0,1,0), (0,0,1)}</span>, és mindkettőben <span class="m">M(p₀) = 0 &lt; 1 = w(p₀,t₀)</span>, így <span class="m">t₀ ∉ E(M′)</span> egyetlen <span class="m">M′ ∈ R(M)</span>-re sem. Tehát nem élő. ∎</p>
+      <figure class="demo" data-demo="cx_dfree">
+        <canvas></canvas>
+        <div class="ctrl"><div class="seg"></div><div class="btns"></div></div>
+        <div class="status"></div>
+        <figcaption>Ellenpélda: mindig van engedélyezett tranzíció, de t₀ egy tüzelés után halott. A számok a tüzelések számát mutatják.</figcaption>
+      </figure>
+      <div class="minex">
+        <p><b>Minimális ellenpélda (|P| + |T| = 3):</b> <span class="m">P = {p}</span>, <span class="m">T = {t₁, t₂}</span>, <span class="m">F = {(p,t₁), (t₁,p), (p,t₂)}</span>, <span class="m">w(p,t₂) = 2</span>, a többi súly 1, <span class="m">M₀ = (1)</span>. t₁ hurok: elvesz és visszatesz egy tokent, ezért <span class="m">R(M₀) = {(1)}</span> és <span class="m">t₁ ∈ E((1))</span>: holtpontmentes. t₂-höz 2 token kellene, de p-n mindig csak 1 van, ezért t₂ halott: nem élő.</p>
+        <p><b>Miért nem lehet kisebb?</b> Nézzük végig a 3-nál kisebb hálókat. Ha <span class="m">T = ∅</span>, akkor <span class="m">E(M₀) = ∅</span>, nem holtpontmentes. Ha <span class="m">P = ∅</span>, akkor minden tranzíciónak üres a bemenete, mindig engedélyezett, tehát élő. Marad <span class="m">|P| = |T| = 1</span>: itt a holtpontmentesség miatt az egyetlen t minden elérhető jelölésben engedélyezett, tehát élő. Így legalább 3 elem kell.</p>
+      </div>
+    </div>
+
+    <div class="pair">
+      <h4>4. Terminating és deadlock</h4>
+      <div class="claim"><span class="verdict yes">igaz</span><p class="stmt">terminating ⇒ van deadlock</p></div>
+      <p><b>Bizonyítás.</b> Maximális sorozat mindig létezik: M₀-ból addig tüzelünk egy-egy engedélyezett tranzíciót, amíg lehet. Legyen ez <span class="m">OS(M₀)</span>. A terminálás miatt van b, hogy <span class="m">|OS(M₀)| ≤ b</span>. Tehát <span class="m">∃b ∈ ℕ ∃OS(M₀) : |OS(M₀)| ≤ b</span>, ami épp a Deadlock definíciója. (Kifejtve: a sorozat véges, és maximális, ezért utolsó jelölésére <span class="m">E(M<sub>n</sub>) = ∅</span>, és <span class="m">M<sub>n</sub> ∈ R(M₀)</span>.) ∎</p>
+      <div class="claim"><span class="verdict no">nem igaz</span><p class="stmt">van deadlock ⇒ terminating</p></div>
+      <p><b>Ellenpélda:</b> a „Fordított sorrend" háló (<a href="#deadlock">Deadlock</a>). Holtpont: tA1, majd tB1 tüzelése után A₁-ben és B₁-ben van token, r₁ és r₂ üres, és <span class="m">E(M) = ∅</span>. De végtelen futás is van: <span class="m">tA1, tA2, tA3, tA1, tA2, tA3, …</span> Az A folyamat körbejár, B közben B₀-ban vár. Minden lépés engedélyezett, és minden harmadik lépés után visszaérünk M₀-ba. Tehát a háló nem termináló. ∎</p>
+      <figure class="demo" data-demo="cx_deadlock">
+        <canvas></canvas>
+        <div class="ctrl"><div class="seg"></div><div class="btns"></div></div>
+        <div class="status"></div>
+        <figcaption>Ellenpélda: a véletlen futás előbb-utóbb holtpontba kerül, de amíg csak A lép, a futás végtelen is lehet.</figcaption>
+      </figure>
+      <div class="minex">
+        <p><b>Minimális ellenpélda (|P| + |T| = 3):</b> ugyanaz a háló, mint a 3. pont minimális ellenpéldája, csak <span class="m">w(p,t₂) = 1</span>. <span class="m">M₀ = (1)</span>. <span class="m">R(M₀) = {(1), (0)}</span>. t₂ tüzelése után <span class="m">M = (0)</span>, és <span class="m">E(M) = ∅</span>: van holtpont. De a <span class="m">t₁, t₁, t₁, …</span> futás végtelen: nem termináló.</p>
+        <p><b>Miért nem lehet kisebb?</b> Ha <span class="m">T = ∅</span>, nincs végtelen futás. Ha <span class="m">P = ∅</span>, minden tranzíció mindig engedélyezett, nincs holtpont. Ha <span class="m">|P| = |T| = 1</span>, minden lépésben az egyetlen t az egyetlen választás, így csak egy futás van. Ha ez véges, nincs végtelen futás. Ha végtelen, minden elérhető jelölés rajta van, és mindben <span class="m">t ∈ E(M)</span>, tehát nincs holtpont. Így legalább 3 elem kell.</p>
+        <p>Érdemes összevetni a 3. ponttal: a két minimális háló csak egyetlen élsúlyban tér el, és ettől az egyik holtpontmentes, a másik nem.</p>
+      </div>
+    </div>
+
+    <div class="pair">
+      <h4>5. Live és terminating (feltéve, hogy T ≠ ∅)</h4>
+      <div class="claim"><span class="verdict yes">igaz</span><p class="stmt">live ⇒ nem terminating</p></div>
+      <p><b>Bizonyítás.</b> Indirekt: tegyük fel, hogy a háló élő és termináló is. A 4. pont szerint terminálóból <span class="m">∃M ∈ R(M₀) : E(M) = ∅</span>. A 3. pont szerint élőből <span class="m">∀M ∈ R(M₀) : E(M) ≠ ∅</span>. A kettő ellentmond egymásnak. ∎</p>
+      <div class="claim"><span class="verdict no">nem igaz</span><p class="stmt">nem terminating ⇒ live</p></div>
+      <p><b>Ellenpélda:</b> a 3. pont ábráján látható háló. Van végtelen futása (<span class="m">t₀, t₁, t₂, t₁, t₂, …</span>), tehát nem termináló, de a 3. pont szerint nem élő. ∎</p>
+      <div class="minex">
+        <p><b>Minimális ellenpélda (|P| + |T| = 3):</b> a 3. pont minimális hálója (<span class="m">w(p,t₂) = 2</span>, <span class="m">M₀ = (1)</span>). A <span class="m">t₁, t₁, …</span> futás végtelen, tehát nem termináló, de t₂ halott, tehát nem élő.</p>
+        <p><b>Miért nem lehet kisebb?</b> Ha <span class="m">T = ∅</span>, a háló terminál. Ha <span class="m">P = ∅</span>, minden tranzíció mindig engedélyezett, tehát élő. Ha <span class="m">|P| = |T| = 1</span>, csak egy futás van. Ha ez végtelen, minden elérhető jelölés rajta van, mindben <span class="m">t ∈ E(M)</span>, tehát a háló élő. Így legalább 3 elem kell.</p>
+      </div>
+    </div>
+
+    <div class="pair">
+      <h4>6. Reversible és home state</h4>
+      <div class="claim"><span class="verdict yes">igaz</span><p class="stmt">reversible ⇒ van home state</p></div>
+      <p><b>Bizonyítás.</b> Legyen <span class="m">M′ = M₀</span>. Ekkor <span class="m">M′ ∈ R(M₀)</span> (0 lépés), és a reverzibilitás miatt <span class="m">∀M ∈ R(M₀) : M₀ ∈ R(M)</span>. Tehát <span class="m">∃M′ ∈ R(M₀) ∀M ∈ R(M₀) : M′ ∈ R(M)</span>. ∎</p>
+      <div class="claim"><span class="verdict no">nem igaz</span><p class="stmt">van home state ⇒ reversible</p></div>
+      <p><b>Ellenpélda:</b> a „Nem reverzibilis" háló (<a href="#reversible">Reversible</a>), <span class="m">M₀ = (1, 0, 0)</span>. <span class="m">R(M₀) = {(1,0,0), (0,1,0), (0,0,1)}</span>. <span class="m">M′ = (0,1,0)</span> home state: (1,0,0)-ból t₁-gyel, (0,1,0)-ból 0 lépéssel, (0,0,1)-ből t₃-mal elérhető. De <span class="m">M = (0,1,0)</span>-ból M₀ nem érhető el: <span class="m">R(M) = {(0,1,0), (0,0,1)}</span>, mindkettőben <span class="m">M(p₁) = 0</span>, mert nincs olyan t, amelyre <span class="m">(t,p₁) ∈ F</span>. ∎</p>
+      <figure class="demo" data-demo="cx_home">
+        <canvas></canvas>
+        <div class="ctrl"><div class="seg"></div><div class="btns"></div></div>
+        <div class="status"></div>
+        <figcaption>Ellenpélda: (0,1,0) home state, de az első tüzelés után M₀ = (1,0,0) elveszett.</figcaption>
+      </figure>
+      <div class="minex">
+        <p><b>Minimális ellenpélda (|P| + |T| = 2):</b> <span class="m">P = {p}</span>, <span class="m">T = {t}</span>, <span class="m">F = {(p,t)}</span>, <span class="m">M₀ = (1)</span>. t elfogyasztja a tokent: <span class="m">R(M₀) = {(1), (0)}</span>. <span class="m">(0)</span> home state: (1)-ből t-vel, (0)-ból 0 lépéssel elérhető. De (0)-ból (1) nem érhető el, tehát nem reverzibilis.</p>
+        <p><b>Miért nem lehet kisebb?</b> 1 elemű háló esetén <span class="m">T = ∅</span>, vagy <span class="m">P = ∅</span> és egyetlen, élek nélküli t van. Mindkét esetben <span class="m">R(M₀) = {M₀}</span>, ami reverzibilis.</p>
+      </div>
+
+    </div>
+
+    <div class="pair">
+      <h4>7. Reversible és live</h4>
+      <p>Egy hasznos tény: az elérhetőség <b>tranzitív</b>. Ha <span class="m">M′ ∈ R(M)</span> és <span class="m">M″ ∈ R(M′)</span>, akkor <span class="m">M″ ∈ R(M)</span>, mert a két futást egymás után fűzve M-ből M″-be jutunk.</p>
+      <div class="claim"><span class="verdict yes">igaz, feltétellel</span><p class="stmt">reversible ∧ (∀t ∈ T ∃M ∈ R(M₀) : t ∈ E(M)) ⇒ live</p></div>
+      <p><b>A feltétel:</b> nincs halott tranzíció, vagyis minden t legalább egyszer tüzelhet M₀-ból indulva (L1). Ez ésszerű kikötés: ami M₀-ból semmilyen futásban nem tüzelhet, annak nincs szerepe a hálóban, el is hagyható.</p>
+      <p><b>Bizonyítás.</b> Legyen <span class="m">t ∈ T</span> és <span class="m">M ∈ R(M₀)</span> tetszőleges. Keresünk <span class="m">M′ ∈ R(M)</span>-et, amelyre <span class="m">t ∈ E(M′)</span>. A feltétel szerint van <span class="m">M* ∈ R(M₀)</span>, amelyre <span class="m">t ∈ E(M*)</span>. A reverzibilitás szerint <span class="m">M₀ ∈ R(M)</span>. A tranzitivitás miatt <span class="m">M₀ ∈ R(M)</span>-ből és <span class="m">M* ∈ R(M₀)</span>-ból <span class="m">M* ∈ R(M)</span>. Tehát <span class="m">M′ = M*</span> megfelel. Mivel t és M tetszőleges volt, <span class="m">∀t ∈ T ∀M ∈ R(M₀) ∃M′ ∈ R(M) : t ∈ E(M′)</span>. ∎</p>
+      <p>Szemléletesen: bárhonnan vissza tudunk menni M₀-ba, és M₀-ból ugyanazt az utat bejárva újra eljutunk oda, ahol t tüzelhet.</p>
+      <div class="claim"><span class="verdict no">feltétel nélkül nem</span><p class="stmt">reversible ⇒ live</p></div>
+      <p><b>Ellenpélda (ezért kell a feltétel):</b> az 1 tokenes kör (p₁, p₂, p₃, t₁, t₂, t₃), kiegészítve egy p₄ hellyel és egy t₄ tranzícióval: <span class="m">(p₄,t₄) ∈ F</span>, <span class="m">(t₄,p₁) ∈ F</span>, <span class="m">M₀ = (1, 0, 0, 0)</span>. p₄-be nem vezet nyíl, ezért <span class="m">M(p₄) = 0</span> minden elérhető M-ben, így <span class="m">t₄ ∉ E(M)</span> sosem. A kör három lépésenként visszaér M₀-ba, minden elérhető jelölésből: reverzibilis. De t₄ halott, tehát nem élő. Pont ez a t₄ az, amit a feltétel kizár. ∎</p>
+      <figure class="demo" data-demo="cx_revlive">
+        <canvas></canvas>
+        <div class="ctrl"><div class="seg"></div><div class="btns"></div></div>
+        <div class="status"></div>
+        <figcaption>Ellenpélda: reverzibilis, de t₄ soha nem tüzel (×0 marad). t₄ elhagyásával a háló élő lenne.</figcaption>
+      </figure>
+      <div class="minex">
+        <p><b>Minimális ellenpélda (|P| + |T| = 2):</b> <span class="m">P = {p}</span>, <span class="m">T = {t}</span>, <span class="m">F = {(p,t)}</span>, <span class="m">M₀ = (0)</span>. <span class="m">R(M₀) = {(0)}</span>, ez triviálisan reverzibilis. t-hez 1 token kellene, de p mindig üres: t halott, nem élő. (Ez a háló a feltételt is sérti, ahogy kell.)</p>
+        <p><b>Miért nem lehet kisebb?</b> 1 elemű háló esetén <span class="m">T = ∅</span>, és akkor a live formula üres ∀t miatt igaz, vagy <span class="m">P = ∅</span>, és az egyetlen t mindig engedélyezett, tehát élő.</p>
+      </div>
+      <div class="claim"><span class="verdict no">nem igaz</span><p class="stmt">live ⇒ reversible</p></div>
+      <p><b>Ellenpélda:</b> <span class="m">P = {p₁, p₂, p₃}</span>, <span class="m">M₀ = (1, 0, 0)</span>. t₁: <span class="m">(p₁,t₁), (t₁,p₁), (t₁,p₂) ∈ F</span>, t₂: <span class="m">(p₂,t₂), (t₂,p₃) ∈ F</span>, minden súly 1. <span class="m">M(p₁) = 1</span> mindig, ezért <span class="m">t₁ ∈ E(M)</span> minden elérhető M-ben. Bármely M-ből t₁ tüzelése után <span class="m">M′(p₂) ≥ 1</span>, tehát <span class="m">t₂ ∈ E(M′)</span>. Így a háló élő (és nincs halott tranzíciója). De p₃-ból nem indul nyíl, ezért <span class="m">M(p₃)</span> sosem csökken. t₁, t₂ után <span class="m">M(p₃) = 1</span>, és innen <span class="m">M₀</span> (ahol <span class="m">M₀(p₃) = 0</span>) többé nem érhető el. Tehát nem reverzibilis. ∎</p>
+      <figure class="demo" data-demo="cx_liverev">
+        <canvas></canvas>
+        <div class="ctrl"><div class="seg"></div><div class="btns"></div></div>
+        <div class="status"></div>
+        <figcaption>Ellenpélda: mindkét tranzíció újra és újra tüzel (élő), de p₃ tokenszáma csak nő, így M₀ nem érhető el újra.</figcaption>
+      </figure>
+      <div class="minex">
+        <p><b>Minimális ellenpélda (|P| + |T| = 2):</b> <span class="m">P = {p}</span>, <span class="m">T = {t}</span>, <span class="m">F = {(t,p)}</span>, <span class="m">M₀ = (0)</span>. t-nek nincs bemeneti helye, ezért mindig engedélyezett: élő. Minden tüzelés eggyel növeli M(p)-t, ezért (1)-ből (0) = M₀ már nem érhető el: nem reverzibilis.</p>
+        <p><b>Miért nem lehet kisebb?</b> 1 elemű hálóban <span class="m">R(M₀) = {M₀}</span> (vagy nincs tranzíció, vagy az egyetlen tranzíciónak nincs éle), ez pedig reverzibilis.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- KITERJESZTÉS: TILTÓ ÉLEK -->
+<section class="prop" id="tilto">
+  <div class="prop-head"><span class="eyebrow">Kiterjesztés · Inhibitor arcs</span><h2>Tiltó élek</h2></div>
+  <p>A tiltó él (inhibitor arc) egy helyről egy tranzícióba mutat, és a végén nyílhegy helyett <b>kis karika</b> van. Jelentése fordított: a tranzíció csak akkor tüzelhet, ha azon a helyen <b>nincs</b> token. A tiltó él tokent nem mozgat, csak „figyel". Ezzel a háló nullára tud tesztelni: „csak akkor, ha üres a puffer".</p>
+
+  <div class="formula"><span class="lbl">A háló kiegészítve a tiltó élek halmazával</span><i>N</i> = (<i>P</i>, <i>T</i>, <i>F</i>, <i>I</i>, <i>w</i>, <i>M</i>₀), &emsp; <i>I</i> ⊆ <i>P</i> × <i>T</i></div>
+  <p><span class="m">(p,t) ∈ I</span>: tiltó él megy p-ből t-be. Közönséges él és tiltó él ugyanazon (p, t) pár között nem szokás egyszerre.</p>
+
+  <div class="formula"><span class="lbl">Engedélyezettség tiltó élekkel</span><i>t</i> ∈ <i>E</i>(<i>M</i>) &nbsp;⟺&nbsp; <span class="q">∀</span><i>p</i> ∈ <i>P</i> : &nbsp;((<i>p</i>,<i>t</i>) ∈ <i>F</i> ⇒ <i>M</i>(<i>p</i>) ≥ <i>w</i>(<i>p</i>,<i>t</i>)) &nbsp;∧&nbsp; ((<i>p</i>,<i>t</i>) ∈ <i>I</i> ⇒ <i>M</i>(<i>p</i>) = 0)</div>
+  <ol class="read">
+    <li><span class="m"><i>t</i> ∈ <i>E</i>(<i>M</i>) ⟺ <span class="q">∀</span><i>p</i> ∈ <i>P</i> :</span><span>„t pontosan akkor engedélyezett M-ben, ha minden p helyre igaz, hogy…</span></li>
+    <li><span class="m">(<i>p</i>,<i>t</i>) ∈ <i>F</i> ⇒ <i>M</i>(<i>p</i>) ≥ <i>w</i>(<i>p</i>,<i>t</i>)</span><span>…ha p-ből közönséges nyíl megy t-be, ott van elég token (ez a régi feltétel),…</span></li>
+    <li><span class="m">(<i>p</i>,<i>t</i>) ∈ <i>I</i> ⇒ <i>M</i>(<i>p</i>) = 0</span><span>…és ha p-ből tiltó él megy t-be, akkor p üres."</span></li>
+  </ol>
+  <p>A tüzelés képlete <b>változatlan</b>: <span class="m">∀p ∈ P : M′(p) = M(p) − w(p,t) + w(t,p)</span>, mert w csak az F-beli éleken nem nulla. A tiltó élen nem mozog token. (Általánosabb változatban a tiltó élnek is van súlya, és a feltétel <span class="m">M(p) &lt; w(p,t)</span>. A súly nélküli, nullára tesztelő alak ennek <span class="m">w = 1</span> esete.)</p>
+
+  <p class="note"><b>Mi marad változatlan?</b> Mind a hat tulajdonság formulája szó szerint ugyanaz, mert mindegyik csak <span class="m">E(M)</span>-en, <span class="m">R(M₀)</span>-on és <span class="m">OS(M)</span>-en keresztül hivatkozik a hálóra. R és OS is E-ből épül fel, és ezek közül csak E definíciója bővült. A <a href="#bizonyitasok">bizonyítások</a> is érvényesek maradnak: csak E-t, R-t és az elérhetőség tranzitivitását használják.</p>
+
+  <h3>Mi változik meg?</h3>
+  <div class="pair">
+    <div class="claim"><span class="verdict no">elvész</span><p class="stmt">monotonitás</p></div>
+    <p>Közönséges hálóban igaz: ha <span class="m">t ∈ E(M)</span>, és <span class="m">∀p ∈ P : M′(p) ≥ M(p)</span>, akkor <span class="m">t ∈ E(M′)</span>. Több token sosem tilt le semmit. <b>Bizonyítás:</b> ha <span class="m">(p,t) ∈ F</span>, akkor <span class="m">M′(p) ≥ M(p) ≥ w(p,t)</span>. ∎</p>
+    <p>Tiltó éllel ez nem igaz. <b>Ellenpélda:</b> egy hely p, egy tranzíció t, <span class="m">(p,t) ∈ I</span>. <span class="m">M = (0)</span>-ban <span class="m">t ∈ E(M)</span>, de <span class="m">M′ = (1)</span>-ben, ahol <span class="m">M′(p) ≥ M(p)</span>, <span class="m">t ∉ E(M′)</span>. ∎ Ez egyben minimális ellenpélda (|P| + |T| = 2), mert él, és így tiltó él is, csak egy hely és egy tranzíció között lehet.</p>
+  </div>
+  <div class="pair">
+    <div class="claim"><span class="verdict no">elvész</span><p class="stmt">eldönthetőség</p></div>
+    <p>Közönséges hálóra a korlátosság és az elérhetőség eldönthető. A korlátosságot például a Karp–Miller-fa (fedési fa) dönti el, és ez épp a monotonitásra épül. Tiltó élekkel a háló számlálógépet tud szimulálni: minden számlálóhoz egy hely, a nullára tesztelés egy tiltó él. Két számlálós gép már Turing-teljes, ezért két tiltó éllel az elérhetőség és a korlátosság általában <b>eldönthetetlen</b>. A formulák tehát ugyanazok, csak gépi ellenőrzésük már nem garantált.</p>
+  </div>
+
+  <h3>Protokollpélda: újraküldés csak elveszett üzenet után</h3>
+  <p>Stop-and-wait küldő veszteséges csatornán. A küldő elküld egy üzenetet, és nyugtára vár. A csatorna kézbesíti az üzenetet (ekkor a vevő nyugtát küld vissza), vagy az üzenet elvész. Az <b>időtúllépés</b> visszaállítja a küldőt, hogy újraküldhessen, de csak akkor, ha a csatorna és a nyugta-hely is üres. Ez a két tiltó él (karikás vég). Ezt közönséges éllel nem lehet kifejezni, mert ott „van token" a feltétel, „nincs token" nem lehet.</p>
+  <figure class="demo" data-demo="tilto">
+    <canvas></canvas>
+    <div class="ctrl"><div class="seg"></div><div class="btns"></div></div>
+    <div class="status"></div>
+    <figcaption>Tiltó élekkel: az időtúllépés csak akkor kék, ha a csatorna és a nyugta-hely is üres, vagyis az üzenet tényleg elveszett. Ilyenkor a tokenek összege mindig ≤ 2, a háló korlátos. Tiltó élek nélkül: az időtúllépés bármikor tüzelhet, amíg a küldő vár, ezért duplikált üzenetek és nyugták halmozódnak fel. A háló nem korlátos.</figcaption>
+  </figure>
+</section>
+
+<footer>A hálók véletlenszerűen választanak az engedélyezett tranzíciók közül, így minden futás más. A „Lépés" gombbal egyenként is végigkövethető.</footer>
+</div>
+
+<div class="wrap" data-lang="en" lang="en" hidden>
+
+<header>
+  <span class="eyebrow">Protocol engineering · Petri nets</span>
+  <h1>Behavioral properties of Petri nets, with quantifiers</h1>
+  <p class="lead">Six properties, each with a formula, the formula read out word by word, and a live net that shows when the property holds and when it does not. The nets fire at random: when several transitions are enabled, one of them is chosen at random.</p>
+  <nav class="toc" aria-label="Contents">
+    <a href="#en-alapok">Basics</a><a href="#en-safe">1-safe</a><a href="#en-bounded">Bounded</a><a href="#en-terminating">Terminating</a><a href="#en-deadlock">Deadlock</a><a href="#en-reversible">Reversible</a><a href="#en-live">Live</a><a href="#en-puska">Cheat sheet</a><a href="#en-bizonyitasok">Proofs</a><a href="#en-tilto">Inhibitor arcs</a>
+  </nav>
+</header>
+
+<details class="box" id="en-jelolesek">
+  <summary>Notation and abbreviations <small>what P, T, F, w, M₀, E(M), R(M₀), OS(M)… mean</small></summary>
+  <div class="inner">
+    <p>The page uses only the notation of the definition: <span class="m"><i>N</i> = (<i>P</i>, <i>T</i>, <i>F</i>, <i>w</i>, <i>M</i>₀)</span>, the marking <span class="m"><i>M</i></span>, the set of enabled transitions <span class="m"><i>E</i>(<i>M</i>)</span>, the set of reachable markings <span class="m"><i>R</i>(<i>M</i>₀)</span> and the maximal occurrence sequence <span class="m"><i>OS</i>(<i>M</i>)</span>. Everything else is written out with these.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Symbol</th><th>Read as</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr class="grp"><td colspan="3">Structure of the net</td></tr>
+        <tr><td class="sym"><i>N</i> = (<i>P</i>, <i>T</i>, <i>F</i>, <i>w</i>, <i>M</i>₀)</td><td class="say">“the net N”</td><td>The five parts of a Petri net: places, transitions, arcs, arc weights and the initial marking. M₀ is part of the net because a different initial marking gives a completely different state space (R(M₀)).</td></tr>
+        <tr><td class="sym">(<i>P</i>, <i>T</i>, <i>F</i>, <i>w</i>)</td><td class="say">structure of the net</td><td>The net without M₀: just the “drawing”, with no tokens. Structural properties refer to this.</td></tr>
+        <tr><td class="sym"><i>P</i></td><td class="say">places</td><td>The set of places. Drawn as <b>circles</b>. A place is one component of the state, e.g. “the resource is free”, “a message is in the channel”.</td></tr>
+        <tr><td class="sym"><i>p</i></td><td class="say">“place p”</td><td>An arbitrary place, <i>p</i> ∈ <i>P</i>. In the figures they are named p₁, p₂, …</td></tr>
+        <tr><td class="sym"><i>T</i></td><td class="say">transitions</td><td>The set of transitions. Drawn as <b>rectangles</b>. A transition is an event, e.g. “send a message”.</td></tr>
+        <tr><td class="sym"><i>t</i></td><td class="say">“transition t”</td><td>An arbitrary transition, <i>t</i> ∈ <i>T</i>.</td></tr>
+        <tr><td class="sym"><i>F</i> ⊆ (<i>P</i>×<i>T</i>) ∪ (<i>T</i>×<i>P</i>)</td><td class="say">flow relation, arcs</td><td>The set of arrows. <span class="m">(p,t) ∈ F</span>: an arrow goes from p to t (p is an <b>input</b> place of t). <span class="m">(t,p) ∈ F</span>: an arrow goes from t to p (p is an <b>output</b> place of t). There is no arrow between two places or between two transitions.</td></tr>
+        <tr><td class="sym"><i>w</i> : <i>F</i> → ℕ⁺</td><td class="say">“the weight of the arc”</td><td>How many tokens move along the arrow at once. If no number is written on the arrow, the weight is 1. In the firing formula <span class="m">w(x,y) = 0</span> if <span class="m">(x,y) ∉ F</span>: where there is no arrow, no token moves.</td></tr>
+        <tr class="grp"><td colspan="3">State: the marking</td></tr>
+        <tr><td class="sym">token</td><td class="say">“dot”</td><td>A black dot in a place. The distribution of tokens is the current state of the net.</td></tr>
+        <tr><td class="sym"><i>M</i> : <i>P</i> → ℕ</td><td class="say">marking</td><td>A function that tells for every place how many tokens it holds. Also written as a vector: <span class="m">M = (1, 0, 2)</span> if p₁ has 1, p₂ has 0 and p₃ has 2 tokens.</td></tr>
+        <tr><td class="sym"><i>M</i>(<i>p</i>)</td><td class="say">“M at p”</td><td>The number of tokens on place <i>p</i> in marking <i>M</i>. E.g. <span class="m">M(p₃) = 2</span>.</td></tr>
+        <tr><td class="sym"><i>M</i>₀</td><td class="say">“M zero”</td><td>The initial marking: this is how the net starts. It is part of the definition of the net.</td></tr>
+        <tr><td class="sym"><i>I</i> ⊆ <i>P</i> × <i>T</i></td><td class="say">inhibitor arcs (extension)</td><td>Only in the <a href="#en-tilto">Inhibitor arcs</a> chapter: if <span class="m">(p,t) ∈ I</span>, t can fire only when <span class="m">M(p) = 0</span>.</td></tr>
+        <tr><td class="sym"><i>M</i>′</td><td class="say">“M prime”</td><td>Another marking, typically the one that follows a firing.</td></tr>
+        <tr><td class="sym"><i>M</i><sub><i>i</i></sub></td><td class="say">“M i”</td><td>The <i>i</i>-th element of a sequence of markings: M₀, M₁, M₂, …</td></tr>
+        <tr class="grp"><td colspan="3">Movement: enabling, firing, reachability</td></tr>
+        <tr><td class="sym"><i>E</i>(<i>M</i>)</td><td class="say">“transitions enabled in M”</td><td><span class="m">t ∈ E(M) ⟺ ∀p ∈ P : (p,t) ∈ F ⇒ M(p) ≥ w(p,t)</span>. Every input place holds at least as many tokens as the weight of its arrow. In the figures an enabled transition is blue. E depends on the marking, so it is written <i>E</i>(<i>M</i>).</td></tr>
+        <tr><td class="sym">firing</td><td class="say">“t fires in M”</td><td>If <span class="m">t ∈ E(M)</span>, t can fire, and the new marking is <span class="m">M′</span>, where <span class="m">∀p ∈ P : M′(p) = M(p) − w(p,t) + w(t,p)</span>.</td></tr>
+        <tr><td class="sym">run</td><td class="say">firing sequence</td><td>Transitions <span class="m">t₁, t₂, …</span> and markings <span class="m">M₁, M₂, …</span> (starting from M₀) such that in every step <span class="m">t<sub>i+1</sub> ∈ E(M<sub>i</sub>)</span> and <span class="m">M<sub>i+1</sub></span> is the result of firing <span class="m">t<sub>i+1</sub></span>. It can be finite or infinite.</td></tr>
+        <tr><td class="sym"><i>OS</i>(<i>M</i>)</td><td class="say">occurrence sequence</td><td>A <b>maximal</b> firing sequence starting from M: <span class="m">M t₁ M₁ t₂ M₂ …</span>, which is either infinite or ends in a marking where E = ∅. ∀OS(M): any such sequence; ∃OS(M): there is such a sequence.</td></tr>
+        <tr><td class="sym">|<i>OS</i>(<i>M</i>)|</td><td class="say">“length of the sequence”</td><td>The number of firings; ∞ for an infinite sequence.</td></tr>
+        <tr><td class="sym"><i>M</i>′ ∈ <i>OS</i>(<i>M</i>), <i>t</i> ∈ <i>OS</i>(<i>M</i>)</td><td class="say">“occurs in it”</td><td>M′ is one of the markings of the sequence; t fires somewhere in the sequence.</td></tr>
+        <tr><td class="sym">C(<i>n</i>, <i>k</i>)</td><td class="say">“n choose k”</td><td>Binomial coefficient: the number of ways to choose k elements out of n.</td></tr>
+        <tr><td class="sym"><i>R</i>(<i>M</i>₀)</td><td class="say">reachability set</td><td>The set of markings reachable from <i>M</i>₀: the markings at the end of a finite run starting from M₀. <i>M</i>₀ itself is included (a run of 0 steps).</td></tr>
+        <tr><td class="sym"><i>R</i>(<i>M</i>)</td><td class="say">“reachable from M”</td><td>The same, but starting from an arbitrary marking <i>M</i>.</td></tr>
+        <tr class="grp"><td colspan="3">Names of the properties</td></tr>
+        <tr><td class="sym">behavioral / structural</td><td class="say">behavioral / structural</td><td>Behavioral: depends on the given M₀ (all six properties on this page are behavioral). Structural: depends only on (P, T, F, w) and speaks about all or some M₀.</td></tr>
+        <tr><td class="sym">1-safe</td><td class="say">safe</td><td>Here: every reachable marking holds exactly 1 token in total. (Common per-place variant: no place ever holds more than 1 token.)</td></tr>
+        <tr><td class="sym"><i>k</i>-bounded</td><td class="say">k-bounded</td><td>Here: every reachable marking holds at most <i>k</i> tokens in total. Bounded: such a <i>k</i> exists. (Per-place variant: no place holds more than <i>k</i> tokens; equivalent for finite P.)</td></tr>
+        <tr><td class="sym">terminating</td><td class="say">terminating</td><td>Every run stops after finitely many steps.</td></tr>
+        <tr><td class="sym">deadlock / dead marking</td><td class="say">deadlock</td><td>A reachable marking in which no transition can fire: <span class="m">E(M) = ∅</span>. Deadlock-free: no such marking.</td></tr>
+        <tr><td class="sym">reversible</td><td class="say">reversible</td><td>From anywhere you can get back to the initial marking.</td></tr>
+        <tr><td class="sym">home state</td><td class="say">home state</td><td>A marking you can get back to from anywhere. Reversible = <i>M</i>₀ is a home state.</td></tr>
+        <tr><td class="sym">live, L0…L4</td><td class="say">live, liveness levels</td><td>L0: t can never fire (dead). L1: it can fire at least once. L2: for every k there is a run in which it fires at least k times. L3: there is an infinite run in which it fires infinitely often. L4: from anywhere it can still be made to fire. “Live” = every transition is L4.</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</details>
+
+<details class="box" id="en-matek">
+  <summary>Mathematical basics <small>quantifiers, logical symbols, sets, sequences</small></summary>
+  <div class="inner">
+    <div class="tbl"><table>
+      <thead><tr><th>Symbol</th><th>Read as</th><th>Meaning, example</th></tr></thead>
+      <tbody>
+        <tr class="grp"><td colspan="3">Quantifiers</td></tr>
+        <tr><td class="sym"><span class="q">∀</span><i>x</i> ∈ <i>A</i></td><td class="say">“for every x in A”</td><td>Universal quantifier (an upside-down A: <b>A</b>ll). The statement after it must hold for <b>every</b> x in A. A single counterexample refutes it.</td></tr>
+        <tr><td class="sym"><span class="q">∃</span><i>x</i> ∈ <i>A</i></td><td class="say">“there exists x in A”</td><td>Existential quantifier (a mirrored E: <b>E</b>xists). It is enough if the statement holds for <b>at least one</b> x in A. A single example proves it.</td></tr>
+        <tr><td class="sym">:</td><td class="say">“such that” / “it holds that”</td><td>Separates the quantifiers from the statement.</td></tr>
+        <tr><td class="sym">order</td><td class="say"></td><td>The order of quantifiers matters! <span class="m">∀person ∃mother</span>: everyone has a mother (true). <span class="m">∃mother ∀person</span>: there is a woman who is everyone’s mother (false). The same decides the <a href="#en-bounded">Bounded</a> formula.</td></tr>
+        <tr><td class="sym">¬<span class="q">∀</span><i>x</i> : φ ⟺ <span class="q">∃</span><i>x</i> : ¬φ</td><td class="say">pushing negation inward</td><td>“Not true for everyone” = “false for someone”. And conversely: <span class="m">¬∃x : φ ⟺ ∀x : ¬φ</span>. When negating, ∀ and ∃ swap and the negation moves inward. This is how deadlock-freedom follows from the deadlock formula.</td></tr>
+        <tr><td class="sym"><span class="q">∀</span><i>x</i> ∈ <i>A</i> : φ ⇒ ψ</td><td class="say">“for every x with φ, also ψ”</td><td>This is how we restrict a statement to some x only. E.g. <span class="m">∀p ∈ P : (p,t) ∈ F ⇒ M(p) ≥ w(p,t)</span>: “for every p that has an arrow into t, …”. Where there is no arrow, the implication is automatically true.</td></tr>
+        <tr class="grp"><td colspan="3">Logical operations</td></tr>
+        <tr><td class="sym">¬φ</td><td class="say">“not φ”</td><td>Negation.</td></tr>
+        <tr><td class="sym">φ ∧ ψ</td><td class="say">“φ and ψ”</td><td>Both are true.</td></tr>
+        <tr><td class="sym">φ ∨ ψ</td><td class="say">“φ or ψ”</td><td>At least one is true.</td></tr>
+        <tr><td class="sym">φ ⇒ ψ</td><td class="say">“if φ then ψ”</td><td>Implication. False only when φ is true and ψ is false.</td></tr>
+        <tr><td class="sym">φ ⟺ ψ</td><td class="say">“if and only if”</td><td>Equivalence: the two are true at exactly the same time.</td></tr>
+        <tr class="grp"><td colspan="3">Sets and numbers</td></tr>
+        <tr><td class="sym"><i>x</i> ∈ <i>A</i>, <i>x</i> ∉ <i>A</i></td><td class="say">“x is an element of A”</td><td>Membership; crossed out: not an element.</td></tr>
+        <tr><td class="sym"><i>A</i> ⊆ <i>B</i></td><td class="say">“A is a subset of B”</td><td>Every element of A is also in B.</td></tr>
+        <tr><td class="sym"><i>A</i> ∪ <i>B</i>, <i>A</i> × <i>B</i></td><td class="say">union, Cartesian product</td><td>Union: the elements of both together. A × B: all pairs (a, b).</td></tr>
+        <tr><td class="sym">∅</td><td class="say">empty set</td><td>Has no elements. <span class="m">E(M) = ∅</span>: no transition is enabled in M.</td></tr>
+        <tr><td class="sym"><span class="sumop">Σ</span><sub><i>p</i>∈<i>P</i></sub> <i>M</i>(<i>p</i>)</td><td class="say">“sum of M(p) over p in P”</td><td>Summation: the token counts of all places added up, i.e. the number of tokens in the net. E.g. for <span class="m">M = (1, 0, 2)</span> it is 1 + 0 + 2 = 3.</td></tr>
+        <tr><td class="sym">|<i>P</i>|</td><td class="say">“size of P”</td><td>The number of places in the net.</td></tr>
+        <tr><td class="sym">ℕ, ℕ⁺</td><td class="say">natural numbers</td><td>ℕ = {0, 1, 2, …}, ℕ⁺ = {1, 2, 3, …}. Token counts are in ℕ (may be 0), arc weights are in ℕ⁺.</td></tr>
+        <tr><td class="sym"><i>f</i> : <i>A</i> → <i>B</i></td><td class="say">“f from A to B”</td><td>Function: assigns exactly one element of B to every element of A. The marking <i>M</i> : <i>P</i> → ℕ and the weight <i>w</i> : <i>F</i> → ℕ⁺ are functions.</td></tr>
+        <tr class="grp"><td colspan="3">Sequences</td></tr>
+        <tr><td class="sym"><i>a</i>₁, <i>a</i>₂, <i>a</i>₃, …</td><td class="say">infinite sequence</td><td>Every index <i>i</i> ≥ 1 has an element <i>a</i><sub><i>i</i></sub>. A finite sequence: <i>a</i>₁, …, <i>a</i><sub><i>n</i></sub>, of length <i>n</i>.</td></tr>
+        <tr><td class="sym">Kőnig’s lemma</td><td class="say"></td><td>If every node of a tree has finitely many children and the tree is infinite, then it has an infinitely long branch. This is why the two Terminating formulas are equivalent, since <i>T</i> is finite.</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</details>
+
+<!-- BASICS -->
+<section class="prop" id="en-alapok">
+  <div class="prop-head"><span class="eyebrow">0 · Definition and firing rule</span><h2>Basics: the net, and when does a transition fire?</h2></div>
+  <div class="formula"><span class="lbl">Petri net</span><i>N</i> = (<i>P</i>, <i>T</i>, <i>F</i>, <i>w</i>, <i>M</i>₀), &emsp; <i>F</i> ⊆ (<i>P</i>×<i>T</i>) ∪ (<i>T</i>×<i>P</i>), &emsp; <i>w</i> : <i>F</i> → ℕ⁺, &emsp; <i>M</i>₀ : <i>P</i> → ℕ</div>
+  <p>The initial marking is part of the net. The same drawing started from a different M₀ gives a completely different state space. The two nets of the <a href="#en-safe">1-safe</a> chapter have the same (P, T, F, w) structure: with 1 token it is 1-safe, with 2 tokens it is not. If the same ring is started from <span class="m">M₀ = (0, 0, 0)</span>, it is deadlocked immediately. That is why the six properties on this page are <b>behavioral</b> properties: they always refer to the complete net (P, T, F, w, M₀).</p>
+  <p class="note"><b>Structural properties.</b> If we drop M₀, we can still state things about the structure (P, T, F, w) by quantifying over M₀. For example, <b>structurally bounded</b>: for <span class="m">∀M₀ : P → ℕ</span>, (P, T, F, w, M₀) is bounded. <b>Structurally live</b>: <span class="m">∃M₀ : P → ℕ</span> such that (P, T, F, w, M₀) is live. The quantifier matters here too: bounded must hold for every initial marking, live needs only one.</p>
+  <h3>Firing rule</h3>
+  <p>Every property builds on this. A transition is <b>enabled</b> if every place that has an arrow into it holds at least as many tokens as the weight of that arrow. When it fires, it takes these tokens and puts new ones along its outgoing arrows.</p>
+  <div class="formula"><span class="lbl">Enabling</span><i>t</i> ∈ <i>E</i>(<i>M</i>) &nbsp;⟺&nbsp; <span class="q">∀</span><i>p</i> ∈ <i>P</i> : &nbsp;(<i>p</i>,<i>t</i>) ∈ <i>F</i> ⇒ <i>M</i>(<i>p</i>) ≥ <i>w</i>(<i>p</i>,<i>t</i>)</div>
+  <ol class="read">
+    <li><span class="m"><i>t</i> ∈ <i>E</i>(<i>M</i>) ⟺</span><span>“t is an element of the set of transitions enabled in M if and only if…</span></li>
+    <li><span class="m"><span class="q">∀</span><i>p</i> ∈ <i>P</i> : (<i>p</i>,<i>t</i>) ∈ <i>F</i> ⇒</span><span>…for every place p with an arrow into t it holds that…</span></li>
+    <li><span class="m"><i>M</i>(<i>p</i>) ≥ <i>w</i>(<i>p</i>,<i>t</i>)</span><span>…that place has at least as many tokens as the arrow takes.”</span></li>
+  </ol>
+  <div class="formula"><span class="lbl">Firing: if t ∈ E(M), the new marking is M′</span><span class="q">∀</span><i>p</i> ∈ <i>P</i> : &nbsp;<i>M</i>′(<i>p</i>) = <i>M</i>(<i>p</i>) − <i>w</i>(<i>p</i>,<i>t</i>) + <i>w</i>(<i>t</i>,<i>p</i>)</div>
+  <p>Where there is no arrow, <span class="m">w = 0</span>, so the token count of that place does not change.</p>
+  <div class="formula"><span class="lbl">Reachable markings, built step by step</span>(1) &nbsp;<i>M</i>₀ ∈ <i>R</i>(<i>M</i>₀)<br>(2) &nbsp;<span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) &nbsp;<span class="q">∀</span><i>t</i> ∈ <i>E</i>(<i>M</i>) : &nbsp;<i>M</i>′ ∈ <i>R</i>(<i>M</i>₀), &nbsp;where <i>M</i>′ is the result of firing <i>t</i></div>
+  <ol class="read">
+    <li><span class="m"><i>M</i>₀ ∈ <i>R</i>(<i>M</i>₀)</span><span>“The initial marking is reachable (in 0 steps).</span></li>
+    <li><span class="m"><span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) <span class="q">∀</span><i>t</i> ∈ <i>E</i>(<i>M</i>)</span><span>If a marking is reachable and t is enabled in it,…</span></li>
+    <li><span class="m"><i>M</i>′ ∈ <i>R</i>(<i>M</i>₀)</span><span>…then the marking after the firing is also reachable.” There are no other reachable markings.</span></li>
+  </ol>
+  <figure class="demo" data-demo="alapok">
+    <canvas></canvas>
+    <div class="ctrl"><div class="seg"></div><div class="btns"></div></div>
+    <div class="status"></div>
+    <figcaption>Transition t needs 2 tokens from p₁ (the “2” on the arrow) and 1 from p₂. In the “enabled” variant t fires once; afterwards p₁ and p₂ are empty, so t ∉ E(M). In the “not enabled” variant p₁ holds only 1 token, so t cannot fire even at the start.</figcaption>
+  </figure>
+  <h3>Occurrence sequence: OS(M)</h3>
+  <div class="formula"><span class="lbl">Maximal occurrence sequence from M</span><i>OS</i>(<i>M</i>) = <i>M</i> &nbsp;<i>t</i>₁&nbsp; <i>M</i>₁ &nbsp;<i>t</i>₂&nbsp; <i>M</i>₂ &nbsp;…, &emsp; where <span class="q">∀</span><i>i</i> : <i>t</i><sub><i>i</i>+1</sub> ∈ <i>E</i>(<i>M</i><sub><i>i</i></sub>) and <i>M</i><sub><i>i</i>+1</sub> is the result of firing <i>t</i><sub><i>i</i>+1</sub></div>
+  <p>The sequence is <b>maximal</b>: either it is infinite, or it ends in a marking <span class="m">M<sub>n</sub></span> where <span class="m">E(M<sub>n</sub>) = ∅</span>, so it cannot be continued. Usually many such sequences start from an M (they branch at every choice). <span class="m">∀OS(M)</span> means “for any such sequence”, <span class="m">∃OS(M)</span> means “there is such a sequence”.</p>
+  <ol class="read">
+    <li><span class="m">|<i>OS</i>(<i>M</i>)|</span><span>the length of the sequence: how many transitions fire in it. For an infinite sequence it is ∞, which is not ≤ any b ∈ ℕ.</span></li>
+    <li><span class="m"><i>M</i>′ ∈ <i>OS</i>(<i>M</i>)</span><span>M′ occurs among the markings of the sequence.</span></li>
+    <li><span class="m"><i>t</i> ∈ <i>OS</i>(<i>M</i>)</span><span>t fires somewhere in the sequence.</span></li>
+  </ol>
+  <p class="note"><b>Why maximality?</b> If any (extendable) sequence were allowed, the empty sequence would also be an OS(M₀), of length 0. Then the Deadlock formula (below) would hold for every net, and the Deadlock-free formula would be false for every net. Maximality does not affect the Terminating, Reversible and Live formulas, because a finite sequence can always be extended to a maximal one.</p>
+</section>
+
+<!-- 1-SAFE -->
+<section class="prop" id="en-safe">
+  <div class="prop-head"><span class="eyebrow">1 · 1-safe</span><h2>Safe (1-safe)</h2></div>
+  <p>However long we run the net, it always holds <b>exactly one</b> token in total. The net then behaves like a state machine: the position of the token shows which state the system is in.</p>
+  <div class="formula"><span class="lbl">Used on this page</span><span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) : &nbsp;<span class="sumop">Σ</span><sub><i>p</i>∈<i>P</i></sub> <i>M</i>(<i>p</i>) = 1</div>
+  <ol class="read">
+    <li><span class="m"><span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀)</span><span>“Take any marking reachable from the initial marking…</span></li>
+    <li><span class="m"><span class="sumop">Σ</span><sub><i>p</i>∈<i>P</i></sub> <i>M</i>(<i>p</i>)</span><span>…and add up the token counts of all places…</span></li>
+    <li><span class="m">= 1</span><span>…the sum is exactly 1.”</span></li>
+  </ol>
+  <div class="formula"><span class="lbl">Per-place definition, common in the literature</span><span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) &nbsp;<span class="q">∀</span><i>p</i> ∈ <i>P</i> : &nbsp;<i>M</i>(<i>p</i>) ≤ 1</div>
+  <p class="note"><b>The two are not the same.</b> The per-place variant only asks that no place holds more than 1 token. This follows from the sum variant: if the sum is 1, no term can exceed 1. The converse fails: two tokens on two different places, or no token at all, is ≤ 1 per place, but the sum is not 1. So the sum definition is stronger. See the <a href="#en-bizonyitasok">proofs</a>.</p>
+  <figure class="demo" data-demo="safe">
+    <canvas></canvas>
+    <div class="ctrl"><div class="seg"></div><div class="btns"></div></div>
+    <div class="status"></div>
+    <figcaption>The same ring, once with 1 and once with 2 tokens. With two tokens the sum is already 2 in M₀, so the sum definition fails at once. The per-place definition fails only when one token catches up with the other and a place holds 2 tokens (the place turns red).</figcaption>
+  </figure>
+</section>
+
+<!-- BOUNDED -->
+<section class="prop" id="en-bounded">
+  <div class="prop-head"><span class="eyebrow">2 · Bounded</span><h2>Bounded</h2></div>
+  <p>There is a fixed number <i>k</i> such that the net never holds more than k tokens in total. In practice: buffers have finite size, the system does not “overflow”.</p>
+  <div class="formula"><span class="lbl">Used on this page</span><span class="q">∃</span><i>k</i> ∈ ℕ &nbsp;<span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) : &nbsp;<span class="sumop">Σ</span><sub><i>p</i>∈<i>P</i></sub> <i>M</i>(<i>p</i>) ≤ <i>k</i></div>
+  <ol class="read">
+    <li><span class="m"><span class="q">∃</span><i>k</i> ∈ ℕ</span><span>“There is a natural number k such that…</span></li>
+    <li><span class="m"><span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀)</span><span>…whichever reachable marking we look at…</span></li>
+    <li><span class="m"><span class="sumop">Σ</span><sub><i>p</i>∈<i>P</i></sub> <i>M</i>(<i>p</i>) ≤ <i>k</i></span><span>…it holds at most k tokens in total.”</span></li>
+  </ol>
+  <div class="formula"><span class="lbl">Per-place definition, common in the literature</span><span class="q">∃</span><i>k</i> ∈ ℕ &nbsp;<span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) &nbsp;<span class="q">∀</span><i>p</i> ∈ <i>P</i> : &nbsp;<i>M</i>(<i>p</i>) ≤ <i>k</i></div>
+  <p class="note"><b>Here the two are equivalent</b>, because <i>P</i> is finite. If the sum is at most k, every term is at most k. If every place holds at most k tokens, the sum is at most k·|P| (|P| is the number of places). The value of the bound may differ, but a bound exists in one sense exactly when it exists in the other.</p>
+  <p class="note"><b>The order is what matters.</b> <i>k</i> must be chosen <b>in advance</b>, as one common bound, and then work for every marking. Written the other way round, <span class="m">∀M ∈ R(M₀) ∃k ∈ ℕ : Σ<sub>p∈P</sub> M(p) ≤ k</span> would always be true: every single marking holds finitely many tokens, so each one has its own <i>k</i>. That is exactly what happens in the unbounded variant: at every step there is a bound, but it keeps growing.</p>
+  <div class="pair">
+    <div class="claim"><span class="verdict yes">theorem</span><p class="stmt">bounded ⟺ R(M₀) is finite (finite state space)</p></div>
+    <p><b>Proof.</b> (⇒) Let <span class="m">m = |P|</span>. If every reachable marking has <span class="m">Σ<sub>p∈P</sub> M(p) ≤ b</span>, then the elements of R(M₀) are among the markings that distribute at most b tokens over m places. Exactly j tokens can be distributed in <span class="m">C(j+m−1, m−1)</span> ways (stars and bars: the order of j stars and m−1 bars). At most b tokens in <span class="m">C(b+m, m)</span> ways (with one extra “leftover” place). This is a finite number, so R(M₀) is finite. (⇐) If R(M₀) is finite, let <span class="m">b = max<sub>M∈R(M₀)</sub> Σ<sub>p∈P</sub> M(p)</span>. This is a valid bound. ∎</p>
+    <p>Example: m = 4 places, b = 6 tokens; with exactly 6 tokens there are <span class="m">C(9, 3) = 84</span> possible markings.</p>
+  </div>
+  <figure class="demo" data-demo="bounded">
+    <canvas></canvas>
+    <div class="ctrl"><div class="seg"></div><div class="btns"></div></div>
+    <div class="status"></div>
+    <figcaption>Bounded: the 2-token ring. Every firing takes 1 token and puts 1 back, so the sum is always 2 and k = 2 is a valid bound. Unbounded: t₁ takes 1 token and puts 2 (back to p₁ and to p₂), so the sum grows by one with every firing.</figcaption>
+  </figure>
+</section>
+
+<!-- TERMINATING -->
+<section class="prop" id="en-terminating">
+  <div class="prop-head"><span class="eyebrow">3 · Terminating</span><h2>Terminating</h2></div>
+  <p>Whichever transitions we choose to fire, the net stops after finitely many steps. There is no infinite run.</p>
+  <div class="formula"><span class="lbl">Definition</span><span class="q">∃</span><i>b</i> ∈ ℕ &nbsp;<span class="q">∀</span><i>OS</i>(<i>M</i>₀) : &nbsp;|<i>OS</i>(<i>M</i>₀)| ≤ <i>b</i></div>
+  <ol class="read">
+    <li><span class="m"><span class="q">∃</span><i>b</i> ∈ ℕ</span><span>“There is a number b such that…</span></li>
+    <li><span class="m"><span class="q">∀</span><i>OS</i>(<i>M</i>₀)</span><span>…whichever maximal occurrence sequence starting from M₀ we look at,…</span></li>
+    <li><span class="m">|<i>OS</i>(<i>M</i>₀)| ≤ <i>b</i></span><span>…it is at most b steps long.”</span></li>
+  </ol>
+  <p>An infinite sequence has length ∞, which is not ≤ any b, so the formula also rules out infinite runs.</p>
+  <div class="formula"><span class="lbl">Written out with E: no infinite run</span>¬ <span class="q">∃</span><i>t</i>₁, <i>t</i>₂, … ∈ <i>T</i> &nbsp;<span class="q">∃</span><i>M</i>₁, <i>M</i>₂, … &nbsp;<span class="q">∀</span><i>i</i> ∈ ℕ :<br>&emsp;<i>t</i><sub><i>i</i>+1</sub> ∈ <i>E</i>(<i>M</i><sub><i>i</i></sub>) &nbsp;∧&nbsp; <span class="q">∀</span><i>p</i> ∈ <i>P</i> : <i>M</i><sub><i>i</i>+1</sub>(<i>p</i>) = <i>M</i><sub><i>i</i></sub>(<i>p</i>) − <i>w</i>(<i>p</i>,<i>t</i><sub><i>i</i>+1</sub>) + <i>w</i>(<i>t</i><sub><i>i</i>+1</sub>,<i>p</i>)</div>
+  <ol class="read">
+    <li><span class="m">¬ <span class="q">∃</span><i>t</i>₁, <i>t</i>₂, … ∈ <i>T</i></span><span>“There is no infinite sequence of transitions…</span></li>
+    <li><span class="m"><span class="q">∃</span><i>M</i>₁, <i>M</i>₂, …</span><span>…with a matching infinite sequence of markings (starting from M₀)…</span></li>
+    <li><span class="m"><span class="q">∀</span><i>i</i> ∈ ℕ</span><span>…such that for every i-th step:</span></li>
+    <li><span class="m"><i>t</i><sub><i>i</i>+1</sub> ∈ <i>E</i>(<i>M</i><sub><i>i</i></sub>)</span><span>the next transition is enabled in the current marking,…</span></li>
+    <li><span class="m"><span class="q">∀</span><i>p</i> ∈ <i>P</i> : <i>M</i><sub><i>i</i>+1</sub>(<i>p</i>) = …</span><span>…and the next marking is exactly the result of the firing.”</span></li>
+  </ol>
+  <p class="note"><b>Why are the two the same?</b> The definition says that run lengths are bounded; the written-out form says that there is no infinite run. Arrange the runs in a tree: the root is M₀, and the children of a marking are the markings reachable from it by one firing. Since <i>T</i> is finite, every node has finitely many children. By Kőnig’s lemma, if there is no infinite branch, the tree is finite, so branch lengths are bounded.</p>
+  <figure class="demo" data-demo="terminating">
+    <canvas></canvas>
+    <div class="ctrl"><div class="seg"></div><div class="btns"></div></div>
+    <div class="status"></div>
+    <figcaption>Terminating: 3 tokens travel from p₁ to p₃; after exactly 6 firings all are on p₃ and E(M) = ∅. Not terminating: the ring never stops.</figcaption>
+  </figure>
+</section>
+
+<!-- DEADLOCK -->
+<section class="prop" id="en-deadlock">
+  <div class="prop-head"><span class="eyebrow">4 · Deadlock</span><h2>Deadlock and deadlock-freedom</h2></div>
+  <p>A deadlock is a reachable marking in which <b>no transition at all</b> is enabled: the system is stuck. The classic example: two processes take two resources in opposite order, and each waits for the resource held by the other.</p>
+  <div class="formula"><span class="lbl">M is a dead marking</span><span class="q">∀</span><i>t</i> ∈ <i>T</i> : &nbsp;<i>t</i> ∉ <i>E</i>(<i>M</i>) &emsp;<span style="color:var(--muted)">(in short: <i>E</i>(<i>M</i>) = ∅)</span></div>
+  <div class="formula"><span class="lbl">The net has a deadlock</span><span class="q">∃</span><i>b</i> ∈ ℕ &nbsp;<span class="q">∃</span><i>OS</i>(<i>M</i>₀) : &nbsp;|<i>OS</i>(<i>M</i>₀)| ≤ <i>b</i></div>
+  <ol class="read">
+    <li><span class="m"><span class="q">∃</span><i>b</i> ∈ ℕ</span><span>“There is a number b…</span></li>
+    <li><span class="m"><span class="q">∃</span><i>OS</i>(<i>M</i>₀)</span><span>…and there is a maximal occurrence sequence starting from M₀…</span></li>
+    <li><span class="m">|<i>OS</i>(<i>M</i>₀)| ≤ <i>b</i></span><span>…that is at most b long”, i.e. finite.</span></li>
+  </ol>
+  <p>A finite maximal sequence ends because its last marking has <span class="m">E(M) = ∅</span>. That marking is the deadlock. Here b could be dropped (it is enough that a finite maximal sequence exists), but with it the parallel is clear: Terminating is <span class="m">∃b ∀OS</span>, Deadlock is <span class="m">∃b ∃OS</span>.</p>
+  <div class="formula"><span class="lbl">Written out with E</span><span class="q">∃</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) &nbsp;<span class="q">∀</span><i>t</i> ∈ <i>T</i> : &nbsp;<i>t</i> ∉ <i>E</i>(<i>M</i>)</div>
+  <div class="formula"><span class="lbl">Deadlock-free: the negation of the above</span><span class="q">∀</span><i>b</i> ∈ ℕ &nbsp;<span class="q">∀</span><i>OS</i>(<i>M</i>₀) : &nbsp;|<i>OS</i>(<i>M</i>₀)| &gt; <i>b</i></div>
+  <ol class="read">
+    <li><span class="m"><span class="q">∀</span><i>b</i> ∈ ℕ</span><span>“However large a number b we choose,…</span></li>
+    <li><span class="m"><span class="q">∀</span><i>OS</i>(<i>M</i>₀)</span><span>…every maximal occurrence sequence starting from M₀…</span></li>
+    <li><span class="m">|<i>OS</i>(<i>M</i>₀)| &gt; <i>b</i></span><span>…is longer than b”, i.e. every maximal run is infinite.</span></li>
+  </ol>
+  <div class="formula"><span class="lbl">Written out with E</span><span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) &nbsp;<span class="q">∃</span><i>t</i> ∈ <i>T</i> : &nbsp;<i>t</i> ∈ <i>E</i>(<i>M</i>)</div>
+  <p class="note"><b>Steps of the negation:</b> ¬∃b ∃OS : |OS| ≤ b &nbsp;→&nbsp; ∀b ¬∃OS : |OS| ≤ b &nbsp;→&nbsp; ∀b ∀OS : ¬(|OS| ≤ b) &nbsp;→&nbsp; ∀b ∀OS : |OS| &gt; b. At every step the ¬ moves one quantifier inward, and that quantifier flips.</p>
+  <figure class="demo" data-demo="deadlock">
+    <canvas></canvas>
+    <div class="ctrl"><div class="seg"></div><div class="btns"></div></div>
+    <div class="status"></div>
+    <figcaption>Process A on top, process B at the bottom, resources r₁ and r₂ in the middle. “Opposite order”: A requests r₁ first, B requests r₂ first, so sooner or later each waits for the other. “Same order”: both start with r₁, so no deadlock can arise.</figcaption>
+  </figure>
+</section>
+
+<!-- REVERSIBLE -->
+<section class="prop" id="en-reversible">
+  <div class="prop-head"><span class="eyebrow">5 · Reversible</span><h2>Reversible</h2></div>
+  <p>Whatever state the net has reached, there is always a way back to the initial marking. In practice: the system can always return to its “reset” state, e.g. a protocol gets back to its idle state after every exchange.</p>
+  <div class="formula"><span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) &nbsp;<span class="q">∃</span><i>OS</i>(<i>M</i>) : &nbsp;<i>M</i>₀ ∈ <i>OS</i>(<i>M</i>)</div>
+  <ol class="read">
+    <li><span class="m"><span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀)</span><span>“For every reachable marking it holds that…</span></li>
+    <li><span class="m"><span class="q">∃</span><i>OS</i>(<i>M</i>)</span><span>…there is a maximal occurrence sequence starting from it…</span></li>
+    <li><span class="m"><i>M</i>₀ ∈ <i>OS</i>(<i>M</i>)</span><span>…in which the initial marking occurs again.”</span></li>
+  </ol>
+  <div class="formula"><span class="lbl">Written out</span><span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) : &nbsp;<i>M</i>₀ ∈ <i>R</i>(<i>M</i>)</div>
+  <div class="formula"><span class="lbl">Generalization: a home state exists</span><span class="q">∃</span><i>M</i>′ ∈ <i>R</i>(<i>M</i>₀) &nbsp;<span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) : &nbsp;<i>M</i>′ ∈ <i>R</i>(<i>M</i>)</div>
+  <p>This is weaker: there is <b>some</b> reachable “home” marking that can always be returned to, but it is not necessarily the initial marking.</p>
+  <figure class="demo" data-demo="reversible">
+    <canvas></canvas>
+    <div class="ctrl"><div class="seg"></div><div class="btns"></div></div>
+    <div class="status"></div>
+    <figcaption>Reversible: the ring returns to M₀ every third step. Not reversible: t₁ moves the token out of p₁ once, and nothing ever puts a token back into p₁. The p₂–p₃ loop gives a home state here, but M₀ is lost.</figcaption>
+  </figure>
+</section>
+
+<!-- LIVE -->
+<section class="prop" id="en-live">
+  <div class="prop-head"><span class="eyebrow">6 · Live</span><h2>Live (L4-live)</h2></div>
+  <p>Whichever transition we look at, and whatever state the net has reached, there is always a continuation in which that transition can fire again. No transition “dies” for good. This is stronger than deadlock-freedom, which only asks that <b>something</b> can always fire.</p>
+  <div class="formula"><span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) &nbsp;<span class="q">∀</span><i>t</i> ∈ <i>T</i> &nbsp;<span class="q">∃</span><i>OS</i>(<i>M</i>) : &nbsp;<i>t</i> ∈ <i>OS</i>(<i>M</i>)</div>
+  <ol class="read">
+    <li><span class="m"><span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀)</span><span>“For every reachable marking…</span></li>
+    <li><span class="m"><span class="q">∀</span><i>t</i> ∈ <i>T</i></span><span>…and every transition…</span></li>
+    <li><span class="m"><span class="q">∃</span><i>OS</i>(<i>M</i>)</span><span>…there is a maximal occurrence sequence starting from M…</span></li>
+    <li><span class="m"><i>t</i> ∈ <i>OS</i>(<i>M</i>)</span><span>…in which t fires.”</span></li>
+  </ol>
+  <p>The two ∀ can be swapped, because they are quantifiers of the same kind.</p>
+  <div class="formula"><span class="lbl">Written out with E</span><span class="q">∀</span><i>t</i> ∈ <i>T</i> &nbsp;<span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) &nbsp;<span class="q">∃</span><i>M</i>′ ∈ <i>R</i>(<i>M</i>) : &nbsp;<i>t</i> ∈ <i>E</i>(<i>M</i>′)</div>
+  <div class="tbl"><table class="wide">
+    <thead><tr><th>Level</th><th>Formula for a given t</th><th>In words</th></tr></thead>
+    <tbody>
+      <tr><td>L0 (dead)</td><td class="sym"><span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) : <i>t</i> ∉ <i>E</i>(<i>M</i>)</td><td>t can never fire, in no reachable marking.</td></tr>
+      <tr><td>L1</td><td class="sym"><span class="q">∃</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) : <i>t</i> ∈ <i>E</i>(<i>M</i>)</td><td>t can fire at least once (the negation of L0).</td></tr>
+      <tr><td>L4 (live)</td><td class="sym"><span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) <span class="q">∃</span><i>M</i>′ ∈ <i>R</i>(<i>M</i>) : <i>t</i> ∈ <i>E</i>(<i>M</i>′)</td><td>can be made to fire again from anywhere.</td></tr>
+    </tbody>
+  </table></div>
+  <figure class="demo" data-demo="live">
+    <canvas></canvas>
+    <div class="ctrl"><div class="seg"></div><div class="btns"></div></div>
+    <div class="status"></div>
+    <figcaption>The number under each transition: how many times it has fired so far. Live: all three counters keep growing. Not live: t₀ fires once and never again, because nothing puts a token into p₀. Meanwhile the net is deadlock-free: the t₁–t₂ loop runs forever.</figcaption>
+  </figure>
+</section>
+
+<!-- CHEAT SHEET -->
+<section class="prop" id="en-puska">
+  <div class="prop-head"><span class="eyebrow">Summary</span><h2>Cheat sheet, relationships, proofs</h2></div>
+  <div class="tbl"><table class="cheat">
+    <thead><tr><th>Property</th><th>Formula (OS(M): maximal occurrence sequence)</th></tr></thead>
+    <tbody>
+      <tr><td>Enabled</td><td class="sym"><i>t</i> ∈ <i>E</i>(<i>M</i>) ⟺ <span class="q">∀</span><i>p</i> ∈ <i>P</i> : (<i>p</i>,<i>t</i>) ∈ <i>F</i> ⇒ <i>M</i>(<i>p</i>) ≥ <i>w</i>(<i>p</i>,<i>t</i>)</td></tr>
+      <tr><td>1-safe</td><td class="sym"><span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) : <span class="sumop">Σ</span><sub><i>p</i>∈<i>P</i></sub> <i>M</i>(<i>p</i>) = 1</td></tr>
+      <tr><td>Bounded</td><td class="sym"><span class="q">∃</span><i>k</i> ∈ ℕ <span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) : <span class="sumop">Σ</span><sub><i>p</i>∈<i>P</i></sub> <i>M</i>(<i>p</i>) ≤ <i>k</i></td></tr>
+      <tr><td>Terminating</td><td class="sym"><span class="q">∃</span><i>b</i> ∈ ℕ <span class="q">∀</span><i>OS</i>(<i>M</i>₀) : |<i>OS</i>(<i>M</i>₀)| ≤ <i>b</i></td></tr>
+      <tr><td>Has deadlock</td><td class="sym"><span class="q">∃</span><i>b</i> ∈ ℕ <span class="q">∃</span><i>OS</i>(<i>M</i>₀) : |<i>OS</i>(<i>M</i>₀)| ≤ <i>b</i></td></tr>
+      <tr><td>Deadlock-free</td><td class="sym"><span class="q">∀</span><i>b</i> ∈ ℕ <span class="q">∀</span><i>OS</i>(<i>M</i>₀) : |<i>OS</i>(<i>M</i>₀)| &gt; <i>b</i></td></tr>
+      <tr><td>Reversible</td><td class="sym"><span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) <span class="q">∃</span><i>OS</i>(<i>M</i>) : <i>M</i>₀ ∈ <i>OS</i>(<i>M</i>)</td></tr>
+      <tr><td>Live</td><td class="sym"><span class="q">∀</span><i>M</i> ∈ <i>R</i>(<i>M</i>₀) <span class="q">∀</span><i>t</i> ∈ <i>T</i> <span class="q">∃</span><i>OS</i>(<i>M</i>) : <i>t</i> ∈ <i>OS</i>(<i>M</i>)</td></tr>
+    </tbody>
+  </table></div>
+  <h3 id="en-bizonyitasok" style="scroll-margin-top:16px">Proofs: implications and counterexamples</h3>
+  <p>To prove A ⇒ B, we show that every net in which A holds also satisfies B. To show that the implication does <b>not</b> hold, one net (a counterexample) in which A holds and B does not is enough. The net of every counterexample runs right here. Places are listed in the marking vector in the order p₁, p₂, …</p>
+  <p>Next to every counterexample we also give the <b>minimal</b> one: the one in which the total number of places and transitions, <span class="m">|P| + |T|</span>, is as small as possible. We assume <span class="m">P ∪ T ≠ ∅</span>, otherwise there is no net. In the figures the “Minimal” button switches to it.</p>
+  <div class="proofs">
+
+    <div class="pair">
+      <h4>1. 1-safe and bounded</h4>
+      <div class="claim"><span class="verdict yes">true</span><p class="stmt">1-safe ⇒ bounded</p></div>
+      <p><b>Proof.</b> Assume <span class="m">∀M ∈ R(M₀) : Σ<sub>p∈P</sub> M(p) = 1</span>. Choose <span class="m">k = 1</span>. Then for every <span class="m">M ∈ R(M₀)</span>, <span class="m">Σ<sub>p∈P</sub> M(p) = 1 ≤ k</span>. Hence <span class="m">∃k ∈ ℕ ∀M ∈ R(M₀) : Σ<sub>p∈P</sub> M(p) ≤ k</span>. ∎</p>
+      <div class="claim"><span class="verdict no">false</span><p class="stmt">bounded ⇒ 1-safe</p></div>
+      <p><b>Counterexample:</b> the 2-token ring (<a href="#en-bounded">Bounded</a>, “Bounded”), <span class="m">M₀ = (1, 0, 1)</span>. Every transition has one input and one output place, both arcs of weight 1. So every firing takes 1 token and puts 1 back, hence <span class="m">∀M ∈ R(M₀) : Σ<sub>p∈P</sub> M(p) = 2</span>. The net is bounded (k = 2), but already in <span class="m">M₀</span>, <span class="m">Σ<sub>p∈P</sub> M₀(p) = 2 ≠ 1</span>, so it is not 1-safe. ∎</p>
+      <figure class="demo" data-demo="cx_bounded">
+        <canvas></canvas>
+        <div class="ctrl"><div class="seg"></div><div class="btns"></div></div>
+        <div class="status"></div>
+        <figcaption>Counterexample: bounded (Σ = 2 always), but not 1-safe.</figcaption>
+      </figure>
+      <div class="minex">
+        <p><b>Minimal counterexample (|P| + |T| = 1):</b> <span class="m">P = {p₁}</span>, <span class="m">T = ∅</span>, <span class="m">M₀ = (2)</span>. Nothing can fire, so <span class="m">R(M₀) = {M₀}</span>. <span class="m">Σ<sub>p∈P</sub> M₀(p) = 2</span>: bounded with k = 2, but not 1-safe.</p>
+        <p><b>Why can’t it be smaller?</b> Its size is 1, and there is no net of size 0. If the definition also requires <span class="m">T ≠ ∅</span>, adding a t without arcs (size 2) works the same way: t can always fire, but it does not change the marking.</p>
+      </div>
+    </div>
+
+    <div class="pair">
+      <h4>2. Sum and per-place definitions</h4>
+      <div class="claim"><span class="verdict yes">true</span><p class="stmt">Σ<sub>p∈P</sub> M(p) = 1 ⇒ ∀p ∈ P : M(p) ≤ 1</p></div>
+      <p><b>Proof.</b> Every term is non-negative, so for any <span class="m">p ∈ P</span>, <span class="m">M(p) ≤ Σ<sub>q∈P</sub> M(q) = 1</span>. This holds for every <span class="m">M ∈ R(M₀)</span>, so the per-place 1-safe property follows from the sum one. ∎</p>
+      <div class="claim"><span class="verdict no">false</span><p class="stmt">∀p ∈ P : M(p) ≤ 1 ⇒ Σ<sub>p∈P</sub> M(p) = 1</p></div>
+      <p><b>Counterexample:</b> two independent one-token loops in one net. <span class="m">P = {p₁, p₂, p₃, p₄}</span>, <span class="m">M₀ = (1, 0, 1, 0)</span>; t₁ and t₂ move the token between p₁ and p₂, t₃ and t₄ between p₃ and p₄. The two loops do not touch, so each always holds exactly 1 token. Hence <span class="m">∀M ∈ R(M₀) ∀p ∈ P : M(p) ≤ 1</span> (1-safe per place), but <span class="m">Σ<sub>p∈P</sub> M(p) = 2 ≠ 1</span>. ∎</p>
+      <figure class="demo" data-demo="cx_place">
+        <canvas></canvas>
+        <div class="ctrl"><div class="seg"></div><div class="btns"></div></div>
+        <div class="status"></div>
+        <figcaption>Counterexample: no place ever holds more than 1 token, but there are always 2 tokens in total.</figcaption>
+      </figure>
+      <div class="minex">
+        <p><b>Minimal counterexample (|P| + |T| = 1):</b> <span class="m">P = {p₁}</span>, <span class="m">T = ∅</span>, <span class="m">M₀ = (0)</span>. <span class="m">R(M₀) = {M₀}</span> and <span class="m">M₀(p₁) = 0 ≤ 1</span>, so it is 1-safe per place, but <span class="m">Σ<sub>p∈P</sub> M₀(p) = 0 ≠ 1</span>.</p>
+        <p><b>Why can’t it be smaller?</b> Its size is 1, and there is no net of size 0. (If T ≠ ∅ is required, a transition without arcs is enough here too.)</p>
+      </div>
+
+      <div class="claim"><span class="verdict yes">equivalent</span><p class="stmt">bounded by sum ⟺ bounded per place</p></div>
+      <p><b>Proof.</b> (⇒) If <span class="m">∀M ∈ R(M₀) : Σ<sub>p∈P</sub> M(p) ≤ k</span>, then every term is at most k as well: <span class="m">M(p) ≤ k</span>. (⇐) If <span class="m">∀M ∈ R(M₀) ∀p ∈ P : M(p) ≤ k</span>, then <span class="m">Σ<sub>p∈P</sub> M(p) ≤ k · |P|</span>, which is a finite number because P is finite. So <span class="m">k · |P|</span> is a valid bound. ∎</p>
+    </div>
+
+    <div class="pair">
+      <h4>3. Live and deadlock-free (assuming T ≠ ∅)</h4>
+      <div class="claim"><span class="verdict yes">true</span><p class="stmt">live ⇒ deadlock-free</p></div>
+      <p><b>Proof.</b> Let <span class="m">M ∈ R(M₀)</span> be arbitrary. We must show <span class="m">∃t ∈ T : t ∈ E(M)</span>. Since <span class="m">T ≠ ∅</span>, we can take some <span class="m">t ∈ T</span>. By liveness, <span class="m">∃M′ ∈ R(M) : t ∈ E(M′)</span>. Consider the finite run from M to M′. If it has 0 steps, then <span class="m">M′ = M</span> and <span class="m">t ∈ E(M)</span>. If it has at least 1 step, its first transition, <span class="m">t₁</span>, fired in M, so <span class="m">t₁ ∈ E(M)</span>. In both cases <span class="m">E(M) ≠ ∅</span>. ∎</p>
+      <p>The condition <span class="m">T ≠ ∅</span> is needed: with no transitions, the “live” formula is true because of the empty <span class="m">∀t</span>, but <span class="m">E(M₀) = ∅</span>, so there is a deadlock.</p>
+      <div class="claim"><span class="verdict no">false</span><p class="stmt">deadlock-free ⇒ live</p></div>
+      <p><b>Counterexample:</b> the “Not live” net (<a href="#en-live">Live</a>), places p₀, p₁, p₂, <span class="m">M₀ = (1, 0, 0)</span>. <span class="m">R(M₀) = {(1,0,0), (0,1,0), (0,0,1)}</span>, and in these <span class="m">t₀</span>, <span class="m">t₁</span>, <span class="m">t₂</span> are enabled respectively, so it is deadlock-free. But for <span class="m">M = (0,1,0)</span>, <span class="m">R(M) = {(0,1,0), (0,0,1)}</span>, and in both <span class="m">M(p₀) = 0 &lt; 1 = w(p₀,t₀)</span>, so <span class="m">t₀ ∉ E(M′)</span> for every <span class="m">M′ ∈ R(M)</span>. Hence it is not live. ∎</p>
+      <figure class="demo" data-demo="cx_dfree">
+        <canvas></canvas>
+        <div class="ctrl"><div class="seg"></div><div class="btns"></div></div>
+        <div class="status"></div>
+        <figcaption>Counterexample: there is always an enabled transition, but t₀ is dead after one firing. The numbers show how many times each transition has fired.</figcaption>
+      </figure>
+      <div class="minex">
+        <p><b>Minimal counterexample (|P| + |T| = 3):</b> <span class="m">P = {p}</span>, <span class="m">T = {t₁, t₂}</span>, <span class="m">F = {(p,t₁), (t₁,p), (p,t₂)}</span>, <span class="m">w(p,t₂) = 2</span>, all other weights 1, <span class="m">M₀ = (1)</span>. t₁ is a self-loop: it takes a token and puts it back, so <span class="m">R(M₀) = {(1)}</span> and <span class="m">t₁ ∈ E((1))</span>: deadlock-free. t₂ would need 2 tokens, but p always holds only 1, so t₂ is dead: not live.</p>
+        <p><b>Why can’t it be smaller?</b> Let us check the nets smaller than 3. If <span class="m">T = ∅</span>, then <span class="m">E(M₀) = ∅</span>: not deadlock-free. If <span class="m">P = ∅</span>, every transition has an empty input, is always enabled, so the net is live. That leaves <span class="m">|P| = |T| = 1</span>: here deadlock-freedom means the only t is enabled in every reachable marking, so the net is live. So at least 3 elements are needed.</p>
+      </div>
+    </div>
+
+    <div class="pair">
+      <h4>4. Terminating and deadlock</h4>
+      <div class="claim"><span class="verdict yes">true</span><p class="stmt">terminating ⇒ has deadlock</p></div>
+      <p><b>Proof.</b> A maximal sequence always exists: starting from M₀, keep firing some enabled transition as long as possible. Call it <span class="m">OS(M₀)</span>. By termination there is a b with <span class="m">|OS(M₀)| ≤ b</span>. Hence <span class="m">∃b ∈ ℕ ∃OS(M₀) : |OS(M₀)| ≤ b</span>, which is exactly the definition of Deadlock. (Written out: the sequence is finite and maximal, so its last marking has <span class="m">E(M<sub>n</sub>) = ∅</span>, and <span class="m">M<sub>n</sub> ∈ R(M₀)</span>.) ∎</p>
+      <div class="claim"><span class="verdict no">false</span><p class="stmt">has deadlock ⇒ terminating</p></div>
+      <p><b>Counterexample:</b> the “Opposite order” net (<a href="#en-deadlock">Deadlock</a>). Deadlock: after tA1 and then tB1 fire, A₁ and B₁ hold a token, r₁ and r₂ are empty, and <span class="m">E(M) = ∅</span>. But there is also an infinite run: <span class="m">tA1, tA2, tA3, tA1, tA2, tA3, …</span> Process A goes round while B waits in B₀. Every step is enabled, and every third step we are back in M₀. So the net is not terminating. ∎</p>
+      <figure class="demo" data-demo="cx_deadlock">
+        <canvas></canvas>
+        <div class="ctrl"><div class="seg"></div><div class="btns"></div></div>
+        <div class="status"></div>
+        <figcaption>Counterexample: the random run sooner or later deadlocks, but as long as only A moves, the run can also be infinite.</figcaption>
+      </figure>
+      <div class="minex">
+        <p><b>Minimal counterexample (|P| + |T| = 3):</b> the same net as the minimal counterexample of item 3, but with <span class="m">w(p,t₂) = 1</span>. <span class="m">M₀ = (1)</span>. <span class="m">R(M₀) = {(1), (0)}</span>. After t₂ fires, <span class="m">M = (0)</span> and <span class="m">E(M) = ∅</span>: there is a deadlock. But the run <span class="m">t₁, t₁, t₁, …</span> is infinite: not terminating.</p>
+        <p><b>Why can’t it be smaller?</b> If <span class="m">T = ∅</span>, there is no infinite run. If <span class="m">P = ∅</span>, every transition is always enabled, so there is no deadlock. If <span class="m">|P| = |T| = 1</span>, the only t is the only choice at every step, so there is only one run. If it is finite, there is no infinite run. If it is infinite, every reachable marking lies on it and <span class="m">t ∈ E(M)</span> in all of them, so there is no deadlock. So at least 3 elements are needed.</p>
+        <p>Compare with item 3: the two minimal nets differ in a single arc weight, and that alone makes one deadlock-free and the other not.</p>
+      </div>
+    </div>
+
+    <div class="pair">
+      <h4>5. Live and terminating (assuming T ≠ ∅)</h4>
+      <div class="claim"><span class="verdict yes">true</span><p class="stmt">live ⇒ not terminating</p></div>
+      <p><b>Proof.</b> By contradiction: assume the net is both live and terminating. By item 4, terminating gives <span class="m">∃M ∈ R(M₀) : E(M) = ∅</span>. By item 3, live gives <span class="m">∀M ∈ R(M₀) : E(M) ≠ ∅</span>. The two contradict each other. ∎</p>
+      <div class="claim"><span class="verdict no">false</span><p class="stmt">not terminating ⇒ live</p></div>
+      <p><b>Counterexample:</b> the net in the figure of item 3. It has an infinite run (<span class="m">t₀, t₁, t₂, t₁, t₂, …</span>), so it is not terminating, but by item 3 it is not live. ∎</p>
+      <div class="minex">
+        <p><b>Minimal counterexample (|P| + |T| = 3):</b> the minimal net of item 3 (<span class="m">w(p,t₂) = 2</span>, <span class="m">M₀ = (1)</span>). The run <span class="m">t₁, t₁, …</span> is infinite, so it is not terminating, but t₂ is dead, so it is not live.</p>
+        <p><b>Why can’t it be smaller?</b> If <span class="m">T = ∅</span>, the net terminates. If <span class="m">P = ∅</span>, every transition is always enabled, so it is live. If <span class="m">|P| = |T| = 1</span>, there is only one run. If it is infinite, every reachable marking lies on it and <span class="m">t ∈ E(M)</span> in all of them, so the net is live. So at least 3 elements are needed.</p>
+      </div>
+    </div>
+
+    <div class="pair">
+      <h4>6. Reversible and home state</h4>
+      <div class="claim"><span class="verdict yes">true</span><p class="stmt">reversible ⇒ has home state</p></div>
+      <p><b>Proof.</b> Let <span class="m">M′ = M₀</span>. Then <span class="m">M′ ∈ R(M₀)</span> (0 steps), and by reversibility <span class="m">∀M ∈ R(M₀) : M₀ ∈ R(M)</span>. Hence <span class="m">∃M′ ∈ R(M₀) ∀M ∈ R(M₀) : M′ ∈ R(M)</span>. ∎</p>
+      <div class="claim"><span class="verdict no">false</span><p class="stmt">has home state ⇒ reversible</p></div>
+      <p><b>Counterexample:</b> the “Not reversible” net (<a href="#en-reversible">Reversible</a>), <span class="m">M₀ = (1, 0, 0)</span>. <span class="m">R(M₀) = {(1,0,0), (0,1,0), (0,0,1)}</span>. <span class="m">M′ = (0,1,0)</span> is a home state: reachable from (1,0,0) via t₁, from (0,1,0) in 0 steps, from (0,0,1) via t₃. But M₀ is not reachable from <span class="m">M = (0,1,0)</span>: <span class="m">R(M) = {(0,1,0), (0,0,1)}</span>, and both have <span class="m">M(p₁) = 0</span>, because there is no t with <span class="m">(t,p₁) ∈ F</span>. ∎</p>
+      <figure class="demo" data-demo="cx_home">
+        <canvas></canvas>
+        <div class="ctrl"><div class="seg"></div><div class="btns"></div></div>
+        <div class="status"></div>
+        <figcaption>Counterexample: (0,1,0) is a home state, but after the first firing M₀ = (1,0,0) is lost.</figcaption>
+      </figure>
+      <div class="minex">
+        <p><b>Minimal counterexample (|P| + |T| = 2):</b> <span class="m">P = {p}</span>, <span class="m">T = {t}</span>, <span class="m">F = {(p,t)}</span>, <span class="m">M₀ = (1)</span>. t consumes the token: <span class="m">R(M₀) = {(1), (0)}</span>. <span class="m">(0)</span> is a home state: reachable from (1) via t and from (0) in 0 steps. But (1) is not reachable from (0), so the net is not reversible.</p>
+        <p><b>Why can’t it be smaller?</b> In a net of size 1 either <span class="m">T = ∅</span>, or <span class="m">P = ∅</span> and there is a single t without arcs. In both cases <span class="m">R(M₀) = {M₀}</span>, which is reversible.</p>
+      </div>
+
+    </div>
+
+    <div class="pair">
+      <h4>7. Reversible and live</h4>
+      <p>A useful fact: reachability is <b>transitive</b>. If <span class="m">M′ ∈ R(M)</span> and <span class="m">M″ ∈ R(M′)</span>, then <span class="m">M″ ∈ R(M)</span>, because concatenating the two runs leads from M to M″.</p>
+      <div class="claim"><span class="verdict yes">true, with a condition</span><p class="stmt">reversible ∧ (∀t ∈ T ∃M ∈ R(M₀) : t ∈ E(M)) ⇒ live</p></div>
+      <p><b>The condition:</b> there is no dead transition, i.e. every t can fire at least once starting from M₀ (L1). This is a reasonable requirement: a transition that cannot fire in any run from M₀ plays no role in the net and can be dropped.</p>
+      <p><b>Proof.</b> Let <span class="m">t ∈ T</span> and <span class="m">M ∈ R(M₀)</span> be arbitrary. We look for <span class="m">M′ ∈ R(M)</span> with <span class="m">t ∈ E(M′)</span>. By the condition there is <span class="m">M* ∈ R(M₀)</span> with <span class="m">t ∈ E(M*)</span>. By reversibility <span class="m">M₀ ∈ R(M)</span>. By transitivity, <span class="m">M₀ ∈ R(M)</span> and <span class="m">M* ∈ R(M₀)</span> give <span class="m">M* ∈ R(M)</span>. So <span class="m">M′ = M*</span> works. Since t and M were arbitrary, <span class="m">∀t ∈ T ∀M ∈ R(M₀) ∃M′ ∈ R(M) : t ∈ E(M′)</span>. ∎</p>
+      <p>Intuitively: from anywhere we can go back to M₀, and from M₀, following the same path again, we get to where t can fire.</p>
+      <div class="claim"><span class="verdict no">false without the condition</span><p class="stmt">reversible ⇒ live</p></div>
+      <p><b>Counterexample (this is why the condition is needed):</b> the 1-token ring (p₁, p₂, p₃, t₁, t₂, t₃), extended with a place p₄ and a transition t₄: <span class="m">(p₄,t₄) ∈ F</span>, <span class="m">(t₄,p₁) ∈ F</span>, <span class="m">M₀ = (1, 0, 0, 0)</span>. No arrow leads into p₄, so <span class="m">M(p₄) = 0</span> in every reachable M, hence never <span class="m">t₄ ∈ E(M)</span>. The ring returns to M₀ every three steps, from every reachable marking: reversible. But t₄ is dead, so the net is not live. This t₄ is exactly what the condition excludes. ∎</p>
+      <figure class="demo" data-demo="cx_revlive">
+        <canvas></canvas>
+        <div class="ctrl"><div class="seg"></div><div class="btns"></div></div>
+        <div class="status"></div>
+        <figcaption>Counterexample: reversible, but t₄ never fires (stays at ×0). Without t₄ the net would be live.</figcaption>
+      </figure>
+      <div class="minex">
+        <p><b>Minimal counterexample (|P| + |T| = 2):</b> <span class="m">P = {p}</span>, <span class="m">T = {t}</span>, <span class="m">F = {(p,t)}</span>, <span class="m">M₀ = (0)</span>. <span class="m">R(M₀) = {(0)}</span>, which is trivially reversible. t would need 1 token, but p is always empty: t is dead, not live. (This net also violates the condition, as it should.)</p>
+        <p><b>Why can’t it be smaller?</b> In a net of size 1 either <span class="m">T = ∅</span>, and then the live formula is true because of the empty ∀t, or <span class="m">P = ∅</span>, and the only t is always enabled, so the net is live.</p>
+      </div>
+      <div class="claim"><span class="verdict no">false</span><p class="stmt">live ⇒ reversible</p></div>
+      <p><b>Counterexample:</b> <span class="m">P = {p₁, p₂, p₃}</span>, <span class="m">M₀ = (1, 0, 0)</span>. t₁: <span class="m">(p₁,t₁), (t₁,p₁), (t₁,p₂) ∈ F</span>, t₂: <span class="m">(p₂,t₂), (t₂,p₃) ∈ F</span>, all weights 1. <span class="m">M(p₁) = 1</span> always, so <span class="m">t₁ ∈ E(M)</span> in every reachable M. From any M, after t₁ fires, <span class="m">M′(p₂) ≥ 1</span>, so <span class="m">t₂ ∈ E(M′)</span>. So the net is live (and has no dead transition). But no arrow leaves p₃, so <span class="m">M(p₃)</span> never decreases. After t₁, t₂ we have <span class="m">M(p₃) = 1</span>, and from there <span class="m">M₀</span> (where <span class="m">M₀(p₃) = 0</span>) can never be reached again. So the net is not reversible. ∎</p>
+      <figure class="demo" data-demo="cx_liverev">
+        <canvas></canvas>
+        <div class="ctrl"><div class="seg"></div><div class="btns"></div></div>
+        <div class="status"></div>
+        <figcaption>Counterexample: both transitions fire again and again (live), but the token count of p₃ only grows, so M₀ cannot be reached again.</figcaption>
+      </figure>
+      <div class="minex">
+        <p><b>Minimal counterexample (|P| + |T| = 2):</b> <span class="m">P = {p}</span>, <span class="m">T = {t}</span>, <span class="m">F = {(t,p)}</span>, <span class="m">M₀ = (0)</span>. t has no input place, so it is always enabled: live. Every firing increases M(p) by one, so from (1) the marking (0) = M₀ can no longer be reached: not reversible.</p>
+        <p><b>Why can’t it be smaller?</b> In a net of size 1, <span class="m">R(M₀) = {M₀}</span> (either there is no transition, or the only transition has no arcs), and that is reversible.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- EXTENSION: INHIBITOR ARCS -->
+<section class="prop" id="en-tilto">
+  <div class="prop-head"><span class="eyebrow">Extension · Inhibitor arcs</span><h2>Inhibitor arcs</h2></div>
+  <p>An inhibitor arc points from a place to a transition and ends in a <b>small circle</b> instead of an arrowhead. Its meaning is reversed: the transition can fire only if that place holds <b>no</b> token. The inhibitor arc moves no tokens; it only “watches”. With it a net can test for zero: “only if the buffer is empty”.</p>
+
+  <div class="formula"><span class="lbl">The net extended with the set of inhibitor arcs</span><i>N</i> = (<i>P</i>, <i>T</i>, <i>F</i>, <i>I</i>, <i>w</i>, <i>M</i>₀), &emsp; <i>I</i> ⊆ <i>P</i> × <i>T</i></div>
+  <p><span class="m">(p,t) ∈ I</span>: an inhibitor arc goes from p to t. An ordinary arc and an inhibitor arc between the same (p, t) pair are usually not allowed together.</p>
+
+  <div class="formula"><span class="lbl">Enabling with inhibitor arcs</span><i>t</i> ∈ <i>E</i>(<i>M</i>) &nbsp;⟺&nbsp; <span class="q">∀</span><i>p</i> ∈ <i>P</i> : &nbsp;((<i>p</i>,<i>t</i>) ∈ <i>F</i> ⇒ <i>M</i>(<i>p</i>) ≥ <i>w</i>(<i>p</i>,<i>t</i>)) &nbsp;∧&nbsp; ((<i>p</i>,<i>t</i>) ∈ <i>I</i> ⇒ <i>M</i>(<i>p</i>) = 0)</div>
+  <ol class="read">
+    <li><span class="m"><i>t</i> ∈ <i>E</i>(<i>M</i>) ⟺ <span class="q">∀</span><i>p</i> ∈ <i>P</i> :</span><span>“t is enabled in M if and only if for every place p it holds that…</span></li>
+    <li><span class="m">(<i>p</i>,<i>t</i>) ∈ <i>F</i> ⇒ <i>M</i>(<i>p</i>) ≥ <i>w</i>(<i>p</i>,<i>t</i>)</span><span>…if an ordinary arrow goes from p to t, p has enough tokens (the old condition),…</span></li>
+    <li><span class="m">(<i>p</i>,<i>t</i>) ∈ <i>I</i> ⇒ <i>M</i>(<i>p</i>) = 0</span><span>…and if an inhibitor arc goes from p to t, then p is empty.”</span></li>
+  </ol>
+  <p>The firing formula is <b>unchanged</b>: <span class="m">∀p ∈ P : M′(p) = M(p) − w(p,t) + w(t,p)</span>, because w is non-zero only on arcs in F. No token moves along an inhibitor arc. (In a more general variant the inhibitor arc also has a weight, and the condition is <span class="m">M(p) &lt; w(p,t)</span>. The unweighted, zero-testing form is the case <span class="m">w = 1</span>.)</p>
+
+  <p class="note"><b>What stays the same?</b> The formulas of all six properties stay word for word the same, because each refers to the net only through <span class="m">E(M)</span>, <span class="m">R(M₀)</span> and <span class="m">OS(M)</span>. R and OS are also built from E, and of these only the definition of E has been extended. The <a href="#en-bizonyitasok">proofs</a> remain valid too: they use only E, R and the transitivity of reachability.</p>
+
+  <h3>What changes?</h3>
+  <div class="pair">
+    <div class="claim"><span class="verdict no">lost</span><p class="stmt">monotonicity</p></div>
+    <p>In an ordinary net: if <span class="m">t ∈ E(M)</span> and <span class="m">∀p ∈ P : M′(p) ≥ M(p)</span>, then <span class="m">t ∈ E(M′)</span>. More tokens never disable anything. <b>Proof:</b> if <span class="m">(p,t) ∈ F</span>, then <span class="m">M′(p) ≥ M(p) ≥ w(p,t)</span>. ∎</p>
+    <p>With an inhibitor arc this fails. <b>Counterexample:</b> one place p, one transition t, <span class="m">(p,t) ∈ I</span>. In <span class="m">M = (0)</span>, <span class="m">t ∈ E(M)</span>, but in <span class="m">M′ = (1)</span>, where <span class="m">M′(p) ≥ M(p)</span>, <span class="m">t ∉ E(M′)</span>. ∎ This is also a minimal counterexample (|P| + |T| = 2), because an arc, and so an inhibitor arc too, can only connect a place and a transition.</p>
+  </div>
+  <div class="pair">
+    <div class="claim"><span class="verdict no">lost</span><p class="stmt">decidability</p></div>
+    <p>For ordinary nets boundedness and reachability are decidable. Boundedness, for example, is decided by the Karp–Miller tree (coverability tree), which relies on monotonicity. With inhibitor arcs a net can simulate a counter machine: one place for each counter, and a zero test is an inhibitor arc. A two-counter machine is already Turing-complete, so with two inhibitor arcs reachability and boundedness are <b>undecidable</b> in general. The formulas stay the same, but checking them automatically is no longer guaranteed.</p>
+  </div>
+
+  <h3>Protocol example: retransmit only after a lost message</h3>
+  <p>A stop-and-wait sender over a lossy channel. The sender sends a message and waits for an acknowledgment. The channel either delivers the message (then the receiver sends back an acknowledgment), or the message is lost. The <b>timeout</b> resets the sender so it can retransmit, but only if both the channel and the acknowledgment place are empty. These are the two inhibitor arcs (circle ends). This cannot be expressed with ordinary arcs, because there the condition is “there is a token”; “there is no token” is impossible.</p>
+  <figure class="demo" data-demo="tilto">
+    <canvas></canvas>
+    <div class="ctrl"><div class="seg"></div><div class="btns"></div></div>
+    <div class="status"></div>
+    <figcaption>With inhibitor arcs: the timeout is blue only when both the channel and the acknowledgment place are empty, i.e. the message really was lost. The token sum is then always ≤ 2, the net is bounded. Without inhibitor arcs: the timeout can fire any time while the sender waits, so duplicate messages and acknowledgments pile up. The net is not bounded.</figcaption>
+  </figure>
+</section>
+
+<footer>The nets choose at random among the enabled transitions, so every run is different. With the “Step” button you can follow them one step at a time.</footer>
+
+</div>
+
+<script>
+(function(){
+const RM = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+const DUR = RM ? {IN:0,FL:0,OUT:0,IDLE:500} : {IN:520,FL:170,OUT:520,IDLE:420};
+const R = 19, TL = 19, TS = 6; // hely sugara, tranzíció fél-hossz / fél-vastagság
+let C = {};
+function readColors(){
+  const s = getComputedStyle(document.documentElement);
+  ['surface','soft','ink','muted','line','accent','accent-soft','token','ok','bad','fire'].forEach(k=>C[k]=s.getPropertyValue('--'+k).trim());
+}
+readColors();
+const SUB = {'0':'₀','1':'₁','2':'₂','3':'₃','4':'₄','5':'₅','6':'₆','7':'₇','8':'₈','9':'₉'};
+const sub = s => s.replace(/\d/g,d=>SUB[d]);
+
+/* ---------- UI szövegek ---------- */
+const UI = {
+  hu:{pause:'⏸ Szünet', play:'▶ Lejátszás', step:'Lépés ⏭', reset:'↺ Újra', dead:'E(M) = ∅: nincs engedélyezett tranzíció', and:' és ', yes:'igen', no:'nem', title:'Petri-háló tulajdonságok'},
+  en:{pause:'⏸ Pause', play:'▶ Play', step:'Step ⏭', reset:'↺ Restart', dead:'E(M) = ∅: no enabled transition', and:' and ', yes:'yes', no:'no', title:'Petri net properties'}
+};
+
+/* ---------- segédek ---------- */
+const mk = (st)=> 'M = (' + st.order.map(p=>`${st.lbl[p]}=${st.M[p]}`).join(', ') + ')';
+const tot = (st)=> st.order.reduce((a,p)=>a+st.M[p],0);
+const eqM0 = (st)=> st.order.every(p=>st.M[p]===st.M0[p]);
+const ok = s=>`<span class="ok">${s}</span>`, bad = s=>`<span class="bad">${s}</span>`;
+
+function explain(st,t){
+  const parts = st.pre[t].map(a=>{
+    const have=st.M[a.from], need=a.w, good=have>=need;
+    return `M(${st.lbl[a.from]}) = ${have} ${good?'≥':'<'} w(${st.lbl[a.from]},${st.tlbl[t]}) = ${need} ${good?ok('✓'):bad('✗')}`;
+  });
+  (st.inh[t]||[]).forEach(a=>{ const have=st.M[a.from], good=have===0;
+    parts.push(`M(${st.lbl[a.from]}) = ${have} ${good?'=':'≠'} 0 ${good?ok('✓'):bad('✗')}`); });
+  const en = st.pre[t].every(a=>st.M[a.from]>=a.w) && (st.inh[t]||[]).every(a=>st.M[a.from]===0);
+  const u=UI[st.L];
+  return `${st.tlbl[t]} ∈ E(M)? ` + parts.join(u.and) + ' → ' + (en?ok(u.yes):bad(u.no));
+}
+
+/* ---------- hálók és változatok, nyelvenként ---------- */
+function ring(tokens){ // 3 hely, 3 tranzíció körben
+  return {
+    w:560,h:250,
+    places:[{id:'p1',x:110,y:70,init:tokens[0]},{id:'p2',x:450,y:70,init:tokens[1]},{id:'p3',x:280,y:190,init:tokens[2],lp:[0,36]}],
+    trans:[{id:'t1',x:280,y:70,o:'v'},{id:'t2',x:400,y:160,o:'d2',lp:[26,0]},{id:'t3',x:160,y:160,o:'d1',lp:[-26,0]}],
+    arcs:[['p1','t1'],['t1','p2'],['p2','t2'],['t2','p3'],['p3','t3'],['t3','p1']]
+  };
+}
+function makeCFG(L){
+const T=(hu,en)=>L==='en'?en:hu;
+const step=T('lépés','step');
+const NETS = {
+  intro:(p1)=>({w:560,h:220,
+    places:[{id:'p1',x:100,y:60,init:p1},{id:'p2',x:100,y:165,init:1},{id:'p3',x:450,y:112,init:0,lp:[0,34]}],
+    trans:[{id:'t',x:280,y:112,o:'v',lp:[0,-30]}],
+    arcs:[['p1','t',2],['p2','t',1],['t','p3',1]]}),
+  producer:{w:560,h:240,
+    places:[{id:'p1',x:120,y:120,init:1},{id:'p2',x:440,y:120,init:0}],
+    trans:[{id:'t1',x:280,y:120,o:'v'}],
+    arcs:[['p1','t1',1,-60],['t1','p1',1,-60],['t1','p2']]},
+  chain:{w:560,h:200,
+    places:[{id:'p1',x:70,y:100,init:3},{id:'p2',x:280,y:100,init:0},{id:'p3',x:490,y:100,init:0}],
+    trans:[{id:'t1',x:175,y:100,o:'v'},{id:'t2',x:385,y:100,o:'v'}],
+    arcs:[['p1','t1'],['t1','p2'],['p2','t2'],['t2','p3']]},
+  oneway:{w:560,h:250,
+    places:[{id:'p1',x:70,y:125,init:1},{id:'p2',x:300,y:125,init:0},{id:'p3',x:500,y:125,init:0}],
+    trans:[{id:'t1',x:185,y:125,o:'v'},{id:'t2',x:400,y:55,o:'h'},{id:'t3',x:400,y:195,o:'h',lp:[0,22]}],
+    arcs:[['p1','t1'],['t1','p2'],['p2','t2'],['t2','p3'],['p3','t3'],['t3','p2']]},
+  deadinit:{w:560,h:250,
+    places:[{id:'p0',x:60,y:125,init:1},{id:'p1',x:290,y:125,init:0},{id:'p2',x:500,y:125,init:0}],
+    trans:[{id:'t0',x:175,y:125,o:'v'},{id:'t1',x:395,y:55,o:'h'},{id:'t2',x:395,y:195,o:'h',lp:[0,22]}],
+    arcs:[['p0','t0'],['t0','p1'],['p1','t1'],['t1','p2'],['p2','t2'],['t2','p1']]},
+  twoLoops:{w:560,h:250,
+    places:[{id:'p1',x:110,y:65,init:1,lp:[0,-32]},{id:'p2',x:450,y:65,init:0,lp:[0,-32]},{id:'p3',x:110,y:185,init:1},{id:'p4',x:450,y:185,init:0}],
+    trans:[{id:'t1',x:280,y:35,o:'v',lp:[0,-28]},{id:'t2',x:280,y:95,o:'v',lp:[0,30]},{id:'t3',x:280,y:155,o:'v',lp:[0,-28]},{id:'t4',x:280,y:215,o:'v',lp:[0,30]}],
+    arcs:[['p1','t1'],['t1','p2'],['p2','t2'],['t2','p1'],['p3','t3'],['t3','p4'],['p4','t4'],['t4','p3']]},
+  ringPlus:{w:560,h:260,
+    places:[{id:'p1',x:130,y:70,init:1},{id:'p2',x:450,y:70,init:0},{id:'p3',x:290,y:195,init:0,lp:[0,36]},{id:'p4',x:40,y:215,init:0,lp:[0,34]}],
+    trans:[{id:'t1',x:290,y:70,o:'v'},{id:'t2',x:405,y:160,o:'d2',lp:[26,0]},{id:'t3',x:175,y:160,o:'d1',lp:[26,8]},{id:'t4',x:40,y:140,o:'h',lp:[-4,-17]}],
+    arcs:[['p1','t1'],['t1','p2'],['p2','t2'],['t2','p3'],['p3','t3'],['t3','p1'],['p4','t4'],['t4','p1']]},
+  liveNotRev:{w:560,h:220,
+    places:[{id:'p1',x:70,y:110,init:1},{id:'p2',x:320,y:110,init:0},{id:'p3',x:500,y:110,init:0}],
+    trans:[{id:'t1',x:200,y:110,o:'v',lp:[0,-50]},{id:'t2',x:410,y:110,o:'v'}],
+    arcs:[['p1','t1',1,-45],['t1','p1',1,-45],['t1','p2'],['p2','t2'],['t2','p3']]},
+  arq:(useInh)=>({w:560,h:300,
+    places:[{id:'rd',x:80,y:150,init:1,lbl:T('kész','ready'),lp:[0,34]},{id:'wt',x:265,y:150,init:0,lbl:T('vár','waiting'),lp:[0,34]},
+            {id:'ch',x:400,y:60,init:0,lbl:T('csatorna','channel'),lp:[0,-32]},{id:'ak',x:400,y:240,init:0,lbl:T('nyugta','ack'),lp:[0,34]}],
+    trans:[{id:'snd',x:170,y:60,o:'v',lbl:T('küld','send'),lp:[0,-30]},{id:'to',x:170,y:150,o:'v',lbl:T('időtúllépés','timeout'),lp:[0,-30]},
+           {id:'rcv',x:170,y:240,o:'v',lbl:T('nyugtáz','receive ack'),lp:[0,32]},{id:'dl',x:500,y:150,o:'h',lbl:T('kézbesít','deliver'),lp:[14,20]},
+           {id:'ls',x:510,y:60,o:'v',lbl:T('elvész','lose'),lp:[0,-30]}],
+    arcs:[['rd','snd'],['snd','wt'],['snd','ch'],['ch','dl'],['dl','ak'],['ch','ls'],
+          ['wt','rcv'],['ak','rcv'],['rcv','rd'],['wt','to'],['to','rd']]
+          .concat(useInh?[['ch','to',1,0,'inh'],['ak','to',1,0,'inh']]:[])}),
+  m_one:(n)=>({w:560,h:130,places:[{id:'p1',x:280,y:55,init:n}],trans:[],arcs:[]}),
+  m_loop:(w2)=>({w:560,h:200,
+    places:[{id:'p',x:280,y:100,init:1,lbl:'p'}],
+    trans:[{id:'t1',x:130,y:100,o:'v'},{id:'t2',x:430,y:100,o:'v'}],
+    arcs:[['p','t1',1,-45],['t1','p',1,-45],['p','t2',w2]]}),
+  m_consume:(n)=>({w:560,h:150,places:[{id:'p',x:200,y:70,init:n,lbl:'p'}],trans:[{id:'t',x:360,y:70,o:'v'}],arcs:[['p','t']]}),
+  m_source:{w:560,h:150,places:[{id:'p',x:360,y:70,init:0,lbl:'p'}],trans:[{id:'t',x:200,y:70,o:'v'}],arcs:[['t','p']]},
+  dining:(sameOrder)=>{
+    // A balról jobbra halad. B fordított sorrendnél jobbról balra (így a nyilak rövidek maradnak).
+    const bx = sameOrder ? [70,170,280,390,490] : [490,390,280,170,70];
+    const req=T('kér','req'), rel=T('elenged','release');
+    return {w:560,h:340,
+    places:[
+      {id:'a0',x:70,y:55,init:1,lbl:'A₀',lp:[0,-32]},{id:'a1',x:280,y:55,init:0,lbl:'A₁',lp:[0,-32]},{id:'a2',x:490,y:55,init:0,lbl:'A₂',lp:[0,-32]},
+      {id:'r1',x:190,y:170,init:1,lbl:'r₁',lp:[-34,0]},{id:'r2',x:370,y:170,init:1,lbl:'r₂',lp:[34,0]},
+      {id:'b0',x:bx[0],y:285,init:1,lbl:'B₀'},{id:'b1',x:bx[2],y:285,init:0,lbl:'B₁'},{id:'b2',x:bx[4],y:285,init:0,lbl:'B₂'}],
+    trans:[
+      {id:'tA1',x:170,y:55,o:'v',lbl:`A: ${req} r₁`},{id:'tA2',x:390,y:55,o:'v',lbl:`A: ${req} r₂`},{id:'tA3',x:280,y:115,o:'h',lbl:`A: ${rel}`,lp:[0,-17]},
+      {id:'tB1',x:bx[1],y:285,o:'v',lbl:`B: ${req} `+(sameOrder?'r₁':'r₂'),lp:[0,32]},{id:'tB2',x:bx[3],y:285,o:'v',lbl:`B: ${req} `+(sameOrder?'r₂':'r₁'),lp:[0,32]},{id:'tB3',x:280,y:225,o:'h',lbl:`B: ${rel}`,lp:[0,18]}],
+    arcs:[
+      ['a0','tA1'],['tA1','a1'],['a1','tA2'],['tA2','a2'],['a2','tA3'],['tA3','a0'],
+      ['b0','tB1'],['tB1','b1'],['b1','tB2'],['tB2','b2'],['b2','tB3'],['tB3','b0'],
+      ['r1','tA1'],['r2','tA2'],['tA3','r1'],['tA3','r2'],
+      [sameOrder?'r1':'r2','tB1'],[sameOrder?'r2':'r1','tB2'],['tB3','r1'],['tB3','r2']
+    ]};}
+};
+const fires=st=>`${T('tüzelések','firings')}: ${st.tord.map(t=>`${st.tlbl[t]}: ${st.counts[t]}`).join(' · ')}`;
+const head=st=>`<b>${mk(st)}</b> · ${step}: ${st.steps}`;
+const minLbl=n=>`${T('Minimális','Minimal')} (|P|+|T| = ${n})`;
+return {
+  alapok:[
+    {label:T('Engedélyezett','Enabled'), net:NETS.intro(2), autoReset:3000, status:st=>
+      `${head(st)}<br>${explain(st,'t')}${st.steps?'<br>'+T('t tüzelt','t fired')+': M′(p₁) = 2 − 2 + 0 = 0, M′(p₂) = 1 − 1 + 0 = 0, M′(p₃) = 0 − 0 + 1 = 1':''}`},
+    {label:T('Nem engedélyezett','Not enabled'), net:NETS.intro(1), status:st=>
+      `<b>${mk(st)}</b><br>${explain(st,'t')}<br>${st.phase==='dead'?bad(T('E(M) = ∅: egyik tranzíció sem engedélyezett, a háló áll.','E(M) = ∅: no transition is enabled, the net is stuck.')):''}`}
+  ],
+  safe:[
+    {label:T('1 token: 1-safe','1 token: 1-safe'), net:ring([1,0,0]), warnAbove:1, status:st=>`${head(st)}<br>Σ M(p) = ${tot(st)} → ${ok(T('= 1 minden eddigi jelölésben ✓','= 1 in every marking so far ✓'))}<br>${T('helyenként: eddigi max M(p)','per place: max M(p) so far')} = ${st.maxSeen} ≤ 1 ✓`},
+    {label:T('2 token: nem 1-safe','2 tokens: not 1-safe'), net:ring([1,0,1]), warnAbove:1, status:st=>`${head(st)}<br>Σ M(p) = ${tot(st)} → ${bad(T('≠ 1, már M₀-ban sérül ✗','≠ 1, fails already in M₀ ✗'))}<br>${T('helyenként: eddigi max M(p)','per place: max M(p) so far')} = ${st.maxSeen} → ${st.maxSeen<=1?T('még nem sérült, várj…','not violated yet, wait…'):bad(T('volt M(p) = 2 > 1 ✗','M(p) = 2 > 1 occurred ✗'))}`}
+  ],
+  bounded:[
+    {label:T('Korlátos','Bounded'), net:ring([1,0,1]), status:st=>`${head(st)}<br>Σ M(p) = ${tot(st)} → ${ok(T('k = 2 minden elérhető jelölésre jó ✓','k = 2 works for every reachable marking ✓'))} ${T('(minden tüzelés 1 tokent vesz el és 1-et tesz le)','(every firing takes 1 token and puts 1)')}`},
+    {label:T('Korlátlan','Unbounded'), net:NETS.producer, resetWhen:st=>st.M.p2>=15, status:st=>`${head(st)}<br>Σ M(p) = ${tot(st)} = 1 + ${T('lépésszám','steps')} → ${bad(T('bármilyen k-t választunk, k lépés után túllépjük ✗','whatever k we choose, it is exceeded after k steps ✗'))}`}
+  ],
+  terminating:[
+    {label:T('Termináló','Terminating'), net:NETS.chain, autoReset:2600, status:st=>`${head(st)}<br>${st.phase==='dead'?ok(T(`vége ${st.steps} lépés után: E(M) = ∅. Minden futás legfeljebb b = 6 hosszú ✓`,`stopped after ${st.steps} steps: E(M) = ∅. Every run is at most b = 6 long ✓`)):T('fut…','running…')}`},
+    {label:T('Nem termináló','Not terminating'), net:ring([1,0,0]), status:st=>`${head(st)}<br>${bad(T('minden jelölésben van engedélyezett tranzíció: a futás végtelen, nincs ilyen b ✗','every marking has an enabled transition: the run is infinite, there is no such b ✗'))}`}
+  ],
+  deadlock:[
+    {label:T('Fordított sorrend: van holtpont','Opposite order: deadlock'), net:NETS.dining(false), autoReset:3200, status:st=>{
+      if(st.phase==='dead') return `${head(st)}<br>${bad(T('HOLTPONT: A fogja r₁-et és r₂-re vár, B fogja r₂-t és r₁-re vár. Ez az M ∈ R(M₀), ahol E(M) = ∅.','DEADLOCK: A holds r₁ and waits for r₂, B holds r₂ and waits for r₁. This is the M ∈ R(M₀) with E(M) = ∅.'))}`;
+      return `${head(st)}<br>${T('eddig minden jelölésben volt engedélyezett tranzíció… (előbb-utóbb beragad)','so far every marking had an enabled transition… (sooner or later it gets stuck)')}`; }},
+    {label:T('Azonos sorrend: holtpontmentes','Same order: deadlock-free'), net:NETS.dining(true), status:st=>`${head(st)}<br>${ok(T('minden elérhető jelölésben van engedélyezett tranzíció ✓','every reachable marking has an enabled transition ✓'))} ${T('Aki r₁-et megkapta, r₂-t is meg fogja.','Whoever got r₁ will also get r₂.')}`}
+  ],
+  reversible:[
+    {label:T('Reverzibilis','Reversible'), net:ring([1,0,0]), after:st=>{ if(eqM0(st)){ st.returns++; st.lastReturn=st.steps; } }, status:st=>`${head(st)}<br>${st.returns?ok(T(`visszaértünk M₀-ba már ${st.returns}× (legutóbb a ${st.lastReturn}. lépésnél) ✓`,`back in M₀ ${st.returns}× so far (last at step ${st.lastReturn}) ✓`)):T('még nem értünk vissza M₀-ba…','not back in M₀ yet…')} ${eqM0(st)&&st.steps?T('← most M₀-ban vagyunk','← now in M₀'):''}`},
+    {label:T('Nem reverzibilis','Not reversible'), net:NETS.oneway, status:st=>`${head(st)}<br>${eqM0(st)?T('most még M₀-ban vagyunk.','still in M₀.'):bad(T('M₀ = (p₁=1, p₂=0, p₃=0) többé nem érhető el: p₁-be egyetlen tranzíció sem tesz tokent ✗','M₀ = (p₁=1, p₂=0, p₃=0) can no longer be reached: no transition puts a token into p₁ ✗'))}`}
+  ],
+  live:[
+    {label:T('Élő','Live'), net:ring([1,0,0]), counts:true, status:st=>`${head(st)}<br>${fires(st)} → ${ok(T('mindegyik újra és újra tüzel ✓','each fires again and again ✓'))}`},
+    {label:T('Nem élő','Not live'), net:NETS.deadinit, counts:true, status:st=>`${head(st)}<br>${fires(st)}<br>${st.counts.t0?bad(T('t₀ egyszer tüzelt, azóta nincs olyan elérhető M′, ahol t₀ ∈ E(M′) ✗','t₀ fired once; since then there is no reachable M′ with t₀ ∈ E(M′) ✗')):T('t₀ még tüzelhet…','t₀ can still fire…')} ${st.counts.t0?ok(T('· de holtpontmentes ✓','· but deadlock-free ✓')):''}`}
+  ],
+  tilto:[
+    {label:T('Tiltó élekkel','With inhibitor arcs'), net:NETS.arq(true), status:st=>`${head(st)}<br>${explain(st,'to')}<br>Σ M(p) = ${tot(st)} → ${ok(T('≤ 2 mindig, korlátos ✓','always ≤ 2, bounded ✓'))}`},
+    {label:T('Tiltó élek nélkül','Without inhibitor arcs'), net:NETS.arq(false), resetWhen:st=>tot(st)>=10, status:st=>`${head(st)}<br>${explain(st,'to')}<br>Σ M(p) = ${tot(st)} → ${tot(st)>2?bad(T('duplikált üzenetek/nyugták halmozódnak, nem korlátos ✗','duplicate messages/acks pile up, not bounded ✗')):T('még rendben, várj…','fine so far, wait…')}`}
+  ],
+  cx_bounded:[
+    {label:T('2 tokenes kör','2-token ring'), net:ring([1,0,1]), status:st=>`${head(st)}<br>Σ M(p) = ${tot(st)} → ${ok(T('bounded k = 2-vel ✓','bounded with k = 2 ✓'))} · ${bad(T('Σ ≠ 1, nem 1-safe ✗','Σ ≠ 1, not 1-safe ✗'))}`},
+    {label:minLbl(1), net:NETS.m_one(2), quiet:true, status:st=>`<b>${mk(st)}</b> · T = ∅<br>Σ M(p) = 2 → ${ok(T('korlátos ✓','bounded ✓'))} · ${bad(T('≠ 1, nem 1-safe ✗','≠ 1, not 1-safe ✗'))}`}
+  ],
+  cx_place:[
+    {label:T('Két független kör','Two independent loops'), net:NETS.twoLoops, warnAbove:1, status:st=>`${head(st)}<br>${T('eddigi max M(p)','max M(p) so far')} = ${st.maxSeen} → ${ok(T('helyenként ≤ 1 ✓','≤ 1 per place ✓'))} · Σ M(p) = ${tot(st)} → ${bad('≠ 1 ✗')}`},
+    {label:minLbl(1), net:NETS.m_one(0), quiet:true, status:st=>`<b>${mk(st)}</b> · T = ∅<br>M(p₁) = 0 ≤ 1 → ${ok(T('helyenként 1-safe ✓','1-safe per place ✓'))} · Σ M(p) = 0 → ${bad('≠ 1 ✗')}`}
+  ],
+  cx_dfree:[
+    {label:T('Nem élő, de holtpontmentes','Not live, but deadlock-free'), net:NETS.deadinit, counts:true, status:st=>`${head(st)}<br>${ok(T('E(M) ≠ ∅ minden jelölésben ✓','E(M) ≠ ∅ in every marking ✓'))} · ${st.counts.t0?bad(T('t₀ halott: nem élő ✗','t₀ is dead: not live ✗')):T('t₀ még tüzelhet…','t₀ can still fire…')}`},
+    {label:minLbl(3), net:NETS.m_loop(2), counts:true, status:st=>`${head(st)}<br>${ok(T('t₁ ∈ E(M) mindig: holtpontmentes ✓','t₁ ∈ E(M) always: deadlock-free ✓'))} · ${bad(T('t₂-höz 2 token kellene: halott, nem élő ✗','t₂ would need 2 tokens: dead, not live ✗'))}`}
+  ],
+  cx_deadlock:[
+    {label:T('Holtpontos háló','Net with deadlock'), net:NETS.dining(false), autoReset:3200, status:st=>st.phase==='dead'
+      ? `${head(st)}<br>${bad(T('holtpont: E(M) = ∅','deadlock: E(M) = ∅'))} → ${T('van deadlock ✓','has deadlock ✓')}`
+      : `${head(st)}<br>${T('még fut. A tA1, tA2, tA3, tA1, … futás végtelen, ezért','still running. The run tA1, tA2, tA3, tA1, … is infinite, so')} ${bad(T('nem termináló ✗','not terminating ✗'))}`},
+    {label:minLbl(3), net:NETS.m_loop(1), counts:true, autoReset:2600, status:st=>st.phase==='dead'
+      ? `${head(st)}<br>${bad(T('holtpont: E(M) = ∅','deadlock: E(M) = ∅'))} → ${T('van deadlock ✓','has deadlock ✓')}`
+      : `${head(st)}<br>${T('t₁ hurok: ha mindig t₁-et választjuk, a futás végtelen →','t₁ self-loop: if t₁ is always chosen, the run is infinite →')} ${bad(T('nem termináló ✗','not terminating ✗'))}`}
+  ],
+  cx_home:[
+    {label:T('Home state, nem reverzibilis','Home state, not reversible'), net:NETS.oneway, status:st=>`${head(st)}<br>${eqM0(st)?T('most még M₀-ban vagyunk.','still in M₀.'):ok(T('(0,1,0) innen is elérhető ✓','(0,1,0) is reachable from here too ✓'))+' · '+bad(T('M₀ = (1,0,0) nem ✗','M₀ = (1,0,0) is not ✗'))}`},
+    {label:minLbl(2), net:NETS.m_consume(1), autoReset:2600, status:st=>`${head(st)}<br>${st.steps?ok(T('(0) home state ✓','(0) is a home state ✓'))+' · '+bad(T('M₀ = (1) nem érhető el ✗','M₀ = (1) is unreachable ✗')):T('most még M₀-ban vagyunk.','still in M₀.')}`}
+  ],
+  cx_revlive:[
+    {label:T('Reverzibilis, t₄ halott','Reversible, t₄ dead'), net:NETS.ringPlus, counts:true, after:st=>{ if(eqM0(st)){ st.returns++; } }, status:st=>`${head(st)}<br>${st.returns?ok(T(`M₀-ba visszaértünk ${st.returns}× ✓`,`back in M₀ ${st.returns}× ✓`)):T('még nem értünk vissza M₀-ba…','not back in M₀ yet…')} · ${bad(T(`t₄: ${st.counts.t4} tüzelés, M(p₄) = 0 mindig ✗`,`t₄: ${st.counts.t4} firings, M(p₄) = 0 always ✗`))}`},
+    {label:minLbl(2), net:NETS.m_consume(0), quiet:true, counts:true, status:st=>`<b>${mk(st)}</b><br>R(M₀) = {M₀} → ${ok(T('reverzibilis ✓','reversible ✓'))} · ${bad(T('t halott, nem élő ✗','t is dead, not live ✗'))}`}
+  ],
+  cx_liverev:[
+    {label:T('Élő, nem reverzibilis','Live, not reversible'), net:NETS.liveNotRev, counts:true, resetWhen:st=>st.M.p3>=12||st.M.p2>=12, status:st=>`${head(st)}<br>${T('tüzelések','firings')}: t₁: ${st.counts.t1} · t₂: ${st.counts.t2} → ${ok(T('élő ✓','live ✓'))} · ${st.M.p3?bad(T(`M(p₃) = ${st.M.p3} > 0, M₀ nem érhető el ✗`,`M(p₃) = ${st.M.p3} > 0, M₀ unreachable ✗`)):T('M(p₃) = 0 még','M(p₃) = 0 so far')}`},
+    {label:minLbl(2), net:NETS.m_source, counts:true, resetWhen:st=>st.M.p>=12, status:st=>`${head(st)}<br>${ok(T('t mindig engedélyezett: élő ✓','t is always enabled: live ✓'))} · ${st.M.p?bad(T(`M(p) = ${st.M.p} > 0, M₀ = (0) nem érhető el ✗`,`M(p) = ${st.M.p} > 0, M₀ = (0) unreachable ✗`)):T('még M₀-ban','still in M₀')}`}
+  ]
+};
+}
+const CFGS={hu:makeCFG('hu'), en:makeCFG('en')};
+
+/* ---------- geometria ---------- */
+function halfs(n){
+  if(n.o==='h') return [TL,TS]; if(n.o==='v') return [TS,TL];
+  return [TL*0.8,TL*0.8];
+}
+function boundary(n,dx,dy){
+  const L=Math.hypot(dx,dy)||1; dx/=L; dy/=L;
+  if(n.kind==='p') return [n.x+dx*(R+1),n.y+dy*(R+1)];
+  if(n.o==='d1'||n.o==='d2'){ // ferde rúd: közelítés körrel
+    return [n.x+dx*(TS+3),n.y+dy*(TS+3)];
+  }
+  const [hw,hh]=halfs(n);
+  const t=Math.min(hw/Math.max(Math.abs(dx),1e-6), hh/Math.max(Math.abs(dy),1e-6));
+  return [n.x+dx*(t+1),n.y+dy*(t+1)];
+}
+function geom(A,B,bend){
+  const mx=(A.x+B.x)/2,my=(A.y+B.y)/2, dx=B.x-A.x,dy=B.y-A.y,L=Math.hypot(dx,dy)||1;
+  const nx=-dy/L,ny=dx/L, c=[mx+nx*bend,my+ny*bend];
+  const s=boundary(A,c[0]-A.x,c[1]-A.y), e=boundary(B,c[0]-B.x,c[1]-B.y);
+  return {s,c,e,nx,ny};
+}
+const qpt=(g,u)=>{const a=(1-u)*(1-u),b=2*(1-u)*u,d=u*u;return [a*g.s[0]+b*g.c[0]+d*g.e[0],a*g.s[1]+b*g.c[1]+d*g.e[1]];};
+const ease=u=>u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;
+
+/* ---------- demó ---------- */
+const demos=[];
+function Demo(fig,key,L,wrap){
+  this.fig=fig; this.L=L; this.u=UI[L]; this.wrap=wrap; this.cv=fig.querySelector('canvas'); this.ctx=this.cv.getContext('2d');
+  this.statusEl=fig.querySelector('.status'); this.vars=CFGS[L][key]; this.visible=true; this.vi=0;
+  this.playing=!RM;
+  const seg=fig.querySelector('.seg'); if(this.vars.length<2) seg.hidden=true;
+  this.segBtns=this.vars.map((v,i)=>{const b=document.createElement('button');b.type='button';b.id=`${L}-${key}-v${i}`;b.textContent=v.label;b.setAttribute('aria-pressed',i===0);b.onclick=()=>this.setVar(i);seg.appendChild(b);return b;});
+  const btns=fig.querySelector('.btns');
+  const mkb=(id,txt,fn)=>{const b=document.createElement('button');b.type='button';b.id=`${L}-${key}-${id}`;b.textContent=txt;b.onclick=fn;btns.appendChild(b);return b;};
+  this.playBtn=mkb('play',this.playing?this.u.pause:this.u.play,()=>{this.playing=!this.playing;this.syncPlay();});
+  mkb('step',this.u.step,()=>{this.playing=false;this.syncPlay(); if(this.s.phase==='dead'||this.s.phase==='hold'){this.reset();} else if(this.s.phase==='idle'){this.s.stepReq=true;this.s.timer=0;}});
+  mkb('reset',this.u.reset,()=>this.reset());
+  this.setVar(0);
+  new ResizeObserver(()=>this.resize()).observe(this.cv);
+  if('IntersectionObserver' in window) new IntersectionObserver(es=>es.forEach(e=>this.visible=e.isIntersecting),{rootMargin:'100px'}).observe(fig);
+}
+Demo.prototype.syncPlay=function(){this.playBtn.textContent=this.playing?this.u.pause:this.u.play;};
+Demo.prototype.setVar=function(i){
+  this.vi=i; this.V=this.vars[i]; this.segBtns.forEach((b,j)=>b.setAttribute('aria-pressed',i===j));
+  const net=this.V.net; this.W=net.w; this.H=net.h;
+  this.cv.style.aspectRatio=`${net.w} / ${net.h}`;
+  const nodes={};
+  net.places.forEach(p=>nodes[p.id]={...p,kind:'p'});
+  net.trans.forEach(t=>nodes[t.id]={...t,kind:'t'});
+  this.nodes=nodes; this.P=net.places.map(p=>p.id); this.T=net.trans.map(t=>t.id);
+  this.arcs=net.arcs.map(([f,t,w=1,b=0,kind])=>({from:f,to:t,w,inh:kind==='inh',g:geom(nodes[f],nodes[t],b)}));
+  this.pre={};this.post={};this.inh={}; this.T.forEach(t=>{this.pre[t]=this.arcs.filter(a=>a.to===t&&!a.inh);this.inh[t]=this.arcs.filter(a=>a.to===t&&a.inh);this.post[t]=this.arcs.filter(a=>a.from===t);});
+  this.s=null; this.reset(); this.resize();
+};
+Demo.prototype.resize=function(){
+  const dpr=window.devicePixelRatio||1, w=this.cv.clientWidth||600;
+  this.cv.width=Math.round(w*dpr); this.cv.height=Math.round(w*this.H/this.W*dpr);
+  if(this.s) this.draw();
+};
+Demo.prototype.reset=function(){
+  const M={},M0={},lbl={},tlbl={},counts={};
+  this.P.forEach(p=>{M[p]=this.nodes[p].init;M0[p]=M[p];lbl[p]=this.nodes[p].lbl||sub(p);});
+  this.T.forEach(t=>{tlbl[t]=this.nodes[t].lbl||sub(t);counts[t]=0;});
+  this.s={L:this.L,M,M0,lbl,tlbl,counts,order:this.P,tord:this.T,pre:this.pre,inh:this.inh,steps:0,phase:'idle',timer:RM?0:700,cur:null,stepReq:false,
+    maxSeen:Math.max(0,...this.P.map(p=>M[p])),returns:0,lastReturn:0};
+  this.status();
+};
+Demo.prototype.enabled=function(t){return this.pre[t].every(a=>this.s.M[a.from]>=a.w)&&this.inh[t].every(a=>this.s.M[a.from]===0);};
+Demo.prototype.status=function(){this.statusEl.innerHTML=this.V.status(this.s);};
+Demo.prototype.tick=function(dt){
+  const s=this.s; s.timer-=dt; if(s.timer>0) return;
+  switch(s.phase){
+    case 'idle':{
+      if(!(this.playing||s.stepReq)){s.timer=0;return;}
+      s.stepReq=false;
+      const en=this.T.filter(t=>this.enabled(t));
+      if(!en.length){ s.phase='dead'; s.timer=this.V.autoReset??Infinity; this.status(); return; }
+      const t=en[Math.floor(Math.random()*en.length)]; s.cur=t;
+      this.pre[t].forEach(a=>s.M[a.from]-=a.w);
+      s.phase='in'; s.timer=s.dur=DUR.IN; break; }
+    case 'in': s.phase='flash'; s.timer=DUR.FL; break;
+    case 'flash': s.phase='out'; s.timer=s.dur=DUR.OUT; break;
+    case 'out':{
+      const t=s.cur; this.post[t].forEach(a=>s.M[a.to]+=a.w);
+      s.steps++; s.counts[t]++; s.maxSeen=Math.max(s.maxSeen,...this.P.map(p=>s.M[p]));
+      this.V.after&&this.V.after(s); s.cur=null; s.phase='idle'; s.timer=DUR.IDLE;
+      const en=this.T.some(t=>this.enabled(t));
+      if(!en){ s.phase='dead'; s.timer=this.V.autoReset??Infinity; }
+      if(this.V.resetWhen&&this.V.resetWhen(s)){ s.phase='hold'; s.timer=2200; }
+      this.status(); break; }
+    case 'dead': if(this.playing) this.reset(); else s.timer=300; break;
+    case 'hold': if(this.playing) this.reset(); else s.timer=300; break;
+  }
+};
+function tokens(ctx,x,y,n,col){
+  const r=4.6, d=7.5;
+  const pos={1:[[0,0]],2:[[-d,0],[d,0]],3:[[0,-d],[-d,d*.7],[d,d*.7]],4:[[-d,-d],[d,-d],[-d,d],[d,d]],5:[[-d,-d],[d,-d],[0,0],[-d,d],[d,d]]}[n];
+  ctx.fillStyle=col;
+  if(pos){ pos.forEach(([a,b])=>{ctx.beginPath();ctx.arc(x+a,y+b,r,0,7);ctx.fill();}); }
+  else if(n>5){ ctx.font='600 15px Inter, sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(n,x,y+1); }
+}
+Demo.prototype.draw=function(){
+  const ctx=this.ctx, k=this.cv.width/this.W, s=this.s, V=this.V, F=this.cv.clientWidth<520?1.35:1;
+  ctx.setTransform(k,0,0,k,0,0);
+  ctx.fillStyle=C.surface; ctx.fillRect(0,0,this.W,this.H);
+  const firing=s.cur, ph=s.phase;
+  // élek
+  this.arcs.forEach(a=>{
+    const g=a.g, active=!a.inh&&firing&&((ph==='in'&&a.to===firing)||(ph==='out'&&a.from===firing));
+    const tx=g.e[0]-g.c[0], ty=g.e[1]-g.c[1], L=Math.hypot(tx,ty)||1, ux=tx/L, uy=ty/L;
+    if(a.inh){
+      const ex=g.e[0]-ux*10, ey=g.e[1]-uy*10;
+      ctx.strokeStyle=C.bad; ctx.lineWidth=1.6; ctx.setLineDash([5,4]);
+      ctx.beginPath(); ctx.moveTo(g.s[0],g.s[1]); ctx.quadraticCurveTo(g.c[0],g.c[1],ex,ey); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle=C.surface; ctx.beginPath(); ctx.arc(g.e[0]-ux*5,g.e[1]-uy*5,5,0,7); ctx.fill(); ctx.stroke();
+      return;
+    }
+    ctx.strokeStyle=active?C.fire:C.muted; ctx.lineWidth=active?2:1.4;
+    ctx.beginPath(); ctx.moveTo(g.s[0],g.s[1]); ctx.quadraticCurveTo(g.c[0],g.c[1],g.e[0],g.e[1]); ctx.stroke();
+    ctx.fillStyle=active?C.fire:C.muted; ctx.beginPath();
+    ctx.moveTo(g.e[0],g.e[1]); ctx.lineTo(g.e[0]-ux*9-uy*4.5,g.e[1]-uy*9+ux*4.5); ctx.lineTo(g.e[0]-ux*9+uy*4.5,g.e[1]-uy*9-ux*4.5); ctx.fill();
+    if(a.w>1){ const m=qpt(g,.5), ox=m[0]-g.nx*13, oy=m[1]-g.ny*13;
+      ctx.fillStyle=C.surface; ctx.beginPath(); ctx.arc(ox,oy,8,0,7); ctx.fill();
+      ctx.fillStyle=C.ink; ctx.font=`600 ${12*F}px Inter, sans-serif`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(a.w,ox,oy+.5); }
+  });
+  // tranzíciók
+  ctx.font=`500 ${12*F}px Inter, sans-serif`; ctx.textAlign='center'; ctx.textBaseline='middle';
+  this.T.forEach(t=>{
+    const n=this.nodes[t], isF=firing===t&&(ph==='flash'||ph==='in'||ph==='out'), en=!firing&&this.enabled(t);
+    ctx.save(); ctx.translate(n.x,n.y);
+    if(n.o==='d1') ctx.rotate(Math.PI/4); if(n.o==='d2') ctx.rotate(-Math.PI/4);
+    const [hw,hh]=(n.o==='d1'||n.o==='d2')?[TS,TL]:halfs(n);
+    ctx.fillStyle=isF?C.fire:en?C.accent:C.soft; ctx.strokeStyle=isF?C.fire:en?C.accent:C.muted; ctx.lineWidth=1.4;
+    ctx.beginPath(); ctx.rect(-hw,-hh,hw*2,hh*2); ctx.fill(); ctx.stroke(); ctx.restore();
+    const lp=n.lp||(n.o==='v'?[0,-30]:n.o==='h'?[0,-16]:[0,-28]);
+    const txt=n.lbl||sub(t), tw=ctx.measureText(txt).width;
+    ctx.fillStyle=C.surface; ctx.fillRect(n.x+lp[0]-tw/2-3,n.y+lp[1]-8*F,tw+6,16*F);
+    ctx.fillStyle=C.ink; ctx.fillText(txt,n.x+lp[0],n.y+lp[1]);
+    if(V.counts){ ctx.fillStyle=C.accent; ctx.font=`600 ${12*F}px "JetBrains Mono", monospace`;
+      const cy=n.o==='h'? n.y+(lp[1]>0?-16:18) : n.y+30; ctx.fillText('×'+s.counts[t],n.x,cy); ctx.font=`500 ${12*F}px Inter, sans-serif`; }
+  });
+  // helyek
+  this.P.forEach(p=>{
+    const n=this.nodes[p], warn=V.warnAbove!=null&&s.M[p]>V.warnAbove;
+    ctx.fillStyle=C.surface; ctx.strokeStyle=warn?C.bad:C.ink; ctx.lineWidth=warn?3:1.6;
+    ctx.beginPath(); ctx.arc(n.x,n.y,R,0,7); ctx.fill(); ctx.stroke();
+    tokens(ctx,n.x,n.y,s.M[p],warn?C.bad:C.token);
+    const lp=n.lp||[0,32]; ctx.fillStyle=C.ink; ctx.font=`500 ${13*F}px Inter, sans-serif`; ctx.fillText(n.lbl||sub(p),n.x+lp[0],n.y+lp[1]);
+  });
+  // mozgó tokenek
+  if(firing&&(ph==='in'||ph==='out')){
+    const u=ease(Math.max(0,Math.min(1,1-s.timer/s.dur)));
+    const list=ph==='in'?this.pre[firing]:this.post[firing];
+    list.forEach(a=>{ const [x,y]=qpt(a.g,u);
+      ctx.fillStyle=C.token; ctx.beginPath(); ctx.arc(x,y,5.2,0,7); ctx.fill();
+      if(a.w>1){ ctx.fillStyle=C.fire; ctx.font=`700 ${11*F}px Inter, sans-serif`; ctx.fillText('×'+a.w,x+12,y-9); }
+    });
+  }
+  // holtpont jelzés
+  if(ph==='dead'&&!V.quiet){
+    ctx.strokeStyle=C.bad; ctx.lineWidth=3; ctx.strokeRect(1.5,1.5,this.W-3,this.H-3);
+    ctx.fillStyle=C.bad; ctx.font=`700 ${12*F}px "JetBrains Mono", monospace`; ctx.textAlign='left'; ctx.fillText(this.u.dead,10,14);
+  }
+};
+
+/* ---------- nyelvváltás ---------- */
+const wraps={}; document.querySelectorAll('.wrap[data-lang]').forEach(w=>wraps[w.dataset.lang]=w);
+const byLang={hu:[],en:[]};
+Object.entries(wraps).forEach(([L,w])=>w.querySelectorAll('figure.demo').forEach(f=>{const d=new Demo(f,f.dataset.demo,L,w); demos.push(d); byLang[L].push(d);}));
+const SEL='header,h1,h2,h3,h4,p,.formula,ol.read li,figure,tr,summary,.claim,footer';
+const blocks=w=>[...w.querySelectorAll(SEL)];
+const swBtns=[...document.querySelectorAll('.langsw button')];
+let curL='hu';
+function apply(L){
+  curL=L;
+  Object.entries(wraps).forEach(([k,w])=>w.hidden=(k!==L));
+  document.documentElement.lang=L; document.title=UI[L].title;
+  swBtns.forEach(b=>b.setAttribute('aria-pressed',b.dataset.set===L));
+  try{ localStorage.setItem('petri-lang',L); }catch(e){}
+}
+function switchTo(L){
+  if(L===curL||!wraps[L]) return;
+  const from=wraps[curL], to=wraps[L];
+  // horgony: az első blokk, amely még látszik a képernyő tetején
+  const bs=blocks(from); let idx=-1, off=0;
+  for(let i=0;i<bs.length;i++){ const r=bs[i].getBoundingClientRect(); if(!r.height) continue; if(r.bottom>4){ idx=i; off=r.top; break; } }
+  // lenyíló dobozok és demóváltozatok szinkronizálása
+  const dF=from.querySelectorAll('details'), dT=to.querySelectorAll('details'); dF.forEach((d,i)=>{ if(dT[i]) dT[i].open=d.open; });
+  byLang[curL].forEach((d,i)=>{ const e=byLang[L][i]; if(e&&e.vi!==d.vi) e.setVar(d.vi); });
+  apply(L);
+  if(idx>=0){ const t=blocks(to)[idx]; if(t){ window.scrollBy(0, t.getBoundingClientRect().top-off); } }
+}
+swBtns.forEach(b=>b.addEventListener('click',()=>switchTo(b.dataset.set)));
+let start='hu'; try{ const s=localStorage.getItem('petri-lang'); if(s==='en'||s==='hu') start=s; }catch(e){}
+apply(start);
+
+let last=performance.now(), colorTick=0;
+function frame(now){
+  const dt=Math.min(64,now-last); last=now;
+  if((colorTick+=dt)>400){colorTick=0;readColors();}
+  demos.forEach(d=>{ if(d.wrap.hidden) return; d.tick(dt); if(d.visible) d.draw(); });
+  requestAnimationFrame(frame);
+}
+demos.forEach(d=>{ if(!d.wrap.hidden) d.draw(); });
+requestAnimationFrame(frame);
+})();
+</script>
