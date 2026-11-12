@@ -1,0 +1,85 @@
+2026-11-12 22:24:01
+Places:
+P1 200.0 60.0 blue 1 "küld 0" 260.0 60.0 black
+P2 200.0 220.0 blue 0 "vár ack 0" 140.0 220.0 black
+P3 200.0 420.0 blue 0 "küld 1" 240.0 420.0 black
+P4 200.0 580.0 blue 0 "vár ack 1" 140.0 580.0 black
+P5 420.0 140.0 black 0 "üzenet 0" 360.0 100.0 black
+P6 420.0 340.0 black 0 "nyugta 0" 360.0 360.0 black
+P7 420.0 500.0 black 0 "üzenet 1" 360.0 480.0 black
+P8 420.0 700.0 black 0 "nyugta 1" 360.0 720.0 black
+P9 780.0 200.0 green 0 "vár 1" 840.0 200.0 black
+P10 780.0 560.0 green 1 "vár 0" 820.0 560.0 black
+Transitions:
+T1 200.0 140.0 black 1.571 "elküld 0" 140.0 140.0 black
+T2 200.0 340.0 black 1.571 "ack 0 jött" 120.0 340.0 black
+T3 200.0 500.0 black 1.571 "elküld 1" 140.0 500.0 black
+T4 200.0 700.0 black 1.571 "ack 1 jött" 200.0 720.0 black
+T5 420.0 60.0 gray 1.571 "elvész" 480.0 60.0 black
+T6 420.0 260.0 gray 1.571 "elvész" 480.0 260.0 black
+T7 320.0 220.0 black 0.000 "újraküld" 300.0 160.0 black
+T8 420.0 420.0 gray 1.571 "elvész" 480.0 420.0 black
+T9 420.0 620.0 gray 1.571 "elvész" 480.0 620.0 black
+T10 300.0 580.0 black 0.000 "újraküld" 300.0 540.0 black
+T11 580.0 140.0 black 0.000 "ismétlés 0: újranyugtáz" 580.0 80.0 black
+T12 580.0 280.0 black 0.000 "átvesz 0" 560.0 320.0 black
+T13 580.0 460.0 black 0.000 "átvesz 1" 560.0 400.0 black
+T14 580.0 660.0 black 0.000 "ismétlés 1: újranyugtáz" 580.0 700.0 black
+Flows:
+F1 black ENABLER 1 P1 T1 false 2 0
+F2 black ENABLER 1 T1 P2 false -1 0
+F3 black ENABLER 1 P2 T2 false 2 0
+F4 black ENABLER 1 T2 P3 false -1 0
+F5 black ENABLER 1 P3 T3 false 2 0
+F6 black ENABLER 1 T3 P4 false -1 0
+F7 black ENABLER 1 P4 T4 false 2 0
+F8 black ENABLER 1 T4 P1 false -1 2 M1 60.0 700.0 M2 60.0 60.0
+F9 black ENABLER 1 P5 T5 false 3 0
+F10 black ENABLER 1 P6 T6 false 3 0
+F11 black ENABLER 1 T1 P5 false -1 0
+F12 black ENABLER 1 P6 T2 false 0 0
+F13 black ENABLER 1 P2 T7 false 2 0
+F14 black ENABLER 1 T7 P2 false -1 1 M3 260.0 260.0
+F15 black ENABLER 1 T7 P5 false -1 0
+F16 red INHIBITOR 1 P5 T7 false 0 1 M4 340.0 160.0
+F17 red INHIBITOR 1 P6 T7 false 1 0
+F18 black ENABLER 1 P7 T8 false 3 0
+F19 black ENABLER 1 P8 T9 false 3 0
+F20 black ENABLER 1 T3 P7 false -1 0
+F21 black ENABLER 1 P8 T4 false 0 0
+F22 black ENABLER 1 P4 T10 false 2 0
+F23 black ENABLER 1 T10 P4 false -1 1 M5 260.0 620.0
+F24 black ENABLER 1 T10 P7 false -1 0
+F25 red INHIBITOR 1 P7 T10 false 0 1 M6 320.0 540.0
+F26 red INHIBITOR 1 P8 T10 false 13 0
+F27 black ENABLER 1 P5 T11 false 2 0
+F28 black ENABLER 1 P9 T11 false 13 0
+F29 black ENABLER 1 T11 P9 false -1 1 M7 680.0 120.0
+F30 black ENABLER 1 T11 P6 false -1 0
+F31 black ENABLER 1 P5 T12 false 14 0
+F32 black ENABLER 1 P10 T12 false 1 0
+F33 black ENABLER 1 T12 P9 false -1 0
+F34 black ENABLER 1 T12 P6 false -1 0
+F35 black ENABLER 1 P7 T13 false 12 0
+F36 black ENABLER 1 P9 T13 false 0 0
+F37 black ENABLER 1 T13 P10 false -1 0
+F38 black ENABLER 1 T13 P8 false -1 0
+F39 black ENABLER 1 P7 T14 false 14 0
+F40 black ENABLER 1 P10 T14 false 15 0
+F41 black ENABLER 1 T14 P10 false -1 1 M8 680.0 660.0
+F42 black ENABLER 1 T14 P8 false -1 0
+Labels:
+L1 black 26 "Alternáló bit protokoll veszteséges csatornán" 480.0 -20.0 none
+L2 blue 18 "Küldő" 200.0 20.0 none
+L3 black 18 "Csatorna" 420.0 20.0 none
+L4 green 18 "Fogadó" 780.0 20.0 none
+L5 black 14 "Az üzenet és a nyugta bármikor elveszhet (szürke átmenetek). Időtúllépéskor a küldő újraküld," 1040.0 360.0 none
+L6 black 14 "de csak ha a csatorna üres (piros tiltó élek). A fogadó a már látott bitet nem veszi át újra, csak újranyugtáz." 1040.0 380.0 none
+L7 black 14 "Átvételkor a fogadó nyugtát is küld. REACH: van-e holtpont? Lehet-e egyszerre két üzenet a csatornában?" 1040.0 400.0 none
+Config:
+zoom: 1.0
+cx: 200.0
+cy: 200.0
+vpx: -165.0
+vpy: -100.0
+End

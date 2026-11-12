@@ -1,0 +1,49 @@
+2026-11-12 22:14:33
+Places:
+P1 20.0 180.0 blue 6 "Termelő kész" 20.0 140.0 black
+P2 220.0 180.0 blue 0 "3 db kész" 220.0 140.0 black
+P3 460.0 180.0 orange 1 "Raktár" 460.0 140.0 black
+P4 320.0 480.0 black 4 "Szabad hely" 240.0 480.0 black
+P5 680.0 380.0 purple 1 "Mutex" 680.0 420.0 black
+P6 560.0 380.0 green 0 "2 db nála" 500.0 380.0 black
+P7 800.0 380.0 green 0 "2 db nála" 860.0 380.0 black
+Transitions:
+T1 120.0 180.0 black 0.000 "gyárt" 120.0 140.0 black
+T2 320.0 180.0 black 0.000 "elküld" 320.0 140.0 black
+T3 560.0 280.0 black 1.571 "átvesz" 520.0 260.0 black
+T4 560.0 480.0 black 1.571 "felhasznál" 640.0 480.0 black
+T5 800.0 280.0 black 1.571 "átvesz" 760.0 260.0 black
+T6 800.0 480.0 black 1.571 "felhasznál" 880.0 480.0 black
+Flows:
+F1 black ENABLER 1 P1 T1 false 2 0
+F2 black ENABLER 1 T1 P2 false -1 0
+F3 black ENABLER 1 P2 T2 false 2 0
+F4 black ENABLER 1 T2 P1 false -1 2 M1 260.0 260.0 M2 60.0 260.0
+F5 black ENABLER 3 T2 P3 false -1 0
+F6 black ENABLER 3 P4 T2 false 1 0
+F7 black ENABLER 1 T3 P6 false -1 0
+F8 black ENABLER 1 P6 T4 false 2 0
+F9 black ENABLER 2 P3 T3 false 2 1 M117 560.0 200.0
+F10 black ENABLER 2 T4 P4 false -1 0
+F11 black ENABLER 1 P5 T3 false 0 0
+F12 black ENABLER 1 T4 P5 false -1 0
+F13 black ENABLER 1 T5 P7 false -1 0
+F14 black ENABLER 1 P7 T6 false 2 0
+F15 black ENABLER 2 P3 T5 false 2 1 M116 800.0 180.0
+F16 black ENABLER 2 T6 P4 false -1 2 M118 660.0 560.0 M119 420.0 560.0
+F17 black ENABLER 1 P5 T5 false 1 0
+F18 black ENABLER 1 T6 P5 false -1 0
+Labels:
+L1 black 26 "Súlyozott termelő–fogyasztó (Murata, 1989)" 460.0 40.0 none
+L2 green 16 "1. fogyasztó" 620.0 260.0 none
+L3 green 16 "2. fogyasztó" 840.0 260.0 none
+L4 black 14 "A raktár legfeljebb 5 darabot tárol (Szabad hely = 5). A termelő egyszerre 3-at küld," 460.0 610.0 none
+L5 black 14 "a két fogyasztó közül egyszerre csak egy fér a raktárhoz (Mutex), és 2-t vesz ki." 460.0 632.0 none
+L6 black 14 "Súlyozott élek (3 és 2). REACH: korlátos? élő? van holtpont?" 460.0 654.0 none
+Config:
+zoom: 1.0
+cx: 200.0
+cy: 200.0
+vpx: -110.0
+vpy: -130.0
+End

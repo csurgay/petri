@@ -1,0 +1,37 @@
+2026-11-12 22:00:00
+Places:
+P1 150.0 130.0 blue 3 "Olvasók" 150.0 96.0 black
+P2 150.0 330.0 blue 0 "olvas" 102.8 330.0 black
+P3 650.0 130.0 red 2 "Írók" 650.0 96.0 black
+P4 650.0 330.0 red 0 "ír" 685.7 330.0 black
+P5 400.0 330.0 purple 3 "Erőforrás" 400.0 296.0 black
+Transitions:
+T1 150.0 230.0 black 1.571 "olvasni kezd" 67.8 230.0 black
+T2 150.0 430.0 black 1.571 "olvasást befejez" 150.0 456.0 black
+T3 650.0 230.0 black 1.571 "írni kezd" 720.6 230.0 black
+T4 650.0 430.0 black 1.571 "írást befejez" 650.0 456.0 black
+Flows:
+F1 black ENABLER 1 P1 T1 false 0 0
+F2 black ENABLER 1 T1 P2 false -1 0
+F3 black ENABLER 1 P2 T2 false 0 0
+F4 black ENABLER 1 T2 P1 false -1 2 M1 -30.0 430.0 M2 -30.0 130.0
+F5 black ENABLER 1 P3 T3 false 0 0
+F6 black ENABLER 1 T3 P4 false -1 0
+F7 black ENABLER 1 P4 T4 false 0 0
+F8 black ENABLER 1 T4 P3 false -1 2 M3 820.0 430.0 M4 820.0 130.0
+F9 black ENABLER 1 P5 T1 false 0 0
+F10 black ENABLER 1 T2 P5 false -1 0
+F11 black ENABLER 3 P5 T3 false 0 0
+F12 black ENABLER 3 T4 P5 false -1 0
+Labels:
+L1 black 26 "Olvasók–írók (k = 3)" 400.0 40.0 none
+L2 black 14 "Az erőforrás 3 tokenje 3 olvasási engedély. Az olvasó 1-et vesz el, az író mind a 3-at." 400.0 510.0 none
+L3 black 14 "Így egyszerre akárhány (max. 3) olvasó olvashat, de író csak egyedül írhat." 400.0 532.0 none
+L4 black 14 "Ellenőrizd REACH-csel: ha ír > 0, akkor olvas = 0, és ír legfeljebb 1." 400.0 554.0 none
+Config:
+zoom: 1.0
+cx: 200.0
+cy: 200.0
+vpx: -40.0
+vpy: -130.0
+End

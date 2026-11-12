@@ -10,6 +10,7 @@ class PrefForm extends Form {
         this.hintBar=new Control(this,"Hint Bar",100,100+pd*pi++,"BOOLEAN",true);
         pi++;
         this.selfTest=new Control(this,"Self-test",100,100+pd*pi++,"ACTION","Run \u25B6");
+        this.animBuild=new Control(this,"Animated build",100,100+pd*pi++,"ACTION","Run \u25B6");
     }
     draw() {
         super.draw();
@@ -36,9 +37,10 @@ class PrefForm extends Form {
                 closeEnough(this.mouseDownCoord, tcursor))
             {
                 const c=this.hovered;
-                if (c.controlType=="ACTION") {          // Self-test: close PREF, run
+                if (c.controlType=="ACTION") {          // Self-test / Animated build: close PREF, run
                     fp.visible=fp.active=false; fb.active=true;
-                    setTimeout(()=>runSelfTest(),50);
+                    if (c===this.animBuild) setTimeout(()=>animatedBuild(),50);
+                    else setTimeout(()=>runSelfTest(),50);
                 }
                 else if (c.controlType=="BOOLEAN") { c.value=!c.value; c.newValue(); }
                 else askValue(c.text, c.value, c.controlType=="INTEGER"?"number":"text", v=>{

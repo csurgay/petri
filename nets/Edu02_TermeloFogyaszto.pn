@@ -1,0 +1,38 @@
+2026-11-12 22:00:00
+Places:
+P1 150.0 130.0 blue 1 "Termelő kész" 150.0 96.0 black
+P2 150.0 330.0 blue 0 "van termék" 83.5 330.0 black
+P3 690.0 130.0 green 1 "Fogyasztó kész" 690.0 96.0 black
+P4 690.0 330.0 green 0 "kivett termék" 768.0 330.0 black
+P5 420.0 230.0 black 3 "szabad hely" 420.0 196.0 black
+P6 420.0 430.0 orange 0 "foglalt hely" 420.0 466.0 black
+Transitions:
+T1 150.0 230.0 black 1.571 "gyárt" 94.8 230.0 black
+T2 150.0 430.0 black 1.571 "betesz" 150.0 456.0 black
+T3 690.0 230.0 black 1.571 "kivesz" 749.1 230.0 black
+T4 690.0 430.0 black 1.571 "elfogyaszt" 690.0 456.0 black
+Flows:
+F1 black ENABLER 1 P1 T1 false 0 0
+F2 black ENABLER 1 T1 P2 false -1 0
+F3 black ENABLER 1 P2 T2 false 0 0
+F4 black ENABLER 1 T2 P1 false -1 2 M1 -20.0 430.0 M2 -20.0 130.0
+F5 black ENABLER 1 P3 T3 false 0 0
+F6 black ENABLER 1 T3 P4 false -1 0
+F7 black ENABLER 1 P4 T4 false 0 0
+F8 black ENABLER 1 T4 P3 false -1 2 M3 850.0 430.0 M4 850.0 130.0
+F9 black ENABLER 1 P5 T2 false 0 0
+F10 black ENABLER 1 T2 P6 false -1 0
+F11 black ENABLER 1 P6 T3 false 0 0
+F12 black ENABLER 1 T3 P5 false -1 0
+Labels:
+L1 black 26 "Termelő–fogyasztó korlátos pufferrel" 420.0 40.0 none
+L2 black 14 "A puffer 3 helyes: a szabad hely és a foglalt hely együtt mindig 3 (P-invariáns)." 420.0 510.0 none
+L3 black 14 "A termelő nem tehet tele pufferbe, a fogyasztó nem vehet üresből." 420.0 532.0 none
+L4 black 14 "Próbáld ki: írd át a szabad hely kezdőértékét, és nézd a REACH állapotszámát!" 420.0 554.0 none
+Config:
+zoom: 1.0
+cx: 200.0
+cy: 200.0
+vpx: -50.0
+vpy: -130.0
+End

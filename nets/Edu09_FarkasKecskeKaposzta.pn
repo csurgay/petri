@@ -1,0 +1,87 @@
+2026-11-12 22:30:38
+Places:
+P1 250.0 70.0 blue 1 "Gazda" 250.0 36.0 black
+P2 650.0 70.0 blue 0 "Gazda" 650.0 36.0 black
+P3 140.0 220.0 black 1 "Farkas" 180.0 200.0 black
+P4 740.0 220.0 black 0 "Farkas" 700.0 200.0 black
+P5 140.0 360.0 black 1 "Kecske" 180.0 340.0 black
+P6 740.0 360.0 black 0 "Kecske" 700.0 340.0 black
+P7 140.0 480.0 black 1 "Káposzta" 180.0 460.0 black
+P8 740.0 480.0 black 0 "Káposzta" 700.0 460.0 black
+P9 440.0 560.0 red 0 "Baj! valakit megettek" 440.0 600.0 black
+Transitions:
+T1 440.0 40.0 black 1.571 "egyedül át →" 440.0 20.0 black
+T2 440.0 80.0 black 1.571 "← vissza" 440.0 100.0 black
+T3 440.0 200.0 black 1.571 "farkassal át →" 440.0 180.0 black
+T4 440.0 240.0 black 1.571 "← vissza" 440.0 260.0 black
+T5 440.0 340.0 black 1.571 "kecskével át →" 440.0 320.0 black
+T6 440.0 380.0 black 1.571 "← vissza" 440.0 400.0 black
+T7 440.0 460.0 black 1.571 "káposztával át →" 440.0 440.0 black
+T8 440.0 500.0 black 1.571 "← vissza" 440.0 520.0 black
+T9 40.0 300.0 red 0.000 "farkas megeszi" 100.0 300.0 black
+T10 40.0 420.0 red 0.000 "kecske megeszi" 100.0 420.0 black
+T11 860.0 300.0 red 0.000 "farkas megeszi" 800.0 300.0 black
+T12 860.0 420.0 red 0.000 "kecske megeszi" 800.0 420.0 black
+Flows:
+F1 black ENABLER 1 P1 T1 false 1 0
+F2 black ENABLER 1 T1 P2 false -1 0
+F3 black ENABLER 1 P2 T2 false 0 0
+F4 black ENABLER 1 T2 P1 false -1 0
+F5 black ENABLER 1 P1 T3 false 1 0
+F6 black ENABLER 1 T3 P2 false -1 0
+F7 black ENABLER 1 P2 T4 false 0 0
+F8 black ENABLER 1 T4 P1 false -1 0
+F9 black ENABLER 1 P3 T3 false 1 0
+F10 black ENABLER 1 T3 P4 false -1 0
+F11 black ENABLER 1 P4 T4 false 0 0
+F12 black ENABLER 1 T4 P3 false -1 0
+F13 black ENABLER 1 P1 T5 false 12 0
+F14 black ENABLER 1 T5 P2 false -1 0
+F15 black ENABLER 1 P2 T6 false 14 0
+F16 black ENABLER 1 T6 P1 false -1 0
+F17 black ENABLER 1 P5 T5 false 1 0
+F18 black ENABLER 1 T5 P6 false -1 0
+F19 black ENABLER 1 P6 T6 false 0 0
+F20 black ENABLER 1 T6 P5 false -1 0
+F21 black ENABLER 1 P1 T7 false 12 0
+F22 black ENABLER 1 T7 P2 false -1 0
+F23 black ENABLER 1 P2 T8 false 14 0
+F24 black ENABLER 1 T8 P1 false -1 0
+F25 black ENABLER 1 P7 T7 false 1 0
+F26 black ENABLER 1 T7 P8 false -1 0
+F27 black ENABLER 1 P8 T8 false 0 0
+F28 black ENABLER 1 T8 P7 false -1 0
+F29 black ENABLER 1 P3 T9 false 15 0
+F30 black ENABLER 1 T9 P3 false -1 1 M1 40.0 220.0
+F31 black ENABLER 1 P5 T9 false 13 0
+F32 red INHIBITOR 1 P1 T9 false 14 2 M2 20.0 140.0 M3 20.0 280.0
+F33 black ENABLER 1 T9 P9 false -1 1 M4 40.0 560.0
+F34 black ENABLER 1 P5 T10 false 15 0
+F35 black ENABLER 1 T10 P5 false -1 1 M5 40.0 360.0
+F36 black ENABLER 1 P7 T10 false 13 0
+F37 red INHIBITOR 1 P1 T10 false 2 2 M6 0.0 120.0 M7 0.0 420.0
+F38 black ENABLER 1 T10 P9 false -1 1 M8 40.0 560.0
+F39 black ENABLER 1 P4 T11 false 14 0
+F40 black ENABLER 1 T11 P4 false -1 1 M9 860.0 220.0
+F41 black ENABLER 1 P6 T11 false 12 0
+F42 red INHIBITOR 1 P2 T11 false 15 2 M10 880.0 140.0 M11 880.0 280.0
+F43 black ENABLER 1 T11 P9 false -1 1 M12 860.0 560.0
+F44 black ENABLER 1 P6 T12 false 14 0
+F45 black ENABLER 1 T12 P6 false -1 1 M13 860.0 360.0
+F46 black ENABLER 1 P8 T12 false 12 0
+F47 red INHIBITOR 1 P2 T12 false 3 2 M14 900.0 120.0 M15 900.0 420.0
+F48 black ENABLER 1 T12 P9 false -1 1 M16 860.0 560.0
+Labels:
+L1 black 26 "Farkas, kecske, káposzta" 900.0 40.0 none
+L2 blue 18 "bal part" 140.0 140.0 none
+L3 blue 18 "jobb part" 740.0 140.0 none
+L4 black 14 "A gazda egyszerre legfeljebb egy dolgot vihet át. Gazda nélkül a farkas megeszi a kecskét, a kecske a káposztát" 440.0 640.0 none
+L5 black 14 "(piros átmenetek, a gazdától tiltó él védi őket). Feladat: a REACH gráfban keress olyan utat," 420.0 660.0 none
+L6 black 14 "amelyen mindenki átér a jobb partra, és a Baj üres marad." 420.0 680.0 none
+Config:
+zoom: 1.0
+cx: 200.0
+cy: 200.0
+vpx: -116.1
+vpy: -130.0
+End

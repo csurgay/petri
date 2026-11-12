@@ -1,0 +1,46 @@
+2026-11-12 22:18:31
+Places:
+P1 100.0 80.0 black 3 "a" 60.0 80.0 black
+P2 400.0 180.0 blue 0 "c (eredmény)" 400.0 220.0 black
+P3 100.0 280.0 black 2 "b" 60.0 280.0 black
+P4 520.0 180.0 green 1 "start" 520.0 140.0 black
+P5 780.0 180.0 green 0 "Kész" 780.0 140.0 black
+P6 80.0 460.0 black 5 "x" 40.0 460.0 black
+P7 80.0 580.0 black 3 "y" 40.0 580.0 black
+P8 500.0 520.0 green 1 "start" 500.0 480.0 black
+P9 760.0 520.0 green 0 "Kész" 760.0 480.0 black
+Transitions:
+T1 240.0 80.0 black 0.000 "a → c" 280.0 60.0 black
+T2 240.0 280.0 black 0.000 "b → c" 280.0 300.0 black
+T3 640.0 180.0 black 0.000 "kész?" 680.0 140.0 black
+T4 220.0 520.0 black 0.000 "x−1, y−1" 220.0 480.0 black
+T5 620.0 520.0 black 0.000 "kész?" 620.0 480.0 black
+Flows:
+F1 black ENABLER 1 P1 T1 false 2 0
+F2 black ENABLER 1 T1 P2 false -1 0
+F3 black ENABLER 1 P3 T2 false 2 0
+F4 black ENABLER 1 T2 P2 false -1 0
+F5 black ENABLER 1 P4 T3 false 2 0
+F6 black ENABLER 1 T3 P5 false -1 0
+F7 red INHIBITOR 1 P1 T2 false 0 0
+F8 red INHIBITOR 1 P1 T3 false 0 2 M1 100.0 40.0 M2 640.0 40.0
+F9 red INHIBITOR 1 P3 T3 false 1 2 M3 100.0 340.0 M4 640.0 340.0
+F10 black ENABLER 1 P6 T4 false 14 0
+F11 black ENABLER 1 P7 T4 false 12 0
+F12 black ENABLER 1 P8 T5 false 2 0
+F13 black ENABLER 1 T5 P9 false -1 0
+F14 red INHIBITOR 1 P7 T5 false 1 2 M5 80.0 640.0 M6 620.0 640.0
+Labels:
+L1 black 26 "Számolás tiltó élekkel (nullateszt)" 940.0 40.0 none
+L2 blue 18 "Összeadás: c = a + b" 440.0 80.0 none
+L3 blue 18 "Kivonás: x = x − y" 380.0 460.0 none
+L4 black 14 "A tiltó él nullát tesztel: a kész? csak üres a és b mellett tüzelhet. A b → c csak a = 0 után indul." 880.0 380.0 none
+L5 black 14 "Kivonásnál a végén x-ben marad x − y. Ha y > x, a háló elakad: természetes számokkal nincs negatív." 880.0 400.0 none
+L6 black 14 "Két tiltó éllel már Minsky-féle kétszámlálós gép is építhető, vagyis a háló Turing-teljes." 880.0 420.0 none
+Config:
+zoom: 1.0
+cx: 200.0
+cy: 200.0
+vpx: -134.3
+vpy: -110.0
+End

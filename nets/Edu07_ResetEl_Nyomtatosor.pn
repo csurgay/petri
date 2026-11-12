@@ -1,0 +1,38 @@
+2026-11-12 22:00:00
+Places:
+P1 100.0 250.0 blue 4 "Dokumentumok" 100.0 216.0 black
+P2 380.0 250.0 orange 0 "Nyomtatási sor" 380.0 216.0 black
+P3 680.0 250.0 black 0 "Nyomtat" 680.0 286.0 black
+P4 980.0 250.0 green 0 "Kinyomtatva" 980.0 216.0 black
+P5 605.0 120.0 black 1 "Nyomtató szabad" 605.0 86.0 black
+P6 230.0 420.0 red 1 "Mégse gomb" 230.0 456.0 black
+P7 530.0 420.0 red 0 "Törölve" 530.0 456.0 black
+Transitions:
+T1 230.0 250.0 black 0.000 "beküld" 230.0 294.0 black
+T2 530.0 250.0 black 0.000 "nyomtatást kezd" 530.0 294.0 black
+T3 830.0 250.0 black 0.000 "befejez" 830.0 294.0 black
+T4 380.0 420.0 black 0.000 "mindet töröl" 380.0 464.0 black
+Flows:
+F1 black ENABLER 1 P1 T1 false 0 0
+F2 black ENABLER 1 T1 P2 false -1 0
+F3 black ENABLER 1 P2 T2 false 0 0
+F4 black ENABLER 1 T2 P3 false -1 0
+F5 black ENABLER 1 P3 T3 false 0 0
+F6 black ENABLER 1 T3 P4 false -1 0
+F7 black ENABLER 1 P5 T2 false 0 0
+F8 black ENABLER 1 T3 P5 false -1 0
+F9 black ENABLER 1 P6 T4 false 0 0
+F10 black ENABLER 1 T4 P7 false -1 0
+F11 blue RESET 1 T4 P2 false -1 0
+Labels:
+L1 black 26 "Reset él: nyomtatási sor törlése" 540.0 40.0 none
+L2 black 14 "A kék, rombuszfejű él reset él: a mindet töröl tüzelésekor a Nyomtatási sor kiürül," 540.0 500.0 none
+L3 black 14 "akárhány token volt benne. Hagyományos éllel ezt csak tokenenként lehetne leírni." 540.0 522.0 none
+L4 black 14 "REACH: hány különböző végállapot van, és mennyi lehet bennük a Kinyomtatva?" 540.0 544.0 none
+Config:
+zoom: 1.0
+cx: 200.0
+cy: 200.0
+vpx: -123.8
+vpy: -130.0
+End

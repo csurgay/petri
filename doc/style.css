@@ -50,6 +50,25 @@ body {
 .palette button.on svg { fill: #fff; stroke: #fff; }
 .palette button.on span { color: #dfe6f8; }
 
+.palette .sep { height: 1px; margin: 3px 4px; background: rgba(0,0,0,0.14); flex: none; }
+.palette button.del span { right: 0; left: 0; text-align: center; bottom: -1px; font-size: 8px; }
+.palette button.del svg { fill: none; transform: translateY(-3px); }
+.palette button.del.off { opacity: 0.4; }
+
+/* animated build: pointer, click ripple, input cover */
+.ab-cover { position: fixed; inset: 0; z-index: 900; cursor: none; }
+.ab-pill { position: fixed; left: 50%; bottom: 34px; transform: translateX(-50%);
+    background: rgba(26,33,48,0.85); color: #fff; font: 13px Arial, sans-serif;
+    padding: 6px 14px; border-radius: 14px; pointer-events: none; }
+.ab-cursor { position: fixed; z-index: 1001; pointer-events: none; width: 24px; height: 30px;
+    margin: -2px 0 0 -2px; transition: transform .08s; transform-origin: 2px 2px; }
+.ab-cursor.down { transform: scale(0.85); }
+.ab-click { position: fixed; z-index: 1000; pointer-events: none; width: 36px; height: 36px;
+    margin: -18px 0 0 -18px; border-radius: 50%; box-sizing: border-box;
+    border: 3px solid #000; box-shadow: 0 0 0 3px #fff, inset 0 0 0 3px #fff;
+    animation: abclick .6s ease-out forwards; }
+@keyframes abclick { from { transform: scale(.2); opacity: 1; } to { transform: scale(1.35); opacity: 0; } }
+
 /* bigger targets for fingers */
 @media (pointer: coarse) {
     .palette button { width: 44px; height: 44px; }

@@ -406,6 +406,33 @@ stTest("Reachability graph", async t=>{
     bfsSteps=3; fbfs.runFrom();
     t.eq(fbfs.nodes.size,2,"two markings: A1 B0 and A0 B1");
 });
+stTest("Trash button (DEL) deletes the selection", async t=>{
+    t.ok(palette.del && palette.del.textContent.includes("DEL"),"trash button with DEL under the tools");
+    const n=pn.p.length;
+    palette.del.click(); await st.frames();
+    t.eq(pn.p.length,n,"nothing selected: nothing deleted"); t.ok(/select/i.test(toastText),"says why");
+    await st.click(st.scr(st.P("B"))); t.eq(sel.size,1,"B selected");
+    t.ok(!palette.del.classList.contains("off"),"button active");
+    palette.del.click(); await st.frames();
+    t.ok(!st.P("B"),"B deleted"); t.eq(pn.f.length,2,"its arcs too");
+    await st.key("z",{ctrl:true}); t.ok(st.P("B"),"undo brings it back");
+});
+stTest("Animated build rebuilds the net with the mouse, then restores it", async t=>{
+    t.eq(fp.animBuild && fp.animBuild.controlType,"ACTION","PREF has Animated build");
+    // a bend, a weight, two tokens and a free label, too
+    const f=st.F("T2","A"); const mp=new MidPoint(40,160); f.path.splice(1,0,mp); pn.m.push(mp);
+    st.F("A","T1").weight=2; st.P("A").tokens=2;
+    const l=new Label("Hello",240,160); pn.addLabel(l);
+    pn.newUndo();
+    const before=rawSave(), want=abReadNet(before), undoLen=undo.length;
+    const ok=await animatedBuild(25, true);
+    t.ok(ok,"finished");
+    t.eq(AB.missed.join(", "),"","every step done with the mouse / editor");
+    t.eq(abDiff(AB.built,want),"","built net equals the original");
+    t.eq(rawSave().split("\n").slice(1,-7).join("\n"), before.split("\n").slice(1,-7).join("\n"),"original restored exactly");
+    t.eq(undo.length,undoLen,"undo history restored");
+    t.ok(!document.querySelector(".ab-cover,.ab-cursor"),"pointer and cover removed");
+});
 stTest("Help page is available", async t=>{
     const r=await fetch("doc/help.html",{cache:"no-cache"});
     const s=r.ok ? await r.text() : "";

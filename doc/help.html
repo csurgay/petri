@@ -267,7 +267,8 @@ const DATA=[
     [{hu:'Reset – nullázó él',en:'Reset arc'},L=>K('R')+(L=='hu'?' – húzás tranzícióról helyre':' – drag from a transition to a place')],
     [{hu:'Marking – jelölés',en:'Marking',d:{hu:'Itt tüzel a tranzícióra kattintás is („token game”).',en:'Clicking a transition fires it here (the “token game”).'}},L=>K('M')+(L=='hu'?' – kattintás: +1 token · jobb klikk: −1 · dupla katt: szám beírása':' – click: +1 token · right-click: −1 · double-click: type the number')],
     [{hu:'Label – címke',en:'Label'},L=>K('L')+(L=='hu'?' – kattintás: új címke · dupla katt: szerkesztés · jobb klikk: törlés':' – click: new label · double-click: edit · right-click: delete')],
-    [{hu:'Pan – nézet mozgatása',en:'Pan'},L=>K('H')+(L=='hu'?' – húzás: a nézet mozgatása':' – drag: move the view')]
+    [{hu:'Pan – nézet mozgatása',en:'Pan'},L=>K('H')+(L=='hu'?' – húzás: a nézet mozgatása':' – drag: move the view')],
+    [{hu:'Kuka – törlés (DEL)',en:'Trash – delete (DEL)',d:{hu:'A paletta legalján, vonal alatt. Ugyanaz, mint a Del billentyű; halvány, ha nincs kijelölés.',en:'At the bottom of the palette, below a line. Same as the Del key; dimmed while nothing is selected.'}},L=>(L=='hu'?'kattintás: a kijelöltek törlése':'click: delete the selection')]
    ]},
    {h:{hu:'Kijelölés',en:'Selection'},rows:[
     [{hu:'Objektum kijelölése',en:'Select an object'},L=>m('click',L)+' '+(L=='hu'?'az objektumon':'on the object')],
@@ -365,8 +366,9 @@ const DATA=[
     [{hu:'Grid Shown',en:'Grid Shown'},L=>(L=='hu'?'rács megjelenítése':'show the grid')],
     [{hu:'Snap to Grid',en:'Snap to Grid'},L=>(L=='hu'?'rácsra igazítás':'snap objects to the grid')],
     [{hu:'Breakpoint',en:'Breakpoint'},L=>(L=='hu'?'futás leállítása, ha a feltétel teljesül':'stop running when the condition holds')],
-    [{hu:'Self-test',en:'Self-test',d:{hu:'Végigpróbálja az összes funkciót egy teszthálón (egér, billentyű, érintés, vágólap, párbeszédablakok), majd visszaállítja a munkádat. Linkkel: index.html?selftest=1',en:'Tries every feature on a test net (mouse, keys, touch, clipboard, dialogs), then restores your work. As a link: index.html?selftest=1'}},L=>(L=='hu'?'kattintás a Run ▶ feliratra':'click Run ▶')],
     [{hu:'Hint Bar',en:'Hint Bar'},L=>(L=='hu'?'súgósor megjelenítése alul':'show the hint bar at the bottom')],
+    [{hu:'Self-test',en:'Self-test',d:{hu:'Végigpróbálja a szerkesztő funkcióit egy kis teszthálón, majd mindent visszaállít.',en:'Tries the editor\'s features on a small test net, then restores everything.'}},L=>(L=='hu'?'kattintás: önteszt futtatása':'click: run the self-test')],
+    [{hu:'Animated build',en:'Animated build',d:{hu:'A betöltött hálót lassan újraépíti a szemed előtt, csak egérrel: eszközválasztás a palettán, kattintás, élek húzása és hajlítása, tokenek kattintása; minden kattintásnál fekete-fehér hullám látszik. A neveket és a számokat (súly, sok token) begépeli. Kattintás vagy Esc megállítja; a végén az eredeti háló pontosan visszaáll.',en:'Rebuilds the loaded net slowly before your eyes using only the mouse: picking tools on the palette, clicking, dragging and bending arcs, clicking tokens; every click shows a black-and-white ripple. Names and numbers (weights, many tokens) are typed. Click or Esc stops it; the original net is restored exactly at the end.'}},L=>(L=='hu'?'kattintás: bemutató indítása (a PREF bezárul)':'click: start the show (PREF closes)')],
     [{hu:'Assert String',en:'Assert String'},L=>(L=='hu'?'feltétel helynevekkel: ':'condition with place names: ')+'<code>P3&gt;1</code>, <code>ANY&gt;1</code>, <code>ALL&gt;1</code>, <code>||</code>, <code>&amp;&amp;</code>']
   ]}],
   tip:{hu:'<code>ANY</code>: bármelyik hely, <code>ALL</code>: minden hely. Például <code>ANY&gt;1</code> megállít, amint valamelyik helyen 1-nél több token van – így tesztelhető az 1-safe tulajdonság.',en:'<code>ANY</code>: any place, <code>ALL</code>: every place. E.g. <code>ANY&gt;1</code> stops as soon as some place holds more than one token – a quick test for 1-safeness.'}},

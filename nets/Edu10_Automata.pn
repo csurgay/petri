@@ -1,0 +1,47 @@
+2026-11-12 22:00:00
+Places:
+P1 100.0 300.0 blue 1 "0 Ft" 65.0 272.0 black
+P2 250.0 300.0 blue 0 "5 Ft" 250.0 336.0 black
+P3 400.0 300.0 blue 0 "10 Ft" 400.0 336.0 black
+P4 550.0 300.0 blue 0 "15 Ft" 588.0 330.0 black
+P5 700.0 300.0 blue 0 "20 Ft" 738.0 330.0 black
+Transitions:
+T1 175.0 300.0 black 0.000 "+5" 175.0 344.0 black
+T2 325.0 300.0 black 0.000 "+5" 325.0 344.0 black
+T3 475.0 300.0 black 0.000 "+5" 475.0 344.0 black
+T4 625.0 300.0 black 0.000 "+5" 625.0 344.0 black
+T5 250.0 190.0 black 0.000 "+10" 250.0 148.0 black
+T6 400.0 130.0 black 0.000 "+10" 400.0 88.0 black
+T7 550.0 190.0 black 0.000 "+10" 550.0 148.0 black
+T8 325.0 430.0 black 0.000 "15 Ft-os csoki ki" 325.0 474.0 black
+T9 400.0 530.0 black 0.000 "20 Ft-os csoki ki" 400.0 574.0 black
+Flows:
+F1 black ENABLER 1 P1 T1 false 0 0
+F2 black ENABLER 1 T1 P2 false -1 0
+F3 black ENABLER 1 P2 T2 false 0 0
+F4 black ENABLER 1 T2 P3 false -1 0
+F5 black ENABLER 1 P3 T3 false 0 0
+F6 black ENABLER 1 T3 P4 false -1 0
+F7 black ENABLER 1 P4 T4 false 0 0
+F8 black ENABLER 1 T4 P5 false -1 0
+F9 black ENABLER 1 P1 T5 false 0 0
+F10 black ENABLER 1 T5 P3 false -1 0
+F11 black ENABLER 1 P2 T6 false 0 0
+F12 black ENABLER 1 T6 P4 false -1 0
+F13 black ENABLER 1 P3 T7 false 0 0
+F14 black ENABLER 1 T7 P5 false -1 0
+F15 black ENABLER 1 P4 T8 false 0 1 M1 550.0 430.0
+F16 black ENABLER 1 T8 P1 false -1 1 M2 100.0 430.0
+F17 black ENABLER 1 P5 T9 false 0 1 M3 700.0 530.0
+F18 black ENABLER 1 T9 P1 false -1 2 M4 40.0 530.0 M5 40.0 300.0
+Labels:
+L1 black 26 "Csokiautomata állapotgépként" 400.0 40.0 none
+L2 black 14 "Minden helyen legfeljebb 1 token: ez a Petri-háló egy véges automata (állapotgép)." 400.0 610.0 none
+L3 black 14 "A beütött érmék sorozata egy-egy tüzelési sorozat. Mely összegeknél adhat csokit?" 400.0 632.0 none
+Config:
+zoom: 1.0
+cx: 200.0
+cy: 200.0
+vpx: -110.0
+vpy: -130.0
+End

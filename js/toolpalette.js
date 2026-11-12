@@ -51,6 +51,15 @@ function buildPalette() {
         b.addEventListener("click",()=>{ ctxMenu.close(); setTool(t.id); b.blur(); });
         p.appendChild(b);
     });
+    // Delete the selection (same as the Delete key)
+    const sep=document.createElement("div"); sep.className="sep"; p.appendChild(sep);
+    const del=document.createElement("button");
+    del.className="del"; del.dataset.action="DELETE";
+    del.title="Delete (Del): delete the selected objects";
+    del.innerHTML='<svg width="20" height="20" viewBox="0 0 20 20"><path d="M3.5 5.5h13 M8 5.5V3.6h4v1.9 M5.2 5.5l.9 11.2h7.8l.9-11.2 M8.4 8.5v5.6 M11.6 8.5v5.6" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>DEL</span>';
+    del.addEventListener("click",()=>{ ctxMenu.close(); deleteSelection(); del.blur(); });
+    p.appendChild(del);
+    palette.del=del;
     document.body.appendChild(p);
     palette.el=p;
     setTool(tool);
@@ -68,6 +77,15 @@ function updatePalette() {
     if (palette.el.style.top!==top) palette.el.style.top=top;
     const show=!(ff.active || fp.active || fbfs.active);
     if (show!==paletteShown) { palette.el.style.display=show?"":"none"; paletteShown=show; }
+    if (palette.del) { const off=sel.size==0; if (palette.del.classList.contains("off")!==off) palette.del.classList.toggle("off",off); }
+}
+// the trash button: delete what is selected
+function deleteSelection() {
+    if (!state.is("IDLE") || sel.size==0) { showToast("Select something to delete first"); return false; }
+    sel.deleteAll();
+    pn.highlighted=null;
+    pn.newUndo();
+    return true;
 }
 function toolName() { return TOOLS.find(t=>t.id==tool).name; }
 
