@@ -53,7 +53,7 @@ gcv.style.touchAction="none";          // the page handles all touch gestures
 gcv.addEventListener("pointerdown", e=>{
     if (e.pointerType!="touch") return;
     e.preventDefault();                   // no emulated mouse events
-    gcv.setPointerCapture(e.pointerId);
+    try { gcv.setPointerCapture(e.pointerId); } catch(err) {}   // (synthetic test events)
     touch.pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
     if (touch.pts.size==1) {
         touch.phase="pending";

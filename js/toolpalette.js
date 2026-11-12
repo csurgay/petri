@@ -22,7 +22,7 @@ const TOOLS=[
      svg:'<path d="M3 16L12.2 6.8" fill="none" stroke-width="1.8"/><circle cx="14.3" cy="4.7" r="2.8" fill="none" stroke-width="1.6"/>'},
     {id:"RESET",      key:"r", name:"Reset arc",
      tip:"Reset arc (R): drag from a transition to a place (or click an arc to make it reset); firing empties the place",
-     svg:'<path d="M3 16L11.5 7.5" fill="none" stroke-width="1.8"/><path d="M17.5 1.5L16.3 6.3 11.5 7.5 12.7 2.7z" stroke="none"/>'},
+     svg:'<path d="M2.5 17.5L10.5 9.5" fill="none" stroke-width="1.8"/><path d="M18 2L16.5 8.3 10.5 9.5 12 3.5z" stroke="none"/>'},
     {id:"MARKING",    key:"m", name:"Marking",
      tip:"Marking (M): click a place = +1 token, right-click = \u22121, double-click = type the number; click a transition to fire it",
      svg:'<circle cx="10" cy="10" r="6.5" fill="none" stroke-width="1.5"/><circle cx="7.5" cy="7.5" r="1.6"/><circle cx="12.5" cy="12.5" r="1.6"/><circle cx="12.5" cy="7.5" r="1.6"/><circle cx="7.5" cy="12.5" r="1.6"/>'},

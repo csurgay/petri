@@ -54,9 +54,13 @@ class BaseForm extends Form {
         }
     }
     processFormEvent(evt) {
-        if (!this.hover()) return;
+        // keys work wherever the mouse is (e.g. over the toolbar); only the
+        // mouse itself must be over the net. Off the net nothing is "hovered",
+        // so Del / arrows never act on an object hidden under the toolbar.
+        const inside=this.hover();
+        if (!inside && evt.type!="kd") return;
         super.processFormEvent(evt);
-        this.hovered=pn.getCursoredObject(evt);
+        this.hovered = inside ? pn.getCursoredObject(evt) : null;
         const delta=-Math.sign(evt.deltaY);
         // IDLE or running state (PLAY/RUN/FLY)
         if (state.is("IDLE") || bar.running()) {

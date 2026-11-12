@@ -8,6 +8,8 @@ class PrefForm extends Form {
         this.assertOnOff=new Control(this,"Breakpoint",100,100+pd*pi++,"BOOLEAN",false);
         this.assertString=new Control(this,"Assert String",100,100+pd*pi++,"STRING","ANY>1 || ALL>1 || P3>1");
         this.hintBar=new Control(this,"Hint Bar",100,100+pd*pi++,"BOOLEAN",true);
+        pi++;
+        this.selfTest=new Control(this,"Self-test",100,100+pd*pi++,"ACTION","Run \u25B6");
     }
     draw() {
         super.draw();
@@ -34,7 +36,11 @@ class PrefForm extends Form {
                 closeEnough(this.mouseDownCoord, tcursor))
             {
                 const c=this.hovered;
-                if (c.controlType=="BOOLEAN") { c.value=!c.value; c.newValue(); }
+                if (c.controlType=="ACTION") {          // Self-test: close PREF, run
+                    fp.visible=fp.active=false; fb.active=true;
+                    setTimeout(()=>runSelfTest(),50);
+                }
+                else if (c.controlType=="BOOLEAN") { c.value=!c.value; c.newValue(); }
                 else askValue(c.text, c.value, c.controlType=="INTEGER"?"number":"text", v=>{
                     c.value = c.controlType=="INTEGER" ? (parseInt(v)||0) : v;
                     c.newValue();

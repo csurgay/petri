@@ -44,6 +44,8 @@ if (urlParams.has('net')) {
     pn.load('nets/'+net);
 }
 else restoreAutosave();
+// index.html?selftest=1 runs the self-test right after start
+if (urlParams.has('selftest')) setTimeout(()=>runSelfTest(urlParams.get('selftest')!="1"?urlParams.get('selftest'):null), 1200);
 buildPalette();
 fb.active=bar.active=true;
 state.set("IDLE");
