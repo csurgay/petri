@@ -290,14 +290,14 @@ document.addEventListener("cut",   e=>onClipCopy(e,true));
 document.addEventListener("paste", e=>onClipPaste(e));
 
 // ---- toast: short feedback at the bottom of the canvas -------------------
-let toastText="", toastMs=0;
-function showToast(t) { toastText=t; toastMs=Date.now(); }
+let toastText="", toastMs=0, toastLen=1800;
+function showToast(t, len=1800) { toastText=t; toastMs=Date.now(); toastLen=len; }
 function drawToast() {
     const age=Date.now()-toastMs;
-    if (!toastText || age>1800) return;
+    if (!toastText || age>toastLen) return;
     const c=g.ctx;
     c.save();
-    c.globalAlpha=age>1400 ? (1800-age)/400 : 1;
+    c.globalAlpha=age>toastLen-400 ? (toastLen-age)/400 : 1;
     c.setLineDash([]);
     c.font="14px arial"; c.textAlign="center"; c.textBaseline="middle";
     const w=c.measureText(toastText).width+28, h=30;

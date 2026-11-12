@@ -58,10 +58,13 @@ function loadNetText(text, name) {
 }
 
 // --- save to the computer ------------------------------------------------------
-async function saveNetToComputer() {
+// saveAs: always ask for a (new) location
+async function saveNetToComputer(saveAs=false) {
     if (undoPtr<0) pn.newUndo();
     const data=rawSave();
-    // Chrome/Edge: real "Save as" dialog, later saves go to the same file
+    if (saveAs) fm.handle=null;
+    // Chrome/Edge on https or localhost: real "Save as" dialog,
+    // later saves go to the same file
     if (window.showSaveFilePicker) {
         try {
             if (!fm.handle) {
@@ -74,10 +77,11 @@ async function saveNetToComputer() {
             await w.write(data); await w.close();
             setFileName(fm.handle.name);
             markSaved(); autosave();
-            showToast("Saved "+fm.name);
+            showToast("Saved "+fm.name+(saveAs?"":"  (Ctrl+Shift+S: save as)"));
             return;
         } catch(e) {
             if (e && e.name=="AbortError") return;   // user cancelled
+            console.warn("showSaveFilePicker failed, falling back to download:", e);
             fm.handle=null;                             // fall back to download
         }
     }
@@ -87,7 +91,10 @@ async function saveNetToComputer() {
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
     markSaved(); autosave();
-    showToast("Downloaded "+fm.name);
+    // tell where it went and why there was no location dialog
+    const why = !window.isSecureContext ? " (location choice needs https or localhost)"
+              : !window.showSaveFilePicker ? " (this browser cannot ask for a location)" : "";
+    showToast("Downloaded "+fm.name+" to the browser's download folder"+why, 5000);
 }
 
 // --- open from the computer ---------------------------------------------------
