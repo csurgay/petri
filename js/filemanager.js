@@ -69,28 +69,44 @@ async function saveNetToComputer(saveAs=false) {
     if (undoPtr<0) pn.newUndo();
     const data=rawSave();
     if (saveAs) fm.handle=null;
+    let problem="";
     // Chrome/Edge on https or localhost: real "Save as" dialog,
     // later saves go to the same file
     if (pickerUsable(window.showSaveFilePicker)) {
+        let handle=fm.handle, step="dialog";
         const t0=Date.now();
         try {
-            if (!fm.handle) {
-                fm.handle=await window.showSaveFilePicker({
+            if (!handle) {
+                handle=await window.showSaveFilePicker({
                     suggestedName: fm.name,
                     types:[{description:"PetriNet", accept:{"text/plain":[".pn"]}}]
                 });
             }
-            const w=await fm.handle.createWritable();
-            await w.write(data); await w.close();
-            setFileName(fm.handle.name);
-            markSaved(); autosave();
-            showToast("Saved "+fm.name+(saveAs?"":"  (Ctrl+Shift+S: save as)"));
-            return;
+            step="permission";
+            if (handle.requestPermission &&
+                await handle.requestPermission({mode:"readwrite"})!=="granted")
+                throw new DOMException("write permission denied","NotAllowedError");
+            step="write";
+            const w=await handle.createWritable();
+            await w.write(data);
+            await w.close();
         } catch(e) {
             fm.handle=null;
-            if (e && e.name=="AbortError" && Date.now()-t0>=INSTANT_ABORT_MS) return;  // user cancelled
-            console.warn("showSaveFilePicker unusable here, falling back to download:", e);
-            pickerBroken=true;
+            const name=(e && e.name) || "Error";
+            if (step=="dialog" && name=="AbortError" && Date.now()-t0>=INSTANT_ABORT_MS)
+                return;                                    // the user cancelled
+            console.warn("Save via file dialog failed at step '"+step+"':", e);
+            if (step=="dialog") pickerBroken=true;         // no usable dialog here
+            problem=" — the file dialog failed ("+step+": "+name+(e&&e.message?", "+e.message:"")+")";
+            handle=null;
+        }
+        if (handle) {
+            // written: bookkeeping outside the try, so it can never trigger a download
+            fm.handle=handle;
+            setFileName(handle.name);
+            markSaved(); autosave();
+            showToast("Saved "+fm.name+(saveAs?"":"   (Ctrl+Shift+S: save as)"), 3000);
+            return;
         }
     }
     const a=document.createElement("a");
@@ -100,9 +116,10 @@ async function saveNetToComputer(saveAs=false) {
     setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
     markSaved(); autosave();
     // tell where it went and why there was no location dialog
-    const why = !window.isSecureContext ? " (location choice needs https or localhost)"
+    const why = problem ? problem
+              : !window.isSecureContext ? " (location choice needs https or localhost)"
               : (!window.showSaveFilePicker || pickerBroken) ? " (this browser cannot ask for a location)" : "";
-    showToast("Downloaded "+fm.name+" to the browser's download folder"+why, 5000);
+    showToast("Downloaded "+fm.name+" to the browser's download folder"+why, problem?12000:5000);
 }
 
 // --- open from the computer ---------------------------------------------------
