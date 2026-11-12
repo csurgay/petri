@@ -102,7 +102,7 @@ const TOOLTIP_DELAY=500;
 const TOOLTIPS={
     CLEAR:   "New empty net",
     OPEN:    "Open a net: examples or from your computer (Ctrl+O; Ctrl+Shift+O: upload folder)",
-    SAVE:    "Save to your computer (Ctrl+S; Ctrl+Shift+S: save as)",
+    SAVE:    "Download the net to your Downloads folder (Ctrl+S)",
     SEND:    "Send the net to the server for review",
     UNDO:    "Undo (Ctrl+Z)",
     REDO:    "Redo (Ctrl+Y, Ctrl+Shift+Z)",

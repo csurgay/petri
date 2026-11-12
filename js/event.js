@@ -232,12 +232,6 @@ function handleShortcut(e) {
         events.refreshHover();
         return true;
     }
-    // Ctrl+Shift+S: save as (always asks for a location)
-    if (k=="s" && e.shiftKey) {
-        e.preventDefault();
-        if (!e.repeat && state.is("IDLE") && !textbox.active && !ff.active) saveNetToComputer(true);
-        return true;
-    }
     const map={ z: e.shiftKey?"REDO":"UNDO", y:"REDO", s:"SAVE", o:"OPEN" };
     const id=map[k];
     if (!id) return false;

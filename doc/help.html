@@ -226,7 +226,7 @@ const DATA=[
    {grp:{hu:'Fájl és szerkesztés',en:'File and editing'}},
    {i:'NEW',l:'NEW',t:{hu:'Új háló',en:'New net'},d:{hu:'Üres háló. Mentetlen változásnál előbb rákérdez.',en:'Empty net. Asks first if there are unsaved changes.'}},
    {i:'OPEN',l:'OPEN',t:{hu:'Megnyitás',en:'Open'},d:{hu:'Példahálók a szerverről, vagy „From your computer…”: saját fájl. Ctrl+Shift+kattintás: az upload mappa.',en:'Example nets from the server, or “From your computer…”: your own file. Ctrl+Shift+click: the upload folder.'}},
-   {i:'SAVE',l:'SAVE',t:{hu:'Mentés',en:'Save'},d:{hu:'Mentés a saját gépedre (Ctrl+S). Chrome/Edge alatt választható a hely, és a következő mentés ugyanabba a fájlba megy.',en:'Save to your computer (Ctrl+S). In Chrome/Edge you pick the location, later saves go to the same file.'}},
+   {i:'SAVE',l:'SAVE',t:{hu:'Mentés',en:'Save'},d:{hu:'A háló letöltése a Letöltések mappába (Ctrl+S).',en:'Downloads the net to your Downloads folder (Ctrl+S).'}},
    {i:'SEND',l:'SEND',t:{hu:'Beküldés',en:'Send'},d:{hu:'A háló feltöltése a szerver upload mappájába, átnézésre.',en:'Uploads the net to the server\'s upload folder for review.'}},
    {i:'UNDO',l:'UNDO',t:{hu:'Visszavonás',en:'Undo'},d:{hu:'Az utolsó szerkesztés visszavonása.',en:'Undo the last edit.'}},
    {i:'REDO',l:'REDO',t:{hu:'Újra',en:'Redo'},d:{hu:'A visszavont szerkesztés ismét.',en:'Redo the undone edit.'}},
@@ -338,7 +338,7 @@ const DATA=[
  {id:'files',title:{hu:'Fájlok',en:'Files'},
   intro:{hu:'A hálók a saját gépedre menthetők és onnan nyithatók meg; a böngésző ezen felül minden változást automatikusan megjegyez.',en:'Nets are saved to and opened from your own computer; on top of that the browser keeps every change automatically.'},
   groups:[{rows:[
-    [{hu:'Mentés a gépre',en:'Save to your computer'},L=>K('Ctrl')+P+K('S')+OR[L]+M('SAVE')],
+    [{hu:'Mentés a gépre',en:'Save to your computer',d:{hu:'A fájl a Letöltések mappába kerül.',en:'The file goes to your Downloads folder.'}},L=>K('Ctrl')+P+K('S')+OR[L]+M('SAVE')],
     [{hu:'Megnyitás a gépről',en:'Open from your computer'},L=>M('OPEN')+(L=='hu'?' → „From your computer…”':' → “From your computer…”')+OR[L]+(L=='hu'?'.pn fájl ráhúzása az ablakra':'drag a .pn file onto the window')],
     [{hu:'Példahálók a szerverről',en:'Example nets from the server'},L=>M('OPEN')+OR[L]+K('Ctrl')+P+K('O')],
     [{hu:'Mentetlen változás',en:'Unsaved changes',d:{hu:'A fájlnév mellett * jelzi; bezáráskor és új háló előtt a böngésző rákérdez.',en:'Marked with * next to the file name; the browser asks before closing or starting a new net.'}},L=>'<code>File: net.pn *</code>'],
