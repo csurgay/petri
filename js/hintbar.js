@@ -21,6 +21,17 @@ function currentHint() {
     if (ccursor.y < bar.h) return "Hover a button for its description";
     if (events.spaceDown) return "Drag: pan the view";
     const o=pn.highlighted;
+    // tool-specific hints
+    const back="  ·  V or Esc: back to Select";
+    if (tool=="TOKEN")
+        return (o && o.type=="PLACE" ? "Click: add token  ·  Shift+click: remove token" :
+                "Token tool: click a place to add a token, Shift+click to remove one")+back;
+    if (tool=="ARC")
+        return (o && (o.type=="PLACE"||o.type=="TRANSITION") ? "Drag to another place or transition to connect" :
+                "Arc tool: drag from a place or transition to another one")+back;
+    if (!o && tool=="PLACE") return "Place tool: click to add a place  ·  Drag: select"+back;
+    if (!o && tool=="TRANSITION") return "Transition tool: click to add a transition  ·  Shift+click: vertical  ·  Drag: select"+back;
+    if (!o && tool=="LABEL") return "Label tool: click to add a text label  ·  Drag: select"+back;
     if (o && sel.has(o) && sel.size>1)
         return "Drag: move selection  ·  Del: delete  ·  Ctrl+C/X/D: copy/cut/duplicate  ·  Shift+wheel: rotate  ·  Alt+wheel: colour  ·  Right-click: menu";
     if (o) switch (o.type) {
@@ -40,7 +51,7 @@ function currentHint() {
     }
     if (sel.size>0)
         return "Click: deselect  ·  Arrows: move selection  ·  Del: delete  ·  Ctrl+C/X/V/D  ·  Esc: deselect";
-    return "Click: new place  ·  Ctrl+click: transition  ·  Drag: select  ·  Space+drag or middle-drag: pan  ·  Right-click: menu";
+    return "Click: new place  ·  Ctrl+click: transition  ·  Drag: select  ·  Space+drag: pan  ·  Ctrl+wheel or pinch: zoom  ·  Ctrl+0: fit  ·  ←/→: step  ·  Right-click: menu";
 }
 
 function drawHintBar() {

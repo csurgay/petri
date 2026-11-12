@@ -248,6 +248,7 @@ class Petrinet {
         undo.splice(undoPtr+1);
         undo.push(rawSave());
         undoPtr=undo.length-1;
+        if (typeof autosave==="function") autosave();
     }
     
     getMarking() {
@@ -277,8 +278,9 @@ class Petrinet {
         undoPtr=-1; undo.length=0;
         var request = new XMLHttpRequest();
         request.onload = function() { 
-            rawLoad(request.responseText); 
-            pn.newUndo();
+            if (request.status>=400) { showToast("Could not open "+filename); return; }
+            loadNetText(request.responseText, filename);
+            fm.handle=null;
         }
         request.open("GET", filename);
         request.overrideMimeType("application/json");

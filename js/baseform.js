@@ -60,6 +60,11 @@ class BaseForm extends Form {
         const delta=-Math.sign(evt.deltaY);
         // IDLE or running state (PLAY/RUN/FLY)
         if (state.is("IDLE") || bar.running()) {
+            // Ctrl+wheel or trackpad pinch: zoom at the cursor
+            if (evt.type == "mw" && SCA(evt, ".C.")) {
+                const d=Math.max(-60, Math.min(60, evt.deltaY));
+                zoomAt(ccursor.x, ccursor.y, Math.exp(-d*0.004));
+            }
             // Add/remove Tokens
             if (evt.type == "mw" && SCA(evt, "sca") && 
                 this.hovered && this.hovered.type=="PLACE") 
@@ -97,7 +102,8 @@ class BaseForm extends Form {
                 }
                 // Esc: clear selection
                 else if (evt.key == 'Escape') {
-                    sel.clear();
+                    if (sel.size>0) sel.clear();
+                    else setTool("SELECT");
                 }
                 // Arrows nudge the selection (Shift: 5 steps)
                 else if (evt.key.startsWith("Arrow") && sel.size>0 && SCA(evt,".ca")) {
@@ -105,6 +111,10 @@ class BaseForm extends Form {
                     const k=evt.key;
                     sel.nudge(k=="ArrowLeft"?-st:k=="ArrowRight"?st:0,
                               k=="ArrowUp"?-st:k=="ArrowDown"?st:0);
+                }
+                // Left/Right without selection: step back / forward
+                else if ((evt.key=="ArrowLeft" || evt.key=="ArrowRight") && SCA(evt,"sca")) {
+                    if (evt.key=="ArrowLeft") pn.stepBackward(); else pn.stepForward();
                 }
                 // Record mode (developer feature, debug mode only)
                 else if (evt.key == 'r' && state.DEBUG && state.PLAYBACK == 0) {
@@ -126,6 +136,10 @@ class BaseForm extends Form {
                         this.hovered.size = sizes[evt.keyCode - 48];
                     }
                 }
+                // Tool palette keys: V P T A K L
+                else if (SCA(evt,"sca") && TOOL_KEYS[evt.key.toLowerCase()]) {
+                    setTool(TOOL_KEYS[evt.key.toLowerCase()]);
+                }
                 // Sticky Flow heads
                 else if (evt.key == 's' && SCA(evt,"sca")) {
                     // Toggle sticky Flow heads of this Transition
@@ -145,6 +159,21 @@ class BaseForm extends Form {
             // Space+drag: pan
             else if (this.leftClick(evt) && events.spaceDown) {
                 state.set("PAN");
+            }
+            // Arc tool: drag from a place/transition draws an arc
+            else if (tool=="ARC" && this.leftClick(evt) && SCA(evt,"..a") && this.hovered &&
+                (this.hovered.type=="PLACE" || this.hovered.type=="TRANSITION"))
+            {
+                pn.highlighted=this.hovered;
+                this.paleArrow=null;
+                state.set("DRAWARROW");
+            }
+            // Token tool: click a place = +1 token, Shift+click = -1
+            else if (tool=="TOKEN" && this.leftClick(evt) && SCA(evt,".ca") && this.hovered &&
+                this.hovered.type=="PLACE")
+            {
+                this.hovered.changeTokens(SCA(evt,"S..") ? -1 : 1);
+                pn.newUndo();
             }
             // Empty canvas: new object (click) or rubber band (drag)
             else if (this.leftClick(evt) && SCA(evt, "...") && 
@@ -304,18 +333,24 @@ class BaseForm extends Form {
         else if (state.is("LEFTDOWN")) {
             // New Place
             if (evt.type == "mu" && !this.hovered && SCA(evt, "sca")
-                && closeEnough(this.mouseDownCoord, tcursor) && sel.size>0) 
+                && closeEnough(this.mouseDownCoord, tcursor) && sel.size>0
+                && tool=="SELECT") 
             {
                 sel.clear();
                 state.set("IDLE");
             }
-            else if (evt.type == "mu" && !this.hovered && SCA(evt, "sca")
+            // click on empty canvas: create with the current tool
+            else if (evt.type == "mu" && !this.hovered &&
+                (SCA(evt, "sca") || (tool!="SELECT" && SCA(evt,"Sca")))
                 && closeEnough(this.mouseDownCoord, tcursor)) 
             {
-                const newPlace = new Place(scursor.x, scursor.y);
-                pn.addPlace(newPlace);
-                pn.highlighted = newPlace;
-                pn.newUndo();
+                sel.clear();
+                const o=createByTool(scursor, SCA(evt,"S.."));
+                if (o) {
+                    pn.highlighted = o;
+                    pn.newUndo();
+                    if (o.type=="LABEL") o.clicked();
+                }
                 state.set("IDLE");
             }
             // New Transition - horizontal

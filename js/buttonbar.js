@@ -13,6 +13,7 @@ class Buttonbar extends Form {
         this.b.push(new Button("CLEAR","NEW",x+dx++*(w+ddw),y,w,()=>{return !this.running()&&!fp.active && !fbfs.active}));
         this.b.push(new Button("OPEN","OPEN",x+dx++*(w+ddw),y,w,()=>{return !this.running()&&!fp.active && !fbfs.active}));
         this.b.push(new Button("SAVE","SAVE",x+dx++*(w+ddw),y,w,()=>{return !this.running()&&!fp.active && !fbfs.active}));
+        this.b.push(new Button("SEND","SEND",x+dx++*(w+ddw),y,w,()=>{return !this.running()&&!fp.active && !fbfs.active}));
         this.b.push(new Button("UNDO","UNDO",x+dx++*(w+ddw),y,w,()=>{return undoPtr>0 && !this.running()&&!fp.active && !fbfs.active}));
         this.b.push(new Button("REDO","REDO",x+dx++*(w+ddw),y,w,()=>{return undoPtr<undo.length-1 && !this.running()&&!fp.active && !fbfs.active}));
 
@@ -99,9 +100,10 @@ class Buttonbar extends Form {
 
 const TOOLTIP_DELAY=500;
 const TOOLTIPS={
-    CLEAR:   "New net",
-    OPEN:    "Open net (Ctrl+O; Ctrl+Shift+O: upload folder)",
-    SAVE:    "Upload net for review (Ctrl+S)",
+    CLEAR:   "New empty net",
+    OPEN:    "Open a net: examples or from your computer (Ctrl+O; Ctrl+Shift+O: upload folder)",
+    SAVE:    "Save to your computer (Ctrl+S)",
+    SEND:    "Send the net to the server for review",
     UNDO:    "Undo (Ctrl+Z)",
     REDO:    "Redo (Ctrl+Y, Ctrl+Shift+Z)",
     REWIND:  "Back to initial marking M0",
@@ -141,6 +143,12 @@ function updateCursor() {
     if (textbox.active) c="text";
     else if (s=="PAN") c="grabbing";
     else if (s=="SELECT") c="crosshair";
+    else if (fb.active && fb.hover() && !pn.highlighted &&
+        ["PLACE","TRANSITION","LABEL"].includes(tool)) c="crosshair";
+    else if (fb.active && fb.hover() && tool=="TOKEN" && pn.highlighted &&
+        pn.highlighted.type=="PLACE") c="cell";
+    else if (fb.active && fb.hover() && tool=="ARC" && pn.highlighted &&
+        ["PLACE","TRANSITION"].includes(pn.highlighted.type)) c="crosshair";
     else if (events.spaceDown && fb.active && fb.hover()) c="grab";
     else if (s=="DRAG" || s=="DRAGALL" || s=="MULTISEGMENT") c="move";
     else if (s=="DRAWARROW") c="crosshair";

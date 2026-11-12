@@ -98,6 +98,7 @@ class Form extends Frame {
 }
 
 var files=[], directory="", selectedFile=-1;
+const LOCAL_FILE_ENTRY="\u{1F4C2}  From your computer\u2026";
 
 class FileForm extends Form {
     constructor(title, margin) { // m=margin
@@ -122,15 +123,17 @@ class FileForm extends Form {
         super.processFormEvent(pMyEvent);
         if (pMyEvent.type == "mu" && selectedFile!=-1) {
             if (state.DEBUG) log(here(), files[selectedFile]);
-            if (files[selectedFile]!="CANCEL") {
-                bar.children[0].text="File: "+files[selectedFile];
-                pn.load(directory+"/"+files[selectedFile]);
-            }
+            const chosen=files[selectedFile];
             ff.active=false;
             ff.visible=false;
             fb.active=true;
             state.set("IDLE");
-            animate();
+            if (chosen==LOCAL_FILE_ENTRY) openNetFromComputer();
+            else if (chosen!="CANCEL") {
+                if (!isDirty() || confirm("Discard unsaved changes?"))
+                    pn.load(directory+"/"+chosen);
+            }
+            // (no animate() here: it would start a second animation loop)
         }
     }
     getFileNames(dir) {
@@ -142,6 +145,7 @@ class FileForm extends Form {
                 files.length=0;
                 files.push(...request.responseText.split('\n'));
                 files.pop();
+                files.unshift(LOCAL_FILE_ENTRY);
                 files.push("CANCEL");
                 ff.visible=true;
                 ff.active=true;

@@ -29,6 +29,7 @@ class MyEvent { // Data structure for an Event (mouse and keys)
         this.button=this.undefined(e.button);
         // Shift+wheel is reported as horizontal scroll (deltaX) by most browsers
         this.deltaY=this.undefined(e.deltaY || e.deltaX);
+        if (e.deltaMode==1) this.deltaY*=16;       // Firefox: lines -> pixels
         // Modifier state is read from every key AND mouse event: relying on
         // key events only left it stale whenever an Alt keydown/keyup was
         // missed (window not focused, Alt+Tab, browser menu grabbing Alt).
@@ -212,7 +213,13 @@ function handleShortcut(e) {
     if (!(e.ctrlKey || e.metaKey) || e.altKey) return false;
     const k=e.key.toLowerCase();
     // keep the order: finish the queued input (e.g. an Esc just before)
-    if ("azysod".includes(k) && k.length==1) events.processEvent();
+    if ("azysod0".includes(k) && k.length==1) events.processEvent();
+    // Ctrl+0: fit the whole net into the window
+    if (k=="0") {
+        e.preventDefault();
+        if (state.is("IDLE") || bar.running()) fitView();
+        return true;
+    }
     // selection; Ctrl+C/X/V are handled as copy/cut/paste events (selection.js)
     const selActions={ a:()=>sel.selectAll(),
                        d:()=>{ if (sel.size==0) showToast("Nothing selected"); else sel.duplicate(); } };

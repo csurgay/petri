@@ -117,6 +117,23 @@ class Button extends Object {
             g.lineTo(this.x-7,this.y+6);
             g.stroke();
         }
+        else if (this.button=="SEND") {
+            // tray with an upward arrow
+            g.beginPath();
+            g.lineWidth(2);
+            g.moveTo(this.x-8,this.y+1);
+            g.lineTo(this.x-8,this.y+7);
+            g.lineTo(this.x+8,this.y+7);
+            g.lineTo(this.x+8,this.y+1);
+            g.moveTo(this.x,this.y+4);
+            g.lineTo(this.x,this.y-5);
+            g.stroke();
+            g.beginPath();
+            g.moveTo(this.x-5,this.y-3);
+            g.lineTo(this.x,this.y-9);
+            g.lineTo(this.x+5,this.y-3);
+            g.fill();
+        }
         else if (this.button=="SAVE") {
             g.beginPath();
             g.lineWidth(1);
@@ -253,12 +270,7 @@ class Button extends Object {
             if (undoPtr<undo.length-1) rawLoad(undo[++undoPtr]);
         }
         else if (this.button=="CLEAR") {
-            if (confirm("Sure want to clear workspace?")) {
-                bar.children[0].text="File: noname.pn";
-                pn.clear();
-                undo.length=0;
-                undoPtr=-1;
-            }
+            newNet();
         }
         else if (this.button=="OPEN") {
             fb.active=false;
@@ -268,8 +280,11 @@ class Button extends Object {
             ff.getFileNames(directory);
         }
         else if (this.button=="SAVE") {
+            saveNetToComputer();
+        }
+        else if (this.button=="SEND") {
             pn.save(""+ms+".pn");
-            alert("PetriNet uploaded for review.");
+            showToast("Net sent to the server for review");
         }
 
         // BFS Buttons Eventhandling

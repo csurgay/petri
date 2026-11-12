@@ -43,6 +43,8 @@ if (urlParams.has('net')) {
     log(here(),net);
     pn.load('nets/'+net);
 }
+else restoreAutosave();
+buildPalette();
 fb.active=bar.active=true;
 state.set("IDLE");
 animate();
@@ -68,6 +70,8 @@ function animate() {
     bar.drawTooltip();
     drawToast();
     drawHintBar();
+    updateFileTitle();
+    updatePalette();
     updateCursor();
     // Running mode
     const delays= { "PLAY":1000, "RUN":100, "FLY":0 };

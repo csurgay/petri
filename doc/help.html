@@ -191,6 +191,7 @@ const tri=(x,flip)=>flip?`<path d="M${x+7} 1L${x} 7L${x+7} 13z"/>`:`<path d="M${
 const ICON={
   NEW:S(14,14,'<rect x="1.5" y="1.5" width="11" height="11" fill="none" stroke-width="2"/>'),
   OPEN:S(22,16,'<path d="M2 15h16l5-10H7z"/><path d="M16 5V3h-6L7 1H2v13" fill="none" stroke-width="2"/>'),
+  SEND:S(18,16,'<path d="M1 9v6h16V9" fill="none" stroke-width="2"/><path d="M9 12V3" stroke-width="2"/><path d="M4.5 6.5L9 1l4.5 5.5z"/>'),
   SAVE:S(16,16,'<path d="M0 16h16V4l-4-4H0z"/><path d="M10 1v4H4V1M3 14h10M3 11h10" fill="none" stroke="var(--sand)" stroke-width="2"/>'),
   UNDO:S(18,16,'<path d="M4 3.5A6 6 0 1 1 3 10" fill="none" stroke-width="2.6"/><path d="M0 1l7 5H0z"/>'),
   REDO:S(18,16,'<path d="M14 3.5A6 6 0 1 0 15 10" fill="none" stroke-width="2.6"/><path d="M18 1l-7 5h7z"/>'),
@@ -223,9 +224,10 @@ const DATA=[
   intro:{hu:'A gombok balról jobbra, csoportonként. A szürke gomb éppen nem használható.',en:'Buttons from left to right, by group. A grey button is currently unavailable.'},
   tools:[
    {grp:{hu:'Fájl és szerkesztés',en:'File and editing'}},
-   {i:'NEW',l:'NEW',t:{hu:'Új háló',en:'New net'},d:{hu:'Üres munkaterület megerősítés után; a visszavonási előzmény is törlődik.',en:'Empty workspace after confirmation; undo history is cleared too.'}},
-   {i:'OPEN',l:'OPEN',t:{hu:'Megnyitás',en:'Open'},d:{hu:'Háló betöltése a nets mappából. Ctrl+Shift+kattintással az upload mappából.',en:'Load a net from the nets folder. Ctrl+Shift+click opens the upload folder.'}},
-   {i:'SAVE',l:'SAVE',t:{hu:'Mentés',en:'Save'},d:{hu:'A háló feltöltése az upload mappába, időbélyeges néven.',en:'Uploads the net to the upload folder under a timestamped name.'}},
+   {i:'NEW',l:'NEW',t:{hu:'Új háló',en:'New net'},d:{hu:'Üres háló. Mentetlen változásnál előbb rákérdez.',en:'Empty net. Asks first if there are unsaved changes.'}},
+   {i:'OPEN',l:'OPEN',t:{hu:'Megnyitás',en:'Open'},d:{hu:'Példahálók a szerverről, vagy „From your computer…”: saját fájl. Ctrl+Shift+kattintás: az upload mappa.',en:'Example nets from the server, or “From your computer…”: your own file. Ctrl+Shift+click: the upload folder.'}},
+   {i:'SAVE',l:'SAVE',t:{hu:'Mentés',en:'Save'},d:{hu:'Mentés a saját gépedre (Ctrl+S). Chrome/Edge alatt választható a hely, és a következő mentés ugyanabba a fájlba megy.',en:'Save to your computer (Ctrl+S). In Chrome/Edge you pick the location, later saves go to the same file.'}},
+   {i:'SEND',l:'SEND',t:{hu:'Beküldés',en:'Send'},d:{hu:'A háló feltöltése a szerver upload mappájába, átnézésre.',en:'Uploads the net to the server\'s upload folder for review.'}},
    {i:'UNDO',l:'UNDO',t:{hu:'Visszavonás',en:'Undo'},d:{hu:'Az utolsó szerkesztés visszavonása.',en:'Undo the last edit.'}},
    {i:'REDO',l:'REDO',t:{hu:'Újra',en:'Redo'},d:{hu:'A visszavont szerkesztés ismét.',en:'Redo the undone edit.'}},
    {grp:{hu:'Szimuláció',en:'Simulation'}},
@@ -247,6 +249,14 @@ const DATA=[
  {id:'edit',title:{hu:'Szerkesztés',en:'Editing'},
   intro:{hu:'CAD-szerű kezelés: kattintás kijelöl, húzás üres helyen keretes kijelölés, a műveletek a kijelölésre hatnak. Az objektumok rácsra ugranak; húzás közben az Alt nyomva tartásával szabadon mozgathatók.',en:'CAD-style: click selects, dragging on empty canvas draws a selection box, operations act on the selection. Objects snap to the grid; hold Alt while dragging to move them freely.'},
   groups:[
+   {h:{hu:'Eszközpaletta (bal oldalt)',en:'Tool palette (left side)'},rows:[
+    [{hu:'Kijelölés / szerkesztés',en:'Select / edit',d:{hu:'Az alapmód, minden gesztus a megszokott.',en:'The default mode, all the usual gestures.'}},L=>K('V')+OR[L]+K('Esc')],
+    [{hu:'Hely eszköz',en:'Place tool'},L=>K('P')+(L=='hu'?' – kattintás üres helyre: új hely':' – click empty canvas: new place')],
+    [{hu:'Tranzíció eszköz',en:'Transition tool'},L=>K('T')+(L=='hu'?' – kattintás: új tranzíció, Shifttel függőleges':' – click: new transition, Shift: vertical')],
+    [{hu:'Él eszköz',en:'Arc tool'},L=>K('A')+(L=='hu'?' – húzás helyről tranzícióra (Ctrl nélkül)':' – drag from place to transition (no Ctrl needed)')],
+    [{hu:'Token eszköz',en:'Token tool'},L=>K('K')+(L=='hu'?' – kattintás a helyen: +1, Shift+kattintás: −1':' – click a place: +1, Shift+click: −1')],
+    [{hu:'Címke eszköz',en:'Label tool'},L=>K('L')+(L=='hu'?' – kattintás: új címke, rögtön szerkeszthető':' – click: new label, ready to type')]
+   ]},
    {h:{hu:'Kijelölés',en:'Selection'},rows:[
     [{hu:'Objektum kijelölése',en:'Select an object'},L=>m('click',L)+' '+(L=='hu'?'az objektumon':'on the object')],
     [{hu:'Hozzáadás / elvétel',en:'Add / remove'},L=>K('Shift')+P+m('click',L)],
@@ -303,6 +313,7 @@ const DATA=[
   groups:[{rows:[
     [{hu:'Adott tranzíció tüzelése',en:'Fire a given transition'},L=>m('click',L)+' '+(L=='hu'?'az engedélyezett tranzíción':'on the enabled transition')],
     [{hu:'Lépés előre / vissza',en:'Step forward / back',d:{hu:'Az előzmény végén előre görgetve véletlen tüzelés.',en:'Scrolling forward at the end of the history fires at random.'}},L=>m('wheel',L)+' '+(L=='hu'?'üres területen':'on empty canvas')],
+    [{hu:'Lépés előre / vissza billentyűvel',en:'Step forward / back with keys',d:{hu:'Ha nincs kijelölés.',en:'When nothing is selected.'}},L=>K('→')+' '+K('←')],
     [{hu:'Futás indítása / leállítása',en:'Start / stop running'},L=>M('RUN')+' '+M('STOP')+OR[L]+m('right',L)+(L=='hu'?' → helyi menü':' → context menu')],
     [{hu:'Megállás feltételre (töréspont)',en:'Stop on a condition (breakpoint)'},L=>(L=='hu'?'PREF → Breakpoint és Assert String':'PREF → Breakpoint and Assert String')]
   ]}]},
@@ -321,7 +332,18 @@ const DATA=[
  {id:'view',title:{hu:'Nézet',en:'Viewport'},
   groups:[{rows:[
     [{hu:'Pásztázás',en:'Pan'},L=>K(L=='hu'?'Szóköz':'Space')+P+m('drag',L)+OR[L]+M(L=='hu'?'középső gombbal húzás':'middle-button drag')],
-    [{hu:'Nagyítás (0,3×–3×)',en:'Zoom (0.3×–3×)',d:{hu:'Az egérmutató körül nagyít.',en:'Zooms around the mouse pointer.'}},L=>m('midwheel',L)]
+    [{hu:'Nagyítás (0,2×–4×)',en:'Zoom (0.2×–4×)',d:{hu:'Az egérmutató körül nagyít.',en:'Zooms around the mouse pointer.'}},L=>K('Ctrl')+P+m('wheel',L)+OR[L]+M(L=='hu'?'csippentés a touchpaden':'trackpad pinch')+OR[L]+m('midwheel',L)],
+    [{hu:'Az egész háló látható',en:'Fit the whole net'},L=>K('Ctrl')+P+K('0')]
+  ]}]},
+ {id:'files',title:{hu:'Fájlok',en:'Files'},
+  intro:{hu:'A hálók a saját gépedre menthetők és onnan nyithatók meg; a böngésző ezen felül minden változást automatikusan megjegyez.',en:'Nets are saved to and opened from your own computer; on top of that the browser keeps every change automatically.'},
+  groups:[{rows:[
+    [{hu:'Mentés a gépre',en:'Save to your computer'},L=>K('Ctrl')+P+K('S')+OR[L]+M('SAVE')],
+    [{hu:'Megnyitás a gépről',en:'Open from your computer'},L=>M('OPEN')+(L=='hu'?' → „From your computer…”':' → “From your computer…”')+OR[L]+(L=='hu'?'.pn fájl ráhúzása az ablakra':'drag a .pn file onto the window')],
+    [{hu:'Példahálók a szerverről',en:'Example nets from the server'},L=>M('OPEN')+OR[L]+K('Ctrl')+P+K('O')],
+    [{hu:'Mentetlen változás',en:'Unsaved changes',d:{hu:'A fájlnév mellett * jelzi; bezáráskor és új háló előtt a böngésző rákérdez.',en:'Marked with * next to the file name; the browser asks before closing or starting a new net.'}},L=>'<code>File: net.pn *</code>'],
+    [{hu:'Automatikus visszaállítás',en:'Automatic restore',d:{hu:'Újranyitáskor (?net= nélkül) a legutóbbi állapot visszajön. Üres hálóhoz: NEW.',en:'When reopened (without ?net=) the last state comes back. For an empty net: NEW.'}},L=>(L=='hu'?'automatikus':'automatic')],
+    [{hu:'Beküldés átnézésre',en:'Send for review'},L=>M('SEND')]
   ]}]},
  {id:'pref',title:{hu:'Beállítások',en:'Preferences'},
   intro:{hu:'A PREF gombbal nyílik. Az értékek görgővel állíthatók, a szöveg kattintással szerkeszthető, Esc bezárja.',en:'Opened with PREF. Values change with the wheel, text is edited by clicking, Esc closes it.'},
@@ -341,7 +363,7 @@ const DATA=[
     [{hu:'Visszavonás',en:'Undo'},L=>K('Ctrl')+P+K('Z')],
     [{hu:'Újra',en:'Redo'},L=>K('Ctrl')+P+K('Y')+OR[L]+K('Ctrl')+P+K('Shift')+P+K('Z')],
     [{hu:'Megnyitás',en:'Open'},L=>K('Ctrl')+P+K('O')+(L=='hu'?' (upload mappa: ':' (upload folder: ')+K('Ctrl')+P+K('Shift')+P+K('O')+')'],
-    [{hu:'Feltöltés átnézésre',en:'Upload for review'},L=>K('Ctrl')+P+K('S')],
+    [{hu:'Mentés a gépre',en:'Save to your computer'},L=>K('Ctrl')+P+K('S')],
     [{hu:'Folyamatban lévő mozdulat megszakítása',en:'Cancel the gesture in progress',d:{hu:'Húzás, új él, pásztázás: minden visszaáll.',en:'Drag, new arc, pan: everything is restored.'}},L=>K('Esc')],
     [{hu:'Ablak bezárása',en:'Close a window'},L=>K('Esc')],
     [{hu:'Háló megnyitása linkkel',en:'Open a net by link'},L=>'<code>index.html?net=Philosopher.pn</code>'],
