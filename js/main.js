@@ -6,9 +6,10 @@ const events=new Events();
 addEventListener('mousedown', events.mousedownevent.bind(events));
 addEventListener('mouseup', events.mouseupevent.bind(events));
 addEventListener('mousemove', events.mousemoveevent.bind(events));
-addEventListener('wheel', events.mousewheelevent.bind(events));
+addEventListener('wheel', events.mousewheelevent.bind(events), {passive:false});
 addEventListener('keyup', events.keyupevent.bind(events));
 addEventListener('keydown', events.keydownevent.bind(events));
+addEventListener('blur', events.blurevent.bind(events));
 addEventListener('contextmenu', sysEvent=>{sysEvent.preventDefault();});
 
 const state=new State("SPLASH");

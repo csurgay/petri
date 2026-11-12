@@ -27,9 +27,12 @@ class MyEvent { // Data structure for an Event (mouse and keys)
         this.key=this.undefined(e.key);
         this.keyCode=this.undefined(e.keyCode);
         this.button=this.undefined(e.button);
-        this.deltaY=this.undefined(e.deltaY);
-        // only for key events so as to preserve SCA for mouse events
-        if (this.type[0]=="k") {
+        // Shift+wheel is reported as horizontal scroll (deltaX) by most browsers
+        this.deltaY=this.undefined(e.deltaY || e.deltaX);
+        // Modifier state is read from every key AND mouse event: relying on
+        // key events only left it stale whenever an Alt keydown/keyup was
+        // missed (window not focused, Alt+Tab, browser menu grabbing Alt).
+        if (e.shiftKey!==undefined) {
             this.sca=(e.shiftKey?"S":"s")+(e.ctrlKey?"C":"c")+(e.altKey?"A":"a");
         }
         // only for mouse events so as to preserve coords for key events
@@ -100,15 +103,31 @@ class Events {
         }
         this.rcvEvent("mm", sysEvent);
     }
-    mousewheelevent(sysEvent) { this.rcvEvent("mw", sysEvent); }
+    mousewheelevent(sysEvent) {
+        // no browser zoom (Ctrl), history navigation (Alt/Shift) etc.
+        if (sysEvent.altKey || sysEvent.ctrlKey || sysEvent.shiftKey)
+            sysEvent.preventDefault();
+        this.rcvEvent("mw", sysEvent);
+    }
     keyupevent(sysEvent) {
+        // keep the browser from activating its menu bar on a bare Alt,
+        // which would swallow the following key events
+        if (sysEvent.key=="Alt") sysEvent.preventDefault();
         if (sysEvent.key==".") { 
             state.RUNNING=!state.RUNNING; 
             if (state.RUNNING) animate(); 
         }
         else { this.rcvEvent("ku", sysEvent); }
     }
-    keydownevent(sysEvent) { this.rcvEvent("kd", sysEvent); }
+    keydownevent(sysEvent) {
+        if (sysEvent.key=="Alt") sysEvent.preventDefault();
+        this.rcvEvent("kd", sysEvent);
+    }
+    // modifiers released while the window was not focused (e.g. Alt+Tab)
+    blurevent() {
+        myEvent.sca="sca";
+        storedEvt.sca="sca";
+    }
 
     processEvent() {
         if (Date.now()-msEvent>1) {
