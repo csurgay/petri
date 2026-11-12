@@ -6,7 +6,7 @@
 // double-click/double-tap = type a value.
 const TOOLS=[
     {id:"SELECT",     key:"s", name:"Select",
-     tip:"Select (S): click to select, drag to move or to draw a selection box, double-click to rename, right-click for the menu",
+     tip:"Select (S): click to select (an enabled transition: fire it), drag to move or to draw a selection box, double-click to rename, right-click for the menu",
      svg:'<path d="M5 3l11 6.5-5 1.2 2.8 5.3-2 1-2.8-5.2L5 15z"/>'},
     {id:"PLACE",      key:"p", name:"Place",
      tip:"Place (P): click empty canvas to add a place, right-click a place to delete it",

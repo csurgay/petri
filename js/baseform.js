@@ -390,6 +390,15 @@ class BaseForm extends Form {
                 pn.newUndo();
                 state.set("IDLE");
             }
+            // Click on an enabled transition: fire it (one firing per click;
+            // slightly delayed so that a double-click renames instead)
+            else if (evt.type == "mu" && SCA(evt, "sca") && this.hovered &&
+                this.hovered.type == "TRANSITION" && tool=="SELECT" &&
+                closeEnough(this.mouseDownCoord, tcursor))
+            {
+                if (this.hovered.enabled()) scheduleFire(this.hovered);
+                state.set("IDLE");
+            }
             // Init Drag
             else if (evt.type == "mm" && SCA(evt, "sca") && pn.highlighted &&
                 !closeEnough(this.mouseDownCoord, tcursor)) 

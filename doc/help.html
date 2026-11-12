@@ -218,12 +218,12 @@ const DATA=[
    {t:{hu:'Tranzíció',en:'Transition'},g:L=>K('T')+(L=='hu'?' eszköz, ':' tool, ')+m('click',L)},
    {t:{hu:'Él',en:'Arc'},g:L=>K('F')+(L=='hu'?' eszköz, ':' tool, ')+m('drag',L)+' '+(L=='hu'?'helyről tranzícióra (vagy vissza)':'from place to transition (or back)')},
    {t:{hu:'Token',en:'Tokens'},g:L=>K('M')+(L=='hu'?' eszköz, ':' tool, ')+m('click',L)+' '+(L=='hu'?'a helyen: +1':'on a place: +1')},
-   {t:{hu:'Tüzelés',en:'Fire'},g:L=>K('M')+(L=='hu'?' eszköz, ':' tool, ')+m('click',L)+' '+(L=='hu'?'engedélyezett tranzíción':'on an enabled transition')}
+   {t:{hu:'Tüzelés',en:'Fire'},g:L=>m('click',L)+' '+(L=='hu'?'engedélyezett tranzíción (S vagy M eszköz), egyesével':'on an enabled transition (S or M tool), one at a time')}
   ]},
  {id:'gestures',title:{hu:'Egységes mozdulatok – laptopon és mobilon',en:'One set of gestures – laptop and phone'},
   intro:{hu:'Minden eszköz ugyanarra a négy mozdulatra épül, egérrel és érintéssel ugyanúgy. A bal oldali palettán választott eszköz dönti el, mit csinál a mozdulat.',en:'Every tool uses the same four gestures, with a mouse and by touch alike. The tool chosen in the palette on the left decides what the gesture does.'},
   groups:[{rows:[
-    [{hu:'Elsődleges: az eszköz fő művelete',en:'Primary: the tool\'s main action',d:{hu:'Hozzáad (hely, tranzíció, címke, token), tüzel (Marking), kijelöl (Select).',en:'Adds (place, transition, label, token), fires (Marking), selects (Select).'}},L=>m('click',L)+OR[L]+M('tap')],
+    [{hu:'Elsődleges: az eszköz fő művelete',en:'Primary: the tool\'s main action',d:{hu:'Hozzáad (hely, tranzíció, címke, token), kijelöl (Select), engedélyezett tranzíción tüzel (Select, Marking).',en:'Adds (place, transition, label, token), selects (Select), fires an enabled transition (Select, Marking).'}},L=>m('click',L)+OR[L]+M('tap')],
     [{hu:'Másodlagos: elvesz / töröl',en:'Secondary: remove / delete',d:{hu:'Az eszköz saját objektumán (pl. Marking: −1 token, Place: a hely törlése); máshol helyi menü.',en:'On the tool\'s own kind of object (e.g. Marking: −1 token, Place: delete the place); elsewhere the context menu.'}},L=>m('right',L)+OR[L]+M(L=='hu'?'hosszú tap':'long-press')],
     [{hu:'Szerkesztés: érték beírása',en:'Edit: type a value',d:{hu:'Név, tokenszám (Marking), élsúly. Mobilon beviteli ablak jön, számhoz számbillentyűzettel.',en:'A name, the number of tokens (Marking), an arc weight. On phones an input box opens, with a number pad for numbers.'}},L=>M(L=='hu'?'dupla katt':'double-click')+OR[L]+M(L=='hu'?'dupla tap':'double-tap')],
     [{hu:'Húzás',en:'Drag',d:{hu:'Mozgat, élt rajzol (F, I, R), üres helyen keretes kijelölés, Pan eszközzel a nézetet mozgatja.',en:'Moves, draws an arc (F, I, R), on empty canvas a selection box, with the Pan tool it moves the view.'}},L=>m('drag',L)],
@@ -259,7 +259,7 @@ const DATA=[
   intro:{hu:'CAD-szerű kezelés: kattintás kijelöl, húzás üres helyen keretes kijelölés, a műveletek a kijelölésre hatnak. Az objektumok rácsra ugranak; húzás közben az Alt nyomva tartásával szabadon mozgathatók.',en:'CAD-style: click selects, dragging on empty canvas draws a selection box, operations act on the selection. Objects snap to the grid; hold Alt while dragging to move them freely.'},
   groups:[
    {h:{hu:'Eszközpaletta (bal oldalt)',en:'Tool palette (left side)'},rows:[
-    [{hu:'Select – kijelölés',en:'Select',d:{hu:'Kattintás kijelöl, húzás mozgat vagy keretet húz, dupla katt átnevez, jobb klikk menü.',en:'Click selects, drag moves or draws a box, double-click renames, right-click opens the menu.'}},L=>K('S')+OR[L]+K('Esc')],
+    [{hu:'Select – kijelölés',en:'Select',d:{hu:'Kattintás kijelöl (engedélyezett tranzíción tüzel), húzás mozgat vagy keretet húz, dupla katt átnevez, jobb klikk menü.',en:'Click selects (an enabled transition fires), drag moves or draws a box, double-click renames, right-click opens the menu.'}},L=>K('S')+OR[L]+K('Esc')],
     [{hu:'Place – hely',en:'Place'},L=>K('P')+(L=='hu'?' – kattintás: új hely · jobb klikk a helyen: törlés':' – click: new place · right-click a place: delete')],
     [{hu:'Transition – tranzíció',en:'Transition'},L=>K('T')+(L=='hu'?' – kattintás: új (Shifttel függőleges) · jobb klikk: törlés':' – click: new (Shift: vertical) · right-click: delete')],
     [{hu:'Flow – él',en:'Flow arc'},L=>K('F')+(L=='hu'?' – húzás helyről tranzícióra vagy vissza · jobb klikk az élen: törlés · dupla katt: súly':' – drag place → transition or back · right-click an arc: delete · double-click: weight')],
@@ -324,7 +324,7 @@ const DATA=[
  {id:'sim',title:{hu:'Szimuláció',en:'Simulation'},
   intro:{hu:'A tüzelések előzménye visszajátszható; több engedélyezett tranzíció közül a szimulátor véletlenszerűen választ.',en:'The firing history can be replayed; among several enabled transitions the simulator picks at random.'},
   groups:[{rows:[
-    [{hu:'Adott tranzíció tüzelése',en:'Fire a given transition'},L=>K('M')+(L=='hu'?' eszköz: ':' tool: ')+m('click',L)+(L=='hu'?' az engedélyezett tranzíción':' on the enabled transition')+OR[L]+(L=='hu'?'helyi menü → Fire':'context menu → Fire')],
+    [{hu:'Adott tranzíció tüzelése',en:'Fire a given transition'},L=>m('click',L)+(L=='hu'?' az engedélyezett tranzíción (S vagy M eszköz)':' on the enabled transition (S or M tool)')+OR[L]+(L=='hu'?'helyi menü → Fire':'context menu → Fire')],
     [{hu:'Lépés előre / vissza',en:'Step forward / back',d:{hu:'Az előzmény végén előre görgetve véletlen tüzelés.',en:'Scrolling forward at the end of the history fires at random.'}},L=>m('wheel',L)+' '+(L=='hu'?'üres területen':'on empty canvas')],
     [{hu:'Lépés előre / vissza billentyűvel',en:'Step forward / back with keys',d:{hu:'Ha nincs kijelölés.',en:'When nothing is selected.'}},L=>K('→')+' '+K('←')],
     [{hu:'Futás indítása / leállítása',en:'Start / stop running'},L=>M('RUN')+' '+M('STOP')+OR[L]+m('right',L)+(L=='hu'?' → helyi menü':' → context menu')],
@@ -354,7 +354,7 @@ const DATA=[
     [{hu:'Mentés a gépre',en:'Save to your computer',d:{hu:'A fájl a Letöltések mappába kerül.',en:'The file goes to your Downloads folder.'}},L=>K('Ctrl')+P+K('S')+OR[L]+M('SAVE')],
     [{hu:'Megnyitás a gépről',en:'Open from your computer'},L=>M('OPEN')+(L=='hu'?' → „From your computer…”':' → “From your computer…”')+OR[L]+(L=='hu'?'.pn fájl ráhúzása az ablakra':'drag a .pn file onto the window')],
     [{hu:'Példahálók a szerverről',en:'Example nets from the server'},L=>M('OPEN')+OR[L]+K('Ctrl')+P+K('O')],
-    [{hu:'Mentetlen változás',en:'Unsaved changes',d:{hu:'A fájlnév mellett * jelzi; bezáráskor és új háló előtt a böngésző rákérdez.',en:'Marked with * next to the file name; the browser asks before closing or starting a new net.'}},L=>'<code>File: net.pn *</code>'],
+    [{hu:'Fájlnév, mentetlen változás',en:'File name, unsaved changes',d:{hu:'A fájlnév alul, a státuszsor bal szélén látszik; a * mentetlen változást jelez. Bezáráskor és új háló előtt rákérdez.',en:'The file name is shown at the bottom left of the status bar; * marks unsaved changes. Asks before closing or starting a new net.'}},L=>'<code>net.pn *</code>'],
     [{hu:'Automatikus visszaállítás',en:'Automatic restore',d:{hu:'Újranyitáskor (?net= nélkül) a legutóbbi állapot visszajön. Üres hálóhoz: NEW.',en:'When reopened (without ?net=) the last state comes back. For an empty net: NEW.'}},L=>(L=='hu'?'automatikus':'automatic')],
     [{hu:'Beküldés átnézésre',en:'Send for review'},L=>M('SEND')]
   ]}]},

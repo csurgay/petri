@@ -70,9 +70,8 @@ class Buttonbar extends Form {
             });
             x+=groupGap-gap(ids);
         });
-        const file=this.children[0];
-        if (x+170>W-8 && x>50) { y+=rowH; x=10; }
-        file.x=x; file.y=y;
+        // (the file name is shown in the status bar at the bottom)
+        this.children[0].visible=false;
         this.h=y+25;
     }
     running() {

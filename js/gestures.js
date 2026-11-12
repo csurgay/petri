@@ -162,6 +162,19 @@ function secondaryAction(o) {
     return false;
 }
 
+// Select tool: a click fires an enabled transition, but only once it is clear
+// that it is not the first half of a double-click (which renames instead)
+const FIRE_DELAY_MS=280;
+let pendingFire=null;
+function scheduleFire(t) {
+    cancelFire();
+    pendingFire=setTimeout(()=>{
+        pendingFire=null;
+        if (pn.t.includes(t) && t.enabled() && (state.is("IDLE") || bar.running())) pn.fireOne(t);
+    }, FIRE_DELAY_MS);
+}
+function cancelFire() { clearTimeout(pendingFire); pendingFire=null; }
+
 // edit action (double-click / double-tap)
 const markClicks={ obj:null, before:0, t:0 };   // to undo the two clicks of a double-click
 function primaryMarking(p) {
@@ -172,6 +185,7 @@ function primaryMarking(p) {
     pn.newUndo();
 }
 function editAction(o) {
+    cancelFire();
     if (!o) return;
     if (tool=="MARKING" && o.type=="PLACE") {
         if (markClicks.obj===o) o.tokens=markClicks.before;   // the double-click's own +2

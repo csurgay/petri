@@ -55,7 +55,7 @@ function rawHint() {
         return "Drag: move selection  ·  Del: delete  ·  Ctrl+C/X/D: copy/cut/duplicate  ·  Shift+wheel: rotate  ·  Alt+wheel: colour  ·  Right-click: menu";
     if (o) switch (T) {
         case "PLACE":      return "Click: select  ·  Drag: move  ·  Double-click: rename  ·  Wheel: tokens  ·  Right-click: menu";
-        case "TRANSITION": return "Click: select  ·  Drag: move  ·  Double-click: rename  ·  Wheel: rotate  ·  Right-click: menu";
+        case "TRANSITION": return (o.enabled() ? "Click: fire  ·  " : "Not enabled  ·  Click: select  ·  ")+"Drag: move  ·  Double-click: rename  ·  Wheel: rotate  ·  Right-click: menu";
         case "FLOW":       return "Click: select  ·  Double-click: weight  ·  Drag: add bend point  ·  Wheel: weight  ·  Right-click: menu";
         case "MIDPOINT":   return "Drag: move bend point  ·  Right-click: menu";
         case "LABEL":      return "Click: select  ·  Drag: move  ·  Double-click: edit  ·  Wheel or 0–5: size  ·  Right-click: menu";
@@ -64,8 +64,8 @@ function rawHint() {
     return "Drag: select  ·  Right-click: menu  ·  Tools: P T F I R M L H"+view+"  ·  ←/→: step";
 }
 
+// Status bar at the bottom: file name (with * when unsaved) | hint | selection
 function drawHintBar() {
-    if (!fp.hintBar || !fp.hintBar.value) return;
     const c=g.ctx;
     c.save();
     c.setLineDash([]);
@@ -74,9 +74,21 @@ function drawHintBar() {
     c.strokeStyle="rgba(0,0,0,0.15)";
     c.lineWidth=1;
     c.beginPath(); c.moveTo(0,wh-HINT_H+0.5); c.lineTo(ww,wh-HINT_H+0.5); c.stroke();
-    c.fillStyle="#444";
-    c.font="13px arial"; c.textAlign="left"; c.textBaseline="middle";
-    c.fillText(currentHint(), 12, wh-HINT_H/2+1);
+    const ym=wh-HINT_H/2+1;
+    c.textAlign="left"; c.textBaseline="middle";
+    // file name
+    c.font="bold 13px arial"; c.fillStyle="#1a2130";
+    const name=fm.name+(isDirty()?" *":"");
+    c.fillText(name, 12, ym);
+    const xd=12+c.measureText(name).width+12;
+    // divider
+    c.strokeStyle="rgba(0,0,0,0.25)";
+    c.beginPath(); c.moveTo(xd+0.5, wh-HINT_H+5); c.lineTo(xd+0.5, wh-5); c.stroke();
+    // hint (can be turned off in PREF -> Hint Bar)
+    if (fp.hintBar && fp.hintBar.value) {
+        c.font="13px arial"; c.fillStyle="#444";
+        c.fillText(currentHint(), xd+12, ym);
+    }
     // selection count on the right
     const n=sel.size;
     if (n>0) {
