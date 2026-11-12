@@ -11,10 +11,10 @@ class Label extends Object {
         this.id="L"+nextId(this.type);
         this.text=text;
         this.size=14;
+        this.align=align;   // must be set before it is used for measuring below
         g.setupText(""+this.size+"px arial",this.align,"middle");
         this.width=g.measureText(this.text).width;
         this.attached=null; // the Object that this Label is attached to
-        this.align=align;
     }
     draw(hoveredHighlighted=false, parent=nullParent) {
         let x=parent.x+this.x;

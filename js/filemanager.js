@@ -7,6 +7,45 @@ const fm = {
 };
 const AUTOSAVE_KEY="petri-autosave";
 
+// ---- in-app confirmation (non-blocking, unlike the native confirm()) ----------
+// Calls onOk() from the OK click itself, so actions that need a user gesture
+// (like opening the file chooser) still work.
+const dlg={ el:null, onOk:null };
+function askConfirm(text, okLabel, onOk) {
+    closeConfirm();
+    const back=document.createElement("div");
+    back.className="dlg-back";
+    ["mousedown","mouseup","mousemove","wheel","contextmenu","click"].forEach(t=>
+        back.addEventListener(t, e=>{ e.stopPropagation(); if (t=="contextmenu"||t=="wheel") e.preventDefault(); },
+            {passive:false}));
+    back.innerHTML='<div class="dlg" role="alertdialog"><p></p><div class="btns">'+
+        '<button class="cancel">Cancel</button><button class="ok"></button></div></div>';
+    back.querySelector("p").textContent=text;
+    back.querySelector(".ok").textContent=okLabel;
+    back.querySelector(".ok").addEventListener("click",()=>{ const f=dlg.onOk; closeConfirm(); f(); });
+    back.querySelector(".cancel").addEventListener("click",closeConfirm);
+    back.addEventListener("mousedown",e=>{ if (e.target===back) closeConfirm(); });
+    document.body.appendChild(back);
+    dlg.el=back; dlg.onOk=onOk;
+    back.querySelector(".ok").focus();
+}
+function closeConfirm() { if (dlg.el) { dlg.el.remove(); dlg.el=null; dlg.onOk=null; } }
+function confirmOpen() { return dlg.el!==null; }
+// keyboard while the dialog is open: Enter = OK, Esc = Cancel (others ignored)
+function confirmKey(e) {
+    if (!dlg.el) return false;
+    if (e.key=="Escape") closeConfirm();
+    else if (e.key=="Enter") dlg.el.querySelector(".ok").click();
+    else if (e.key=="Tab") return true;        // let focus move between the buttons
+    e.preventDefault();
+    return true;
+}
+// run action now, or after confirming if there are unsaved changes
+function unlessUnsaved(action, okLabel) {
+    if (!isDirty()) { action(); return; }
+    askConfirm("You have unsaved changes. Discard them?", okLabel, action);
+}
+
 // net content without timestamp and view settings
 function netBody(raw) {
     if (!raw) return "";
@@ -74,7 +113,9 @@ function saveNetToComputer() {
 //  File System Access pickers are disabled by policy)
 let fileInput=null;
 function openNetFromComputer() {
-    if (isDirty() && !confirm("Discard unsaved changes?")) return;
+    unlessUnsaved(chooseLocalFile, "Discard and open…");
+}
+function chooseLocalFile() {
     if (!fileInput) {
         fileInput=document.createElement("input");
         fileInput.type="file";
@@ -98,8 +139,8 @@ window.addEventListener("drop", async e=>{
     e.preventDefault();
     const f=e.dataTransfer.files && e.dataTransfer.files[0];
     if (!f) return;
-    if (isDirty() && !confirm("Discard unsaved changes?")) return;
-    loadNetText(await f.text(), f.name);
+    const text=await f.text();
+    unlessUnsaved(()=>loadNetText(text, f.name), "Discard and open");
 });
 
 // --- unsaved changes warning ------------------------------------------------------
@@ -130,7 +171,9 @@ function restoreAutosave() {
     } catch(e) { return false; }
 }
 function newNet() {
-    if (isDirty() && !confirm("Discard unsaved changes?")) return;
+    unlessUnsaved(clearNet, "Discard and start new");
+}
+function clearNet() {
     pn.clear();
     undo.length=0; undoPtr=-1;
     pn.newUndo();

@@ -44,6 +44,36 @@ body {
 .palette button.on svg { fill: #fff; stroke: #fff; }
 .palette button.on span { color: #dfe6f8; }
 
+/* in-app confirmation dialog */
+.dlg-back {
+    position: fixed; inset: 0; z-index: 200;
+    display: grid; place-items: center;
+    background: rgba(20,24,32,0.28);
+}
+.dlg {
+    min-width: 320px; max-width: 440px;
+    padding: 20px 22px 16px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+    font: 14px Arial, Helvetica, sans-serif;
+    color: #1a2130;
+    text-align: left;
+}
+.dlg p { margin: 0 0 18px; line-height: 1.45; }
+.dlg .btns { display: flex; justify-content: flex-end; gap: 8px; }
+.dlg button {
+    padding: 7px 14px;
+    border-radius: 6px;
+    border: 1px solid rgba(0,0,0,0.18);
+    background: #fff;
+    font: inherit;
+    cursor: pointer;
+}
+.dlg button.ok { background: #2c56c9; border-color: #2c56c9; color: #fff; }
+.dlg button:hover { filter: brightness(0.95); }
+.dlg button:focus-visible { outline: 2px solid #2c56c9; outline-offset: 2px; }
+
 /* right-click context menu */
 .ctxmenu {
     position: fixed;

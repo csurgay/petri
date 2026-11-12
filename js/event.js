@@ -96,6 +96,7 @@ class Events {
     // A click that only brings the window into focus must not edit the net
     focusevent() { this.focusMs=Date.now(); }
     mousedownevent(sysEvent) {
+        if (confirmOpen()) return;              // the dialog has the focus
         // a click outside the open context menu only closes it
         if (ctxMenu.isOpen()) {
             ctxMenu.close();
@@ -148,6 +149,7 @@ class Events {
     }
     keydownevent(sysEvent) {
         if (sysEvent.key=="Alt") sysEvent.preventDefault();
+        if (confirmKey(sysEvent)) return;
         if (ctxMenu.key(sysEvent)) return;
         if (handleShortcut(sysEvent)) return;
         if (sysEvent.key==" " && !textbox.active) {

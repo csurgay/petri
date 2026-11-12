@@ -130,8 +130,8 @@ class FileForm extends Form {
             state.set("IDLE");
             if (chosen==LOCAL_FILE_ENTRY) openNetFromComputer();
             else if (chosen!="CANCEL") {
-                if (!isDirty() || confirm("Discard unsaved changes?"))
-                    pn.load(directory+"/"+chosen);
+                const path=directory+"/"+chosen;
+                unlessUnsaved(()=>pn.load(path), "Discard and open");
             }
             // (no animate() here: it would start a second animation loop)
         }
