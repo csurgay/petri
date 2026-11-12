@@ -170,14 +170,30 @@ function secondaryAction(o) {
 // that it is not the first half of a double-click (which renames instead)
 const FIRE_DELAY_MS=280;
 let pendingFire=null;
-function scheduleFire(t) {
+// run a single-click action once it is clear that no double-click follows
+function scheduleClick(action) {
     cancelFire();
-    pendingFire=setTimeout(()=>{
-        pendingFire=null;
+    pendingFire=setTimeout(()=>{ pendingFire=null; action(); }, FIRE_DELAY_MS);
+}
+function scheduleFire(t) {
+    scheduleClick(()=>{
         if (pn.t.includes(t) && t.enabled() && (state.is("IDLE") || bar.running())) pn.fireOne(t);
-    }, FIRE_DELAY_MS);
+    });
 }
 function cancelFire() { clearTimeout(pendingFire); pendingFire=null; }
+
+// arc kinds: place->transition can be inhibitor, transition->place can be reset
+function toggleArcType(f) {
+    if (!pn.f.includes(f)) return;
+    if (f.o1.type=="PLACE") f.subtype = f.subtype=="INHIBITOR" ? "ENABLER" : "INHIBITOR";
+    else                    f.subtype = f.subtype=="RESET"     ? "ENABLER" : "RESET";
+    pn.newUndo();
+}
+function setArcType(f, kind) {
+    if (kind=="INHIBITOR" && f.o1.type!="PLACE") { showToast("An inhibitor arc goes from a place to a transition",3000); return; }
+    if (kind=="RESET" && f.o1.type!="TRANSITION") { showToast("A reset arc goes from a transition to a place",3000); return; }
+    if (f.subtype!=kind) { f.subtype=kind; pn.newUndo(); }
+}
 
 // edit action (double-click / double-tap)
 const markClicks={ obj:null, before:0, t:0 };   // to undo the two clicks of a double-click

@@ -6,7 +6,7 @@
 // double-click/double-tap = type a value.
 const TOOLS=[
     {id:"SELECT",     key:"s", name:"Select",
-     tip:"Select (S): click to select (an enabled transition: fire it), drag to move or to draw a selection box, double-click to rename, right-click for the menu",
+     tip:"Select (S): click to select (an enabled transition: fire it; an arc: normal / inhibitor / reset), drag to move or to draw a selection box, double-click to rename, right-click for the menu",
      svg:'<path d="M5 3l11 6.5-5 1.2 2.8 5.3-2 1-2.8-5.2L5 15z"/>'},
     {id:"PLACE",      key:"p", name:"Place",
      tip:"Place (P): click empty canvas to add a place, right-click a place to delete it",
@@ -18,11 +18,11 @@ const TOOLS=[
      tip:"Flow arc (F): drag from a place to a transition or back; right-click an arc to delete it, double-click to set its weight",
      svg:'<path d="M3 16L14 5" fill="none" stroke-width="1.8"/><path d="M16.5 2.5l-1.2 6.2-5-5z"/>'},
     {id:"INHIBITOR",  key:"i", name:"Inhibitor arc",
-     tip:"Inhibitor arc (I): drag from a place to a transition; the transition may fire only while the place holds fewer tokens than the weight",
+     tip:"Inhibitor arc (I): drag from a place to a transition (or click an arc to make it inhibitor); the transition may fire only while the place holds fewer tokens than the weight",
      svg:'<path d="M3 16L12.2 6.8" fill="none" stroke-width="1.8"/><circle cx="14.3" cy="4.7" r="2.8" fill="none" stroke-width="1.6"/>'},
     {id:"RESET",      key:"r", name:"Reset arc",
-     tip:"Reset arc (R): drag from a transition to a place; firing empties the place",
-     svg:'<path d="M3 16L12 7" fill="none" stroke-width="1.8"/><path d="M17 2l-1.4 5.6-2.1-2.1-2.1-2.1z M17 2l-5.6 1.4"/><path d="M15.2 9.6l-3.2-3.2" stroke-width="1.6"/>'},
+     tip:"Reset arc (R): drag from a transition to a place (or click an arc to make it reset); firing empties the place",
+     svg:'<path d="M3 16L11.5 7.5" fill="none" stroke-width="1.8"/><path d="M17.5 1.5L16.3 6.3 11.5 7.5 12.7 2.7z" stroke="none"/>'},
     {id:"MARKING",    key:"m", name:"Marking",
      tip:"Marking (M): click a place = +1 token, right-click = \u22121, double-click = type the number; click a transition to fire it",
      svg:'<circle cx="10" cy="10" r="6.5" fill="none" stroke-width="1.5"/><circle cx="7.5" cy="7.5" r="1.6"/><circle cx="12.5" cy="12.5" r="1.6"/><circle cx="12.5" cy="7.5" r="1.6"/><circle cx="7.5" cy="12.5" r="1.6"/>'},

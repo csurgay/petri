@@ -41,7 +41,7 @@ function rawHint() {
             const what = tool=="INHIBITOR" ? "inhibitor arc (place \u2192 transition)"
                        : tool=="RESET" ? "reset arc (transition \u2192 place)" : "arc";
             if (T=="PLACE"||T=="TRANSITION") return "Drag to the target: new "+what;
-            if (T=="FLOW") return "Right-click: delete arc  ·  Double-click: weight  ·  Drag: add bend point";
+            if (T=="FLOW") return "Click: make it "+(tool=="INHIBITOR"?"an inhibitor":tool=="RESET"?"a reset":"a normal")+" arc  ·  Right-click: delete arc  ·  Double-click: weight  ·  Drag: add bend point";
             if (T=="MIDPOINT") return "Drag: move bend point  ·  Right-click: delete it";
             return "Drag from a place or transition: new "+what+view;
         }
@@ -61,7 +61,7 @@ function rawHint() {
     if (o) switch (T) {
         case "PLACE":      return "Click: select  ·  Drag: move  ·  Double-click: rename  ·  Wheel: tokens  ·  Right-click: menu";
         case "TRANSITION": return (o.enabled() ? "Click: fire  ·  " : "Not enabled  ·  Click: select  ·  ")+"Drag: move  ·  Double-click: rename  ·  Wheel: rotate  ·  Right-click: menu";
-        case "FLOW":       return "Click: select  ·  Double-click: weight  ·  Drag: add bend point  ·  Wheel: weight  ·  Right-click: menu";
+        case "FLOW":       return "Click: switch normal \u21c4 "+(o.o1.type=="PLACE"?"inhibitor":"reset")+"  ·  Double-click: weight  ·  Drag: add bend point  ·  Wheel: weight  ·  Right-click: menu";
         case "MIDPOINT":   return "Drag: move bend point  ·  Right-click: menu";
         case "LABEL":      return "Click: select  ·  Drag: move  ·  Double-click: edit  ·  Wheel or 0–5: size  ·  Right-click: menu";
     }

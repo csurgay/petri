@@ -490,9 +490,17 @@ class BaseForm extends Form {
         }
         // MULTISEGMENT STATE
         else if (state.is("MULTISEGMENT")) {
-            // Toggle Flow Enabler/Inhiboitor
+            // Click on an arc: Select tool switches normal <-> inhibitor/reset
+            // (delayed, so a double-click sets the weight instead);
+            // the arc tools set the arc to their own kind
             if (evt.type == "mu") {
-                sel.set([this.dragged]);
+                const f=this.dragged;
+                sel.set([f]);
+                if (f.type=="FLOW" && closeEnough(this.mouseDownCoord, tcursor)) {
+                    if (tool=="SELECT") scheduleClick(()=>toggleArcType(f));
+                    else if (tool=="FLOW") setArcType(f,"ENABLER");
+                    else if (tool=="INHIBITOR" || tool=="RESET") setArcType(f,tool);
+                }
                 state.set("IDLE");
             }
             else if (evt.type == "mu") {
