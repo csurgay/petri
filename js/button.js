@@ -26,6 +26,10 @@ class Button extends Object {
             g.fillStyle(COLOR_CANVAS);
             g.standard(5);
         }
+        if (fbfs.visible && this.button=="REACH") {
+            g.fillStyle(COLOR_CANVAS);
+            g.standard(3);
+        }
         ovalPatch(this.x,this.y,this.w,bh,br);
         g.fill();
         g.stroke();
@@ -175,12 +179,11 @@ class Button extends Object {
         if (this.button == "STEPS-") {
             drawPlusMinus(this.x, this.y, 6, "-");
         }
-        if (this.button == "SEARCH") {
-            drawBFSIcon(this.x, this.y, 2, 5);
-        }
-        if (this.button == "STEPS") {
-            g.setupText("15px Arial", "center", "center");
-            g.fillText(bfsSteps, this.x, this.y+1);
+        if (this.button == "REACH") {
+            // icon on the left, current depth next to it
+            drawBFSIcon(this.x - this.w/2 + 15, this.y, 2, 6);
+            g.setupText("bold 14px Arial", "center", "middle");
+            g.fillText(bfsSteps, this.x + 11, this.y+1);
         }
 
         if (this.label) this.label.draw();
@@ -226,7 +229,7 @@ class Button extends Object {
             pn.rewind();
         }
         else if (this.button=="HELP") {
-            window.open("doc/help.html", "_blank");
+            window.open("doc/help.html", "petrihelp");
             //fb.active=false;
             //fh.visible=true;
             //fh.active=true;
@@ -270,7 +273,7 @@ class Button extends Object {
         }
 
         // BFS Buttons Eventhandling
-        else if (this.button === "SEARCH") {
+        else if (this.button === "REACH") {
             if (!fbfs.visible) {
                 fb.active = false;
                 fbfs.visible = true;
@@ -335,21 +338,25 @@ function drawPlusMinus(x, y, size = 8, mode = "+") {
     }
 }
 
+// Small reachability tree: root, left leaf, right branch that forks
+// half-way down into a right leaf and an inner (middle) leaf.
 function drawBFSIcon(x, y, r = 3, size = 10) {
+    const fork = { x: x + size/2, y: y };    // midpoint of the right branch
     const nodes = [
-        { x: x, y: y - size },
-        { x: x - size, y: y + size },
-        { x: x + size, y: y + size }
+        { x: x, y: y - size },               // root
+        { x: x - size, y: y + size },        // left leaf
+        { x: x + size, y: y + size },        // right leaf
+        { x: x, y: y + size }                // inner leaf, same baseline
     ];
 
     g.beginPath();
     g.lineWidth(2);
-
     g.moveTo(nodes[0].x, nodes[0].y);
     g.lineTo(nodes[1].x, nodes[1].y);
     g.moveTo(nodes[0].x, nodes[0].y);
     g.lineTo(nodes[2].x, nodes[2].y);
-    g.moveTo(nodes[1].x, nodes[1].y);
+    g.moveTo(fork.x, fork.y);
+    g.lineTo(nodes[3].x, nodes[3].y);
     g.stroke();
 
     nodes.forEach(n => {

@@ -115,6 +115,9 @@ footer{color:var(--muted);font-size:.85rem}
 .langsw button:hover{color:var(--accent)}
 .langsw button[aria-pressed="true"]{background:var(--accent);color:var(--surface)}
 header .eyebrow{padding-right:96px}
+.embedded .langsw{display:none}
+.wrap[hidden]{display:none}
+.embedded header .eyebrow{padding-right:0}
 </style>
 
 <div class="langsw" role="group" aria-label="Nyelv / Language"><button type="button" data-set="hu" aria-pressed="true" title="Magyar">HU</button><button type="button" data-set="en" aria-pressed="false" title="English">EN</button></div>
@@ -1496,6 +1499,12 @@ function switchTo(L){
 }
 swBtns.forEach(b=>b.addEventListener('click',()=>switchTo(b.dataset.set)));
 let start='hu'; try{ const s=localStorage.getItem('petri-lang'); if(s==='en'||s==='hu') start=s; }catch(e){}
+// beágyazás a súgóba: ?lang=hu|en, ?embed=1 (a súgó saját nyelvváltót ad)
+const QP=new URLSearchParams(location.search);
+if(QP.get('lang')==='hu'||QP.get('lang')==='en') start=QP.get('lang');
+if(QP.has('embed')) document.documentElement.classList.add('embedded');
+window.petriSetLang=L=>switchTo(L);
+window.addEventListener('message',e=>{ if(e.data&&e.data.petriLang) switchTo(e.data.petriLang); });
 apply(start);
 
 let last=performance.now(), colorTick=0;

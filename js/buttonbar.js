@@ -24,12 +24,15 @@ class Buttonbar extends Form {
         this.b.push(new Button("STOP","STOP",x+dx++*(w+ddw),y,w,()=>{return this.running()&&!fp.active && !fbfs.active}));
         this.b.push(new Button("RUN","RUN",x+dx++*(w+ddw),y,w,()=>{return true&&!fp.active && !fbfs.active}));
         this.b.push(new Button("FLY","FLY",x+dx++*(w+ddw),y,w,()=>{return true&&!fp.active && !fbfs.active}));
-        // BFS Buttons
-        x+=dx*(w+ddw)-w/2,w=50,x+=w/2+dw,dx=0;
-        this.b.push(new Button("STEPS-", "STEPS-", x+dx++*(w+ddw), y, w, ()=>{return !this.running() && !fp.active}));
-        this.b.push(new Button("STEPS", "STEPS", x+dx++*(w+ddw), y, w, ()=>{return !this.running() && !fp.active}));
-        this.b.push(new Button("STEPS+", "STEPS+", x+dx++*(w+ddw), y, w, ()=>{return !this.running() && !fp.active}));
-        this.b.push(new Button("SEARCH", "REACH", x+dx++*(w+ddw), y, w, ()=>{return !this.running() && !fp.active}));
+        // Reachability: depth- | REACH (icon + depth) | depth+
+        x+=dx*(w+ddw)-w/2,w=35,x+=w/2+dw,dx=0;
+        const reachEnabled=()=>{return !this.running() && !fp.active};
+        this.b.push(new Button("STEPS-", "STEPS-", x, y, w, reachEnabled));
+        x+=w/2+2*ddw; w=60; x+=w/2;
+        this.b.push(new Button("REACH", "REACH", x, y, w, reachEnabled));
+        x+=w/2+2*ddw; w=35; x+=w/2;
+        this.b.push(new Button("STEPS+", "STEPS+", x, y, w, reachEnabled));
+        dx=1;
 
         x+=dx*(w+ddw)-w/2,w=35,x+=w/2+dw,dx=0;
         this.b.push(new Button("PREF","PREF",x+dx++*(w+ddw),y,w,()=>{return !this.running()}));

@@ -1,60 +1,440 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>PetriNet Help</title>
-        <link rel="shortcut icon" href="favicon.ico">
-    </head>
-    <body>
-        <h1>PetriNet Simulator - Help</h1>
-        Support: csurgay at gmail
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PetriNet Simulator – Súgó</title>
+<link rel="shortcut icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#f3f5f8; --surface:#fff; --soft:#e9edf3; --ink:#1a2130; --muted:#5b6577; --line:#d3d9e3;
+  --accent:#2c56c9; --accent-soft:#e3eafb; --sand:#f0eadc; --sand-line:#d8cdb4;
+  --f-display:"Space Grotesk","Segoe UI",system-ui,sans-serif;
+  --f-body:"Inter","Segoe UI",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  --top:58px;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#10141b;--surface:#171d27;--soft:#1f2733;--ink:#e4e8ef;--muted:#9aa4b4;--line:#2c3543;
+    --accent:#86a6ff;--accent-soft:#1f2b49;--sand:#2a2620;--sand-line:#4a4234;color-scheme:dark}
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--top) + 16px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--f-body)}
+a{color:var(--accent)}
+h1,h2,h3{font-family:var(--f-display);line-height:1.15;margin:0;text-wrap:balance}
 
-        <h1>Basic operation</h1>
-        Create PLACE: click<br/>
-        Create TRANSITION: ctrl-click<br/>
-        Create FLOW: ctrl-drag from PLACE/TRANS into PLACE/TRANS<br/>
-        Add TOKENS: mousewheel (or UP/DOWN ARROW KEY) over PLACE<br/>
-        Fire TRANSITOIN: click TRANSITION<br/>
+/* ---------- top bar ---------- */
+.top{position:sticky;top:0;z-index:30;height:var(--top);display:flex;align-items:center;gap:16px;
+  padding:0 max(16px,env(safe-area-inset-right));background:color-mix(in srgb,var(--surface) 88%,transparent);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font:700 1.05rem var(--f-display);white-space:nowrap}
+.brand svg{flex:none}
+.brand small{font:500 .72rem var(--f-mono);color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.spacer{flex:1}
+.seg{display:flex;gap:2px;background:var(--soft);border-radius:999px;padding:3px}
+.seg button{font:600 .86rem var(--f-body);border:0;border-radius:999px;padding:6px 16px;cursor:pointer;background:transparent;color:var(--muted)}
+.seg button:hover{color:var(--accent)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--accent);box-shadow:0 1px 3px rgba(0,0,0,.14)}
+.seg.lang button{font:600 .76rem var(--f-mono);letter-spacing:.06em;padding:6px 11px}
+.seg.lang button[aria-pressed="true"]{background:var(--accent);color:var(--surface)}
+.back{font:500 .85rem var(--f-body);text-decoration:none;color:var(--muted);white-space:nowrap}
+.back:hover{color:var(--accent)}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
-        <h1>Advanced operation</h1>
-        <h2>Create/Delete</h2>
-        Create TRANSITION: click PLACE again<br/>
-        Create INHIBITOR FLOW (PLACE->TRANSITION): click FLOW again<br/>
-        Create RESET FLOW (TRANSITION->PLACE): click FLOW again<br/>
-        Delete objects: hover and Del<br/>
-        Clear tokens from PLACE: middle click on PLACE<br/>
-        Clear all tokens: middle click on canvas<br/>
-        Create LABEL: alt-click<br/>
+/* ---------- usage view ---------- */
+.usage{max-width:1120px;margin:0 auto;padding:28px max(16px,env(safe-area-inset-left)) 80px;display:grid;grid-template-columns:220px minmax(0,1fr);gap:40px}
+.side{position:sticky;top:calc(var(--top) + 24px);align-self:start;display:flex;flex-direction:column;gap:14px}
+.filter{width:100%;font:500 .9rem var(--f-body);color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 12px}
+.filter::placeholder{color:var(--muted)}
+.toc{display:flex;flex-direction:column;gap:2px}
+.toc a{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--muted);font:500 .9rem var(--f-body);padding:6px 10px;border-radius:8px;border-left:2px solid transparent}
+.toc a .n{font:500 .72rem var(--f-mono);color:var(--muted);width:16px}
+.toc a:hover{color:var(--ink);background:var(--soft)}
+.toc a.on{color:var(--accent);background:var(--accent-soft);border-left-color:var(--accent)}
+.toc a.dim{opacity:.35}
+.side .support{font-size:.8rem;color:var(--muted);padding:0 10px}
+main{display:flex;flex-direction:column;gap:28px;min-width:0}
+.hero{display:flex;flex-direction:column;gap:10px;padding-bottom:4px}
+.eyebrow{font:500 .76rem var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.hero h1{font-size:clamp(1.9rem,4.4vw,2.7rem);letter-spacing:-.02em}
+.hero p{margin:0;color:var(--muted);max-width:64ch;font-size:1.05rem}
+section.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px clamp(16px,3vw,28px);display:flex;flex-direction:column;gap:14px}
+section.card[hidden]{display:none}
+.card h2{font-size:1.4rem;display:flex;align-items:baseline;gap:12px}
+.card h2 .n{font:500 .8rem var(--f-mono);color:var(--accent);background:var(--accent-soft);border-radius:6px;padding:2px 8px}
+.card .intro{margin:0;color:var(--muted);max-width:70ch}
+.card h3{font-size:.8rem;font-family:var(--f-mono);font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+table{border-collapse:collapse;width:100%}
+td{padding:9px 10px;border-top:1px solid var(--line);vertical-align:top}
+tr:first-child td{border-top:none}
+td.act{width:46%;font-weight:500}
+td.act .d{display:block;font-weight:400;font-size:.88rem;color:var(--muted);margin-top:2px}
+td.ges{color:var(--ink)}
+tr[hidden]{display:none}
+kbd{font:500 .78rem var(--f-mono);background:var(--soft);border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;padding:1px 7px;white-space:nowrap}
+.mouse{font:500 .82rem var(--f-body);color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:1px 9px;white-space:nowrap}
+.plus{color:var(--muted);margin:0 3px}
+.or{color:var(--muted);font-size:.85rem;margin:0 6px}
 
-        <h2>Edit</h2>
-        Objects spap to grid unless ALT is pressed<br>
-        Move objects: drag<br/>
-        Move subnets: shift-drag<br/>
-        Rotate TRANSITION: mousewheel over TRANSITION<br/>
-        Rotate subnet: shift-mousewheel<br/>
-        Copy subnet: shift-click<br/>
-        Adjust FLOW weight: mousewheel over TRANSITION<br/>
-        Multisegment FLOW: drag FLOW<br/>
-        Sticky FLOW arrowheads: 's' over TRANSITION<br/>
-        Edit LABEL: click LABEL<br/>
-        Attach LABEL to Object: alt-click Object<br/>
-        Adjust LABEL size: mousewheel over LABEL<br/>
-        Adjust objects' color: alt-mousewheel over objects<br/>
+/* quick start */
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.steps li{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.steps li b{font-family:var(--f-display);font-size:1rem}
+.steps li .num{font:500 .72rem var(--f-mono);color:var(--accent)}
+.steps li .g{font-size:.9rem}
 
-        <h2>Simulate</h2>
-        Step+- / random fire: Mousewheel over canvas<br/>
-        Random simulation: Rightclick on canvas<br/>
+/* toolbar */
+.tools{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.tool{display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-rows:auto 1fr;gap:2px 12px;align-items:start;align-content:start;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+.tool[hidden]{display:none}
+.pill{grid-row:span 2;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:62px}
+.pill .o{display:grid;place-items:center;height:22px;min-width:40px;padding:0 6px;border:1.5px solid var(--ink);border-radius:11px;background:var(--sand)}
+.pill .o.w{min-width:60px}
+.pill svg{display:block;fill:var(--ink);stroke:var(--ink)}
+.pill .lbl{font:600 .66rem var(--f-mono);letter-spacing:.03em}
+.tool b{font-family:var(--f-display);font-size:.95rem}
+.tool span{font-size:.88rem;color:var(--muted)}
+.tgrp{font:500 .72rem var(--f-mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);grid-column:1/-1;margin-top:6px}
+.tgrp[hidden]{display:none}
 
-	<h2>Reachability analysis</h2>
-	Open state window: toolbar button 'Reach'
-	Toggle half size: 'space'
-	Pan statespace: arrow keys
-        Level (vertical) spacing: w and s
-	Horizontal spacing: a and d
+.tip{border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 8px 8px 0;padding:10px 14px;font-size:.92rem}
+.empty{color:var(--muted);font-style:italic}
+code{font:500 .85em var(--f-mono);background:var(--soft);border-radius:4px;padding:1px 5px}
 
-        <h2>Viewport</h2>
-        Pan: drag canvas<br/>
-        Zoom: mousewheel push and rotate<br/>
-        
-    </body>
+/* ---------- theory view ---------- */
+.theory{position:fixed;inset:var(--top) 0 0 0;border:0;width:100%;height:calc(100% - var(--top));background:var(--bg)}
+[hidden]{display:none!important}
+
+@media (max-width:860px){
+  .usage{grid-template-columns:minmax(0,1fr);gap:20px}
+  .side{position:static}
+  .toc{flex-direction:row;flex-wrap:wrap}
+  .toc a{border-left:none}
+  .back span,.brand small{display:none}
+  td.act{width:auto}
+  tr{display:flex;flex-direction:column}
+  td{border-top:none;padding:4px 6px}
+  tr{border-top:1px solid var(--line);padding:6px 0}
+}
+@media (max-width:520px){ .brand b{display:none} .top{gap:10px} .seg button{padding:6px 11px} }
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <a class="brand" href="#usage" aria-label="PetriNet Simulator">
+    <svg width="30" height="22" viewBox="0 0 30 22" aria-hidden="true">
+      <circle cx="6" cy="11" r="5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="6" cy="11" r="1.7" fill="currentColor"/>
+      <rect x="15" y="4" width="3.4" height="14" fill="currentColor"/>
+      <path d="M11 11h3.2M18.4 11h4.8" stroke="currentColor" stroke-width="1.6"/><path d="M23 8.2l3 2.8-3 2.8z" fill="currentColor"/>
+    </svg>
+    <b>PetriNet Simulator</b><small data-t="help">Súgó</small>
+  </a>
+  <div class="spacer"></div>
+  <div class="seg view" role="tablist">
+    <button type="button" data-view="usage" aria-pressed="true" data-t="tabUsage">Használat</button>
+    <button type="button" data-view="theory" aria-pressed="false" data-t="tabTheory">Elmélet</button>
+  </div>
+  <div class="seg lang" role="group" aria-label="Nyelv / Language">
+    <button type="button" data-lang="hu" aria-pressed="true" title="Magyar">HU</button>
+    <button type="button" data-lang="en" aria-pressed="false" title="English">EN</button>
+  </div>
+  <a class="back" href="../index.html" title="PetriNet Simulator">← <span data-t="back">Szimulátor</span></a>
+</header>
+
+<div class="usage" id="usageView">
+  <aside class="side">
+    <input class="filter" id="filter" type="search" autocomplete="off" spellcheck="false">
+    <nav class="toc" id="toc"></nav>
+    <div class="support" data-t="support"></div>
+  </aside>
+  <main id="content"></main>
+</div>
+
+<iframe class="theory" id="theory" title="Petri-hálók" hidden></iframe>
+
+<script>
+(function(){
+/* ---------- gesture helpers ---------- */
+const K=s=>`<kbd>${s}</kbd>`;
+const M=s=>`<span class="mouse">${s}</span>`;
+const P='<span class="plus">+</span>';
+const OR={hu:'<span class="or">vagy</span>',en:'<span class="or">or</span>'};
+const W={ /* mouse words */
+  click:{hu:'kattintás',en:'click'}, drag:{hu:'húzás',en:'drag'}, wheel:{hu:'görgő',en:'wheel'},
+  mid:{hu:'középső gomb',en:'middle click'}, right:{hu:'jobb gomb',en:'right click'},
+  midwheel:{hu:'középső gomb lenyomva + görgő',en:'hold middle button + wheel'}
+};
+const m=(k,L)=>M(W[k][L]);
+
+/* ---------- UI strings ---------- */
+const UI={
+  hu:{title:'PetriNet Simulator – Súgó',help:'Súgó',tabUsage:'Használat',tabTheory:'Elmélet',back:'Szimulátor',
+      filter:'Keresés…   ( / )',none:'Nincs találat.',
+      support:'Kérdés, hiba: csurgay kukac gmail',
+      eyebrow:'Kezelési útmutató',h1:'Petri-háló szerkesztő és szimulátor',
+      lead:'Minden a vásznon történik egérrel és néhány billentyűvel. Fent a gombsor, középen a háló. Az elméleti háttér (definíciók, tulajdonságok, élő példák) az <a href="#theory">Elmélet</a> fülön található.'},
+  en:{title:'PetriNet Simulator – Help',help:'Help',tabUsage:'Usage',tabTheory:'Theory',back:'Simulator',
+      filter:'Search…   ( / )',none:'No matches.',
+      support:'Questions, bugs: csurgay at gmail',
+      eyebrow:'User guide',h1:'Petri net editor and simulator',
+      lead:'Everything happens on the canvas with the mouse and a few keys. The toolbar is at the top, the net in the middle. The theory (definitions, properties, live examples) is on the <a href="#theory">Theory</a> tab.'}
+};
+
+/* ---------- toolbar icons (mirroring the canvas buttons) ---------- */
+const S=(w,h,b)=>`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">${b}</svg>`;
+const tri=(x,flip)=>flip?`<path d="M${x+7} 1L${x} 7L${x+7} 13z"/>`:`<path d="M${x} 1L${x+7} 7L${x} 13z"/>`;
+const ICON={
+  NEW:S(14,14,'<rect x="1.5" y="1.5" width="11" height="11" fill="none" stroke-width="2"/>'),
+  OPEN:S(22,16,'<path d="M2 15h16l5-10H7z"/><path d="M16 5V3h-6L7 1H2v13" fill="none" stroke-width="2"/>'),
+  SAVE:S(16,16,'<path d="M0 16h16V4l-4-4H0z"/><path d="M10 1v4H4V1M3 14h10M3 11h10" fill="none" stroke="var(--sand)" stroke-width="2"/>'),
+  UNDO:S(18,16,'<path d="M4 3.5A6 6 0 1 1 3 10" fill="none" stroke-width="2.6"/><path d="M0 1l7 5H0z"/>'),
+  REDO:S(18,16,'<path d="M14 3.5A6 6 0 1 0 15 10" fill="none" stroke-width="2.6"/><path d="M18 1l-7 5h7z"/>'),
+  m0:S(20,14,'<rect x="0" y="1" width="3" height="12"/>'+tri(4,1)+tri(11,1)),
+  STEPB:S(13,14,'<rect x="0" y="1" width="3" height="12"/>'+tri(5,1)),
+  STEPF:S(13,14,tri(0)+'<rect x="9" y="1" width="3" height="12"/>'),
+  PLAY:S(12,14,'<path d="M1 1l10 6-10 6z"/>'),
+  STOP:S(12,12,'<rect width="12" height="12"/>'),
+  RUN:S(16,14,tri(0)+tri(8)),
+  FLY:S(22,14,tri(0)+tri(7)+tri(14)),
+  MINUS:S(14,14,'<path d="M1 7h12" stroke-width="2"/>'),
+  PLUSI:S(14,14,'<path d="M1 7h12M7 1v12" stroke-width="2"/>'),
+  REACH:S(40,18,'<path d="M8 2L2 15M8 2l6 13M11 8.5L8 15" fill="none" stroke-width="1.8"/><circle cx="8" cy="2.5" r="2"/><circle cx="2" cy="15" r="2"/><circle cx="8" cy="15" r="2"/><circle cx="14" cy="15" r="2"/><text x="29" y="13.5" font-family="Arial" font-weight="700" font-size="13" text-anchor="middle" stroke="none">3</text>'),
+  PREF:S(16,16,'<path fill-rule="evenodd" d="M8 0l1.6 2.3 2.7-.9.2 2.8 2.6 1-1.4 2.4 1.4 2.4-2.6 1-.2 2.8-2.7-.9L8 16l-1.6-2.3-2.7.9-.2-2.8-2.6-1L2.3 8 .9 5.6l2.6-1 .2-2.8 2.7.9zM8 5.6a2.4 2.4 0 1 0 0 4.8 2.4 2.4 0 1 0 0-4.8z"/>'),
+  HELP:S(12,16,'<text x="6" y="14" font-family="Arial" font-weight="900" font-size="17" text-anchor="middle" stroke="none">?</text>')
+};
+
+/* ---------- content ---------- */
+const DATA=[
+ {id:'start',title:{hu:'Gyors kezdés',en:'Quick start'},
+  intro:{hu:'Öt mozdulat, és máris tüzel az első háló.',en:'Five moves and your first net is firing.'},
+  steps:[
+   {t:{hu:'Hely',en:'Place'},g:L=>m('click',L)+' '+(L=='hu'?'üres területen':'on empty canvas')},
+   {t:{hu:'Tranzíció',en:'Transition'},g:L=>K('Ctrl')+P+m('click',L)},
+   {t:{hu:'Él',en:'Arc'},g:L=>K('Ctrl')+P+m('drag',L)+' '+(L=='hu'?'helyről tranzícióra (vagy fordítva)':'from place to transition (or back)')},
+   {t:{hu:'Token',en:'Tokens'},g:L=>m('wheel',L)+' '+(L=='hu'?'a hely fölött, vagy ':'over a place, or ')+K('↑')+' '+K('↓')},
+   {t:{hu:'Tüzelés',en:'Fire'},g:L=>m('click',L)+' '+(L=='hu'?'engedélyezett tranzíción':'on an enabled transition')}
+  ]},
+ {id:'toolbar',title:{hu:'Gombsor',en:'Toolbar'},
+  intro:{hu:'A gombok balról jobbra, csoportonként. A szürke gomb éppen nem használható.',en:'Buttons from left to right, by group. A grey button is currently unavailable.'},
+  tools:[
+   {grp:{hu:'Fájl és szerkesztés',en:'File and editing'}},
+   {i:'NEW',l:'NEW',t:{hu:'Új háló',en:'New net'},d:{hu:'Üres munkaterület megerősítés után; a visszavonási előzmény is törlődik.',en:'Empty workspace after confirmation; undo history is cleared too.'}},
+   {i:'OPEN',l:'OPEN',t:{hu:'Megnyitás',en:'Open'},d:{hu:'Háló betöltése a nets mappából. Ctrl+Shift+kattintással az upload mappából.',en:'Load a net from the nets folder. Ctrl+Shift+click opens the upload folder.'}},
+   {i:'SAVE',l:'SAVE',t:{hu:'Mentés',en:'Save'},d:{hu:'A háló feltöltése az upload mappába, időbélyeges néven.',en:'Uploads the net to the upload folder under a timestamped name.'}},
+   {i:'UNDO',l:'UNDO',t:{hu:'Visszavonás',en:'Undo'},d:{hu:'Az utolsó szerkesztés visszavonása.',en:'Undo the last edit.'}},
+   {i:'REDO',l:'REDO',t:{hu:'Újra',en:'Redo'},d:{hu:'A visszavont szerkesztés ismét.',en:'Redo the undone edit.'}},
+   {grp:{hu:'Szimuláció',en:'Simulation'}},
+   {i:'m0',l:'m0',t:{hu:'Kezdő jelölés',en:'Initial marking'},d:{hu:'Visszaállás M₀-ra.',en:'Back to M₀.'}},
+   {i:'STEPB',l:'STEP-',t:{hu:'Lépés vissza',en:'Step back'},d:{hu:'Egy tüzeléssel vissza az előzményben.',en:'One firing back in the history.'}},
+   {i:'STEPF',l:'STEP+',t:{hu:'Lépés előre / FIRE',en:'Step forward / FIRE'},d:{hu:'Előre az előzményben; az előzmény végén a felirata FIRE, és egy véletlen engedélyezett tranzíció tüzel.',en:'Forward in the history; at its end the label reads FIRE and a random enabled transition fires.'}},
+   {i:'PLAY',l:'PLAY',t:{hu:'Lejátszás',en:'Play'},d:{hu:'Lassú futás, másodpercenként egy tüzelés.',en:'Slow run, one firing per second.'}},
+   {i:'STOP',l:'STOP',t:{hu:'Megállítás',en:'Stop'},d:{hu:'A futás leállítása.',en:'Stops the run.'}},
+   {i:'RUN',l:'RUN',t:{hu:'Futás',en:'Run'},d:{hu:'Gyors futás, kb. 10 tüzelés/mp.',en:'Fast run, about 10 firings/s.'}},
+   {i:'FLY',l:'FLY',t:{hu:'Repülés',en:'Fly'},d:{hu:'Futás a lehető leggyorsabban.',en:'Runs as fast as possible.'}},
+   {grp:{hu:'Elérhetőségi elemzés',en:'Reachability'}},
+   {i:'MINUS',l:'STEPS-',t:{hu:'Mélység −',en:'Depth −'},d:{hu:'A keresési mélység csökkentése (legalább 1).',en:'Decrease search depth (minimum 1).'}},
+   {i:'REACH',l:'REACH',w:1,t:{hu:'Elérhetőségi gráf',en:'Reachability graph'},d:{hu:'Az ablak nyitása / zárása. A szám a gombban az aktuális mélység.',en:'Opens / closes the window. The number in the button is the current depth.'}},
+   {i:'PLUSI',l:'STEPS+',t:{hu:'Mélység +',en:'Depth +'},d:{hu:'A keresési mélység növelése; nyitott ablaknál azonnal újraszámol.',en:'Increase search depth; recomputes at once if the window is open.'}},
+   {grp:{hu:'Egyéb',en:'Other'}},
+   {i:'PREF',l:'PREF',t:{hu:'Beállítások',en:'Preferences'},d:{hu:'Rács, igazítás, töréspont. Lásd lent.',en:'Grid, snapping, breakpoint. See below.'}},
+   {i:'HELP',l:'HELP',t:{hu:'Súgó',en:'Help'},d:{hu:'Ez az oldal.',en:'This page.'}}
+  ]},
+ {id:'edit',title:{hu:'Szerkesztés',en:'Editing'},
+  intro:{hu:'Az objektumok rácsra ugranak; húzás közben az Alt nyomva tartásával szabadon mozgathatók.',en:'Objects snap to the grid; hold Alt while dragging to move them freely.'},
+  groups:[
+   {h:{hu:'Létrehozás és törlés',en:'Create and delete'},rows:[
+    [{hu:'Hely',en:'Place'},L=>m('click',L)+' '+(L=='hu'?'üres területen':'on empty canvas')],
+    [{hu:'Tranzíció (vízszintes)',en:'Transition (horizontal)'},L=>K('Ctrl')+P+m('click',L)],
+    [{hu:'Tranzíció (függőleges)',en:'Transition (vertical)'},L=>K('Ctrl')+P+K('Shift')+P+m('click',L)],
+    [{hu:'Címke',en:'Label'},L=>K('Alt')+P+m('click',L)+' '+(L=='hu'?'üres területen':'on empty canvas')],
+    [{hu:'Hely ↔ tranzíció csere',en:'Toggle place ↔ transition'},L=>m('click',L)+' '+(L=='hu'?'a kiemelt objektumon (ha még nincs éle)':'on the highlighted object (if it has no arcs yet)')],
+    [{hu:'Törlés',en:'Delete'},L=>(L=='hu'?'egér fölötte, majd ':'hover, then ')+K('Del')]
+   ]},
+   {h:{hu:'Mozgatás és forgatás',en:'Move and rotate'},rows:[
+    [{hu:'Objektum mozgatása',en:'Move object'},L=>m('drag',L)],
+    [{hu:'Részháló mozgatása',en:'Move subnet'},L=>K('Shift')+P+m('drag',L)],
+    [{hu:'Részháló másolása',en:'Copy subnet'},L=>K('Shift')+P+m('click',L)],
+    [{hu:'Tranzíció forgatása',en:'Rotate transition'},L=>m('wheel',L)+' '+(L=='hu'?'a tranzíció fölött':'over the transition')],
+    [{hu:'Részháló forgatása',en:'Rotate subnet'},L=>K('Shift')+P+m('wheel',L)+' '+(L=='hu'?'a forgatás középpontja fölött':'over the pivot object')],
+    [{hu:'Szabad elhelyezés (rács nélkül)',en:'Free placement (no grid)'},L=>K('Alt')+' '+(L=='hu'?'nyomva tartva':'held down')]
+   ]},
+   {h:{hu:'Élek',en:'Arcs'},rows:[
+    [{hu:'Új él',en:'New arc'},L=>K('Ctrl')+P+m('drag',L)+' '+(L=='hu'?'helyről tranzícióra vagy tranzícióról helyre':'place → transition or transition → place')],
+    [{hu:'Élsúly',en:'Arc weight'},L=>m('wheel',L)+' '+(L=='hu'?'az él fölött':'over the arc')],
+    [{hu:'Töréspont (többszakaszos él)',en:'Bend point (multi-segment arc)',d:{hu:'A töréspont utána húzással mozgatható.',en:'The bend point can be dragged afterwards.'}},L=>m('drag',L)+' '+(L=='hu'?'az élen':'on the arc')],
+    [{hu:'Tiltó él (hely → tranzíció)',en:'Inhibitor arc (place → transition)',d:{hu:'A tranzíció csak akkor engedélyezett, ha a hely üres.',en:'The transition is enabled only if the place is empty.'}},L=>m('click',L)+' '+(L=='hu'?'az élen (még egy kattintás: vissza)':'on the arc (click again: back)')],
+    [{hu:'Reset él (tranzíció → hely)',en:'Reset arc (transition → place)',d:{hu:'Tüzeléskor kiüríti a helyet.',en:'Empties the place on firing.'}},L=>m('click',L)+' '+(L=='hu'?'az élen (még egy kattintás: vissza)':'on the arc (click again: back)')],
+    [{hu:'Tapadó nyílhegyek',en:'Sticky arrowheads'},L=>K('S')+' '+(L=='hu'?'a tranzíció fölött':'over the transition')]
+   ]},
+   {h:{hu:'Címkék és színek',en:'Labels and colours'},rows:[
+    [{hu:'Címke szerkesztése',en:'Edit label'},L=>m('click',L)+' '+(L=='hu'?'a címkén':'on the label')],
+    [{hu:'Címke mérete',en:'Label size'},L=>m('wheel',L)+OR[L]+K('0')+'…'+K('5')+' '+(L=='hu'?'a címke fölött':'over the label')],
+    [{hu:'Címke csatolása objektumhoz',en:'Attach label to object'},L=>K('Alt')+P+m('click',L)+' '+(L=='hu'?'az objektumon':'on the object')],
+    [{hu:'Objektum színe',en:'Object colour'},L=>K('Alt')+P+m('wheel',L)],
+    [{hu:'Részháló színe',en:'Subnet colour'},L=>K('Alt')+P+K('Shift')+P+m('wheel',L)]
+   ]}
+  ]},
+ {id:'tokens',title:{hu:'Tokenek',en:'Tokens'},
+  intro:{hu:'A jelölés szerkesztése futás közben is működik.',en:'Editing the marking also works while running.'},
+  groups:[{rows:[
+    [{hu:'Token hozzáadása / elvétele',en:'Add / remove tokens'},L=>m('wheel',L)+OR[L]+K('↑')+' '+K('↓')+' '+(L=='hu'?'a hely fölött':'over the place')],
+    [{hu:'Hely kiürítése',en:'Clear a place'},L=>m('mid',L)+' '+(L=='hu'?'a helyen':'on the place')],
+    [{hu:'Minden token törlése',en:'Clear all tokens'},L=>m('mid',L)+' '+(L=='hu'?'üres területen':'on empty canvas')]
+  ]}]},
+ {id:'sim',title:{hu:'Szimuláció',en:'Simulation'},
+  intro:{hu:'A tüzelések előzménye visszajátszható; több engedélyezett tranzíció közül a szimulátor véletlenszerűen választ.',en:'The firing history can be replayed; among several enabled transitions the simulator picks at random.'},
+  groups:[{rows:[
+    [{hu:'Adott tranzíció tüzelése',en:'Fire a given transition'},L=>m('click',L)+' '+(L=='hu'?'az engedélyezett tranzíción':'on the enabled transition')],
+    [{hu:'Lépés előre / vissza',en:'Step forward / back',d:{hu:'Az előzmény végén előre görgetve véletlen tüzelés.',en:'Scrolling forward at the end of the history fires at random.'}},L=>m('wheel',L)+' '+(L=='hu'?'üres területen':'on empty canvas')],
+    [{hu:'Futás indítása / leállítása',en:'Start / stop running'},L=>m('right',L)+' '+(L=='hu'?'üres területen':'on empty canvas')],
+    [{hu:'Megállás feltételre (töréspont)',en:'Stop on a condition (breakpoint)'},L=>(L=='hu'?'PREF → Breakpoint és Assert String':'PREF → Breakpoint and Assert String')]
+  ]}]},
+ {id:'reach',title:{hu:'Elérhetőségi elemzés',en:'Reachability analysis'},
+  intro:{hu:'A REACH gomb az aktuális jelölésből kiindulva szélességi kereséssel felrajzolja az elérhető jelöléseket a beállított mélységig. Egy csúcs egy jelölés (a helyek tokenszámai a helyek sorrendjében, pl. 1,0,2), egy nyíl egy tüzelés a tranzíció nevével.',
+         en:'The REACH button runs a breadth-first search from the current marking and draws the reachable markings up to the set depth. A node is a marking (token counts in place order, e.g. 1,0,2), an arrow is a firing labelled with the transition name.'},
+  groups:[{rows:[
+    [{hu:'Ablak nyitása / zárása',en:'Open / close window'},L=>M('REACH')+OR[L]+K('Esc')],
+    [{hu:'Mélység',en:'Depth'},L=>M('−')+' '+M('+')+' '+(L=='hu'?'a REACH gomb két oldalán':'on either side of REACH')],
+    [{hu:'Gráf pásztázása',en:'Pan the graph'},L=>K('←')+' '+K('→')+' '+K('↑')+' '+K('↓')],
+    [{hu:'Szintek távolsága',en:'Level spacing'},L=>K('W')+' '+K('S')],
+    [{hu:'Vízszintes távolság',en:'Horizontal spacing'},L=>K('A')+' '+K('D')],
+    [{hu:'Fél képernyő',en:'Half screen',d:{hu:'Az ablak jobbra húzódik, bal oldalt látszik a háló.',en:'The window moves right so the net stays visible on the left.'}},L=>K('Space')]
+  ]}],
+  tip:{hu:'Az <b>Elmélet</b> fülön a tulajdonságok (korlátos, élő, reverzibilis, holtpont…) pontosan az elérhetőségi gráfon értelmezhetők.',en:'On the <b>Theory</b> tab the properties (bounded, live, reversible, deadlock…) are defined exactly on the reachability graph.'}},
+ {id:'view',title:{hu:'Nézet',en:'Viewport'},
+  groups:[{rows:[
+    [{hu:'Pásztázás',en:'Pan'},L=>m('drag',L)+' '+(L=='hu'?'üres területen':'on empty canvas')],
+    [{hu:'Nagyítás (0,3×–3×)',en:'Zoom (0.3×–3×)',d:{hu:'Az egérmutató körül nagyít.',en:'Zooms around the mouse pointer.'}},L=>m('midwheel',L)]
+  ]}]},
+ {id:'pref',title:{hu:'Beállítások',en:'Preferences'},
+  intro:{hu:'A PREF gombbal nyílik. Az értékek görgővel állíthatók, a szöveg kattintással szerkeszthető, Esc bezárja.',en:'Opened with PREF. Values change with the wheel, text is edited by clicking, Esc closes it.'},
+  groups:[{rows:[
+    [{hu:'Grid Size',en:'Grid Size'},L=>(L=='hu'?'rácsméret pixelben (0 = nincs rács)':'grid size in pixels (0 = no grid)')],
+    [{hu:'Grid Shown',en:'Grid Shown'},L=>(L=='hu'?'rács megjelenítése':'show the grid')],
+    [{hu:'Snap to Grid',en:'Snap to Grid'},L=>(L=='hu'?'rácsra igazítás':'snap objects to the grid')],
+    [{hu:'Breakpoint',en:'Breakpoint'},L=>(L=='hu'?'futás leállítása, ha a feltétel teljesül':'stop running when the condition holds')],
+    [{hu:'Assert String',en:'Assert String'},L=>(L=='hu'?'feltétel helynevekkel: ':'condition with place names: ')+'<code>P3&gt;1</code>, <code>ANY&gt;1</code>, <code>ALL&gt;1</code>, <code>||</code>, <code>&amp;&amp;</code>']
+  ]}],
+  tip:{hu:'<code>ANY</code>: bármelyik hely, <code>ALL</code>: minden hely. Például <code>ANY&gt;1</code> megállít, amint valamelyik helyen 1-nél több token van – így tesztelhető az 1-safe tulajdonság.',en:'<code>ANY</code>: any place, <code>ALL</code>: every place. E.g. <code>ANY&gt;1</code> stops as soon as some place holds more than one token – a quick test for 1-safeness.'}},
+ {id:'more',title:{hu:'Egyéb',en:'More'},
+  groups:[{rows:[
+    [{hu:'Ablak bezárása',en:'Close a window'},L=>K('Esc')],
+    [{hu:'Háló megnyitása linkkel',en:'Open a net by link'},L=>'<code>index.html?net=Philosopher.pn</code>'],
+    [{hu:'Hibakereső mód',en:'Debug mode'},L=>K('D')],
+    [{hu:'Makró rögzítése / lejátszása / betöltése',en:'Record / play back / load macro',d:{hu:'Fejlesztői funkció.',en:'Developer feature.'}},L=>K('R')+' '+K('P')+' '+K('L')]
+  ]}]}
+];
+
+/* ---------- render ---------- */
+const content=document.getElementById('content'), toc=document.getElementById('toc'), filter=document.getElementById('filter');
+let lang='hu';
+function render(){
+  const L=lang, U=UI[L];
+  let h=`<div class="hero"><span class="eyebrow">${U.eyebrow}</span><h1>${U.h1}</h1><p>${U.lead}</p></div>`;
+  let t='';
+  DATA.forEach((s,i)=>{
+    const n=String(i+1).padStart(2,'0');
+    t+=`<a href="#${s.id}" data-sec="${s.id}"><span class="n">${n}</span>${s.title[L]}</a>`;
+    h+=`<section class="card" id="${s.id}"><h2><span class="n">${n}</span>${s.title[L]}</h2>`;
+    if(s.intro) h+=`<p class="intro">${s.intro[L]}</p>`;
+    if(s.steps) h+='<ol class="steps">'+s.steps.map((x,j)=>`<li class="f"><span class="num">${j+1}</span><b>${x.t[L]}</b><span class="g">${x.g(L)}</span></li>`).join('')+'</ol>';
+    if(s.tools) h+='<div class="tools">'+s.tools.map(x=>x.grp?`<div class="tgrp">${x.grp[L]}</div>`:
+      `<div class="tool f"><div class="pill"><div class="o${x.w?' w':''}">${ICON[x.i]}</div><div class="lbl">${x.l}</div></div><b>${x.t[L]}</b><span>${x.d[L]}</span></div>`).join('')+'</div>';
+    if(s.groups) s.groups.forEach(gr=>{
+      if(gr.h) h+=`<h3>${gr.h[L]}</h3>`;
+      h+='<table><tbody>'+gr.rows.map(r=>`<tr class="f"><td class="act">${r[0][L]}${r[0].d?`<span class="d">${r[0].d[L]}</span>`:''}</td><td class="ges">${r[1](L)}</td></tr>`).join('')+'</tbody></table>';
+    });
+    if(s.tip) h+=`<div class="tip">${s.tip[L]}</div>`;
+    h+='</section>';
+  });
+  h+=`<p class="empty" id="empty" hidden>${U.none}</p>`;
+  content.innerHTML=h; toc.innerHTML=t;
+  filter.placeholder=U.filter;
+  document.querySelectorAll('[data-t]').forEach(e=>{ if(U[e.dataset.t]!==undefined) e.innerHTML=U[e.dataset.t]; });
+  document.title=U.title; document.documentElement.lang=L;
+  applyFilter(); spy();
+}
+
+/* ---------- filter ---------- */
+const norm=s=>s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+function applyFilter(){
+  const q=norm(filter.value.trim()); let any=false;
+  content.querySelectorAll('section.card').forEach(sec=>{
+    let hit=0;
+    sec.querySelectorAll('.f').forEach(r=>{ const ok=!q||norm(r.textContent).includes(q)||norm(sec.querySelector('h2').textContent).includes(q); r.hidden=!ok; if(ok)hit++; });
+    sec.querySelectorAll('table').forEach(tb=>{ const v=[...tb.querySelectorAll('tr')].some(r=>!r.hidden); tb.hidden=!v; const p=tb.previousElementSibling; if(p&&p.tagName==='H3') p.hidden=!v; });
+    sec.querySelectorAll('.tgrp').forEach(gp=>{ let e=gp.nextElementSibling, v=false; while(e&&!e.classList.contains('tgrp')){ if(!e.hidden) v=true; e=e.nextElementSibling; } gp.hidden=!v; });
+    const tip=sec.querySelector('.tip'); if(tip) tip.hidden=!!q;
+    const intro=sec.querySelector('.intro'); if(intro) intro.hidden=!!q;
+    sec.hidden=!!q&&!hit; if(!sec.hidden) any=true;
+    const a=toc.querySelector(`[data-sec="${sec.id}"]`); if(a) a.classList.toggle('dim',sec.hidden);
+  });
+  const hero=content.querySelector('.hero'); if(hero) hero.hidden=!!q;
+  document.getElementById('empty').hidden=any;
+}
+filter.addEventListener('input',applyFilter);
+filter.addEventListener('keydown',e=>{ if(e.key==='Escape'){ filter.value=''; applyFilter(); } });
+document.addEventListener('keydown',e=>{
+  if(e.key==='/'&&document.activeElement!==filter&&view==='usage'){ e.preventDefault(); filter.focus(); }
+});
+
+/* ---------- scroll spy ---------- */
+function spy(){
+  if(view!=='usage') return;
+  let cur=null; const lim=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--top'))+40;
+  content.querySelectorAll('section.card:not([hidden])').forEach(s=>{ if(s.getBoundingClientRect().top<=lim+40) cur=s.id; });
+  if(!cur){ const f=content.querySelector('section.card:not([hidden])'); cur=f&&f.id; }
+  if(window.innerHeight+window.scrollY>=document.body.scrollHeight-4){ const v=[...content.querySelectorAll('section.card:not([hidden])')]; if(v.length) cur=v[v.length-1].id; }
+  toc.querySelectorAll('a').forEach(a=>a.classList.toggle('on',a.dataset.sec===cur));
+}
+window.addEventListener('scroll',spy,{passive:true});
+
+/* ---------- views ---------- */
+const usageView=document.getElementById('usageView'), frame=document.getElementById('theory');
+let view='usage';
+function setView(v,push){
+  view=v;
+  usageView.hidden=v!=='usage'; frame.hidden=v!=='theory';
+  document.body.style.overflow=v==='theory'?'hidden':'';
+  document.querySelectorAll('.seg.view button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.view===v));
+  if(v==='theory'&&!frame.src) frame.src=`../notes/petri.html?embed=1&lang=${lang}`;
+  if(push&&location.hash!=='#'+v) history.replaceState(null,'','#'+v);
+  if(v==='usage') spy();
+}
+document.querySelectorAll('.seg.view button').forEach(b=>b.addEventListener('click',()=>{ setView(b.dataset.view,true); if(b.dataset.view==='usage') window.scrollTo(0,0); }));
+function fromHash(){
+  const h=location.hash.slice(1);
+  if(h==='theory') setView('theory');
+  else { setView('usage'); if(h&&h!=='usage'){ const el=document.getElementById(h); if(el) el.scrollIntoView(); } }
+}
+window.addEventListener('hashchange',fromHash);
+
+/* ---------- language ---------- */
+function setLang(L){
+  lang=L;
+  try{ localStorage.setItem('petri-lang',L); }catch(e){}
+  document.querySelectorAll('.seg.lang button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.lang===L));
+  const y=window.scrollY; render(); window.scrollTo(0,y);
+  if(frame.src){
+    try{ frame.contentWindow.petriSetLang(L); }
+    catch(e){ frame.contentWindow.postMessage({petriLang:L},'*'); }
+  }
+}
+document.querySelectorAll('.seg.lang button').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.lang)));
+
+let start='hu';
+try{ const s=localStorage.getItem('petri-lang'); if(s==='en'||s==='hu') start=s; }catch(e){}
+const qp=new URLSearchParams(location.search).get('lang'); if(qp==='hu'||qp==='en') start=qp;
+lang=start;
+document.querySelectorAll('.seg.lang button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.lang===lang));
+render();
+fromHash();
+})();
+</script>
+</body>
 </html>
-
