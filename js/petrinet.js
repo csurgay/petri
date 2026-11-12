@@ -43,6 +43,7 @@ class Petrinet {
         idLabel=0;
         this.highlighted=null;
         this.dragged=null;
+        if (typeof sel!=="undefined") sel.clear();
         fb.paleArrow=null;
         this.connected.length=0;
         this.markings.length=0;

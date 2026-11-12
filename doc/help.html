@@ -245,30 +245,42 @@ const DATA=[
    {i:'HELP',l:'HELP',t:{hu:'Súgó',en:'Help'},d:{hu:'Ez az oldal.',en:'This page.'}}
   ]},
  {id:'edit',title:{hu:'Szerkesztés',en:'Editing'},
-  intro:{hu:'Az objektumok rácsra ugranak; húzás közben az Alt nyomva tartásával szabadon mozgathatók.',en:'Objects snap to the grid; hold Alt while dragging to move them freely.'},
+  intro:{hu:'CAD-szerű kezelés: kattintás kijelöl, húzás üres helyen keretes kijelölés, a műveletek a kijelölésre hatnak. Az objektumok rácsra ugranak; húzás közben az Alt nyomva tartásával szabadon mozgathatók.',en:'CAD-style: click selects, dragging on empty canvas draws a selection box, operations act on the selection. Objects snap to the grid; hold Alt while dragging to move them freely.'},
   groups:[
+   {h:{hu:'Kijelölés',en:'Selection'},rows:[
+    [{hu:'Objektum kijelölése',en:'Select an object'},L=>m('click',L)+' '+(L=='hu'?'az objektumon':'on the object')],
+    [{hu:'Hozzáadás / elvétel',en:'Add / remove'},L=>K('Shift')+P+m('click',L)],
+    [{hu:'Keretes kijelölés',en:'Selection box',d:{hu:'Shift vagy Ctrl nyomva: hozzáadás a meglévőhöz.',en:'With Shift or Ctrl: add to the current selection.'}},L=>m('drag',L)+' '+(L=='hu'?'üres területen':'on empty canvas')],
+    [{hu:'Mindent kijelöl',en:'Select all'},L=>K('Ctrl')+P+K('A')],
+    [{hu:'Kijelölés megszüntetése',en:'Deselect'},L=>m('click',L)+' '+(L=='hu'?'üres területen':'on empty canvas')+OR[L]+K('Esc')],
+    [{hu:'Kijelöltek törlése',en:'Delete selection'},L=>K('Del')+OR[L]+K('Backspace')],
+    [{hu:'Kijelöltek mozgatása',en:'Move selection'},L=>m('drag',L)+' '+(L=='hu'?'bármelyik kijelölt objektumon, vagy ':'any selected object, or ')+K('←')+K('→')+K('↑')+K('↓')+(L=='hu'?' (Shifttel 5 lépés)':' (Shift: 5 steps)')],
+    [{hu:'Másolás / kivágás / beillesztés',en:'Copy / cut / paste',d:{hu:'A kijelölt elemek közti élek is másolódnak.',en:'Arcs between selected objects are copied too.'}},L=>K('Ctrl')+P+K('C')+' '+K('Ctrl')+P+K('X')+' '+K('Ctrl')+P+K('V')],
+    [{hu:'Duplikálás',en:'Duplicate'},L=>K('Ctrl')+P+K('D')],
+    [{hu:'Kijelöltek forgatása',en:'Rotate selection'},L=>K('Shift')+P+m('wheel',L)+' '+(L=='hu'?'egy kijelölt objektum fölött (ez a középpont)':'over a selected object (the pivot)')],
+    [{hu:'Kijelöltek színe',en:'Selection colour'},L=>K('Alt')+P+m('wheel',L)+' '+(L=='hu'?'egy kijelölt objektum fölött':'over a selected object')]
+   ]},
    {h:{hu:'Létrehozás és törlés',en:'Create and delete'},rows:[
-    [{hu:'Hely',en:'Place'},L=>m('click',L)+' '+(L=='hu'?'üres területen':'on empty canvas')],
+    [{hu:'Hely',en:'Place',d:{hu:'Ha van kijelölés, az első kattintás csak megszünteti.',en:'If something is selected, the first click only deselects.'}},L=>m('click',L)+' '+(L=='hu'?'üres területen':'on empty canvas')],
     [{hu:'Tranzíció (vízszintes)',en:'Transition (horizontal)'},L=>K('Ctrl')+P+m('click',L)],
     [{hu:'Tranzíció (függőleges)',en:'Transition (vertical)'},L=>K('Ctrl')+P+K('Shift')+P+m('click',L)],
     [{hu:'Címke',en:'Label'},L=>K('Alt')+P+m('click',L)+' '+(L=='hu'?'üres területen':'on empty canvas')],
-    [{hu:'Hely ↔ tranzíció csere',en:'Toggle place ↔ transition'},L=>m('click',L)+' '+(L=='hu'?'a kiemelt objektumon (ha még nincs éle)':'on the highlighted object (if it has no arcs yet)')],
-    [{hu:'Törlés',en:'Delete'},L=>(L=='hu'?'egér fölötte, majd ':'hover, then ')+K('Del')+OR[L]+K('Backspace')]
+    [{hu:'Hely ↔ tranzíció csere',en:'Toggle place ↔ transition'},L=>(L=='hu'?'még egy ':'click the selected object ')+m('click',L)+' '+(L=='hu'?'a kijelölt objektumon (ha még nincs éle)':'again (if it has no arcs yet)')],
+    [{hu:'Törlés',en:'Delete',d:{hu:'Kijelölés nélkül az egér alatti objektum törlődik.',en:'With nothing selected, the object under the mouse is deleted.'}},L=>K('Del')+OR[L]+K('Backspace')]
    ]},
    {h:{hu:'Mozgatás és forgatás',en:'Move and rotate'},rows:[
     [{hu:'Objektum mozgatása',en:'Move object'},L=>m('drag',L)],
-    [{hu:'Részháló mozgatása',en:'Move subnet'},L=>K('Shift')+P+m('drag',L)],
-    [{hu:'Részháló másolása',en:'Copy subnet'},L=>K('Shift')+P+m('click',L)],
+    [{hu:'Összefüggő részháló mozgatása',en:'Move connected subnet'},L=>K('Shift')+P+m('drag',L)+' '+(L=='hu'?'nem kijelölt objektumon':'on an unselected object')],
     [{hu:'Tranzíció forgatása',en:'Rotate transition'},L=>m('wheel',L)+' '+(L=='hu'?'a tranzíció fölött':'over the transition')],
-    [{hu:'Részháló forgatása',en:'Rotate subnet'},L=>K('Shift')+P+m('wheel',L)+' '+(L=='hu'?'a forgatás középpontja fölött':'over the pivot object')],
+    [{hu:'Összefüggő részháló forgatása',en:'Rotate connected subnet'},L=>K('Shift')+P+m('wheel',L)+' '+(L=='hu'?'nem kijelölt objektum fölött (ez a középpont)':'over an unselected object (the pivot)')],
     [{hu:'Szabad elhelyezés (rács nélkül)',en:'Free placement (no grid)'},L=>K('Alt')+' '+(L=='hu'?'nyomva tartva':'held down')]
    ]},
    {h:{hu:'Élek',en:'Arcs'},rows:[
     [{hu:'Új él',en:'New arc'},L=>K('Ctrl')+P+m('drag',L)+' '+(L=='hu'?'helyről tranzícióra vagy tranzícióról helyre':'place → transition or transition → place')],
     [{hu:'Élsúly',en:'Arc weight'},L=>m('wheel',L)+' '+(L=='hu'?'az él fölött':'over the arc')],
     [{hu:'Töréspont (többszakaszos él)',en:'Bend point (multi-segment arc)',d:{hu:'A töréspont utána húzással mozgatható.',en:'The bend point can be dragged afterwards.'}},L=>m('drag',L)+' '+(L=='hu'?'az élen':'on the arc')],
-    [{hu:'Tiltó él (hely → tranzíció)',en:'Inhibitor arc (place → transition)',d:{hu:'A tranzíció csak akkor engedélyezett, ha a hely üres.',en:'The transition is enabled only if the place is empty.'}},L=>m('click',L)+' '+(L=='hu'?'az élen (még egy kattintás: vissza)':'on the arc (click again: back)')],
-    [{hu:'Reset él (tranzíció → hely)',en:'Reset arc (transition → place)',d:{hu:'Tüzeléskor kiüríti a helyet.',en:'Empties the place on firing.'}},L=>m('click',L)+' '+(L=='hu'?'az élen (még egy kattintás: vissza)':'on the arc (click again: back)')],
+    [{hu:'Tiltó él (hely → tranzíció)',en:'Inhibitor arc (place → transition)',d:{hu:'A tranzíció csak akkor engedélyezett, ha a hely üres.',en:'The transition is enabled only if the place is empty.'}},L=>(L=='hu'?'még egy ':'click the selected arc ')+m('click',L)+' '+(L=='hu'?'a kijelölt élen (újabb kattintás: vissza)':'again (once more: back)')],
+    [{hu:'Reset él (tranzíció → hely)',en:'Reset arc (transition → place)',d:{hu:'Tüzeléskor kiüríti a helyet.',en:'Empties the place on firing.'}},L=>(L=='hu'?'még egy ':'click the selected arc ')+m('click',L)+' '+(L=='hu'?'a kijelölt élen (újabb kattintás: vissza)':'again (once more: back)')],
     [{hu:'Tapadó nyílhegyek',en:'Sticky arrowheads'},L=>K('S')+' '+(L=='hu'?'a tranzíció fölött':'over the transition')]
    ]},
    {h:{hu:'Címkék és színek',en:'Labels and colours'},rows:[
@@ -282,7 +294,7 @@ const DATA=[
  {id:'tokens',title:{hu:'Tokenek',en:'Tokens'},
   intro:{hu:'A jelölés szerkesztése futás közben is működik.',en:'Editing the marking also works while running.'},
   groups:[{rows:[
-    [{hu:'Token hozzáadása / elvétele',en:'Add / remove tokens'},L=>m('wheel',L)+OR[L]+K('↑')+' '+K('↓')+' '+(L=='hu'?'a hely fölött':'over the place')],
+    [{hu:'Token hozzáadása / elvétele',en:'Add / remove tokens',d:{hu:'A nyilak csak akkor, ha nincs kijelölés (különben a kijelölést mozgatják).',en:'Arrow keys only when nothing is selected (otherwise they move the selection).'}},L=>m('wheel',L)+OR[L]+K('↑')+' '+K('↓')+' '+(L=='hu'?'a hely fölött':'over the place')],
     [{hu:'Hely kiürítése',en:'Clear a place'},L=>m('mid',L)+' '+(L=='hu'?'a helyen':'on the place')],
     [{hu:'Minden token törlése',en:'Clear all tokens'},L=>m('mid',L)+' '+(L=='hu'?'üres területen':'on empty canvas')]
   ]}]},
@@ -308,7 +320,7 @@ const DATA=[
   tip:{hu:'Az <b>Elmélet</b> fülön a tulajdonságok (korlátos, élő, reverzibilis, holtpont…) pontosan az elérhetőségi gráfon értelmezhetők.',en:'On the <b>Theory</b> tab the properties (bounded, live, reversible, deadlock…) are defined exactly on the reachability graph.'}},
  {id:'view',title:{hu:'Nézet',en:'Viewport'},
   groups:[{rows:[
-    [{hu:'Pásztázás',en:'Pan'},L=>m('drag',L)+' '+(L=='hu'?'üres területen':'on empty canvas')],
+    [{hu:'Pásztázás',en:'Pan'},L=>K(L=='hu'?'Szóköz':'Space')+P+m('drag',L)+OR[L]+M(L=='hu'?'középső gombbal húzás':'middle-button drag')],
     [{hu:'Nagyítás (0,3×–3×)',en:'Zoom (0.3×–3×)',d:{hu:'Az egérmutató körül nagyít.',en:'Zooms around the mouse pointer.'}},L=>m('midwheel',L)]
   ]}]},
  {id:'pref',title:{hu:'Beállítások',en:'Preferences'},

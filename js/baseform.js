@@ -31,6 +31,8 @@ class BaseForm extends Form {
             drawArrow(this.paleArrow[0].x, this.paleArrow[0].y,
                 this.paleArrow[1].x, this.paleArrow[1].y);
         }
+        sel.preview = state.is("SELECT") ? sel.inRect(this.mouseDownCoord, tcursor) : [];
+        sel.draw();
         pn.f.forEach(item => { item.draw(); })
         pn.t.forEach(item => { item.draw(); })
         pn.p.forEach(item => { item.draw(); })
@@ -67,7 +69,8 @@ class BaseForm extends Form {
             }
             // Add/remove tokens with arrows
             if (evt.type === "kd" && SCA(evt, "sca") &&
-                this.hovered && this.hovered.type=="PLACE")
+                this.hovered && this.hovered.type=="PLACE" &&
+                (sel.size==0 || bar.running()))
             {
                 const k = evt.key;
                 if (k === "ArrowUp") this.hovered.changeTokens(1);
@@ -85,12 +88,23 @@ class BaseForm extends Form {
                 }
                 // Delete hovered highlighted object
                 else if ((evt.key == 'Delete' || evt.key == 'Backspace') &&
-                    SCA(evt,"sca") && this.hovered)
+                    SCA(evt,"sca") && (sel.size>0 || this.hovered))
                 {
-                    this.hovered.delete();
-                    delete this.hovered;
+                    if (sel.size>0) sel.deleteAll();
+                    else this.hovered.delete();
                     pn.highlighted=null;
                     pn.newUndo();
+                }
+                // Esc: clear selection
+                else if (evt.key == 'Escape') {
+                    sel.clear();
+                }
+                // Arrows nudge the selection (Shift: 5 steps)
+                else if (evt.key.startsWith("Arrow") && sel.size>0 && SCA(evt,".ca")) {
+                    const st=(grid>3?grid:5)*(SCA(evt,"S..")?5:1);
+                    const k=evt.key;
+                    sel.nudge(k=="ArrowLeft"?-st:k=="ArrowRight"?st:0,
+                              k=="ArrowUp"?-st:k=="ArrowDown"?st:0);
                 }
                 // Record mode (developer feature, debug mode only)
                 else if (evt.key == 'r' && state.DEBUG && state.PLAYBACK == 0) {
@@ -128,10 +142,15 @@ class BaseForm extends Form {
             else if (evt.type == "mm") {
                 pn.highlighted = this.hovered;
             }
-            // New Object, Pan
+            // Space+drag: pan
+            else if (this.leftClick(evt) && events.spaceDown) {
+                state.set("PAN");
+            }
+            // Empty canvas: new object (click) or rubber band (drag)
             else if (this.leftClick(evt) && SCA(evt, "...") && 
                 !this.hovered) 
             {
+                this.wasSelected=false;
                 state.set("LEFTDOWN");
             }
             // Object click, Drag
@@ -140,14 +159,19 @@ class BaseForm extends Form {
                 this.hovered.type != "FLOW") 
             {
                 this.dragged = this.hovered;
+                this.wasSelected = sel.has(this.hovered);
+                if (!this.wasSelected && this.hovered.type!="MIDPOINT")
+                    sel.set([this.hovered]);
                 state.set("LEFTDOWN")
             }
-            // Subnet drag
+            // Shift: click toggles selection, drag moves selection or subnet
             else if (this.leftClick(evt) && SCA(evt,"Sc.") &&
                 this.hovered) 
             {
+                this.shiftTarget=this.hovered;
                 pn.connected.length=0;
-                pn.getConnectedAll(this.hovered);
+                if (sel.has(this.hovered)) this.dragged=this.hovered;
+                else pn.getConnectedAll(this.hovered);
                 state.set("SHIFTCLICK");
             }
             // New potential Flow drawarrow
@@ -164,6 +188,7 @@ class BaseForm extends Form {
                 this.hovered.type == "FLOW" ) 
             {
                 this.dragged = this.hovered;
+                this.wasSelected = sel.has(this.hovered) && sel.size==1;
                 state.set("MULTISEGMENT");
             }
             // RUNNING mode
@@ -213,6 +238,7 @@ class BaseForm extends Form {
             {
                 if (!evt.shiftKey) {
                     this.hovered.nextColor(delta);
+                    if (sel.has(this.hovered)) sel.colorLike(this.hovered);
                     pn.needTimedUndo="AFTER_WHEEL";
                 }
             }
@@ -237,6 +263,10 @@ class BaseForm extends Form {
             else if (evt.type == "mw" && SCA(evt,"Sca") &&
                 this.hovered) 
             {
+              if (sel.has(this.hovered) && sel.size>1) {
+                sel.rotateAround(this.hovered, delta);
+                pn.needTimedUndo="AFTER_WHEEL";
+              } else {
                 pn.connected.length=0;
                 if (["PLACE","TRANSITION"].includes(this.hovered.type))
                     pn.getConnectedAll(this.hovered);
@@ -255,6 +285,7 @@ class BaseForm extends Form {
                     })
                 });
                 pn.needTimedUndo="AFTER_WHEEL";
+              }
             }
         }
         // Esc cancels any gesture in progress (drag, new arc, pan, zoom...)
@@ -274,6 +305,12 @@ class BaseForm extends Form {
         else if (state.is("LEFTDOWN")) {
             // New Place
             if (evt.type == "mu" && !this.hovered && SCA(evt, "sca")
+                && closeEnough(this.mouseDownCoord, tcursor) && sel.size>0) 
+            {
+                sel.clear();
+                state.set("IDLE");
+            }
+            else if (evt.type == "mu" && !this.hovered && SCA(evt, "sca")
                 && closeEnough(this.mouseDownCoord, tcursor)) 
             {
                 const newPlace = new Place(scursor.x, scursor.y);
@@ -286,6 +323,7 @@ class BaseForm extends Form {
             else if (evt.type == "mu" && !this.hovered && SCA(evt,"sCa") 
                 && closeEnough(this.mouseDownCoord, tcursor)) 
             {
+                sel.clear();
                 const newTrans = new Transition(scursor.x, scursor.y);
                 pn.addTransition(newTrans);
                 pn.highlighted = newTrans;
@@ -296,21 +334,24 @@ class BaseForm extends Form {
             else if (evt.type == "mu" && !this.hovered && SCA(evt,"SCa") 
                 && closeEnough(this.mouseDownCoord, tcursor)) 
             {
+                sel.clear();
                 const newTrans = new Transition(scursor.x, scursor.y, 0);
                 pn.addTransition(newTrans);
                 pn.highlighted = newTrans;
                 pn.newUndo();
                 state.set("IDLE");
             }
-            // Toggle Place <=> Transition
+            // Toggle Place <=> Transition: click again on the selected object
             else if (evt.type == "mu" && this.hovered
                 && this.hovered == pn.highlighted
+                && this.wasSelected && sel.size==1
                 && closeEnough(this.mouseDownCoord, tcursor) &&
                 (this.hovered.type == "PLACE" ||
                 this.hovered.type == "TRANSITION") &&
                 pn.noFlowFromHere(this.hovered)) 
             {
                 pn.togglePlaceTransition(this.hovered);
+                sel.set([pn.highlighted]);
                 pn.newUndo();
                 state.set("IDLE");
             }
@@ -341,16 +382,11 @@ class BaseForm extends Form {
             {
                 state.set("DRAG");
             }
-            // Init Pan
-            else if (evt.type == "mm" && SCA(evt, "sca") && !pn.highlighted &&
+            // Init rubber band selection
+            else if (evt.type == "mm" && SCA(evt, "..a") && !pn.highlighted &&
                 !closeEnough(this.mouseDownCoord, tcursor)) 
             {
-                state.set("PAN");
-            }
-            // Init Select
-            else if (evt.type == "mm" && SCA(evt, "sCa") && !pn.highlighted &&
-                !closeEnough(this.mouseDownCoord, tcursor)) 
-            {
+                this.selAdditive = !SCA(evt,"sca");
                 state.set("SELECT");
             }
             // Label edit
@@ -365,12 +401,23 @@ class BaseForm extends Form {
         else if (state.is("DRAG")) {
             // Do Drag
             if (evt.type == "mm" && this.dragged) {
-                this.dragged.dragTo(scursor.x - this.mouseDownCoord.x,
-                    scursor.y - this.mouseDownCoord.y);
+                const dx=scursor.x - this.mouseDownCoord.x,
+                      dy=scursor.y - this.mouseDownCoord.y;
+                if (sel.has(this.dragged)) sel.moveBy(dx,dy);
+                else this.dragged.dragTo(dx,dy);
                 this.mouseDownCoord.moveTo(scursor);
                 pn.needUndo = true;
             }
             if (evt.type == "mu") {
+                state.set("IDLE");
+            }
+        }
+        // SELECT STATE (rubber band)
+        else if (state.is("SELECT")) {
+            if (evt.type == "mu") {
+                const found=sel.inRect(this.mouseDownCoord, tcursor);
+                if (this.selAdditive) sel.add(found); else sel.set(found);
+                sel.preview=[];
                 state.set("IDLE");
             }
         }
@@ -413,7 +460,11 @@ class BaseForm extends Form {
         // MULTISEGMENT STATE
         else if (state.is("MULTISEGMENT")) {
             // Toggle Flow Enabler/Inhiboitor
-            if (evt.type == "mu") {
+            if (evt.type == "mu" && !this.wasSelected) {
+                sel.set([this.dragged]);
+                state.set("IDLE");
+            }
+            else if (evt.type == "mu") {
                 if (this.hovered && this.hovered.type == "FLOW") { 
                     if (this.hovered.o1.type == "PLACE") {
                         this.hovered.subtype = this.hovered.subtype == "INHIBITOR" ?
@@ -438,56 +489,14 @@ class BaseForm extends Form {
         }
         // SHIFTCLICK state
         else if (state.is("SHIFTCLICK")) {
-            // Init DragAll
-            if (evt.type == "mm") {
-                state.set("DRAGALL");
+            // Drag: move the selection (if the object is selected) or its subnet
+            if (evt.type == "mm" && !closeEnough(this.mouseDownCoord, tcursor)) {
+                state.set(sel.has(this.shiftTarget) ? "DRAG" : "DRAGALL");
             }
-            // Copy Subnet
-            else if (evt.type == "mu" && SCA(evt, "Sca") && 
-                this.hovered && 
-                closeEnough(this.mouseDownCoord, tcursor))
-            {
-                pn.connected.forEach(o=>{
-                    if (o.type=="PLACE") {
-                        const newObject=new Place(o.x+20,o.y+20);
-                        newObject.label.text=o.label.text;
-                        newObject.label.x=o.label.x+20;
-                        newObject.label.y=o.label.y+20;
-                        newObject.color=o.color;
-                        newObject.tokens=o.tokens;
-                        pn.addPlace(newObject);
-                    }
-                    else if (o.type=="TRANSITION") {
-                        const newObject=new Transition(o.x+20,o.y+20,o.alpha);
-                        newObject.label.text=o.label.text;
-                        newObject.label.x=o.label.x+20;
-                        newObject.label.y=o.label.y+20;
-                        newObject.color=o.color;
-                        pn.addTransition(newObject);
-                    }
-                })
-                pn.f.forEach(o=>{
-                    var o1=null,o2=null;
-                    pn.p.forEach(p=>{
-                        if (p.x==o.o1.x+20 && p.y==o.o1.y+20) o1=p;
-                        if (p.x==o.o2.x+20 && p.y==o.o2.y+20) o2=p;
-                    });
-                    pn.t.forEach(t=>{
-                        if (t.x==o.o1.x+20 && t.y==o.o1.y+20) o1=t;
-                        if (t.x==o.o2.x+20 && t.y==o.o2.y+20) o2=t;
-                    });
-                    if (o1!=null && o2!=null) {
-                        const newObject=new Flow(o1,o2);
-                        newObject.color=o.color;
-                        newObject.subtype=o.subtype;
-                        newObject.weight=o.weight;
-                        for (var i=1; i<o.path.length-1; i++) {
-                            newObject.path.splice(i,0,new MidPoint(o.path[i].x+20,o.path[i].y+20));
-                        }
-                        pn.addFlow(newObject);
-                    }
-                })
-                pn.newUndo();
+            // Click: add to / remove from the selection
+            else if (evt.type == "mu") {
+                sel.toggle(this.shiftTarget);
+                pn.connected.length=0;
                 state.set("IDLE");
             }
         }
@@ -517,8 +526,12 @@ class BaseForm extends Form {
             }
         }
         else if (state.is("MIDDLE")) {
+            // Middle-button drag: pan
+            if (evt.type == "mm" && !closeEnough(this.mouseDownCoord, tcursor)) {
+                state.set("PAN");
+            }
             // Init Zoom
-            if (evt.type == "mw") {
+            else if (evt.type == "mw") {
                 var curDeltaX=ccursor.x-pn.cx;
                 var curDeltaY=ccursor.y-pn.cy;
                 pn.cx=ccursor.x; pn.cy=ccursor.y;

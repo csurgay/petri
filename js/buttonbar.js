@@ -140,6 +140,8 @@ function updateCursor() {
     const s=state.s;
     if (textbox.active) c="text";
     else if (s=="PAN") c="grabbing";
+    else if (s=="SELECT") c="crosshair";
+    else if (events.spaceDown && fb.active && fb.hover()) c="grab";
     else if (s=="DRAG" || s=="DRAGALL" || s=="MULTISEGMENT") c="move";
     else if (s=="DRAWARROW") c="crosshair";
     else if (s=="ZOOM" || s=="MIDDLE") c="zoom-in";

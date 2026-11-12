@@ -78,6 +78,7 @@ class Events {
         this.focusMs=0;          // when the window last got focus
         this.swallowUp=false;    // mouseup of a focus-only click
         this.mouseDown=false;
+        this.spaceDown=false;    // Space held: drag pans
     }
     // sysEvent => myEvent, e.push(strEvent)
     rcvEvent(type, pSysEvent) {
@@ -126,6 +127,7 @@ class Events {
         this.rcvEvent("mw", sysEvent);
     }
     keyupevent(sysEvent) {
+        if (sysEvent.key==" ") this.spaceDown=false;
         // keep the browser from activating its menu bar on a bare Alt,
         // which would swallow the following key events
         if (sysEvent.key=="Alt") sysEvent.preventDefault();
@@ -139,6 +141,10 @@ class Events {
     keydownevent(sysEvent) {
         if (sysEvent.key=="Alt") sysEvent.preventDefault();
         if (handleShortcut(sysEvent)) return;
+        if (sysEvent.key==" " && !textbox.active) {
+            this.spaceDown=true;
+            sysEvent.preventDefault();
+        }
         // auto-repeat only where holding a key makes sense
         if (sysEvent.repeat && !sysEvent.key.startsWith("Arrow") &&
             !fbfs.active) return;
@@ -156,6 +162,7 @@ class Events {
     }
     // modifiers released while the window was not focused (e.g. Alt+Tab)
     blurevent() {
+        this.spaceDown=false;
         myEvent.sca="sca";
         storedEvt.sca="sca";
     }
@@ -196,6 +203,18 @@ const FOCUS_CLICK_MS=300;
 function handleShortcut(e) {
     if (!(e.ctrlKey || e.metaKey) || e.altKey) return false;
     const k=e.key.toLowerCase();
+    // selection / clipboard
+    const selActions={ a:()=>sel.selectAll(), c:()=>sel.copy(), x:()=>sel.cut(),
+                       v:()=>sel.paste(), d:()=>sel.duplicate() };
+    if (selActions[k] && !e.shiftKey) {
+        e.preventDefault();
+        if (e.repeat && k!="v" && k!="d") return true;
+        if (textbox.active || ff.active || fp.active || fbfs.active) return true;
+        if (!state.is("IDLE")) return true;
+        selActions[k]();
+        events.refreshHover();
+        return true;
+    }
     const map={ z: e.shiftKey?"REDO":"UNDO", y:"REDO", s:"SAVE", o:"OPEN" };
     const id=map[k];
     if (!id) return false;
