@@ -7,6 +7,12 @@ const fm = {
     handle: null,           // File System Access handle (Chrome/Edge), if any
 };
 const AUTOSAVE_KEY="petri-autosave";
+// Some embedded browsers (e.g. app webviews) expose the file pickers but
+// reject them at once without showing a dialog. A "cancel" that arrives
+// faster than a person could click means: no dialog here, use the fallback.
+let pickerBroken=false;
+const INSTANT_ABORT_MS=400;
+function pickerUsable(fn) { return !!fn && !pickerBroken; }
 
 // net content without timestamp and view settings
 function netBody(raw) {
@@ -65,7 +71,8 @@ async function saveNetToComputer(saveAs=false) {
     if (saveAs) fm.handle=null;
     // Chrome/Edge on https or localhost: real "Save as" dialog,
     // later saves go to the same file
-    if (window.showSaveFilePicker) {
+    if (pickerUsable(window.showSaveFilePicker)) {
+        const t0=Date.now();
         try {
             if (!fm.handle) {
                 fm.handle=await window.showSaveFilePicker({
@@ -80,9 +87,10 @@ async function saveNetToComputer(saveAs=false) {
             showToast("Saved "+fm.name+(saveAs?"":"  (Ctrl+Shift+S: save as)"));
             return;
         } catch(e) {
-            if (e && e.name=="AbortError") return;   // user cancelled
-            console.warn("showSaveFilePicker failed, falling back to download:", e);
-            fm.handle=null;                             // fall back to download
+            fm.handle=null;
+            if (e && e.name=="AbortError" && Date.now()-t0>=INSTANT_ABORT_MS) return;  // user cancelled
+            console.warn("showSaveFilePicker unusable here, falling back to download:", e);
+            pickerBroken=true;
         }
     }
     const a=document.createElement("a");
@@ -93,14 +101,15 @@ async function saveNetToComputer(saveAs=false) {
     markSaved(); autosave();
     // tell where it went and why there was no location dialog
     const why = !window.isSecureContext ? " (location choice needs https or localhost)"
-              : !window.showSaveFilePicker ? " (this browser cannot ask for a location)" : "";
+              : (!window.showSaveFilePicker || pickerBroken) ? " (this browser cannot ask for a location)" : "";
     showToast("Downloaded "+fm.name+" to the browser's download folder"+why, 5000);
 }
 
 // --- open from the computer ---------------------------------------------------
 async function openNetFromComputer() {
     if (isDirty() && !confirm("Discard unsaved changes?")) return;
-    if (window.showOpenFilePicker) {
+    if (pickerUsable(window.showOpenFilePicker)) {
+        const t0=Date.now();
         try {
             const [h]=await window.showOpenFilePicker({
                 types:[{description:"PetriNet", accept:{"text/plain":[".pn"]}}]
@@ -109,7 +118,8 @@ async function openNetFromComputer() {
             if (loadNetText(await f.text(), f.name)) fm.handle=h;
             return;
         } catch(e) {
-            if (e && e.name=="AbortError") return;
+            if (e && e.name=="AbortError" && Date.now()-t0>=INSTANT_ABORT_MS) return;
+            pickerBroken=true;
         }
     }
     const inp=document.createElement("input");
