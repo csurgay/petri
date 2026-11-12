@@ -1,17 +1,16 @@
-2024-10-15 17:42:33
-Traffic Lights Semaphores, Bácsi Máté
+2026-11-12 13:38:57
 Places:
 P19 300.0 280.0 red 1 "R1" 320.0 250.0 black
-P22 140.0 360.0 black 0 "Y1" 120.0 390.0 black
+P22 140.0 360.0 #dddd00 0 "Y1" 120.0 390.0 black
 P23 300.0 440.0 green 0 "G1" 300.0 470.0 black
 P25 490.0 280.0 red 1 "R2" 460.0 250.0 black
 P26 490.0 430.0 green 0 "G2" 490.0 460.0 black
-P27 660.0 340.0 black 0 "Y2" 690.0 330.0 black
-P36 380.0 160.0 black 1 "Semaphor" 380.0 130.0 black
+P27 660.0 340.0 #dddd00 0 "Y2" 690.0 330.0 black
+P36 380.0 160.0 purple 1 "Semaphor" 380.0 130.0 black
 P52 960.0 200.0 red 1 "R1" 960.0 170.0 black
 P53 1170.0 200.0 red 1 "R2" 1170.0 170.0 black
-P54 1170.0 320.0 black 0 "Y2" 1210.0 320.0 black
-P55 960.0 320.0 black 0 "Y1" 920.0 320.0 black
+P54 1170.0 320.0 #dddd00 0 "Y2" 1210.0 320.0 black
+P55 960.0 320.0 #dddd00 0 "Y1" 920.0 320.0 black
 P56 960.0 440.0 green 0 "G1" 960.0 480.0 black
 P57 1170.0 440.0 green 0 "G2" 1170.0 480.0 black
 Transitions:

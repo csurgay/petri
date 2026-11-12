@@ -17,12 +17,20 @@ const COLORS=["black","red","green","blue","#dddd00","purple", "brown", "Chartre
 class graphics {
     constructor(ctx) {
         this.ctx=ctx;
+        this.dpr=1;
     }
+    // Backing store in device pixels, drawing in CSS pixels: sharp on
+    // HiDPI / scaled displays. (Assigning width also resets the context.)
     clearCanvas(canvas) {
-        canvas.width=window.innerWidth;
-        canvas.height=window.innerHeight;
+        this.dpr=window.devicePixelRatio||1;
+        const w=window.innerWidth, h=window.innerHeight;
+        canvas.width=Math.round(w*this.dpr);
+        canvas.height=Math.round(h*this.dpr);
+        canvas.style.width=w+"px";
+        canvas.style.height=h+"px";
+        this.ctx.setTransform(this.dpr,0,0,this.dpr,0,0);
         this.ctx.fillStyle = COLOR_CANVAS;
-        this.ctx.fillRect(0, 0, canvas.width, canvas.height);
+        this.ctx.fillRect(0, 0, w, h);
     }
     standard(lineWidth) {
         this.solid();

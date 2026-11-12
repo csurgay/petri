@@ -10,6 +10,7 @@ addEventListener('wheel', events.mousewheelevent.bind(events), {passive:false});
 addEventListener('keyup', events.keyupevent.bind(events));
 addEventListener('keydown', events.keydownevent.bind(events));
 addEventListener('blur', events.blurevent.bind(events));
+addEventListener('focus', events.focusevent.bind(events));
 addEventListener('contextmenu', sysEvent=>{sysEvent.preventDefault();});
 
 const state=new State("SPLASH");
@@ -60,10 +61,12 @@ function animate() {
     events.processEvent();
     ms=Date.now();
     g.clearCanvas(canvas);
-    g.translate(0.5, 0.5);
+    g.translate(0.5/g.dpr, 0.5/g.dpr);
     // Forms
     forms.draw();
     drawRotatingPacman();
+    bar.drawTooltip();
+    updateCursor();
     // Running mode
     const delays= { "PLAY":1000, "RUN":100, "FLY":0 };
     if (state.s in delays) {

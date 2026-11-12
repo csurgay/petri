@@ -78,41 +78,42 @@ class BaseForm extends Form {
         }
         // IDLE STATE
         if (state.is("IDLE")) {
-            if (evt.type == "ku") {
-                // Debug mode
-                if (evt.key == "d") {
+            if (evt.type == "kd") {
+                // Debug mode: Ctrl+Alt+D
+                if (evt.keyCode == 68 && SCA(evt,".CA")) { // keyCode: AltGr-safe
                     state.DEBUG = 1 - state.DEBUG;
                 }
                 // Delete hovered highlighted object
-                else if (evt.key == 'Delete' && SCA(evt,"sca") && this.hovered)
+                else if ((evt.key == 'Delete' || evt.key == 'Backspace') &&
+                    SCA(evt,"sca") && this.hovered)
                 {
                     this.hovered.delete();
                     delete this.hovered;
                     pn.highlighted=null;
                     pn.newUndo();
                 }
-                // Record mode
-                else if (evt.key == 'r' && state.PLAYBACK == 0) {
+                // Record mode (developer feature, debug mode only)
+                else if (evt.key == 'r' && state.DEBUG && state.PLAYBACK == 0) {
                     state.RECORD = 1 - state.RECORD;
                     if (state.RECORD == 1) events.rec = [];
                 }
-                // Load macro
-                else if (evt.key == 'l') {
+                // Load macro (debug mode only)
+                else if (evt.key == 'l' && state.DEBUG) {
                     pn.macroLoad("macro/nemtudom.rec");
                 }
-                // Playback mode
-                else if (evt.key == 'p') {
+                // Playback mode (debug mode only)
+                else if (evt.key == 'p' && state.DEBUG) {
                     state.PLAYBACK = 1 - state.PLAYBACK;
                     if (state.PLAYBACK == 1) state.RECORD = 0;
                 }
                 // Label size number key
-                else if (evt.key >= '0' && evt.key <= '5') {
+                else if (evt.key >= '0' && evt.key <= '5' && SCA(evt,"s..")) {
                     if (this.hovered && this.hovered.type == "LABEL") {
                         this.hovered.size = sizes[evt.keyCode - 48];
                     }
                 }
                 // Sticky Flow heads
-                else if (evt.key == 's') {
+                else if (evt.key == 's' && SCA(evt,"sca")) {
                     // Toggle sticky Flow heads of this Transition
                     if (this.hovered && this.hovered.type == "TRANSITION") {
                         pn.f.forEach(f => {
@@ -255,6 +256,19 @@ class BaseForm extends Form {
                 });
                 pn.needTimedUndo="AFTER_WHEEL";
             }
+        }
+        // Esc cancels any gesture in progress (drag, new arc, pan, zoom...)
+        else if (evt.type == "kd" && evt.key == "Escape" && !bar.running()) {
+            if (state.is("DRAG") || state.is("DRAGALL") || state.is("MULTISEGMENT")) {
+                // restore the last committed state (taken before the drag)
+                if (undoPtr>=0) rawLoad(undo[undoPtr]);
+                pn.needUndo=false;
+                this.dragged=null;
+                events.refreshHover();
+            }
+            this.paleArrow=null;
+            if (state.is("DRAWARROW")) pn.highlighted=null;
+            state.set("IDLE");
         }
         // LEFTDOWN STATE
         else if (state.is("LEFTDOWN")) {

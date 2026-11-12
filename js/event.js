@@ -75,6 +75,9 @@ class Events {
         this.rec=[];
         this.lastX=-17000;
         this.lastY=-17000;
+        this.focusMs=0;          // when the window last got focus
+        this.swallowUp=false;    // mouseup of a focus-only click
+        this.mouseDown=false;
     }
     // sysEvent => myEvent, e.push(strEvent)
     rcvEvent(type, pSysEvent) {
@@ -88,8 +91,21 @@ class Events {
         }
     }
 
-    mousedownevent(sysEvent) { this.rcvEvent("md", sysEvent); }
-    mouseupevent(sysEvent)   { this.rcvEvent("mu", sysEvent); }
+    // A click that only brings the window into focus must not edit the net
+    focusevent() { this.focusMs=Date.now(); }
+    mousedownevent(sysEvent) {
+        if (Date.now()-this.focusMs<FOCUS_CLICK_MS) {
+            this.swallowUp=true;
+            return;
+        }
+        this.mouseDown=true;
+        this.rcvEvent("md", sysEvent);
+    }
+    mouseupevent(sysEvent) {
+        this.mouseDown=false;
+        if (this.swallowUp) { this.swallowUp=false; return; }
+        this.rcvEvent("mu", sysEvent);
+    }
     mousemoveevent(sysEvent) {
         l=this.e.length;
         if (l>0) {
@@ -113,7 +129,8 @@ class Events {
         // keep the browser from activating its menu bar on a bare Alt,
         // which would swallow the following key events
         if (sysEvent.key=="Alt") sysEvent.preventDefault();
-        if (sysEvent.key==".") { 
+        // '.' freezes/unfreezes the animation loop: developer feature only
+        if (sysEvent.key=="." && state.DEBUG) {
             state.RUNNING=!state.RUNNING; 
             if (state.RUNNING) animate(); 
         }
@@ -121,7 +138,21 @@ class Events {
     }
     keydownevent(sysEvent) {
         if (sysEvent.key=="Alt") sysEvent.preventDefault();
+        if (handleShortcut(sysEvent)) return;
+        // auto-repeat only where holding a key makes sense
+        if (sysEvent.repeat && !sysEvent.key.startsWith("Arrow") &&
+            !fbfs.active) return;
         this.rcvEvent("kd", sysEvent);
+    }
+    // The net was replaced under a still mouse (undo/redo, Esc): forget the
+    // old highlighted object and re-evaluate what is under the cursor.
+    refreshHover() {
+        pn.highlighted=null;
+        const s=myEvent.sca;
+        myEvent.store("mm", getFormattedDate('millisec'),
+            {clientX:this.lastX, clientY:this.lastY});
+        myEvent.sca=s;
+        this.e.push(myEvent.toString());
     }
     // modifiers released while the window was not focused (e.g. Alt+Tab)
     blurevent() {
@@ -129,10 +160,15 @@ class Events {
         storedEvt.sca="sca";
     }
 
+    // Handles every queued event in one frame, so fast input never lags
+    // behind. Macro playback stays at one event per frame (that is its pace).
     processEvent() {
-        if (Date.now()-msEvent>1) {
-            msEvent=Date.now();
-            if (this.e.length>0) {
+        let n=state.PLAYBACK ? 1 : this.e.length;
+        while (n-- > 0 && this.e.length>0) this.processOneEvent();
+    }
+    processOneEvent() {
+        {
+            {
                 strEvent=this.e.shift();
                 myEvent.parse(strEvent);
                 storedEvt.copy(myEvent);
@@ -153,6 +189,29 @@ class Events {
         }
     }
 }
+const FOCUS_CLICK_MS=300;
+
+// Standard editor shortcuts, mapped onto the toolbar buttons.
+// Returns true if the key was consumed.
+function handleShortcut(e) {
+    if (!(e.ctrlKey || e.metaKey) || e.altKey) return false;
+    const k=e.key.toLowerCase();
+    const map={ z: e.shiftKey?"REDO":"UNDO", y:"REDO", s:"SAVE", o:"OPEN" };
+    const id=map[k];
+    if (!id) return false;
+    e.preventDefault();            // no browser save/open dialogs
+    if (e.repeat) return true;
+    if (textbox.active || ff.active) return true;
+    if (!state.is("IDLE") && !bar.running()) return true;
+    const b=bar.b.find(x=>x.button==id);
+    // Ctrl+Shift+O opens the upload folder, like Ctrl+Shift+click on OPEN
+    if (b && b.enabled()) {
+        b.clicked({sca: e.shiftKey?"SCa":"sCa"});
+        if (id=="UNDO" || id=="REDO") events.refreshHover();
+    }
+    return true;
+}
+
 function SCA(pMyEvent,s) {
     return (s[0]=='.'?true:s[0]==pMyEvent.sca[0]) &&
         (s[1]=='.'?true:s[1]==pMyEvent.sca[1]) &&
