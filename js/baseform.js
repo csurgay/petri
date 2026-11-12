@@ -191,11 +191,10 @@ class BaseForm extends Form {
                 this.wasSelected = sel.has(this.hovered) && sel.size==1;
                 state.set("MULTISEGMENT");
             }
-            // RUNNING mode
-            else if (this.rightClick(evt) && SCA(evt,"sca") &&
-                !this.hovered) 
-            {
-                state.set("RUN");
+            // Right-click: context menu
+            else if (this.rightClick(evt)) {
+                ctxMenu.openFor(this.hovered, {x:tcursor.x, y:tcursor.y},
+                    evt.clientX, evt.clientY);
             }
             // Rotate Transition - fine
             else if (evt.type == "mw" && SCA(evt, "sca") && 
@@ -518,11 +517,10 @@ class BaseForm extends Form {
         }
         // RUNNING states
         else if (bar.running()) {
-            // RUNNING mode
-            if (this.rightClick(evt) && SCA(evt,"sca") &&
-                !this.hovered) 
-            {
-                state.set("IDLE");
+            // Right-click while running: context menu (Stop, tokens)
+            if (this.rightClick(evt)) {
+                ctxMenu.openFor(this.hovered, {x:tcursor.x, y:tcursor.y},
+                    evt.clientX, evt.clientY);
             }
         }
         else if (state.is("MIDDLE")) {

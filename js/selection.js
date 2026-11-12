@@ -129,32 +129,34 @@ class Selection {
         }));
         return data;
     }
-    paste(data=this.clipboard, steps=++this.pasteCount) {
+    // pasted copy is shifted by a few grid steps, or by an explicit (ox,oy)
+    paste(data=this.clipboard, steps=++this.pasteCount, ox=null, oy=null) {
         if (!data) return;
-        const off=steps*2*(grid>3?grid:10);
+        const step=steps*2*(grid>3?grid:10);
+        if (ox===null) { ox=step; oy=step; }
         const map={}, created=[];
         data.places.forEach(d=>{
-            const o=new Place(d.x+off,d.y+off);
+            const o=new Place(d.x+ox,d.y+oy);
             o.color=d.color; o.tokens=d.tokens;
-            setLabel(o.label,d,off);
+            setLabel(o.label,d,ox,oy);
             pn.addPlace(o); map[d.id]=o; created.push(o);
         });
         data.transitions.forEach(d=>{
-            const o=new Transition(d.x+off,d.y+off,d.alpha);
+            const o=new Transition(d.x+ox,d.y+oy,d.alpha);
             o.color=d.color;
-            setLabel(o.label,d,off);
+            setLabel(o.label,d,ox,oy);
             pn.addTransition(o); map[d.id]=o; created.push(o);
         });
         data.flows.forEach(d=>{
             const o=new Flow(map[d.o1],map[d.o2]);
             o.color=d.color; o.subtype=d.subtype; o.weight=d.weight;
             o.stickyHead=d.stickyHead; o.stickyTransConnector=d.stc;
-            d.mids.forEach(m=>o.path.splice(o.path.length-1,0,new MidPoint(m[0]+off,m[1]+off)));
+            d.mids.forEach(m=>o.path.splice(o.path.length-1,0,new MidPoint(m[0]+ox,m[1]+oy)));
             pn.addFlow(o); created.push(o);
         });
         const lmap={};
         data.labels.forEach(d=>{
-            const o=new Label(d.text,d.x+off,d.y+off);
+            const o=new Label(d.text,d.x+ox,d.y+oy);
             o.color=d.color; o.size=d.size;
             pn.addLabel(o); lmap[d.id]=o; created.push(o);
         });
@@ -178,6 +180,18 @@ class Selection {
         pn.highlighted=null;
         pn.newUndo();
         return d;
+    }
+    // paste so that the centre of the copied objects lands at point p
+    pasteAt(p) {
+        const d=this.clipboard;
+        if (!d) return;
+        const pts=[...d.places, ...d.transitions, ...d.labels];
+        if (pts.length==0) return;
+        const xs=pts.map(o=>o.x), ys=pts.map(o=>o.y);
+        const g0=grid>3?grid:1;
+        const ox=Math.round((p.x-(Math.min(...xs)+Math.max(...xs))/2)/g0)*g0;
+        const oy=Math.round((p.y-(Math.min(...ys)+Math.max(...ys))/2)/g0)*g0;
+        this.paste(d, 0, ox, oy);
     }
     duplicate() {
         const d=this.serialize();
@@ -241,6 +255,7 @@ function clipAllowed() {
     return state.is("IDLE") && !textbox.active && !ff.active && !fp.active && !fbfs.active;
 }
 function onClipCopy(e, cut) {
+    events.processEvent();          // finish queued input first (keeps order)
     if (!clipAllowed()) return;
     e.preventDefault();
     if (sel.size==0) { showToast("Nothing selected"); return; }
@@ -251,6 +266,7 @@ function onClipCopy(e, cut) {
     events.refreshHover();
 }
 function onClipPaste(e) {
+    events.processEvent();
     if (!clipAllowed()) return;
     e.preventDefault();
     let d=null;
@@ -296,8 +312,8 @@ function drawToast() {
 }
 
 // (the app defines its own class Object, so no Object.assign here)
-function setLabel(l,d,off) {
-    l.text=d.lt; l.x=d.lx+off; l.y=d.ly+off; l.color=d.lc; l.size=d.ls;
+function setLabel(l,d,ox,oy) {
+    l.text=d.lt; l.x=d.lx+ox; l.y=d.ly+oy; l.color=d.lc; l.size=d.ls;
 }
 
 const sel=new Selection();

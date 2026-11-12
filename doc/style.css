@@ -9,3 +9,60 @@ body {
 #petrinetCanvas {
     background-color: rgb(240, 234, 220);
 }
+
+/* right-click context menu */
+.ctxmenu {
+    position: fixed;
+    z-index: 100;
+    min-width: 210px;
+    padding: 5px;
+    background: #fff;
+    border: 1px solid rgba(0,0,0,0.14);
+    border-radius: 8px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.18);
+    font: 13px Arial, Helvetica, sans-serif;
+    text-align: left;
+    user-select: none;
+}
+.ctxmenu .item {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    width: 100%;
+    padding: 6px 10px;
+    border: 0;
+    border-radius: 5px;
+    background: transparent;
+    font: inherit;
+    color: #1a2130;
+    text-align: left;
+    white-space: pre;
+    cursor: pointer;
+}
+.ctxmenu .item kbd {
+    font: 11px Arial, Helvetica, sans-serif;
+    color: #8a93a3;
+}
+.ctxmenu .item:hover:not(:disabled), .ctxmenu .item.active:not(:disabled) {
+    background: #2c56c9;
+    color: #fff;
+}
+.ctxmenu .item:hover:not(:disabled) kbd, .ctxmenu .item.active:not(:disabled) kbd { color: #dfe6f8; }
+.ctxmenu .item:disabled { color: #b4b9c2; cursor: default; }
+.ctxmenu .sep { height: 1px; margin: 4px 6px; background: rgba(0,0,0,0.1); }
+.ctxmenu .title {
+    padding: 4px 10px 6px;
+    font-size: 11px;
+    color: #6b7383;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+.ctxmenu .swatches { display: flex; gap: 5px; padding: 6px 10px; }
+.ctxmenu .sw {
+    width: 16px; height: 16px; padding: 0;
+    border: 1px solid rgba(0,0,0,0.25);
+    border-radius: 50%;
+    cursor: pointer;
+}
+.ctxmenu .sw:hover { transform: scale(1.2); }
+.ctxmenu .sw.on { outline: 2px solid #2c56c9; outline-offset: 1px; }

@@ -177,12 +177,12 @@ const UI={
       filter:'Keresés…   ( / )',none:'Nincs találat.',
       support:'Kérdés, hiba: csurgay kukac gmail',
       eyebrow:'Kezelési útmutató',h1:'Petri-háló szerkesztő és szimulátor',
-      lead:'Minden a vásznon történik egérrel és néhány billentyűvel. Fent a gombsor (a gombok fölött megállva leírás jelenik meg), középen a háló. Az elméleti háttér (definíciók, tulajdonságok, élő példák) az <a href="#theory">Elmélet</a> fülön található.'},
+      lead:'Minden a vásznon történik egérrel és néhány billentyűvel. Fent a gombsor (a gombok fölött megállva leírás jelenik meg), középen a háló, alul a súgósor; jobb gombbal helyi menü nyílik. Az elméleti háttér (definíciók, tulajdonságok, élő példák) az <a href="#theory">Elmélet</a> fülön található.'},
   en:{title:'PetriNet Simulator – Help',help:'Help',tabUsage:'Usage',tabTheory:'Theory',back:'Simulator',
       filter:'Search…   ( / )',none:'No matches.',
       support:'Questions, bugs: csurgay at gmail',
       eyebrow:'User guide',h1:'Petri net editor and simulator',
-      lead:'Everything happens on the canvas with the mouse and a few keys. The toolbar is at the top (hover a button for a tooltip), the net in the middle. The theory (definitions, properties, live examples) is on the <a href="#theory">Theory</a> tab.'}
+      lead:'Everything happens on the canvas with the mouse and a few keys. The toolbar is at the top (hover a button for a tooltip), the net in the middle, the hint bar at the bottom; right-click opens a context menu. The theory (definitions, properties, live examples) is on the <a href="#theory">Theory</a> tab.'}
 };
 
 /* ---------- toolbar icons (mirroring the canvas buttons) ---------- */
@@ -303,7 +303,7 @@ const DATA=[
   groups:[{rows:[
     [{hu:'Adott tranzíció tüzelése',en:'Fire a given transition'},L=>m('click',L)+' '+(L=='hu'?'az engedélyezett tranzíción':'on the enabled transition')],
     [{hu:'Lépés előre / vissza',en:'Step forward / back',d:{hu:'Az előzmény végén előre görgetve véletlen tüzelés.',en:'Scrolling forward at the end of the history fires at random.'}},L=>m('wheel',L)+' '+(L=='hu'?'üres területen':'on empty canvas')],
-    [{hu:'Futás indítása / leállítása',en:'Start / stop running'},L=>m('right',L)+' '+(L=='hu'?'üres területen':'on empty canvas')],
+    [{hu:'Futás indítása / leállítása',en:'Start / stop running'},L=>M('RUN')+' '+M('STOP')+OR[L]+m('right',L)+(L=='hu'?' → helyi menü':' → context menu')],
     [{hu:'Megállás feltételre (töréspont)',en:'Stop on a condition (breakpoint)'},L=>(L=='hu'?'PREF → Breakpoint és Assert String':'PREF → Breakpoint and Assert String')]
   ]}]},
  {id:'reach',title:{hu:'Elérhetőségi elemzés',en:'Reachability analysis'},
@@ -330,11 +330,14 @@ const DATA=[
     [{hu:'Grid Shown',en:'Grid Shown'},L=>(L=='hu'?'rács megjelenítése':'show the grid')],
     [{hu:'Snap to Grid',en:'Snap to Grid'},L=>(L=='hu'?'rácsra igazítás':'snap objects to the grid')],
     [{hu:'Breakpoint',en:'Breakpoint'},L=>(L=='hu'?'futás leállítása, ha a feltétel teljesül':'stop running when the condition holds')],
+    [{hu:'Hint Bar',en:'Hint Bar'},L=>(L=='hu'?'súgósor megjelenítése alul':'show the hint bar at the bottom')],
     [{hu:'Assert String',en:'Assert String'},L=>(L=='hu'?'feltétel helynevekkel: ':'condition with place names: ')+'<code>P3&gt;1</code>, <code>ANY&gt;1</code>, <code>ALL&gt;1</code>, <code>||</code>, <code>&amp;&amp;</code>']
   ]}],
   tip:{hu:'<code>ANY</code>: bármelyik hely, <code>ALL</code>: minden hely. Például <code>ANY&gt;1</code> megállít, amint valamelyik helyen 1-nél több token van – így tesztelhető az 1-safe tulajdonság.',en:'<code>ANY</code>: any place, <code>ALL</code>: every place. E.g. <code>ANY&gt;1</code> stops as soon as some place holds more than one token – a quick test for 1-safeness.'}},
  {id:'more',title:{hu:'Billentyűk és egyéb',en:'Keys and more'},
   groups:[{rows:[
+    [{hu:'Helyi menü',en:'Context menu',d:{hu:'Az objektumtól függő műveletek: tokenek, átnevezés, szín, éltípus, súly, forgatás, másolás, törlés; üres helyen beillesztés a kattintás helyére, új objektum, szimuláció. Nyilakkal és Enterrel is kezelhető.',en:'Actions for the object under the mouse: tokens, rename, colour, arc type, weight, rotate, copy, delete; on empty canvas: paste at that point, new objects, simulation. Arrow keys and Enter work too.'}},L=>m('right',L)],
+    [{hu:'Súgósor alul',en:'Hint bar at the bottom',d:{hu:'Mindig azt mutatja, mit csinálna az egér és a billentyűk az adott helyen. A PREF → Hint Bar kapcsolja ki.',en:'Always shows what the mouse and keys would do right there. Turn it off in PREF → Hint Bar.'}},L=>(L=='hu'?'automatikus':'automatic')],
     [{hu:'Visszavonás',en:'Undo'},L=>K('Ctrl')+P+K('Z')],
     [{hu:'Újra',en:'Redo'},L=>K('Ctrl')+P+K('Y')+OR[L]+K('Ctrl')+P+K('Shift')+P+K('Z')],
     [{hu:'Megnyitás',en:'Open'},L=>K('Ctrl')+P+K('O')+(L=='hu'?' (upload mappa: ':' (upload folder: ')+K('Ctrl')+P+K('Shift')+P+K('O')+')'],

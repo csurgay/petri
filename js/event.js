@@ -95,6 +95,12 @@ class Events {
     // A click that only brings the window into focus must not edit the net
     focusevent() { this.focusMs=Date.now(); }
     mousedownevent(sysEvent) {
+        // a click outside the open context menu only closes it
+        if (ctxMenu.isOpen()) {
+            ctxMenu.close();
+            this.swallowUp=true;
+            return;
+        }
         if (Date.now()-this.focusMs<FOCUS_CLICK_MS) {
             this.swallowUp=true;
             return;
@@ -121,6 +127,7 @@ class Events {
         this.rcvEvent("mm", sysEvent);
     }
     mousewheelevent(sysEvent) {
+        ctxMenu.close();
         // no browser zoom (Ctrl), history navigation (Alt/Shift) etc.
         if (sysEvent.altKey || sysEvent.ctrlKey || sysEvent.shiftKey)
             sysEvent.preventDefault();
@@ -140,6 +147,7 @@ class Events {
     }
     keydownevent(sysEvent) {
         if (sysEvent.key=="Alt") sysEvent.preventDefault();
+        if (ctxMenu.key(sysEvent)) return;
         if (handleShortcut(sysEvent)) return;
         if (sysEvent.key==" " && !textbox.active) {
             this.spaceDown=true;
@@ -203,6 +211,8 @@ const FOCUS_CLICK_MS=300;
 function handleShortcut(e) {
     if (!(e.ctrlKey || e.metaKey) || e.altKey) return false;
     const k=e.key.toLowerCase();
+    // keep the order: finish the queued input (e.g. an Esc just before)
+    if ("azysod".includes(k) && k.length==1) events.processEvent();
     // selection; Ctrl+C/X/V are handled as copy/cut/paste events (selection.js)
     const selActions={ a:()=>sel.selectAll(),
                        d:()=>{ if (sel.size==0) showToast("Nothing selected"); else sel.duplicate(); } };
