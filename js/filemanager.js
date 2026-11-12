@@ -4,15 +4,8 @@
 const fm = {
     name: "noname.pn",
     savedBody: "",          // net content at the last open/save (for "unsaved" mark)
-    handle: null,           // File System Access handle (Chrome/Edge), if any
 };
 const AUTOSAVE_KEY="petri-autosave";
-// Some embedded browsers (e.g. app webviews) expose the file pickers but
-// reject them at once without showing a dialog. A "cancel" that arrives
-// faster than a person could click means: no dialog here, use the fallback.
-let pickerBroken=false;
-const INSTANT_ABORT_MS=400;
-function pickerUsable(fn) { return !!fn && !pickerBroken; }
 
 // net content without timestamp and view settings
 function netBody(raw) {
@@ -76,30 +69,27 @@ function saveNetToComputer() {
     showToast("Downloaded "+fm.name+" to your Downloads folder", 3000);
 }
 
-// --- open from the computer ---------------------------------------------------
-async function openNetFromComputer() {
+// --- open from the computer: the browser's plain file chooser ----------------
+// (a hidden <input type=file> works everywhere, also where the newer
+//  File System Access pickers are disabled by policy)
+let fileInput=null;
+function openNetFromComputer() {
     if (isDirty() && !confirm("Discard unsaved changes?")) return;
-    if (pickerUsable(window.showOpenFilePicker)) {
-        const t0=Date.now();
-        try {
-            const [h]=await window.showOpenFilePicker({
-                types:[{description:"PetriNet", accept:{"text/plain":[".pn"]}}]
-            });
-            const f=await h.getFile();
-            loadNetText(await f.text(), f.name);
-            return;
-        } catch(e) {
-            if (e && e.name=="AbortError" && Date.now()-t0>=INSTANT_ABORT_MS) return;
-            pickerBroken=true;
-        }
+    if (!fileInput) {
+        fileInput=document.createElement("input");
+        fileInput.type="file";
+        fileInput.accept=".pn";
+        fileInput.style.display="none";
+        fileInput.addEventListener("change", async ()=>{
+            const f=fileInput.files[0];
+            fileInput.value="";              // choosing the same file again works too
+            if (!f) return;
+            try { loadNetText(await f.text(), f.name); }
+            catch(e) { showToast("Could not read "+f.name); }
+        });
+        document.body.appendChild(fileInput);
     }
-    const inp=document.createElement("input");
-    inp.type="file"; inp.accept=".pn,text/plain";
-    inp.onchange=async ()=>{
-        const f=inp.files[0];
-        if (f && loadNetText(await f.text(), f.name)) fm.handle=null;
-    };
-    inp.click();
+    fileInput.click();
 }
 
 // --- drag & drop a .pn file onto the window ------------------------------------
@@ -109,7 +99,7 @@ window.addEventListener("drop", async e=>{
     const f=e.dataTransfer.files && e.dataTransfer.files[0];
     if (!f) return;
     if (isDirty() && !confirm("Discard unsaved changes?")) return;
-    if (loadNetText(await f.text(), f.name)) fm.handle=null;
+    loadNetText(await f.text(), f.name);
 });
 
 // --- unsaved changes warning ------------------------------------------------------
@@ -145,7 +135,6 @@ function newNet() {
     undo.length=0; undoPtr=-1;
     pn.newUndo();
     setFileName("noname.pn");
-    fm.handle=null;
     markSaved();
     autosave();
 }
