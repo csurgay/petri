@@ -3,7 +3,12 @@
 
 const HINT_H=24;
 
-function currentHint() { return touchHint(rawHint()); }
+// one text source, shown either in desktop or in touch wording
+function currentHint() {
+    const h=rawHint();
+    if (isTouch()) return touchHint(h);
+    return h.replace(/ or two fingers/g,"").replace(/Two fingers or /g,"").replace(/ or pinch/g,"");
+}
 function rawHint() {
     const s=state.s;
     if (typeof confirmOpen==="function" && confirmOpen()) return "Enter: OK  ·  Esc: cancel";
@@ -20,7 +25,7 @@ function rawHint() {
         case "PAN":       return "Release to stop panning";
         case "MIDDLE": case "ZOOM": return "Wheel: zoom  ·  Drag: pan  ·  Release on a place: clear its tokens";
     }
-    if (ccursor.y < bar.h) return "Hover a button for its description";
+    if (ccursor.y < bar.h && !isTouch()) return "Hover a button for its description";
     if (events.spaceDown) return "Drag: pan the view";
     const o=pn.highlighted;
     const T=o && o.type;
@@ -69,7 +74,7 @@ function drawHintBar() {
     const c=g.ctx;
     c.save();
     c.setLineDash([]);
-    c.fillStyle="rgba(255,255,255,0.82)";
+    c.fillStyle=COLOR_CANVAS;
     c.fillRect(0, wh-HINT_H, ww, HINT_H);
     c.strokeStyle="rgba(0,0,0,0.15)";
     c.lineWidth=1;
@@ -86,8 +91,17 @@ function drawHintBar() {
     c.beginPath(); c.moveTo(xd+0.5, wh-HINT_H+5); c.lineTo(xd+0.5, wh-5); c.stroke();
     // hint (can be turned off in PREF -> Hint Bar)
     if (fp.hintBar && fp.hintBar.value) {
-        c.font="13px arial"; c.fillStyle="#444";
-        c.fillText(currentHint(), xd+12, ym);
+        // fit the hint into the bar: smaller font first, then cut with "…"
+        const room=ww-(xd+12)-(sel.size>0?90:12);
+        let t=currentHint(), size=13;
+        c.font=size+"px arial";
+        while (c.measureText(t).width>room && size>11) { size--; c.font=size+"px arial"; }
+        if (c.measureText(t).width>room) {
+            while (t.length>1 && c.measureText(t+"…").width>room) t=t.slice(0,-1);
+            t=t.replace(/[\s·]+$/,"")+"…";
+        }
+        c.fillStyle="#444";
+        c.fillText(t, xd+12, ym);
     }
     // selection count on the right
     const n=sel.size;

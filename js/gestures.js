@@ -7,7 +7,11 @@
 // Touch input is turned into the same mouse events the editor already uses.
 
 const gcv=document.getElementById("petrinetCanvas");   // (main.js defines "canvas" later)
-var lastPointer="mouse";      // "mouse" or "touch": adapts hints and editors
+// "mouse" or "touch": adapts hints and editors. Starts from the device type
+// (a phone or tablet shows touch hints before the first touch), then follows
+// the pointer actually used (touch laptops can switch).
+var lastPointer=(window.matchMedia && matchMedia("(hover: none) and (pointer: coarse)").matches)
+    ? "touch" : "mouse";
 var lastTouchMs=0;
 window.addEventListener("pointerdown", e=>{
     lastPointer=(e.pointerType=="touch"?"touch":"mouse");
