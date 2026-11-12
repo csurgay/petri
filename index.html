@@ -7,34 +7,53 @@
     </head>
     <body>
         <canvas id="petrinetCanvas"></canvas>
-        <script src="js/bfs.js"></script>
-        <script src="js/assertion.js"></script>
-        <script src="js/coord.js"></script>
-        <script src="js/util.js"></script>
-        <script src="js/frame.js"></script>
-        <script src="js/form.js"></script>
-        <script src="js/baseform.js"></script>
-        <script src="js/prefform.js"></script>
-        <script src="js/bfsform.js"></script>
-        <script src="js/splash.js"></script>
-        <script src="js/help.js"></script>
-        <script src="js/graphics.js"></script>
-        <script src="js/event.js"></script>
-        <script src="js/object.js"></script>
-        <script src="js/textbox.js"></script>
-        <script src="js/saveload.js"></script>
-        <script src="js/selection.js"></script>
-        <script src="js/mouse.js"></script>
-        <script src="js/flow.js"></script>
-        <script src="js/place.js"></script>
-        <script src="js/transition.js"></script>
-        <script src="js/petrinet.js"></script>
-        <script src="js/label.js"></script>
-        <script src="js/button.js"></script>
-        <script src="js/buttonbar.js"></script>
-        <script src="js/state.js"></script>
-        <script src="js/status.js"></script>
-        <script src="js/control.js"></script>
-        <script src="js/main.js"></script>
+        <script>
+        // Script loader: every script is revalidated with the server first
+        // (cache: "no-cache"), so a changed file is always fetched fresh,
+        // while an unchanged one costs only a short "304 Not Modified".
+        // Scripts then run in this exact order, as plain <script> tags would.
+        (function() {
+            const files=[
+                "js/bfs.js",
+                "js/assertion.js",
+                "js/coord.js",
+                "js/util.js",
+                "js/frame.js",
+                "js/form.js",
+                "js/baseform.js",
+                "js/prefform.js",
+                "js/bfsform.js",
+                "js/splash.js",
+                "js/help.js",
+                "js/graphics.js",
+                "js/event.js",
+                "js/object.js",
+                "js/textbox.js",
+                "js/saveload.js",
+                "js/selection.js",
+                "js/mouse.js",
+                "js/flow.js",
+                "js/place.js",
+                "js/transition.js",
+                "js/petrinet.js",
+                "js/label.js",
+                "js/button.js",
+                "js/buttonbar.js",
+                "js/state.js",
+                "js/status.js",
+                "js/control.js",
+                "js/main.js"
+            ];
+            const revalidate=f=>fetch(f,{cache:"no-cache"}).catch(()=>null);
+            Promise.all(files.map(revalidate)).then(()=>{
+                files.forEach(f=>{
+                    const s=document.createElement("script");
+                    s.src=f;
+                    s.async=false;      // keep execution order
+                    document.body.appendChild(s);
+                });
+            });
+        })();
+        </script>
     </body>
 </html>

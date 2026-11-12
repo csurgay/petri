@@ -203,12 +203,12 @@ const FOCUS_CLICK_MS=300;
 function handleShortcut(e) {
     if (!(e.ctrlKey || e.metaKey) || e.altKey) return false;
     const k=e.key.toLowerCase();
-    // selection / clipboard
-    const selActions={ a:()=>sel.selectAll(), c:()=>sel.copy(), x:()=>sel.cut(),
-                       v:()=>sel.paste(), d:()=>sel.duplicate() };
+    // selection; Ctrl+C/X/V are handled as copy/cut/paste events (selection.js)
+    const selActions={ a:()=>sel.selectAll(),
+                       d:()=>{ if (sel.size==0) showToast("Nothing selected"); else sel.duplicate(); } };
     if (selActions[k] && !e.shiftKey) {
         e.preventDefault();
-        if (e.repeat && k!="v" && k!="d") return true;
+        if (e.repeat && k!="d") return true;
         if (textbox.active || ff.active || fp.active || fbfs.active) return true;
         if (!state.is("IDLE")) return true;
         selActions[k]();

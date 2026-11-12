@@ -1,0 +1,7 @@
+# Always revalidate code and pages with the server: a changed file is
+# fetched fresh, an unchanged one is answered with "304 Not Modified".
+<IfModule mod_headers.c>
+    <FilesMatch "\.(js|css|html|htm)$">
+        Header set Cache-Control "no-cache"
+    </FilesMatch>
+</IfModule>

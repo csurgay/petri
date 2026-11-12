@@ -255,7 +255,7 @@ const DATA=[
     [{hu:'Kijelölés megszüntetése',en:'Deselect'},L=>m('click',L)+' '+(L=='hu'?'üres területen':'on empty canvas')+OR[L]+K('Esc')],
     [{hu:'Kijelöltek törlése',en:'Delete selection'},L=>K('Del')+OR[L]+K('Backspace')],
     [{hu:'Kijelöltek mozgatása',en:'Move selection'},L=>m('drag',L)+' '+(L=='hu'?'bármelyik kijelölt objektumon, vagy ':'any selected object, or ')+K('←')+K('→')+K('↑')+K('↓')+(L=='hu'?' (Shifttel 5 lépés)':' (Shift: 5 steps)')],
-    [{hu:'Másolás / kivágás / beillesztés',en:'Copy / cut / paste',d:{hu:'A kijelölt elemek közti élek is másolódnak.',en:'Arcs between selected objects are copied too.'}},L=>K('Ctrl')+P+K('C')+' '+K('Ctrl')+P+K('X')+' '+K('Ctrl')+P+K('V')],
+    [{hu:'Másolás / kivágás / beillesztés',en:'Copy / cut / paste',d:{hu:'A kijelölt elemek közti élek is másolódnak. Böngészőfülek és ablakok között is működik.',en:'Arcs between selected objects are copied too. Works between browser tabs and windows.'}},L=>K('Ctrl')+P+K('C')+' '+K('Ctrl')+P+K('X')+' '+K('Ctrl')+P+K('V')],
     [{hu:'Duplikálás',en:'Duplicate'},L=>K('Ctrl')+P+K('D')],
     [{hu:'Kijelöltek forgatása',en:'Rotate selection'},L=>K('Shift')+P+m('wheel',L)+' '+(L=='hu'?'egy kijelölt objektum fölött (ez a középpont)':'over a selected object (the pivot)')],
     [{hu:'Kijelöltek színe',en:'Selection colour'},L=>K('Alt')+P+m('wheel',L)+' '+(L=='hu'?'egy kijelölt objektum fölött':'over a selected object')]

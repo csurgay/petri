@@ -66,6 +66,7 @@ function animate() {
     forms.draw();
     drawRotatingPacman();
     bar.drawTooltip();
+    drawToast();
     updateCursor();
     // Running mode
     const delays= { "PLAY":1000, "RUN":100, "FLY":0 };

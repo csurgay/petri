@@ -136,13 +136,13 @@ class Selection {
         data.places.forEach(d=>{
             const o=new Place(d.x+off,d.y+off);
             o.color=d.color; o.tokens=d.tokens;
-            Object.assign(o.label,{text:d.lt, x:d.lx+off, y:d.ly+off, color:d.lc, size:d.ls});
+            setLabel(o.label,d,off);
             pn.addPlace(o); map[d.id]=o; created.push(o);
         });
         data.transitions.forEach(d=>{
             const o=new Transition(d.x+off,d.y+off,d.alpha);
             o.color=d.color;
-            Object.assign(o.label,{text:d.lt, x:d.lx+off, y:d.ly+off, color:d.lc, size:d.ls});
+            setLabel(o.label,d,off);
             pn.addTransition(o); map[d.id]=o; created.push(o);
         });
         data.flows.forEach(d=>{
@@ -168,14 +168,16 @@ class Selection {
     copy() {
         const d=this.serialize();
         if (d) { this.clipboard=d; this.pasteCount=0; }
+        return d;
     }
     cut() {
-        if (this.size==0) return;
-        this.copy();
+        if (this.size==0) return null;
+        const d=this.copy();
         this.pasteCount=-1;   // first paste lands in the original place
         this.deleteAll();
         pn.highlighted=null;
         pn.newUndo();
+        return d;
     }
     duplicate() {
         const d=this.serialize();
@@ -226,6 +228,76 @@ class Selection {
         });
         c.restore();
     }
+}
+
+// ---- system clipboard: Ctrl+C/X/V arrive as copy/cut/paste events -------
+// Works also when a host app or browser menu handles the shortcut itself,
+// and lets nets be copied between tabs and windows.
+const CLIP_TAG="PetriNet-clip v1\n";
+function countOf(d) {
+    return d ? d.places.length+d.transitions.length+d.labels.length : 0;
+}
+function clipAllowed() {
+    return state.is("IDLE") && !textbox.active && !ff.active && !fp.active && !fbfs.active;
+}
+function onClipCopy(e, cut) {
+    if (!clipAllowed()) return;
+    e.preventDefault();
+    if (sel.size==0) { showToast("Nothing selected"); return; }
+    const d=cut ? sel.cut() : sel.copy();
+    if (!d) { showToast("Nothing to copy"); return; }
+    try { e.clipboardData.setData("text/plain", CLIP_TAG+JSON.stringify(d)); } catch(err) {}
+    showToast(countOf(d)+(cut?" objects cut":" objects copied"));
+    events.refreshHover();
+}
+function onClipPaste(e) {
+    if (!clipAllowed()) return;
+    e.preventDefault();
+    let d=null;
+    try {
+        const t=e.clipboardData.getData("text/plain");
+        if (t && t.startsWith(CLIP_TAG)) d=JSON.parse(t.slice(CLIP_TAG.length));
+    } catch(err) { d=null; }
+    if (d) {
+        // a net copied in another tab/window: adopt it as our clipboard
+        if (JSON.stringify(d)!==JSON.stringify(sel.clipboard)) {
+            sel.clipboard=d; sel.pasteCount=0;
+        }
+    }
+    if (!sel.clipboard) { showToast("Clipboard is empty"); return; }
+    sel.paste();
+    showToast(countOf(sel.clipboard)+" objects pasted");
+    events.refreshHover();
+}
+document.addEventListener("copy",  e=>onClipCopy(e,false));
+document.addEventListener("cut",   e=>onClipCopy(e,true));
+document.addEventListener("paste", e=>onClipPaste(e));
+
+// ---- toast: short feedback at the bottom of the canvas -------------------
+let toastText="", toastMs=0;
+function showToast(t) { toastText=t; toastMs=Date.now(); }
+function drawToast() {
+    const age=Date.now()-toastMs;
+    if (!toastText || age>1800) return;
+    const c=g.ctx;
+    c.save();
+    c.globalAlpha=age>1400 ? (1800-age)/400 : 1;
+    c.setLineDash([]);
+    c.font="14px arial"; c.textAlign="center"; c.textBaseline="middle";
+    const w=c.measureText(toastText).width+28, h=30;
+    const x=ww/2-w/2, y=wh-60;
+    c.fillStyle="rgba(40,40,40,0.9)";
+    c.beginPath();
+    if (c.roundRect) c.roundRect(x,y,w,h,15); else c.rect(x,y,w,h);
+    c.fill();
+    c.fillStyle="white";
+    c.fillText(toastText,ww/2,y+h/2+1);
+    c.restore();
+}
+
+// (the app defines its own class Object, so no Object.assign here)
+function setLabel(l,d,off) {
+    l.text=d.lt; l.x=d.lx+off; l.y=d.ly+off; l.color=d.lc; l.size=d.ls;
 }
 
 const sel=new Selection();
