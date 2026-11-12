@@ -214,12 +214,21 @@ const DATA=[
  {id:'start',title:{hu:'Gyors kezdés',en:'Quick start'},
   intro:{hu:'Öt mozdulat, és máris tüzel az első háló.',en:'Five moves and your first net is firing.'},
   steps:[
-   {t:{hu:'Hely',en:'Place'},g:L=>m('click',L)+' '+(L=='hu'?'üres területen':'on empty canvas')},
-   {t:{hu:'Tranzíció',en:'Transition'},g:L=>K('Ctrl')+P+m('click',L)},
-   {t:{hu:'Él',en:'Arc'},g:L=>K('Ctrl')+P+m('drag',L)+' '+(L=='hu'?'helyről tranzícióra (vagy fordítva)':'from place to transition (or back)')},
-   {t:{hu:'Token',en:'Tokens'},g:L=>m('wheel',L)+' '+(L=='hu'?'a hely fölött, vagy ':'over a place, or ')+K('↑')+' '+K('↓')},
-   {t:{hu:'Tüzelés',en:'Fire'},g:L=>m('click',L)+' '+(L=='hu'?'engedélyezett tranzíción':'on an enabled transition')}
+   {t:{hu:'Hely',en:'Place'},g:L=>K('P')+(L=='hu'?' eszköz, ':' tool, ')+m('click',L)+' '+(L=='hu'?'üres helyre':'on empty canvas')},
+   {t:{hu:'Tranzíció',en:'Transition'},g:L=>K('T')+(L=='hu'?' eszköz, ':' tool, ')+m('click',L)},
+   {t:{hu:'Él',en:'Arc'},g:L=>K('F')+(L=='hu'?' eszköz, ':' tool, ')+m('drag',L)+' '+(L=='hu'?'helyről tranzícióra (vagy vissza)':'from place to transition (or back)')},
+   {t:{hu:'Token',en:'Tokens'},g:L=>K('M')+(L=='hu'?' eszköz, ':' tool, ')+m('click',L)+' '+(L=='hu'?'a helyen: +1':'on a place: +1')},
+   {t:{hu:'Tüzelés',en:'Fire'},g:L=>K('M')+(L=='hu'?' eszköz, ':' tool, ')+m('click',L)+' '+(L=='hu'?'engedélyezett tranzíción':'on an enabled transition')}
   ]},
+ {id:'gestures',title:{hu:'Egységes mozdulatok – laptopon és mobilon',en:'One set of gestures – laptop and phone'},
+  intro:{hu:'Minden eszköz ugyanarra a négy mozdulatra épül, egérrel és érintéssel ugyanúgy. A bal oldali palettán választott eszköz dönti el, mit csinál a mozdulat.',en:'Every tool uses the same four gestures, with a mouse and by touch alike. The tool chosen in the palette on the left decides what the gesture does.'},
+  groups:[{rows:[
+    [{hu:'Elsődleges: az eszköz fő művelete',en:'Primary: the tool\'s main action',d:{hu:'Hozzáad (hely, tranzíció, címke, token), tüzel (Marking), kijelöl (Select).',en:'Adds (place, transition, label, token), fires (Marking), selects (Select).'}},L=>m('click',L)+OR[L]+M('tap')],
+    [{hu:'Másodlagos: elvesz / töröl',en:'Secondary: remove / delete',d:{hu:'Az eszköz saját objektumán (pl. Marking: −1 token, Place: a hely törlése); máshol helyi menü.',en:'On the tool\'s own kind of object (e.g. Marking: −1 token, Place: delete the place); elsewhere the context menu.'}},L=>m('right',L)+OR[L]+M(L=='hu'?'hosszú tap':'long-press')],
+    [{hu:'Szerkesztés: érték beírása',en:'Edit: type a value',d:{hu:'Név, tokenszám (Marking), élsúly. Mobilon beviteli ablak jön, számhoz számbillentyűzettel.',en:'A name, the number of tokens (Marking), an arc weight. On phones an input box opens, with a number pad for numbers.'}},L=>M(L=='hu'?'dupla katt':'double-click')+OR[L]+M(L=='hu'?'dupla tap':'double-tap')],
+    [{hu:'Húzás',en:'Drag',d:{hu:'Mozgat, élt rajzol (F, I, R), üres helyen keretes kijelölés, Pan eszközzel a nézetet mozgatja.',en:'Moves, draws an arc (F, I, R), on empty canvas a selection box, with the Pan tool it moves the view.'}},L=>m('drag',L)],
+    [{hu:'Nézet: mozgatás és nagyítás',en:'View: pan and zoom'},L=>K(L=='hu'?'Szóköz':'Space')+P+m('drag',L)+', '+K('Ctrl')+P+m('wheel',L)+OR[L]+M(L=='hu'?'két ujjal húzás / csippentés':'two-finger drag / pinch')]
+  ]}]},
  {id:'toolbar',title:{hu:'Gombsor',en:'Toolbar'},
   intro:{hu:'A gombok balról jobbra, csoportonként. A szürke gomb éppen nem használható.',en:'Buttons from left to right, by group. A grey button is currently unavailable.'},
   tools:[
@@ -250,12 +259,15 @@ const DATA=[
   intro:{hu:'CAD-szerű kezelés: kattintás kijelöl, húzás üres helyen keretes kijelölés, a műveletek a kijelölésre hatnak. Az objektumok rácsra ugranak; húzás közben az Alt nyomva tartásával szabadon mozgathatók.',en:'CAD-style: click selects, dragging on empty canvas draws a selection box, operations act on the selection. Objects snap to the grid; hold Alt while dragging to move them freely.'},
   groups:[
    {h:{hu:'Eszközpaletta (bal oldalt)',en:'Tool palette (left side)'},rows:[
-    [{hu:'Kijelölés / szerkesztés',en:'Select / edit',d:{hu:'Az alapmód, minden gesztus a megszokott.',en:'The default mode, all the usual gestures.'}},L=>K('V')+OR[L]+K('Esc')],
-    [{hu:'Hely eszköz',en:'Place tool'},L=>K('P')+(L=='hu'?' – kattintás üres helyre: új hely':' – click empty canvas: new place')],
-    [{hu:'Tranzíció eszköz',en:'Transition tool'},L=>K('T')+(L=='hu'?' – kattintás: új tranzíció, Shifttel függőleges':' – click: new transition, Shift: vertical')],
-    [{hu:'Él eszköz',en:'Arc tool'},L=>K('A')+(L=='hu'?' – húzás helyről tranzícióra (Ctrl nélkül)':' – drag from place to transition (no Ctrl needed)')],
-    [{hu:'Token eszköz',en:'Token tool'},L=>K('K')+(L=='hu'?' – kattintás a helyen: +1, Shift+kattintás: −1':' – click a place: +1, Shift+click: −1')],
-    [{hu:'Címke eszköz',en:'Label tool'},L=>K('L')+(L=='hu'?' – kattintás: új címke, rögtön szerkeszthető':' – click: new label, ready to type')]
+    [{hu:'Select – kijelölés',en:'Select',d:{hu:'Kattintás kijelöl, húzás mozgat vagy keretet húz, dupla katt átnevez, jobb klikk menü.',en:'Click selects, drag moves or draws a box, double-click renames, right-click opens the menu.'}},L=>K('S')+OR[L]+K('Esc')],
+    [{hu:'Place – hely',en:'Place'},L=>K('P')+(L=='hu'?' – kattintás: új hely · jobb klikk a helyen: törlés':' – click: new place · right-click a place: delete')],
+    [{hu:'Transition – tranzíció',en:'Transition'},L=>K('T')+(L=='hu'?' – kattintás: új (Shifttel függőleges) · jobb klikk: törlés':' – click: new (Shift: vertical) · right-click: delete')],
+    [{hu:'Flow – él',en:'Flow arc'},L=>K('F')+(L=='hu'?' – húzás helyről tranzícióra vagy vissza · jobb klikk az élen: törlés · dupla katt: súly':' – drag place → transition or back · right-click an arc: delete · double-click: weight')],
+    [{hu:'Inhibitor – tiltó él',en:'Inhibitor arc'},L=>K('I')+(L=='hu'?' – húzás helyről tranzícióra':' – drag from a place to a transition')],
+    [{hu:'Reset – nullázó él',en:'Reset arc'},L=>K('R')+(L=='hu'?' – húzás tranzícióról helyre':' – drag from a transition to a place')],
+    [{hu:'Marking – jelölés',en:'Marking',d:{hu:'Itt tüzel a tranzícióra kattintás is („token game”).',en:'Clicking a transition fires it here (the “token game”).'}},L=>K('M')+(L=='hu'?' – kattintás: +1 token · jobb klikk: −1 · dupla katt: szám beírása':' – click: +1 token · right-click: −1 · double-click: type the number')],
+    [{hu:'Label – címke',en:'Label'},L=>K('L')+(L=='hu'?' – kattintás: új címke · dupla katt: szerkesztés · jobb klikk: törlés':' – click: new label · double-click: edit · right-click: delete')],
+    [{hu:'Pan – nézet mozgatása',en:'Pan'},L=>K('H')+(L=='hu'?' – húzás: a nézet mozgatása':' – drag: move the view')]
    ]},
    {h:{hu:'Kijelölés',en:'Selection'},rows:[
     [{hu:'Objektum kijelölése',en:'Select an object'},L=>m('click',L)+' '+(L=='hu'?'az objektumon':'on the object')],
@@ -271,12 +283,12 @@ const DATA=[
     [{hu:'Kijelöltek színe',en:'Selection colour'},L=>K('Alt')+P+m('wheel',L)+' '+(L=='hu'?'egy kijelölt objektum fölött':'over a selected object')]
    ]},
    {h:{hu:'Létrehozás és törlés',en:'Create and delete'},rows:[
-    [{hu:'Hely',en:'Place',d:{hu:'Ha van kijelölés, az első kattintás csak megszünteti.',en:'If something is selected, the first click only deselects.'}},L=>m('click',L)+' '+(L=='hu'?'üres területen':'on empty canvas')],
+    [{hu:'Hely',en:'Place'},L=>K('P')+(L=='hu'?' eszköz + ':' tool + ')+m('click',L)+OR[L]+(L=='hu'?'helyi menü → New place':'context menu → New place')],
     [{hu:'Tranzíció (vízszintes)',en:'Transition (horizontal)'},L=>K('Ctrl')+P+m('click',L)],
     [{hu:'Tranzíció (függőleges)',en:'Transition (vertical)'},L=>K('Ctrl')+P+K('Shift')+P+m('click',L)],
     [{hu:'Címke',en:'Label'},L=>K('Alt')+P+m('click',L)+' '+(L=='hu'?'üres területen':'on empty canvas')],
-    [{hu:'Hely ↔ tranzíció csere',en:'Toggle place ↔ transition'},L=>(L=='hu'?'még egy ':'click the selected object ')+m('click',L)+' '+(L=='hu'?'a kijelölt objektumon (ha még nincs éle)':'again (if it has no arcs yet)')],
-    [{hu:'Törlés',en:'Delete',d:{hu:'Kijelölés nélkül az egér alatti objektum törlődik.',en:'With nothing selected, the object under the mouse is deleted.'}},L=>K('Del')+OR[L]+K('Backspace')]
+    [{hu:'Hely ↔ tranzíció csere',en:'Convert place ↔ transition',d:{hu:'Csak él nélküli objektumon.',en:'Only for an object without arcs.'}},L=>m('right',L)+' → Convert…'],
+    [{hu:'Törlés',en:'Delete',d:{hu:'Az objektum saját eszközével: jobb klikk / hosszú tap rajta. Kijelölés nélkül a Del az egér alatti objektumot törli.',en:'With the object\'s own tool: right-click / long-press it. With nothing selected, Del deletes the object under the mouse.'}},L=>K('Del')+OR[L]+K('Backspace')+OR[L]+m('right',L)],
    ]},
    {h:{hu:'Mozgatás és forgatás',en:'Move and rotate'},rows:[
     [{hu:'Objektum mozgatása',en:'Move object'},L=>m('drag',L)],
@@ -286,15 +298,15 @@ const DATA=[
     [{hu:'Szabad elhelyezés (rács nélkül)',en:'Free placement (no grid)'},L=>K('Alt')+' '+(L=='hu'?'nyomva tartva':'held down')]
    ]},
    {h:{hu:'Élek',en:'Arcs'},rows:[
-    [{hu:'Új él',en:'New arc'},L=>K('Ctrl')+P+m('drag',L)+' '+(L=='hu'?'helyről tranzícióra vagy tranzícióról helyre':'place → transition or transition → place')],
-    [{hu:'Élsúly',en:'Arc weight'},L=>m('wheel',L)+' '+(L=='hu'?'az él fölött':'over the arc')],
+    [{hu:'Új él',en:'New arc'},L=>K('F')+(L=='hu'?' eszköz + ':' tool + ')+m('drag',L)+OR[L]+K('Ctrl')+P+m('drag',L)+(L=='hu'?' (Select eszközben)':' (in Select)')],
+    [{hu:'Élsúly',en:'Arc weight'},L=>(L=='hu'?'dupla katt az élen (szám beírása)':'double-click the arc (type the number)')+OR[L]+m('wheel',L)],
     [{hu:'Töréspont (többszakaszos él)',en:'Bend point (multi-segment arc)',d:{hu:'A töréspont utána húzással mozgatható.',en:'The bend point can be dragged afterwards.'}},L=>m('drag',L)+' '+(L=='hu'?'az élen':'on the arc')],
-    [{hu:'Tiltó él (hely → tranzíció)',en:'Inhibitor arc (place → transition)',d:{hu:'A tranzíció csak akkor engedélyezett, ha a hely üres.',en:'The transition is enabled only if the place is empty.'}},L=>(L=='hu'?'még egy ':'click the selected arc ')+m('click',L)+' '+(L=='hu'?'a kijelölt élen (újabb kattintás: vissza)':'again (once more: back)')],
-    [{hu:'Reset él (tranzíció → hely)',en:'Reset arc (transition → place)',d:{hu:'Tüzeléskor kiüríti a helyet.',en:'Empties the place on firing.'}},L=>(L=='hu'?'még egy ':'click the selected arc ')+m('click',L)+' '+(L=='hu'?'a kijelölt élen (újabb kattintás: vissza)':'again (once more: back)')],
-    [{hu:'Tapadó nyílhegyek',en:'Sticky arrowheads'},L=>K('S')+' '+(L=='hu'?'a tranzíció fölött':'over the transition')]
+    [{hu:'Tiltó él (hely → tranzíció)',en:'Inhibitor arc (place → transition)',d:{hu:'A tranzíció csak akkor tüzelhet, ha a helyen a súlynál kevesebb token van (alapból: üres).',en:'The transition may fire only while the place holds fewer tokens than the weight (by default: empty).'}},L=>K('I')+(L=='hu'?' eszköz + húzás':' tool + drag')+OR[L]+(L=='hu'?'helyi menü az élen':'context menu on the arc')],
+    [{hu:'Reset él (tranzíció → hely)',en:'Reset arc (transition → place)',d:{hu:'Tüzeléskor kiüríti a helyet.',en:'Empties the place on firing.'}},L=>K('R')+(L=='hu'?' eszköz + húzás':' tool + drag')+OR[L]+(L=='hu'?'helyi menü az élen':'context menu on the arc')],
+    [{hu:'Tapadó nyílhegyek',en:'Sticky arrowheads'},L=>m('right',L)+(L=='hu'?' a tranzíción → Sticky arrowheads':' on the transition → Sticky arrowheads')]
    ]},
    {h:{hu:'Címkék és színek',en:'Labels and colours'},rows:[
-    [{hu:'Címke szerkesztése',en:'Edit label'},L=>m('click',L)+' '+(L=='hu'?'a címkén':'on the label')],
+    [{hu:'Szöveg / név szerkesztése',en:'Edit a text or name'},L=>(L=='hu'?'dupla katt a címkén, helyen vagy tranzíción':'double-click the label, place or transition')],
     [{hu:'Címke mérete',en:'Label size'},L=>m('wheel',L)+OR[L]+K('0')+'…'+K('5')+' '+(L=='hu'?'a címke fölött':'over the label')],
     [{hu:'Címke csatolása objektumhoz',en:'Attach label to object'},L=>K('Alt')+P+m('click',L)+' '+(L=='hu'?'az objektumon':'on the object')],
     [{hu:'Objektum színe',en:'Object colour'},L=>K('Alt')+P+m('wheel',L)],
@@ -304,14 +316,15 @@ const DATA=[
  {id:'tokens',title:{hu:'Tokenek',en:'Tokens'},
   intro:{hu:'A jelölés szerkesztése futás közben is működik.',en:'Editing the marking also works while running.'},
   groups:[{rows:[
-    [{hu:'Token hozzáadása / elvétele',en:'Add / remove tokens',d:{hu:'A nyilak csak akkor, ha nincs kijelölés (különben a kijelölést mozgatják).',en:'Arrow keys only when nothing is selected (otherwise they move the selection).'}},L=>m('wheel',L)+OR[L]+K('↑')+' '+K('↓')+' '+(L=='hu'?'a hely fölött':'over the place')],
+    [{hu:'Token hozzáadása / elvétele',en:'Add / remove tokens'},L=>K('M')+(L=='hu'?' eszköz: ':' tool: ')+m('click',L)+' +1, '+m('right',L)+' −1'+OR[L]+m('wheel',L)+(L=='hu'?' a hely fölött':' over the place')],
+    [{hu:'Tokenszám beírása',en:'Type the number of tokens'},L=>K('M')+(L=='hu'?' eszköz: dupla katt a helyen':' tool: double-click the place')+OR[L]+(L=='hu'?'helyi menü → Set tokens…':'context menu → Set tokens…')],
     [{hu:'Hely kiürítése',en:'Clear a place'},L=>m('mid',L)+' '+(L=='hu'?'a helyen':'on the place')],
     [{hu:'Minden token törlése',en:'Clear all tokens'},L=>m('mid',L)+' '+(L=='hu'?'üres területen':'on empty canvas')]
   ]}]},
  {id:'sim',title:{hu:'Szimuláció',en:'Simulation'},
   intro:{hu:'A tüzelések előzménye visszajátszható; több engedélyezett tranzíció közül a szimulátor véletlenszerűen választ.',en:'The firing history can be replayed; among several enabled transitions the simulator picks at random.'},
   groups:[{rows:[
-    [{hu:'Adott tranzíció tüzelése',en:'Fire a given transition'},L=>m('click',L)+' '+(L=='hu'?'az engedélyezett tranzíción':'on the enabled transition')],
+    [{hu:'Adott tranzíció tüzelése',en:'Fire a given transition'},L=>K('M')+(L=='hu'?' eszköz: ':' tool: ')+m('click',L)+(L=='hu'?' az engedélyezett tranzíción':' on the enabled transition')+OR[L]+(L=='hu'?'helyi menü → Fire':'context menu → Fire')],
     [{hu:'Lépés előre / vissza',en:'Step forward / back',d:{hu:'Az előzmény végén előre görgetve véletlen tüzelés.',en:'Scrolling forward at the end of the history fires at random.'}},L=>m('wheel',L)+' '+(L=='hu'?'üres területen':'on empty canvas')],
     [{hu:'Lépés előre / vissza billentyűvel',en:'Step forward / back with keys',d:{hu:'Ha nincs kijelölés.',en:'When nothing is selected.'}},L=>K('→')+' '+K('←')],
     [{hu:'Futás indítása / leállítása',en:'Start / stop running'},L=>M('RUN')+' '+M('STOP')+OR[L]+m('right',L)+(L=='hu'?' → helyi menü':' → context menu')],
@@ -331,7 +344,7 @@ const DATA=[
   tip:{hu:'Az <b>Elmélet</b> fülön a tulajdonságok (korlátos, élő, reverzibilis, holtpont…) pontosan az elérhetőségi gráfon értelmezhetők.',en:'On the <b>Theory</b> tab the properties (bounded, live, reversible, deadlock…) are defined exactly on the reachability graph.'}},
  {id:'view',title:{hu:'Nézet',en:'Viewport'},
   groups:[{rows:[
-    [{hu:'Pásztázás',en:'Pan'},L=>K(L=='hu'?'Szóköz':'Space')+P+m('drag',L)+OR[L]+M(L=='hu'?'középső gombbal húzás':'middle-button drag')],
+    [{hu:'Pásztázás',en:'Pan'},L=>K(L=='hu'?'Szóköz':'Space')+P+m('drag',L)+OR[L]+M(L=='hu'?'középső gombbal húzás':'middle-button drag')+OR[L]+K('H')+(L=='hu'?' eszköz':' tool')+OR[L]+M(L=='hu'?'két ujj':'two fingers')],
     [{hu:'Nagyítás (0,2×–4×)',en:'Zoom (0.2×–4×)',d:{hu:'Az egérmutató körül nagyít.',en:'Zooms around the mouse pointer.'}},L=>K('Ctrl')+P+m('wheel',L)+OR[L]+M(L=='hu'?'csippentés a touchpaden':'trackpad pinch')+OR[L]+m('midwheel',L)],
     [{hu:'Az egész háló látható',en:'Fit the whole net'},L=>K('Ctrl')+P+K('0')]
   ]}]},
@@ -368,7 +381,7 @@ const DATA=[
     [{hu:'Ablak bezárása',en:'Close a window'},L=>K('Esc')],
     [{hu:'Háló megnyitása linkkel',en:'Open a net by link'},L=>'<code>index.html?net=Philosopher.pn</code>'],
     [{hu:'Hibakereső mód',en:'Debug mode'},L=>K('Ctrl')+P+K('Alt')+P+K('D')],
-    [{hu:'Makró rögzítése / lejátszása / betöltése',en:'Record / play back / load macro',d:{hu:'Fejlesztői funkció, csak hibakereső módban.',en:'Developer feature, debug mode only.'}},L=>K('R')+' '+K('P')+' '+K('L')],
+    [{hu:'Makró rögzítése / lejátszása / betöltése',en:'Record / play back / load macro',d:{hu:'Fejlesztői funkció, csak hibakereső módban.',en:'Developer feature, debug mode only.'}},L=>K('Ctrl')+P+K('Alt')+P+K('R')+' / '+K('P')+' / '+K('L')],
     [{hu:'Animáció megállítása / folytatása',en:'Freeze / resume animation',d:{hu:'Csak hibakereső módban.',en:'Debug mode only.'}},L=>K('.')]
   ]}]}
 ];

@@ -10,7 +10,7 @@ const AUTOSAVE_KEY="petri-autosave";
 // ---- in-app confirmation (non-blocking, unlike the native confirm()) ----------
 // Calls onOk() from the OK click itself, so actions that need a user gesture
 // (like opening the file chooser) still work.
-const dlg={ el:null, onOk:null };
+const dlg={ el:null, onOk:null, closedAt:0 };
 function askConfirm(text, okLabel, onOk) {
     closeConfirm();
     const back=document.createElement("div");
@@ -29,14 +29,40 @@ function askConfirm(text, okLabel, onOk) {
     dlg.el=back; dlg.onOk=onOk;
     back.querySelector(".ok").focus();
 }
-function closeConfirm() { if (dlg.el) { dlg.el.remove(); dlg.el=null; dlg.onOk=null; } }
+function closeConfirm() { if (dlg.el) { dlg.el.remove(); dlg.el=null; dlg.onOk=null; dlg.closedAt=Date.now(); } }
+
+// ---- in-app value entry: a name, a number of tokens, a weight ------------------
+// (works with the on-screen keyboard of phones too)
+function askValue(title, value, kind, onOk) {
+    closeConfirm();
+    const back=document.createElement("div");
+    back.className="dlg-back";
+    ["mousedown","mouseup","mousemove","wheel","contextmenu","click"].forEach(t=>
+        back.addEventListener(t, e=>{ e.stopPropagation(); if (t=="contextmenu"||t=="wheel") e.preventDefault(); },
+            {passive:false}));
+    back.innerHTML='<div class="dlg" role="dialog"><label><span></span><input></label><div class="btns">'+
+        '<button class="cancel">Cancel</button><button class="ok">OK</button></div></div>';
+    back.querySelector("span").textContent=title;
+    const inp=back.querySelector("input");
+    if (kind=="number") { inp.type="number"; inp.inputMode="numeric"; inp.min="0"; inp.step="1"; }
+    else { inp.type="text"; inp.autocomplete="off"; inp.spellcheck=false; }
+    inp.value=value;
+    back.querySelector(".ok").addEventListener("click",()=>{ const f=dlg.onOk, v=inp.value; closeConfirm(); f(v); });
+    back.querySelector(".cancel").addEventListener("click",closeConfirm);
+    back.addEventListener("mousedown",e=>{ if (e.target===back) closeConfirm(); });
+    document.body.appendChild(back);
+    dlg.el=back; dlg.onOk=onOk;
+    inp.focus(); inp.select();
+}
+function dialogClosedAt() { return dlg.closedAt; }
 function confirmOpen() { return dlg.el!==null; }
 // keyboard while the dialog is open: Enter = OK, Esc = Cancel (others ignored)
 function confirmKey(e) {
     if (!dlg.el) return false;
     if (e.key=="Escape") closeConfirm();
     else if (e.key=="Enter") dlg.el.querySelector(".ok").click();
-    else if (e.key=="Tab") return true;        // let focus move between the buttons
+    else if (e.key=="Tab" || (e.target && e.target.tagName=="INPUT"))
+        return true;                           // typing in the field, moving focus
     e.preventDefault();
     return true;
 }

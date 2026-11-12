@@ -53,7 +53,8 @@ var ms,msSlowrun=0;
 
 function animate() {
     ww=window.innerWidth, wh=window.innerHeight;
-    fb.w=ww; fb.h=wh-40; bar.w=ww;
+    if (bar.layoutW!==ww) bar.layout(ww);
+    fb.y=bar.h; fb.w=ww; fb.h=wh-bar.h; bar.w=ww;
     ff.initSize();
     fp.initSize();
     // Taken from the live site, this wasn't pushed to git yet

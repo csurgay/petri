@@ -40,7 +40,7 @@ class ContextMenu {
                     const b=document.createElement("button");
                     b.className="sw"; b.style.background=c; b.title=c;
                     if (it.current==c) b.classList.add("on");
-                    b.addEventListener("click",()=>{ this.close(); it.action(c); afterMenuAction(); });
+                    b.addEventListener("click",()=>{ if (this.tooSoon()) return; this.close(); it.action(c); afterMenuAction(); });
                     row.appendChild(b);
                 });
                 m.appendChild(row); return;
@@ -49,19 +49,24 @@ class ContextMenu {
             b.className="item"; b.setAttribute("role","menuitem");
             b.disabled=it.enabled===false;
             b.innerHTML=`<span>${it.label}</span><kbd>${it.key||""}</kbd>`;
-            b.addEventListener("click",()=>{ if (b.disabled) return; this.close(); it.action(); afterMenuAction(); });
+            b.addEventListener("click",()=>{ if (b.disabled || this.tooSoon()) return; this.close(); it.action(); afterMenuAction(); });
             b.addEventListener("mouseenter",()=>this.setActive(i));
             it.btn=b;
             m.appendChild(b);
         });
         document.body.appendChild(m);
+        // on touch: open beside the finger, not under it
+        if (isTouch()) { cx+=16; cy-=8; }
         // keep inside the window
         const r=m.getBoundingClientRect();
         m.style.left=Math.max(4, Math.min(cx, window.innerWidth-r.width-4))+"px";
         m.style.top =Math.max(4, Math.min(cy, window.innerHeight-r.height-4))+"px";
         this.el=m;
         this.active=-1;
+        this.openedAt=Date.now();
     }
+    // the click that ends a long-press must not choose an item
+    tooSoon() { return Date.now()-this.openedAt<450; }
 
     close() {
         if (this.el) { this.el.remove(); this.el=null; }
@@ -136,9 +141,9 @@ function menuItems(o, at) {
         items.push({label:"Select all", key:"Ctrl+A", enabled:pn.p.length+pn.t.length+pn.l.length>0,
             action:()=>sel.selectAll()});
         items.push({sep:true});
-        items.push({label:"New place", key:"click", action:()=>addAt("PLACE",at)});
-        items.push({label:"New transition", key:"Ctrl+click", action:()=>addAt("TRANSITION",at)});
-        items.push({label:"New label", key:"Alt+click", action:()=>addAt("LABEL",at)});
+        items.push({label:"New place", key:"P", action:()=>addAt("PLACE",at)});
+        items.push({label:"New transition", key:"T", action:()=>addAt("TRANSITION",at)});
+        items.push({label:"New label", key:"L", action:()=>addAt("LABEL",at)});
         items.push({sep:true});
         const enabled=pn.getEnabled().length>0;
         items.push({label:"Fire a random transition", enabled:enabled, action:()=>pn.stepForward()});
@@ -151,19 +156,20 @@ function menuItems(o, at) {
         items.push({title:"Place "+o.label.text});
         items.push(...tokenItems(o));
         items.push({sep:true});
-        items.push({label:"Rename", action:()=>o.label.clicked()});
+        items.push({label:"Set tokens…", key:"M, double-click", action:()=>{ const t=tool; tool="MARKING"; markClicks.obj=null; editAction(o); tool=t; }});
+        items.push({label:"Rename…", key:"double-click", action:()=>editName(o.label)});
         items.push({label:"Convert to transition", enabled:pn.noFlowFromHere(o),
             action:()=>convert(o)});
         items.push(...commonTail(o));
     }
     else if (o.type=="TRANSITION") {
         items.push({title:"Transition "+o.label.text});
-        items.push({label:"Fire", key:"click", enabled:o.enabled(), action:()=>pn.fireOne(o)});
+        items.push({label:"Fire", key:"M, click", enabled:o.enabled(), action:()=>pn.fireOne(o)});
         items.push({label:"Rotate 90°", key:"wheel", action:()=>{ o.alpha=(o.alpha+Math.PI/2)%(2*Math.PI); pn.newUndo(); }});
         items.push({label:"Sticky arrowheads", key:"S", action:()=>{
             pn.f.forEach(f=>{ if (f.o2==o) f.stickyHead=!f.stickyHead; }); pn.newUndo(); }});
         items.push({sep:true});
-        items.push({label:"Rename", action:()=>o.label.clicked()});
+        items.push({label:"Rename…", key:"double-click", action:()=>editName(o.label)});
         items.push({label:"Convert to place", enabled:pn.noFlowFromHere(o), action:()=>convert(o)});
         items.push(...commonTail(o));
     }
@@ -175,7 +181,9 @@ function menuItems(o, at) {
         kinds.forEach(k=>items.push({label:(o.subtype==k[0]?"✓ ":"   ")+k[1], enabled:o.subtype!=k[0],
             action:()=>{ o.subtype=k[0]; pn.newUndo(); }}));
         items.push({sep:true});
-        items.push({label:"Weight +1   (now "+o.weight+")", key:"wheel", enabled:o.subtype!="RESET",
+        items.push({label:"Set weight…   (now "+o.weight+")", key:"double-click", enabled:o.subtype!="RESET",
+            action:()=>editAction(o)});
+        items.push({label:"Weight +1", key:"wheel", enabled:o.subtype!="RESET",
             action:()=>{ o.weight++; pn.newUndo(); }});
         items.push({label:"Weight −1", key:"wheel", enabled:o.subtype!="RESET" && o.weight>1,
             action:()=>{ o.weight--; pn.newUndo(); }});
@@ -184,7 +192,7 @@ function menuItems(o, at) {
         items.push(...commonTail(o));
     }
     else if (o.type=="LABEL") {
-        items.push({label:"Edit text", key:"click", action:()=>o.clicked()});
+        items.push({label:"Edit text…", key:"double-click", action:()=>editName(o)});
         items.push({label:"Larger", key:"wheel", action:()=>{ o.size+=2; pn.newUndo(); }});
         items.push({label:"Smaller", key:"wheel", enabled:o.size>8, action:()=>{ o.size=Math.max(8,o.size-2); pn.newUndo(); }});
         if (o.attached) items.push({label:"Detach from object", action:()=>{
@@ -226,5 +234,5 @@ function addAt(kind, at) {
     else { o=new Label("-",x,y); pn.addLabel(o); }
     sel.set([o]);
     pn.newUndo();
-    if (kind=="LABEL") o.clicked();
+    if (kind=="LABEL") editName(o);
 }

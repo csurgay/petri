@@ -29,6 +29,17 @@ class PrefForm extends Form {
         }
         // IDLE STATE
         if (state.is("IDLE")) {
+            // Click / tap a value: toggle it or type it
+            if (evt.type == "mu" && this.hovered && this.hovered.type=="CONTROL" &&
+                closeEnough(this.mouseDownCoord, tcursor))
+            {
+                const c=this.hovered;
+                if (c.controlType=="BOOLEAN") { c.value=!c.value; c.newValue(); }
+                else askValue(c.text, c.value, c.controlType=="INTEGER"?"number":"text", v=>{
+                    c.value = c.controlType=="INTEGER" ? (parseInt(v)||0) : v;
+                    c.newValue();
+                });
+            }
             // Label edit
             if (evt.type == "mu" && this.hovered && 
                 this.hovered.type=="LABEL" && 

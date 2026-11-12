@@ -96,6 +96,7 @@ class Events {
     // A click that only brings the window into focus must not edit the net
     focusevent() { this.focusMs=Date.now(); }
     mousedownevent(sysEvent) {
+        if (touchEcho(sysEvent)) return;
         if (confirmOpen()) return;              // the dialog has the focus
         // a click outside the open context menu only closes it
         if (ctxMenu.isOpen()) {
@@ -111,11 +112,13 @@ class Events {
         this.rcvEvent("md", sysEvent);
     }
     mouseupevent(sysEvent) {
+        if (touchEcho(sysEvent)) return;
         this.mouseDown=false;
         if (this.swallowUp) { this.swallowUp=false; return; }
         this.rcvEvent("mu", sysEvent);
     }
     mousemoveevent(sysEvent) {
+        if (touchEcho(sysEvent)) return;
         l=this.e.length;
         if (l>0) {
             myEvent.parse(this.e[l-1]);
@@ -136,6 +139,8 @@ class Events {
         this.rcvEvent("mw", sysEvent);
     }
     keyupevent(sysEvent) {
+        // the Enter/Esc that closed a dialog must not act again on key release
+        if ((sysEvent.key=="Escape"||sysEvent.key=="Enter") && Date.now()-dialogClosedAt()<600) return;
         if (sysEvent.key==" ") this.spaceDown=false;
         // keep the browser from activating its menu bar on a bare Alt,
         // which would swallow the following key events

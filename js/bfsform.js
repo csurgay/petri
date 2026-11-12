@@ -243,6 +243,13 @@ class BFSForm extends Form {
     // Event handling
     // Also for panning and for changing spacing
     processFormEvent(evt) {
+        // drag inside the window pans the graph
+        if (evt.type === "md" && evt.button==LEFTBUTTON) this.dragFrom={x:ccursor.x, y:ccursor.y};
+        else if (evt.type === "mm" && this.dragFrom) {
+            this.panx+=ccursor.x-this.dragFrom.x; this.pany+=ccursor.y-this.dragFrom.y;
+            this.dragFrom={x:ccursor.x, y:ccursor.y};
+        }
+        else if (evt.type === "mu") this.dragFrom=null;
         if (evt.type === "kd") {
             const k = evt.key;
             if (k === "ArrowLeft" || k === "ArrowRight" || k === "ArrowUp" || k === "ArrowDown") {

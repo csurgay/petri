@@ -252,7 +252,8 @@ function countOf(d) {
     return d ? d.places.length+d.transitions.length+d.labels.length : 0;
 }
 function clipAllowed() {
-    return state.is("IDLE") && !textbox.active && !ff.active && !fp.active && !fbfs.active;
+    return state.is("IDLE") && !textbox.active && !ff.active && !fp.active && !fbfs.active &&
+        !(typeof confirmOpen==="function" && confirmOpen());
 }
 function onClipCopy(e, cut) {
     events.processEvent();          // finish queued input first (keeps order)

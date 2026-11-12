@@ -117,16 +117,16 @@ class BaseForm extends Form {
                     if (evt.key=="ArrowLeft") pn.stepBackward(); else pn.stepForward();
                 }
                 // Record mode (developer feature, debug mode only)
-                else if (evt.key == 'r' && state.DEBUG && state.PLAYBACK == 0) {
+                else if (evt.keyCode == 82 && SCA(evt,".CA") && state.DEBUG && state.PLAYBACK == 0) {
                     state.RECORD = 1 - state.RECORD;
                     if (state.RECORD == 1) events.rec = [];
                 }
                 // Load macro (debug mode only)
-                else if (evt.key == 'l' && state.DEBUG) {
+                else if (evt.keyCode == 76 && SCA(evt,".CA") && state.DEBUG) {
                     pn.macroLoad("macro/nemtudom.rec");
                 }
                 // Playback mode (debug mode only)
-                else if (evt.key == 'p' && state.DEBUG) {
+                else if (evt.keyCode == 80 && SCA(evt,".CA") && state.DEBUG) {
                     state.PLAYBACK = 1 - state.PLAYBACK;
                     if (state.PLAYBACK == 1) state.RECORD = 0;
                 }
@@ -136,44 +136,44 @@ class BaseForm extends Form {
                         this.hovered.size = sizes[evt.keyCode - 48];
                     }
                 }
-                // Tool palette keys: V P T A K L
+                // Tool palette keys: S P T F I R M L H
                 else if (SCA(evt,"sca") && TOOL_KEYS[evt.key.toLowerCase()]) {
                     setTool(TOOL_KEYS[evt.key.toLowerCase()]);
-                }
-                // Sticky Flow heads
-                else if (evt.key == 's' && SCA(evt,"sca")) {
-                    // Toggle sticky Flow heads of this Transition
-                    if (this.hovered && this.hovered.type == "TRANSITION") {
-                        pn.f.forEach(f => {
-                            if (f.o2 == this.hovered) {
-                                f.stickyHead = !f.stickyHead;
-                            }
-                        })
-                    }
                 }
             }
             // Move to highlight Object
             else if (evt.type == "mm") {
                 pn.highlighted = this.hovered;
             }
-            // Space+drag: pan
-            else if (this.leftClick(evt) && events.spaceDown) {
+            // Double-click / double-tap: edit a value (name, tokens, weight)
+            else if (evt.type == "mdc") {
+                editAction(this.hovered);
+            }
+            // Space+drag or the Pan tool: pan
+            else if (this.leftClick(evt) && (events.spaceDown || tool=="PAN")) {
                 state.set("PAN");
             }
-            // Arc tool: drag from a place/transition draws an arc
-            else if (tool=="ARC" && this.leftClick(evt) && SCA(evt,"..a") && this.hovered &&
+            // Arc tools: drag from a place/transition draws an arc
+            else if (["FLOW","INHIBITOR","RESET"].includes(tool) && this.leftClick(evt) &&
+                SCA(evt,"..a") && this.hovered &&
                 (this.hovered.type=="PLACE" || this.hovered.type=="TRANSITION"))
             {
                 pn.highlighted=this.hovered;
                 this.paleArrow=null;
                 state.set("DRAWARROW");
             }
-            // Token tool: click a place = +1 token, Shift+click = -1
-            else if (tool=="TOKEN" && this.leftClick(evt) && SCA(evt,".ca") && this.hovered &&
-                this.hovered.type=="PLACE")
+            // Marking tool: click a place = +1 token (Shift+click = -1),
+            // click a transition = fire it
+            else if (tool=="MARKING" && this.leftClick(evt) && SCA(evt,".ca") && this.hovered &&
+                (this.hovered.type=="PLACE" || this.hovered.type=="TRANSITION"))
             {
-                this.hovered.changeTokens(SCA(evt,"S..") ? -1 : 1);
-                pn.newUndo();
+                const o=this.hovered;
+                if (o.type=="PLACE") {
+                    if (SCA(evt,"S..")) { if (o.tokens>0) { o.changeTokens(-1); pn.newUndo(); } }
+                    else primaryMarking(o);
+                }
+                else if (o.enabled()) pn.fireOne(o);
+                else showToast(o.label.text+" is not enabled");
             }
             // Empty canvas: new object (click) or rubber band (drag)
             else if (this.leftClick(evt) && SCA(evt, "...") && 
@@ -220,10 +220,11 @@ class BaseForm extends Form {
                 this.wasSelected = sel.has(this.hovered) && sel.size==1;
                 state.set("MULTISEGMENT");
             }
-            // Right-click: context menu
+            // Right-click / long-press: the tool's remove action, else the menu
             else if (this.rightClick(evt)) {
-                ctxMenu.openFor(this.hovered, {x:tcursor.x, y:tcursor.y},
-                    evt.clientX, evt.clientY);
+                if (!secondaryAction(this.hovered))
+                    ctxMenu.openFor(this.hovered, {x:tcursor.x, y:tcursor.y},
+                        evt.clientX, evt.clientY);
             }
             // Rotate Transition - fine
             else if (evt.type == "mw" && SCA(evt, "sca") && 
@@ -333,8 +334,9 @@ class BaseForm extends Form {
         else if (state.is("LEFTDOWN")) {
             // New Place
             if (evt.type == "mu" && !this.hovered && SCA(evt, "sca")
-                && closeEnough(this.mouseDownCoord, tcursor) && sel.size>0
-                && tool=="SELECT") 
+                && closeEnough(this.mouseDownCoord, tcursor)
+                && (tool=="SELECT" || tool=="MARKING" || tool=="PAN" ||
+                    ["FLOW","INHIBITOR","RESET"].includes(tool))) 
             {
                 sel.clear();
                 state.set("IDLE");
@@ -349,7 +351,9 @@ class BaseForm extends Form {
                 if (o) {
                     pn.highlighted = o;
                     pn.newUndo();
-                    if (o.type=="LABEL") o.clicked();
+                    // open the editor after this click is fully handled
+                    // (otherwise the same mouse-up would close it at once)
+                    if (o.type=="LABEL") setTimeout(()=>editName(o),0);
                 }
                 state.set("IDLE");
             }
@@ -375,20 +379,6 @@ class BaseForm extends Form {
                 pn.newUndo();
                 state.set("IDLE");
             }
-            // Toggle Place <=> Transition: click again on the selected object
-            else if (evt.type == "mu" && this.hovered
-                && this.hovered == pn.highlighted
-                && this.wasSelected && sel.size==1
-                && closeEnough(this.mouseDownCoord, tcursor) &&
-                (this.hovered.type == "PLACE" ||
-                this.hovered.type == "TRANSITION") &&
-                pn.noFlowFromHere(this.hovered)) 
-            {
-                pn.togglePlaceTransition(this.hovered);
-                sel.set([pn.highlighted]);
-                pn.newUndo();
-                state.set("IDLE");
-            }
             // New Label
             else if (evt.type == "mu" && SCA(evt, "scA") 
                 && !this.hovered && 
@@ -398,16 +388,6 @@ class BaseForm extends Form {
                 pn.addLabel(newLabel);
                 pn.highlighted=newLabel;
                 pn.newUndo();
-                state.set("IDLE");
-            }
-            // Fire a Transition
-            else if (evt.type == "mu" && SCA(evt, "sca") && this.hovered
-                && this.hovered == pn.highlighted &&
-                closeEnough(this.mouseDownCoord, tcursor) &&
-                this.hovered.type == "TRANSITION" &&
-                this.hovered.enabled())
-            {
-                pn.fireOne(this.hovered);
                 state.set("IDLE");
             }
             // Init Drag
@@ -422,13 +402,6 @@ class BaseForm extends Form {
             {
                 this.selAdditive = !SCA(evt,"sca");
                 state.set("SELECT");
-            }
-            // Label edit
-            else if (evt.type == "mu" && this.hovered && 
-                this.hovered.type=="LABEL" && 
-                closeEnough(this.mouseDownCoord, tcursor)) 
-            {
-                this.hovered.clicked(evt);
             }
         }
         // DRAG STATE
@@ -485,16 +458,31 @@ class BaseForm extends Form {
                 this.hovered != pn.highlighted &&
                 (this.hovered.type == "PLACE" ||
                     this.hovered.type == "TRANSITION")) {
-                pn.addFlows(pn.highlighted, this.hovered);
-                pn.highlighted = this.hovered;
-                pn.newUndo();
+                const from=pn.highlighted, to=this.hovered;
+                if (tool=="INHIBITOR" || tool=="RESET") {
+                    const okDir = tool=="INHIBITOR" ? (from.type=="PLACE" && to.type=="TRANSITION")
+                                                    : (from.type=="TRANSITION" && to.type=="PLACE");
+                    if (okDir) {
+                        const f=new Flow(from,to);
+                        f.subtype=tool;
+                        pn.addFlow(f);
+                        pn.newUndo();
+                    }
+                    else showToast(tool=="INHIBITOR" ? "An inhibitor arc goes from a place to a transition"
+                                                     : "A reset arc goes from a transition to a place", 3000);
+                }
+                else {
+                    pn.addFlows(from, to);
+                    pn.newUndo();
+                }
+                pn.highlighted = to;
                 state.set("IDLE");
             }
         }
         // MULTISEGMENT STATE
         else if (state.is("MULTISEGMENT")) {
             // Toggle Flow Enabler/Inhiboitor
-            if (evt.type == "mu" && !this.wasSelected) {
+            if (evt.type == "mu") {
                 sel.set([this.dragged]);
                 state.set("IDLE");
             }

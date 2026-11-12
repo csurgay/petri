@@ -12,11 +12,14 @@ class Control extends Label {
         this.valueLabel.text=this.value.toString();
     }
     hover() {
+        // drawn relative to the parent form, so hit-test there too
+        const px=this.parent.x, py=this.parent.y;
+        const right=Math.max(this.width, this.valueLabel.x+this.valueLabel.width-this.x);
         var ret = 
-            ccursor.x>this.x &&
-            ccursor.x<this.x+this.width &&
-            ccursor.y>this.y-this.size/2 &&
-            ccursor.y<this.y+this.size/2;
+            ccursor.x>px+this.x &&
+            ccursor.x<px+this.x+right &&
+            ccursor.y>py+this.y-this.size/2-2 &&
+            ccursor.y<py+this.y+this.size/2+2;
         if (ret) { 
             return this;
         }

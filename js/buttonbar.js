@@ -40,6 +40,40 @@ class Buttonbar extends Form {
         this.b.push(new Button("HELP","HELP",x+dx++*(w+ddw),y,w,()=>{return !this.running()}));
 
         this.addChild(new Label( "File: noname.pn", x+dx++*(w+ddw),y, "left" ));
+        this.layout(ww);
+    }
+    // Place the button groups left to right; a group that does not fit
+    // starts a new row (phones, narrow windows). Sets this.h.
+    layout(W) {
+        this.layoutW=W;
+        const groups=[["CLEAR","OPEN","SAVE","SEND","UNDO","REDO"],
+                      ["REWIND","STEP_BWD","STEP_FWD","PLAY","STOP","RUN","FLY"],
+                      ["STEPS-","REACH","STEPS+"],
+                      ["PREF","HELP"]];
+        const gap=g=>g[0]=="STEPS-"?10:5, rowH=40, groupGap=20;
+        let x=50, y=15;
+        groups.forEach(ids=>{
+            const bs=ids.map(id=>this.b.find(b=>b.button==id));
+            bs.forEach(b=>{ if (b.w0===undefined) b.w0=b.w; b.w=b.w0; });
+            let gw=bs.reduce((a,b)=>a+b.w,0)+gap(ids)*(bs.length-1);
+            if (x+gw>W-8 && x>50) { y+=rowH; x=10; }
+            // a group wider than a whole row: narrow its buttons evenly
+            if (x+gw>W-8) {
+                const f=Math.max(0.6, (W-8-x-gap(ids)*(bs.length-1))/(gw-gap(ids)*(bs.length-1)));
+                bs.forEach(b=>b.w=Math.floor(b.w0*f));
+                gw=bs.reduce((a,b)=>a+b.w,0)+gap(ids)*(bs.length-1);
+            }
+            bs.forEach(b=>{
+                b.x=x+b.w/2; b.y=y;
+                b.label.x=b.x; b.label.y=y+bh;
+                x+=b.w+gap(ids);
+            });
+            x+=groupGap-gap(ids);
+        });
+        const file=this.children[0];
+        if (x+170>W-8 && x>50) { y+=rowH; x=10; }
+        file.x=x; file.y=y;
+        this.h=y+25;
     }
     running() {
         return state.is("PLAY") || state.is("RUN") || state.is("FLY");
@@ -50,6 +84,7 @@ class Buttonbar extends Form {
     // Tooltip after a short hover: what the button does, its shortcut,
     // and why it is disabled when it is.
     drawTooltip() {
+        if (isTouch()) return;                   // no hover on touch screens
         const hb=(ccursor.y<this.h) ? this.hoveredButton() : null;
         if (hb!==this.tipBtn) { this.tipBtn=hb; this.tipMs=Date.now(); }
         if (!hb || Date.now()-this.tipMs<TOOLTIP_DELAY || events.mouseDown) return;
@@ -135,21 +170,16 @@ function disabledReason(id) {
     return "not available now";
 }
 
-// Mouse cursor shows what a click or drag would do
+// Mouse cursor shows what a click or drag would do (also per tool)
 var lastCursor="";
 function updateCursor() {
     let c="default";
     const s=state.s;
+    const onNet=fb.active && fb.hover(), o=pn.highlighted, T=o && o.type;
+    const node=(T=="PLACE"||T=="TRANSITION");
     if (textbox.active) c="text";
     else if (s=="PAN") c="grabbing";
     else if (s=="SELECT") c="crosshair";
-    else if (fb.active && fb.hover() && !pn.highlighted &&
-        ["PLACE","TRANSITION","LABEL"].includes(tool)) c="crosshair";
-    else if (fb.active && fb.hover() && tool=="TOKEN" && pn.highlighted &&
-        pn.highlighted.type=="PLACE") c="cell";
-    else if (fb.active && fb.hover() && tool=="ARC" && pn.highlighted &&
-        ["PLACE","TRANSITION"].includes(pn.highlighted.type)) c="crosshair";
-    else if (events.spaceDown && fb.active && fb.hover()) c="grab";
     else if (s=="DRAG" || s=="DRAGALL" || s=="MULTISEGMENT") c="move";
     else if (s=="DRAWARROW") c="crosshair";
     else if (s=="ZOOM" || s=="MIDDLE") c="zoom-in";
@@ -157,12 +187,15 @@ function updateCursor() {
         const hb=bar.hoveredButton();
         c=hb ? (hb.enabled() ? "pointer" : "not-allowed") : "default";
     }
-    else if (fb.active && fb.hover()) {
-        const o=pn.highlighted;
+    else if (onNet && (events.spaceDown || tool=="PAN")) c="grab";
+    else if (onNet && tool=="MARKING")
+        c = T=="PLACE" ? "cell" : (T=="TRANSITION" ? (o.enabled()?"pointer":"not-allowed") : "default");
+    else if (onNet && ["FLOW","INHIBITOR","RESET"].includes(tool))
+        c = node ? "crosshair" : (T=="FLOW" ? "pointer" : (T=="MIDPOINT" ? "move" : "default"));
+    else if (onNet && ["PLACE","TRANSITION","LABEL"].includes(tool) && !o) c="crosshair";
+    else if (onNet) {
         if (!o) c="default";
-        else if (o.type=="TRANSITION") c=o.enabled() ? "pointer" : "move";
-        else if (o.type=="LABEL") c="text";
-        else if (o.type=="FLOW") c="pointer";
+        else if (T=="FLOW") c="pointer";
         else c="move";
     }
     else if (ff.active && selectedFile>=0) c="pointer";
