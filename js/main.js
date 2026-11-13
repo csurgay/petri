@@ -80,7 +80,11 @@ function animate() {
     const delays= { "PLAY":1000, "RUN":100, "FLY":0 };
     if (state.s in delays) {
         if (ms-msSlowrun>delays[state.s]) {
-            pn.fireOne();
+            if (pn.t.length>0 && pn.getEnabled().length==0) {
+                state.set("IDLE");
+                showToast("Deadlock: no transition is enabled \u2014 simulation stopped", 3500);
+            }
+            else pn.fireOne();
             msSlowrun=ms;
         }
     }
@@ -90,8 +94,10 @@ function animate() {
             if (eval(assertion)) {
                 state.set("IDLE");
                 log(here(), "Assertion fired: "+assertion);
+                showToast("Breakpoint: "+fp.assertString.value+" \u2014 simulation stopped", 3500);
             }
         }
     }
+    else noticeDeadlock();
     if (state.RUNNING) requestAnimationFrame(animate);
 }

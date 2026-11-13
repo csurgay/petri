@@ -77,8 +77,15 @@ class Selection {
         m.mids.forEach(o=>o.dragTo(dx,dy));
         m.labels.forEach(o=>o.dragTo(dx,dy));
     }
-    rotateAround(pivot,delta) {
-        const a=delta*Math.PI/32, cx=pivot.x, cy=pivot.y;
+    rotateAround(pivot,delta) { this.rotateBy(delta*Math.PI/32, pivot.x, pivot.y); }
+    // rotate by a radians (clockwise on screen) around (cx,cy), or around the middle
+    rotateBy(a, cx=null, cy=null) {
+        if (cx===null) {
+            const m=this.movable(), pts=m.nodes.concat(m.mids);
+            if (!pts.length) return;
+            const xs=pts.map(o=>o.x), ys=pts.map(o=>o.y);
+            cx=(Math.min(...xs)+Math.max(...xs))/2; cy=(Math.min(...ys)+Math.max(...ys))/2;
+        }
         const rot=o=>{ const r=rotate(cx,cy,o.x,o.y,a); o.x=r[0]; o.y=r[1]; };
         const m=this.movable();
         m.nodes.forEach(o=>{
@@ -248,6 +255,7 @@ class Selection {
 // Works also when a host app or browser menu handles the shortcut itself,
 // and lets nets be copied between tabs and windows.
 const CLIP_TAG="PetriNet-clip v1\n";
+function objectsText(n) { return n+(n==1?" object":" objects"); }
 function countOf(d) {
     return d ? d.places.length+d.transitions.length+d.labels.length : 0;
 }
@@ -263,7 +271,7 @@ function onClipCopy(e, cut) {
     const d=cut ? sel.cut() : sel.copy();
     if (!d) { showToast("Nothing to copy"); return; }
     try { e.clipboardData.setData("text/plain", CLIP_TAG+JSON.stringify(d)); } catch(err) {}
-    showToast(countOf(d)+(cut?" objects cut":" objects copied"));
+    showToast(objectsText(countOf(d))+(cut?" cut":" copied"));
     events.refreshHover();
 }
 function onClipPaste(e) {
@@ -283,7 +291,7 @@ function onClipPaste(e) {
     }
     if (!sel.clipboard) { showToast("Clipboard is empty"); return; }
     sel.paste();
-    showToast(countOf(sel.clipboard)+" objects pasted");
+    showToast(objectsText(countOf(sel.clipboard))+" pasted");
     events.refreshHover();
 }
 document.addEventListener("copy",  e=>onClipCopy(e,false));

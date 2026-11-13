@@ -1,6 +1,7 @@
 class BFSForm extends Form {
     constructor(title, margin) {
         super("BFSFORM", title, 20, 10, 200, 100, margin);
+        this.belowBar=true;
 
         // Root and all nodes
         this.root = null;
@@ -18,9 +19,11 @@ class BFSForm extends Form {
 
     runFrom() {
         // Store root and map of all nodes
-        const { root, nodeMap } = runMarkingBFS(pn.getMarking(), bfsSteps);
+        const { root, nodeMap, truncated } = runMarkingBFS(pn.getMarking(), bfsSteps);
         this.root = root;
         this.nodes = nodeMap;
+        this.truncated = truncated;
+        this.title = "Reachability graph";
     }
 
     draw() {
@@ -47,6 +50,12 @@ class BFSForm extends Form {
             levelMap.get(lvl).push(node);
         });
 
+        // box width from the longest marking text
+        g.setupText("11px monospace", "center", "middle");
+        let boxW = 60;
+        this.nodes.forEach(node => { boxW = Math.max(boxW, g.measureText(this.formatMarking(node.marking)).width + 14); });
+        const spacingX = Math.max(this.spacingX, boxW + 24);
+
         // Position for every node
         // Even Spacing
 	// doesn't look good on big graphs but that is fixed by panning/dragging and centering + cutoff
@@ -56,12 +65,12 @@ class BFSForm extends Form {
         levelMap.forEach((nodes, lvl) => {
             // Horizontal spacing
             const baseY = lvl * this.levelHeight;
-            const totalWidth = (nodes.length - 1) * this.spacingX;
+            const totalWidth = (nodes.length - 1) * spacingX;
 
             maxWidth = Math.max(maxWidth, totalWidth);
 
             nodes.forEach((node, i) => {
-                const x = i * this.spacingX - totalWidth / 2;
+                const x = i * spacingX - totalWidth / 2;
                 const y = baseY;
                 positions.set(node, { x, y });
             });
@@ -80,7 +89,7 @@ class BFSForm extends Form {
 
         // Center of graph and form
         const centerx = this.x + this.w / 2;
-        const centery = this.y + this.h / 2;
+        const centery = this.y + 80 + (this.h - 80) / 2;      // below the info panel
         const graphcenterx = minx + graphw / 2;
         const graphcentery = miny + graphh / 2;
 
@@ -147,18 +156,11 @@ class BFSForm extends Form {
                     const aKey = from.x * 1e6 + from.y;
                     const bKey = to.x   * 1e6 + to.y;
 
-                    // Only offset one of the two directions (stable ordering)
-                    if (aKey < bKey) {
-                        const offX = nx * sep;
-                        const offY = ny * sep;
-                        sx += offX; sy += offY;
-                        ex += offX; ey += offY;
-                    } else {
-                        const offX = nx * sep;
-                        const offY = ny * sep;
-                        sx += offX; sy += offY;
-                        ex += offX; ey += offY;
-                    }
+                    // each direction moves to its own side (n flips with the direction)
+                    const offX = nx * sep / 2 * 1.5;
+                    const offY = ny * sep / 2 * 1.5;
+                    sx += offX; sy += offY;
+                    ex += offX; ey += offY;
                 }
 
                 // Line
@@ -187,48 +189,87 @@ class BFSForm extends Form {
 
                 // Muiltple transitions going from x to y will show as a single line
                 // but the transition names are in a single label
-                const labelDist = 30;
-                const lx = ex - Math.cos(angle) * labelDist;
-                const ly = ey - Math.sin(angle) * labelDist;
+                // the transition name(s) in the middle of the edge, on a
+                // light patch so crossing edges do not hide it
+                // (a bit before the middle: the two directions of a pair differ)
+                const lx = sx + (ex - sx) * 0.4;
+                const ly = sy + (ey - sy) * 0.4;
                 g.setupText("12px Arial", "center", "middle");
-                g.fillStyle(COLOR_INK);
                 const combined = transitions.join(", ");
-
+                const tw = g.measureText(combined).width;
+                g.beginPath();
+                g.fillStyle("rgba(255,245,235,0.85)");
+                g.fillRect(lx - tw / 2 - 2, ly - 7, tw + 4, 14);
+                g.fillStyle(COLOR_INK);
                 g.fillText(combined, lx, ly);
             });
         });
 
 
-        // Markings
+        // Markings: M0 (the current marking) bold, deadlocks red,
+        // not yet explored ones (beyond the depth) dashed
+        let dead = 0, frontier = 0;
         this.nodes.forEach(node => {
             const pos = positions.get(node);
             if (!pos) return;
+            if (node.dead) dead++;
+            if (node.frontier) frontier++;
 
-            g.beginPath();
-            g.lineWidth(2);
-            g.fillStyle(COLOR_CANVAS);
-            g.strokeStyle(COLOR_INK);
-
-            const rectW = nodeRadius * 3;
+            const rectW = boxW;
             const rectH = nodeRadius * 1.3;
+            g.beginPath();
+            g.lineWidth(node === this.root ? 3 : (node.dead ? 3 : 1.5));
+            g.fillStyle(node.dead ? "#fde3df" : (node === this.root ? "#e4eefc" : COLOR_CANVAS));
+            g.strokeStyle(node.dead ? "#c0392b" : COLOR_INK);
+            if (node.frontier) g.ctx.setLineDash([5, 4]);
             g.rect(pos.x - rectW / 2, pos.y - rectH / 2, rectW, rectH);
-
             g.fill();
             g.stroke();
+            g.ctx.setLineDash([]);
 
             // Marking text
             const text = this.formatMarking(node.marking);
             g.setupText("11px monospace", "center", "middle");
-            g.fillStyle(COLOR_HIGHLIGHT);
+            g.fillStyle(node.dead ? "#c0392b" : COLOR_HIGHLIGHT);
             g.fillText(text, pos.x, pos.y);
+            g.setupText("bold 11px Arial", "center", "top");
+            if (node === this.root) { g.fillStyle(COLOR_INK); g.fillText("M0", pos.x - rectW / 2 - 12, pos.y - 6); }
+            if (node.dead) { g.fillStyle("#c0392b"); g.fillText("deadlock", pos.x, pos.y + rectH / 2 + 3); }
         });
+        this.deadCount = dead;
 
         g.restore();
 
-        // Info bar
+        // Info panel: numbers, completeness, which place is which in a marking
+        const names = pn.p.map(p => p.label.text.trim() || p.id);
+        const lines = [
+            `Depth ${bfsSteps}  \u00b7  ${this.nodes.size} markings  \u00b7  ${dead} deadlock${dead == 1 ? "" : "s"}`,
+            this.truncated ? `Stopped at ${BFS_MAX_NODES} markings (too many to show)` :
+                (frontier ? "More beyond this depth (dashed): use + to go deeper" : "Complete: every reachable marking is shown")
+        ];
+        g.setupText("12px Arial", "left", "top");
+        let legend = "Marking = (", rows = [];
+        const maxW = this.w - 100;                  // room for the ✕
+        names.forEach((n, i) => {
+            const part = n + (i < names.length - 1 ? ", " : ")");
+            if (g.measureText(legend + part).width > maxW) { rows.push(legend); legend = "   "; }
+            legend += part;
+        });
+        rows.push(legend);
         g.setupText("14px Arial", "left", "top");
-        g.fillText(`BFS depth: ${bfsSteps}`, this.x + 20, this.y + 30);
-        g.fillText(`Nodes: ${this.nodes.size}`, this.x + 20, this.y + 50);
+        const panelH = 10 + lines.length * 19 + rows.length * 16 + 4;
+        g.beginPath();
+        g.fillStyle("rgba(255,245,235,0.92)");
+        g.fillRect(this.x + 12, this.y + 18, Math.min(this.w - 70, maxW + 30), panelH);
+        g.fillStyle(COLOR_INK);
+        lines.forEach((t, i) => {
+            g.setupText(i == 0 ? "bold 14px Arial" : "13px Arial", "left", "top");
+            g.fillStyle(i == 1 && frontier && !this.truncated ? "#7a5a00" : (i == 1 && !frontier && !this.truncated ? "#1e7a3c" : COLOR_INK));
+            g.fillText(t, this.x + 20, this.y + 24 + i * 19);
+        });
+        g.setupText("12px Arial", "left", "top");
+        g.fillStyle(COLOR_INK);
+        rows.forEach((t, i) => g.fillText(t, this.x + 20, this.y + 24 + lines.length * 19 + i * 16));
 
         // Will finish integrating steps buttons into the form later.
         //this.b.push(new Button("STEPS-", "STEPS-", this.x+40, this.y+100, 50, ()=>{return true}));

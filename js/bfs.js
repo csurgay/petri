@@ -1,5 +1,7 @@
 // Default step/depth is 3
 let bfsSteps = 3;
+// a big or unbounded net: stop the search at this many markings
+const BFS_MAX_NODES = 600;
 
 function markingToString(marking) {
     return marking.join(",");
@@ -70,11 +72,17 @@ function runMarkingBFS(startMarking, maxDepth = bfsSteps) {
     const nodeMap = new Map([[rootKey, root]]);
     const queue = [root];
 
+    let truncated = false;
     while (queue.length > 0) {
         const current = queue.shift();
-        if (current.level >= maxDepth) continue;
-
         const enabled = getEnabledTransitions(current.marking);
+        // beyond the depth limit: not explored (there may be more)
+        if (current.level >= maxDepth || truncated) {
+            current.frontier = enabled.length > 0;
+            continue;
+        }
+        // no enabled transition: a dead marking (deadlock)
+        if (enabled.length == 0) current.dead = true;
 
         enabled.forEach(t => {
             const newM = simulateFire(current.marking, t);
@@ -97,16 +105,17 @@ function runMarkingBFS(startMarking, maxDepth = bfsSteps) {
                 };
                 nodeMap.set(key, child);
                 queue.push(child);
+                if (nodeMap.size >= BFS_MAX_NODES) truncated = true;
             }
 
-            // Always record connection (edge)
+            // Always record connection (edge), named like the transition
             current.children.push({
                 target: child,
-                transition: t.id
+                transition: t.label.text || t.id
             });
         });
     }
 
-    return { root, nodeMap };
+    return { root, nodeMap, truncated };
 }
 

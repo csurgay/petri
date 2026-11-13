@@ -32,7 +32,9 @@ function abUI() {
     document.querySelectorAll(".ab-cover,.ab-cursor").forEach(e=>e.remove());
     const cover=document.createElement("div");
     cover.className="ab-cover";
-    cover.innerHTML='<div class="ab-pill">Animated build · click or Esc to stop</div>';
+    cover.innerHTML='<div class="ab-caption" hidden><b></b><span></span></div><div class="ab-key" hidden></div>'+
+        '<div class="ab-pill">'+(AB.title||"Animated build")+' · '+
+        (matchMedia("(pointer: coarse)").matches ? "tap to stop" : "click or Esc to stop")+'</div>';
     ["mousedown","mouseup","mousemove","wheel","contextmenu","click","pointerdown","pointerup","pointermove","dblclick"].forEach(t=>
         cover.addEventListener(t,e=>{
             e.stopPropagation(); e.preventDefault();
@@ -46,8 +48,20 @@ function abUI() {
     const keys=e=>{ e.stopPropagation(); e.preventDefault(); if (e.type=="keydown" && e.key=="Escape") AB.stop=true; };
     window.addEventListener("keydown",keys,true);
     window.addEventListener("keyup",keys,true);
+    const cap=cover.querySelector(".ab-caption"), keyEl=cover.querySelector(".ab-key");
+    let keyTimer=null;
     return {
         cover, cur,
+        caption(head, text) {
+            cap.hidden=!head && !text;
+            cap.querySelector("b").textContent=head||"";
+            cap.querySelector("span").textContent=text||"";
+        },
+        key(text) {
+            keyEl.textContent=text; keyEl.hidden=false;
+            clearTimeout(keyTimer);
+            keyTimer=setTimeout(()=>keyEl.hidden=true, 1100/AB.speed+300);
+        },
         place(p) { cur.style.left=p.x+"px"; cur.style.top=p.y+"px"; },
         press(on) { cur.classList.toggle("down",on); },
         remove() {
@@ -58,9 +72,9 @@ function abUI() {
     };
 }
 // black-and-white click ripple
-function abRipple(p) {
+function abRipple(p, right=false) {
     const r=document.createElement("div");
-    r.className="ab-click";
+    r.className="ab-click"+(right?" right":"");
     r.style.left=p.x+"px"; r.style.top=p.y+"px";
     document.body.appendChild(r);
     setTimeout(()=>r.remove(), 700);
@@ -130,7 +144,7 @@ async function abTool(id) {
     if (b) await abClickElement(b); else setTool(id);
 }
 // typing into the editor's text box (names and labels)
-async function abTypeIntoTextbox(text) {
+async function abTypeIntoTextbox(text, keep=0) {
     const key=(k,code)=>({ key:k, keyCode:code, repeat:false, shiftKey:false, ctrlKey:false, altKey:false,
                            metaKey:false, target:document.body, preventDefault(){} });
     const press=async(k,code)=>{
@@ -138,8 +152,8 @@ async function abTypeIntoTextbox(text) {
         events.keyupevent(key(k,code));   await abFrames(1);
     };
     textbox.ptrCursor=textbox.text.length;
-    while (textbox.text.length>0) { await press("Backspace",8); await abSleep(35); }
-    for (const ch of text) { await press(ch, ch==" "?32:65); await abSleep(75); }   // 65: any printable
+    while (textbox.text.length>keep) { await press("Backspace",8); await abSleep(35); }
+    for (const ch of text.slice(keep)) { await press(ch, ch==" "?32:65); await abSleep(75); }   // 65: any printable
     await abSleep(150);
     await press("Enter",13);
 }
@@ -334,11 +348,17 @@ function abDiff(a,b) {
     return "";
 }
 
+// PREF "Animation speed": 1 = slow, as for watching; bigger = faster
+function animSpeed() {
+    const v=fp.animSpeed ? +fp.animSpeed.value : 1;
+    return Math.max(0.25, Math.min(20, v||1));
+}
+
 // ------------------------------------------------------------------ entry ---
-async function animatedBuild(speed=1, fromSelfTest=false) {
+async function animatedBuild(speed=animSpeed(), fromSelfTest=false) {
     if (AB.running || (runSelfTest.running && !fromSelfTest)) return false;
     if (pn.p.length+pn.t.length+pn.l.length==0) { showToast("Load or draw a net first, then build it animated"); return false; }
-    AB.running=true; AB.stop=false; AB.speed=speed; AB.missed=[];
+    AB.running=true; AB.stop=false; AB.speed=speed; AB.missed=[]; AB.title="Animated build";
     const saved={
         raw: rawSave(), undo: undo.slice(), undoPtr, name: fm.name, savedBody: fm.savedBody,
         tool, view: {zoom:pn.zoom,cx:pn.cx,cy:pn.cy,vpx:pn.vpx,vpy:pn.vpy},

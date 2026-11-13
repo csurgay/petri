@@ -108,19 +108,25 @@ class Petrinet {
     }
 
     togglePlaceTransition(o) {
+        let n=null;
         if (o.type=="PLACE") {
             o.delete();
-            const newTrans=new Transition(o.x,o.y);
-            this.addTransition(newTrans);
-            this.highlighted=newTrans;
+            n=new Transition(o.x,o.y);
+            this.addTransition(n);
         }
         // Toggle Transition to Place
         else if (o.type=="TRANSITION") {
             o.delete();
-            const newPlace=new Place(o.x,o.y);
-            this.addPlace(newPlace);
-            this.highlighted=newPlace;
+            n=new Place(o.x,o.y);
+            this.addPlace(n);
         }
+        if (!n) return;
+        // keep what the user gave it: name (unless it was just the id), colour, name position
+        if (o.label.text!==o.id) n.label.text=o.label.text;
+        n.label.x=o.label.x; n.label.y=o.label.y;
+        n.label.color=o.label.color; n.label.size=o.label.size;
+        n.color=o.color;
+        this.highlighted=n;
     }
 
     locate(id) {

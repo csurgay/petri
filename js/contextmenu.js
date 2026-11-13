@@ -128,6 +128,11 @@ function menuItems(o, at) {
         items.push({label:"Copy", key:"Ctrl+C", action:()=>{ sel.copy(); showToast(n+" objects copied"); }});
         items.push({label:"Cut", key:"Ctrl+X", action:()=>{ sel.cut(); showToast(n+" objects cut"); }});
         items.push({label:"Duplicate", key:"Ctrl+D", action:()=>sel.duplicate()});
+        items.push({label:"Rotate…", key:"Shift+wheel", action:()=>askValue("Rotate the selection by (degrees, clockwise)", "90", "text", v=>{
+            const d=parseFloat(String(v).replace(",","."));
+            if (!isFinite(d)) { showToast("Not a number: "+v); return; }
+            sel.rotateBy(d*Math.PI/180); pn.newUndo(); showToast("Rotated by "+d+"\u00b0");
+        })});
         items.push({sep:true});
         items.push({colors:true, current:o.color, action:c=>{ sel.items().forEach(x=>x.color=c); pn.newUndo(); }});
         items.push({sep:true});
@@ -137,7 +142,7 @@ function menuItems(o, at) {
 
     if (!o) {
         items.push({label:"Paste here", key:"Ctrl+V", enabled:!!sel.clipboard,
-            action:()=>{ sel.pasteAt(at); showToast(countOf(sel.clipboard)+" objects pasted"); }});
+            action:()=>{ sel.pasteAt(at); showToast(objectsText(countOf(sel.clipboard))+" pasted"); }});
         items.push({label:"Select all", key:"Ctrl+A", enabled:pn.p.length+pn.t.length+pn.l.length>0,
             action:()=>sel.selectAll()});
         items.push({sep:true});

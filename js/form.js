@@ -8,10 +8,18 @@ class Forms {
         this.f.push(form);
     }
     draw() {
-        this.f.forEach(f=>{if (f.visible) f.draw();})
+        this.f.forEach(f=>{ if (f.visible) { f.draw(); if (f.drawCloseBox) f.drawCloseBox(); } });
     }
     processFormsEvent(pMyEvent) {
         getCoord(pMyEvent); // sets tcursor (translated canvas) and ccursor (orig canvas)
+        // the ✕ of an open window: press and release on it closes the window
+        const win=this.f.find(f=>f.active && f.inCloseBox());
+        if (win && (pMyEvent.type=="md" || pMyEvent.type=="mu")) {
+            if (pMyEvent.type=="md") this.closePressed=win;
+            else if (this.closePressed===win) { win.close(); this.closePressed=null; }
+            return;
+        }
+        if (pMyEvent.type=="mu") this.closePressed=null;
         this.f.forEach(item=>{
             if (item.active) {
                 item.processFormEvent(pMyEvent);
@@ -40,6 +48,12 @@ class Form extends Frame {
         this.y=20+wh/this.margin;
         this.w=(this.margin-2)*ww/this.margin;
         this.h=(this.margin-2)*wh/this.margin;
+        // windows open below the toolbar (it wraps into rows on phones)
+        // and above the hint bar, so both stay usable
+        if (this.belowBar && typeof bar!=="undefined" && bar.h) {
+            this.y=Math.max(this.y, bar.h+12);
+            this.h=Math.max(120, wh-HINT_H-8-this.y);
+        }
 	if (this.halfScreen) {
 		this.x += (ww / 2 - ww/this.margin);
 		this.w -= (ww / 2 - ww/this.margin);
@@ -51,6 +65,35 @@ class Form extends Frame {
     draw() {
         super.draw();
         this.children.forEach(child=>child.draw(child.hover()));
+    }
+    // drawn last, over the window's own content
+    drawCloseBox() {
+        const b=this.closeBox();
+        if (b) {
+            const on=ccursor.x>=b.x && ccursor.x<=b.x+b.w && ccursor.y>=b.y && ccursor.y<=b.y+b.h && !isTouch();
+            g.beginPath(); g.lineWidth(1);
+            g.fillStyle(on?COLOR_INK:COLOR_CANVAS); g.strokeStyle(COLOR_INK);
+            g.rect(b.x,b.y,b.w,b.h); g.fill(); g.stroke();
+            g.beginPath(); g.lineWidth(2); g.strokeStyle(on?COLOR_CANVAS:COLOR_INK);
+            const d=b.w*0.28, cx=b.x+b.w/2, cy=b.y+b.h/2;
+            g.moveTo(cx-d,cy-d); g.lineTo(cx+d,cy+d); g.moveTo(cx+d,cy-d); g.lineTo(cx-d,cy+d);
+            g.stroke(); g.lineWidth(1);
+        }
+    }
+    // the ✕ in the top right corner of a window (works with mouse and finger)
+    closeBox() {
+        if (!this.belowBar || !this.closable || !this.visible) return null;
+        const s=isTouch()?34:24;
+        return { x:this.x+this.w-this.m-s-4, y:this.y+this.m+4, w:s, h:s };
+    }
+    inCloseBox() {
+        const b=this.closeBox();
+        return b && ccursor.x>=b.x && ccursor.x<=b.x+b.w && ccursor.y>=b.y && ccursor.y<=b.y+b.h;
+    }
+    close() {
+        this.active=this.visible=false;
+        fb.active=bar.active=true;
+        state.set("IDLE");
     }
     hover() {
         return ccursor.x > this.x && ccursor.x < this.x+this.w &&
@@ -103,6 +146,7 @@ const LOCAL_FILE_ENTRY="\u{1F4C2}  From your computer\u2026";
 class FileForm extends Form {
     constructor(title, margin) { // m=margin
         super("FILEFORM", title, 20, 10, 200, 100, margin);
+        this.belowBar=true;
     }
     draw() {
         super.draw();
@@ -111,11 +155,12 @@ class FileForm extends Form {
             g.setupText("16px arial","left","top");
             g.fillStyle(COLOR_INK);
             var width=g.measureText(files[i]).width;
-            if (ccursor.x>200 && ccursor.x<200+width && ccursor.y>this.y+100+20*i && ccursor.y<this.y+119+20*i) {
+            const fx=this.x+Math.min(140, this.w*0.12);       // inside the window, also on phones
+            if (ccursor.x>fx && ccursor.x<fx+width && ccursor.y>this.y+100+20*i && ccursor.y<this.y+119+20*i) {
                 g.font("bold 16px arial");
                 selectedFile=i;
             }
-            g.fillText(files[i],200,this.y+100+20*i);
+            g.fillText(files[i],fx,this.y+100+20*i);
         }
     }
     processFormEvent(pMyEvent) {

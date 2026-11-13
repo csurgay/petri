@@ -424,6 +424,70 @@ stTest("Alt+wheel colours an object (modifiers read from the mouse event)", asyn
 stTest("Reachability graph", async t=>{
     bfsSteps=3; fbfs.runFrom();
     t.eq(fbfs.nodes.size,2,"two markings: A1 B0 and A0 B1");
+    t.ok(![...fbfs.nodes.values()].some(n=>n.dead || n.frontier),"no deadlock, complete");
+    st.P("A").tokens=0; pn.clearMarkings(); fbfs.runFrom();
+    t.eq(fbfs.nodes.size,1,"no token: one marking"); t.ok(fbfs.root.dead,"and it is a deadlock");
+    st.P("A").tokens=1; pn.clearMarkings();
+});
+stTest("Reachability window: below the toolbar, depth +/−, closes with ✕ (mouse and touch)", async t=>{
+    const b=id=>bar.b.find(x=>x.button==id);
+    await st.click({x:b("REACH").x, y:b("REACH").y}); await st.frames(3);
+    t.ok(fbfs.visible,"opens");
+    t.ok(fbfs.y>=bar.h,"starts below the toolbar (all buttons stay visible)");
+    t.ok(fbfs.y+fbfs.h<=wh-HINT_H,"ends above the hint bar");
+    const d=bfsSteps;
+    await st.click({x:b("STEPS+").x, y:b("STEPS+").y}); t.eq(bfsSteps,d+1,"depth + works while open");
+    await st.click({x:b("STEPS-").x, y:b("STEPS-").y}); t.eq(bfsSteps,d,"depth − too");
+    let c=fbfs.closeBox(); t.ok(c,"has a ✕");
+    await st.click({x:c.x+c.w/2, y:c.y+c.h/2});
+    t.ok(!fbfs.visible && fb.active,"✕ closes it");
+    // the same with a finger
+    st.touchEv("pointerdown",1,{x:b("REACH").x, y:b("REACH").y}); await st.sleep(50); st.touchEv("pointerup",1,{x:b("REACH").x, y:b("REACH").y});
+    await st.frames(3); await st.sleep(DOUBLE_TAP_MS+100);
+    t.ok(fbfs.visible,"opens with a tap");
+    c=fbfs.closeBox(); await st.tap({x:c.x+c.w/2, y:c.y+c.h/2});
+    t.ok(!fbfs.visible,"a tap on ✕ closes it");
+    lastPointer="mouse";
+    // Preferences close the same way
+    await st.click({x:b("PREF").x, y:b("PREF").y}); t.ok(fp.visible,"PREF opens");
+    c=fp.closeBox(); await st.click({x:c.x+c.w/2, y:c.y+c.h/2}); t.ok(!fp.visible,"PREF ✕ closes");
+});
+stTest("Simulation stops at a deadlock and at a breakpoint, with a message", async t=>{
+    const b=id=>bar.b.find(x=>x.button==id);
+    st.P("A").tokens=0; pn.clearMarkings();
+    await st.click({x:b("RUN").x, y:b("RUN").y}); await st.sleep(300); await st.frames(3);
+    t.ok(!bar.running(),"stopped"); t.ok(/deadlock/i.test(toastText),"says: deadlock");
+    st.P("A").tokens=1; pn.clearMarkings();
+    const on=fp.assertOnOff.value, as=fp.assertString.value;
+    fp.assertOnOff.value=true; fp.assertString.value="B>0";
+    await st.click({x:b("RUN").x, y:b("RUN").y}); await st.sleep(600); await st.frames(3);
+    t.ok(!bar.running(),"breakpoint stopped it"); t.eq(st.P("B").tokens,1,"at B>0");
+    t.ok(/Breakpoint/.test(toastText),"says: breakpoint");
+    fp.assertOnOff.value=on; fp.assertString.value=as;
+    // a click-fire that leaves nothing enabled is announced too
+    pn.rewind(); st.P("A").tokens=1; st.P("B").tokens=0;
+    pn.f.splice(pn.f.indexOf(st.F("T2","A")),1); pn.clearMarkings(); toastText="";
+    await st.click(st.scr(st.T("T1"))); await st.sleep(FIRE_DELAY_MS+150); await st.frames(3);
+    t.eq(st.P("B").tokens,1,"T1 fired");                // B -> T2 -> (nothing): T2 still enabled
+    await st.click(st.scr(st.T("T2"))); await st.sleep(FIRE_DELAY_MS+150); await st.frames(3);
+    t.ok(/deadlock/i.test(toastText),"after the last possible firing: deadlock message");
+});
+stTest("Rotate… a selection by an angle; Convert keeps the name", async t=>{
+    sel.set([st.P("A"),st.P("B"),st.T("T1"),st.T("T2")]);
+    const A0={x:st.P("A").x,y:st.P("A").y};
+    await st.rclick(st.scr(st.T("T1"))); await st.sleep(500);
+    const it=st.menuItem("Rotate"); t.ok(it,"menu has Rotate…");
+    it.click(); await st.frames(); t.ok(st.dialogOpen(),"asks the angle");
+    await st.answer("180");
+    t.near(st.P("A").x, 280-A0.x, 1, "A moved to the other side (x)");
+    t.near(st.P("A").y, 200-A0.y, 1, "A moved to the other side (y)");
+    await st.key("z",{ctrl:true}); t.near(st.P("A").x, A0.x, 0.5, "undo");
+    sel.clear();
+    const lone=new Transition(ST_FREE1.x,ST_FREE1.y); lone.label.text="Back"; pn.addTransition(lone); pn.newUndo();
+    await st.move(st.scr(lone)); await st.rclick(st.scr(lone)); await st.sleep(500);
+    st.menuItem("Convert to place").click(); await st.frames();
+    t.ok(st.P("Back") && !st.T("Back"),"the transition is a place now and keeps its name");
+    await st.key("z",{ctrl:true});
 });
 stTest("Trash button (DEL) deletes the selection", async t=>{
     t.ok(palette.del && palette.del.textContent.includes("DEL"),"trash button with DEL under the tools");
@@ -451,6 +515,16 @@ stTest("Animated build rebuilds the net with the mouse, then restores it", async
     t.eq(rawSave().split("\n").slice(1,-7).join("\n"), before.split("\n").slice(1,-7).join("\n"),"original restored exactly");
     t.eq(undo.length,undoLen,"undo history restored");
     t.ok(!document.querySelector(".ab-cover,.ab-cursor"),"pointer and cover removed");
+});
+stTest("Storyboards 1–3 play through (fast), every planned step works", async t=>{
+    t.ok(fp.story1 && fp.story2 && fp.story3,"PREF has the three stories");
+    for (let i=0;i<STORIES.length;i++) {
+        const ok=await playStory(i, 12, true);
+        t.ok(ok,"story "+(i+1)+" finished");
+        const bad=SB.checks.filter(c=>!c.ok).map(c=>c.what);
+        t.eq(bad.join(", "),"","story "+(i+1)+": all "+SB.checks.length+" steps as planned");
+        t.ok(!document.querySelector(".ab-cover,.ab-cursor,.ctxmenu,.dlg-back"),"nothing left on screen");
+    }
 });
 stTest("Help page is available", async t=>{
     const r=await fetch("doc/help.html",{cache:"no-cache"});

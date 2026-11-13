@@ -3,6 +3,14 @@
 
 const HINT_H=24;
 
+// After a firing (click, STEP+, menu) that leaves nothing enabled: say so
+const deadNote={ mptr:0 };
+function noticeDeadlock() {
+    if (pn.mptr>deadNote.mptr && pn.t.length>0 && pn.getEnabled().length==0)
+        showToast("Deadlock: no transition is enabled", 3000);
+    deadNote.mptr=pn.mptr;
+}
+
 // one text source, shown either in desktop or in touch wording
 function currentHint() {
     const h=rawHint();
@@ -14,9 +22,11 @@ function rawHint() {
     if (typeof confirmOpen==="function" && confirmOpen()) return "Enter: OK  ·  Esc: cancel";
     if (ctxMenu.isOpen()) return "↑↓ Enter: choose  ·  Esc: close menu";
     if (textbox.active) return "Type the text  ·  Enter: done  ·  Esc: cancel";
-    if (fbfs.active) return "Drag or arrows: pan  ·  W/S: level spacing  ·  A/D: horizontal spacing  ·  Space: half screen  ·  REACH or Esc: close";
-    if (fp.active) return "Click a value to change it  ·  Wheel over a value: step it  ·  PREF or Esc: close";
-    if (ff.active) return "Click a file to open it  ·  Esc: cancel";
+    if (fbfs.active) return isTouch() ? "Drag: pan the graph  ·  − / +: depth  ·  \u2715 or REACH: close"
+        : "Drag or arrows: pan  ·  W/S: level spacing  ·  A/D: horizontal spacing  ·  Space: half screen  ·  \u2715, REACH or Esc: close";
+    if (fp.active) return isTouch() ? "Tap a value to change it  ·  \u2715 or PREF: close"
+        : "Click a value to change it  ·  Wheel over a value: step it  ·  \u2715, PREF or Esc: close";
+    if (ff.active) return isTouch() ? "Tap a file to open it  ·  \u2715: cancel" : "Click a file to open it  ·  \u2715 or Esc: cancel";
     if (bar.running()) return "Simulation running  ·  STOP or right-click: stop  ·  Two fingers or Space+drag: pan";
     switch (s) {
         case "DRAWARROW": return "Release over a "+(tool=="INHIBITOR"?"transition":tool=="RESET"?"place":"place or transition")+" to connect  ·  Esc: cancel";

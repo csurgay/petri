@@ -148,7 +148,7 @@ const TOOLTIPS={
     RUN:     "Run: ~10 firings / s",
     FLY:     "Fly: as fast as possible",
     "STEPS-":"Reachability depth \u2212",
-    REACH:   ()=> "Reachability graph, depth "+bfsSteps+" (Esc closes)",
+    REACH:   ()=> "Reachability graph, depth "+bfsSteps+" (\u2715 or Esc closes)",
     "STEPS+":"Reachability depth +",
     PREF:    "Preferences",
     HELP:    "Help"
