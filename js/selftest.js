@@ -397,6 +397,25 @@ stTest("A click that only focuses the window does nothing", async t=>{
     events.focusevent(); await st.click(st.net(ST_FREE1.x,ST_FREE1.y)); t.eq(pn.p.length,2,"swallowed");
     await st.sleep(FOCUS_CLICK_MS+80); await st.click(st.net(ST_FREE1.x,ST_FREE1.y)); t.eq(pn.p.length,3,"next click works");
 });
+stTest("Wheel rotates a Transition: slow = fine steps, fast = bigger steps", async t=>{
+    const tr=st.T("T1"), p=st.scr(tr);
+    await st.move(p);
+    tr.alpha=Math.PI/2; wheelSpin.obj=null;
+    await st.wheel(p,-100); await st.sleep(450);
+    t.near(tr.alpha, Math.PI/2+Math.PI/64, 1e-6, "one slow notch: pi/64");
+    await st.wheel(p,-100); await st.sleep(450);
+    t.near(tr.alpha, Math.PI/2+2*Math.PI/64, 1e-6, "another slow notch: pi/64 again");
+    tr.alpha=Math.PI/2; wheelSpin.obj=null;
+    const a0=tr.alpha;
+    for (let i=0;i<8;i++) await st.wheel(p,-100);         // a quick spin
+    t.ok(tr.alpha-a0 > 8*Math.PI/64+1e-6, "a quick spin turns further than 8 fine steps");
+    const k=tr.alpha/(Math.PI/16);
+    t.near(k, Math.round(k), 1e-6, "and lands on a clean angle");
+    tr.alpha=Math.PI/2; wheelSpin.obj=null;
+    for (let i=0;i<8;i++) await st.wheel(p,-4);           // touchpad: tiny deltas
+    t.near(tr.alpha, Math.PI/2+8*Math.PI/64, 1e-6, "touchpad stays fine");
+    tr.alpha=Math.PI/2;
+});
 stTest("Alt+wheel colours an object (modifiers read from the mouse event)", async t=>{
     const c=st.P("A").color;
     await st.wheel(st.scr(st.P("A")),-100,{alt:true});

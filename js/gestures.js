@@ -171,6 +171,19 @@ function secondaryAction(o) {
 const FIRE_DELAY_MS=280;
 let pendingFire=null;
 // run a single-click action once it is clear that no double-click follows
+// Wheel speed: the faster the wheel turns, the bigger the step (1, 2, 4, 8 x).
+// Measured from the time between notches on the same object; a touchpad's
+// small, very frequent deltas stay fine-grained.
+const wheelSpin={ t:0, obj:null, dt:400 };
+function wheelStep(evt, obj) {
+    const t=+evt.tstamp;
+    const dt=(obj===wheelSpin.obj && t>=wheelSpin.t) ? t-wheelSpin.t : 1000;
+    wheelSpin.obj=obj; wheelSpin.t=t;
+    wheelSpin.dt = dt>=400 ? 400 : (wheelSpin.dt+dt)/2;     // smoothed
+    if (Math.abs(evt.deltaY)<40) return 1;                  // touchpad
+    const d=wheelSpin.dt;
+    return d<35 ? 8 : d<70 ? 4 : d<130 ? 2 : 1;
+}
 function scheduleClick(action) {
     cancelFire();
     pendingFire=setTimeout(()=>{ pendingFire=null; action(); }, FIRE_DELAY_MS);

@@ -234,7 +234,7 @@ class BaseForm extends Form {
             else if (evt.type == "mw" && SCA(evt, "sca") && 
                 this.hovered && this.hovered.type=="TRANSITION") 
             {
-                this.hovered.rotate(delta);
+                this.hovered.rotate(delta, false, wheelStep(evt, this.hovered));
                 pn.needTimedUndo="AFTER_IDLETIME";
             }
 /*            // Rotate Transition - course

@@ -294,7 +294,7 @@ const DATA=[
    {h:{hu:'Mozgatás és forgatás',en:'Move and rotate'},rows:[
     [{hu:'Objektum mozgatása',en:'Move object'},L=>m('drag',L)],
     [{hu:'Összefüggő részháló mozgatása',en:'Move connected subnet'},L=>K('Shift')+P+m('drag',L)+' '+(L=='hu'?'nem kijelölt objektumon':'on an unselected object')],
-    [{hu:'Tranzíció forgatása',en:'Rotate transition'},L=>m('wheel',L)+' '+(L=='hu'?'a tranzíció fölött':'over the transition')],
+    [{hu:'Tranzíció forgatása',en:'Rotate transition',d:{hu:'Lassan görgetve finom lépés; minél gyorsabban pörgeted a görgőt, annál nagyobb lépés (2×, 4×, 8×), és a szög szép értékre (pl. 45°, 90°) ugrik.',en:'Turned slowly: fine steps; the faster you spin the wheel, the bigger the step (2×, 4×, 8×), landing on clean angles (e.g. 45°, 90°).'}},L=>m('wheel',L)+' '+(L=='hu'?'a tranzíció fölött':'over the transition')],
     [{hu:'Összefüggő részháló forgatása',en:'Rotate connected subnet'},L=>K('Shift')+P+m('wheel',L)+' '+(L=='hu'?'nem kijelölt objektum fölött (ez a középpont)':'over an unselected object (the pivot)')],
     [{hu:'Szabad elhelyezés (rács nélkül)',en:'Free placement (no grid)'},L=>K('Alt')+' '+(L=='hu'?'nyomva tartva':'held down')]
    ]},
